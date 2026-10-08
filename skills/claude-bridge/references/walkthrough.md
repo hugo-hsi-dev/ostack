@@ -44,7 +44,7 @@ bridge.mjs grokbot-setup --slug <slug> --as <agent id>
 
 Then:
 
-1. **Write the reply routine prompt.** Create a routine with a webhook trigger named `Claude replies <slug>`, with the printed REPLY ROUTINE PROMPT as its saved prompt, unchanged. Read the routine's folder id from your routine list and record it with `bridge.mjs update --slug <slug> --as <agent id> --webhook-routine <folder id>`.
+1. **Write the reply routine prompt.** Create a routine with a webhook trigger named `Claude replies <slug>`, with the printed REPLY ROUTINE PROMPT as its saved prompt, unchanged. Keep the folder id that UpdateRoutine returns, and record it with `bridge.mjs update --slug <slug> --as <agent id> --webhook-routine <folder id>`. Steps 4 and 5 build the webhook links from it.
 2. **Save the memory note.** Save the printed MEMORY NOTE with your memory tool's write, scope `agent`, unchanged.
 
 The routine prompt runs on every reply, often with nobody in the chat. It's short and names no Project: it summarizes Claude's reply, carries on with next steps that are part of what the user asked for, and takes anything new to the user first. The memory note tells you the Project is connected and how to send it a message, including the answers to Claude's questions. Neither needs a skill loaded. onyo-mode is for coding and stays out of the bridge.
@@ -53,7 +53,15 @@ If the helper moves, or the Project's name, repo, or owner changes, run `grokbot
 
 ## 4. Get the webhook URL
 
-Send the ready-made **Webhook URL** link from the routine's line in your routine status, and ask the user to paste the URL into chat. It isn't secret, but it belongs only in the registry and the Claude-side texts, never in a repository. Record it:
+Send the user the **Webhook URL** link, built from the folder id UpdateRoutine returned in step 3:
+
+```
+grokbot://app/v1/sidebar?target=webhook-url&automation=<folder id>
+```
+
+Right after you create the routine, the routine status with its ready-made field links isn't in your context yet. It only arrives on your next turn, so build the link yourself. If you don't have the folder id, end your turn after creating the routine and send the link from the routine status on your next turn. Never fall back to a generic Routines tab link (`grokbot://app/v1/sidebar?tab=routines`), because it doesn't open the field.
+
+Ask the user to paste the URL into chat. It isn't secret, but it belongs only in the registry and the Claude-side texts, never in a repository. Record it:
 
 ```bash
 bridge.mjs update --slug <slug> --as <agent id> --webhook-url <url>
@@ -70,7 +78,7 @@ bridge.mjs handoff --slug <slug> --as <agent id>
 It fills in [`claude-side-setup.md`](claude-side-setup.md) from the registry, and embeds the Project instructions section and the relay prompt. It refuses to print if a placeholder is still empty. Send the user one message with:
 
 1. The output, as one code block, to paste into the Claude Project's main thread. If you know the Project's link (`https://claude.ai/code/project/<project id>`, or whatever the user pasted), put it right above the block.
-2. The ready-made **Webhook key** link from your routine status, outside the code block. Say that the key goes straight into the Project's environment, never into either chat.
+2. The **Webhook key** link, outside the code block, built from the same folder id: `grokbot://app/v1/sidebar?target=webhook-key&automation=<folder id>`. If you don't have the folder id, use the link from your routine status, and never a generic Routines tab link. Say that the key goes straight into the Project's environment, never into either chat.
 3. One line on what happens next: the main thread writes its own instructions, creates the relay routine, and lists the environment clicks. Then it gives the routine's direct link, where the user adds the API trigger. When the user reaches the Generate token click, they come back here first.
 
 **Team and Enterprise plans** have no Network secrets section. Tell the user, outside the code block, to do this instead of the network-secret click:
