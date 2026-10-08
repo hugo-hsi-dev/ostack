@@ -2,7 +2,7 @@
 
 You set up a **Project package**: one Claude Project, the Claude cloud environment it runs in, and the bridge into it (a relay routine on the Claude side, a webhook routine on yours). Everything is named from the Project's slug.
 
-Setup runs on the Grok Bot side. When the user asks to connect a Claude Project, do your half here. Then give the user one self-contained prompt to paste into the Project's main thread. That prompt asks the main thread to write the "ONYO messages" section of the Project instructions and to create the relay routine itself, as a Project-owned routine. The user does the environment clicks and one routine click: adding the API trigger and generating its token. When the user comes back, store the routine secrets and send a test message.
+Setup runs on the Grok Bot side. When the user asks to connect a Claude Project, do your half here. Then give the user one self-contained prompt to paste into the Project's main thread. That prompt asks the main thread to write the "ONYO messages" section of the Project instructions and to spawn a work thread that creates the relay routine, because the main thread's session has no routine-creation tool. The user does the environment clicks and one routine click: adding the API trigger and generating its token. When the user comes back, store the routine secrets and send a test message.
 
 After setup, daily use never needs this skill:
 
@@ -80,7 +80,7 @@ It fills in [`claude-side-setup.md`](claude-side-setup.md) from the registry, an
 
 1. The output, as one code block, to paste into the Claude Project's main thread. If you know the Project's link (`https://claude.ai/code/project/<project id>`, or whatever the user pasted), put it right above the block.
 2. The **Webhook key** link, outside the code block, built from the same folder id: `grokbot://app/v1/sidebar?target=webhook-key&automation=<folder id>`. If you don't have the folder id, use the link from your routine status, and never a generic Routines tab link. Say that the key goes straight into the Project's environment, never into either chat.
-3. One line on what happens next: the main thread writes its own instructions, creates the relay routine, and lists the environment clicks. The key goes under Network secrets as a Bearer secret named "Onyo Key". Then the main thread gives the routine's direct link, where the user adds the API trigger. When the user reaches the Generate token click, they come back here first.
+3. One line on what happens next: the main thread writes its own instructions, lists the environment clicks, and spawns a work thread to create the relay routine. The key goes under Network secrets as a Bearer secret named "Onyo Key". Then the main thread passes on the routine's direct link from that thread, where the user adds the API trigger. When the user reaches the Generate token click, they come back here first.
 
 Network access stays at its default. The network secret's host is reachable without any allowlist change.
 
@@ -123,7 +123,7 @@ Manual setup is the default. Only offer this if the user finds the clicks tediou
 If the user agrees:
 
 - The user signs in themselves, on your desktop. Never type their Claude credentials.
-- Paste the step 5 prompt into the Project's main thread, then do the clicks it lists: creating the Project's environment and selecting it on the Project. Stop before every secret field. The main thread creates the relay routine itself.
+- Paste the step 5 prompt into the Project's main thread, then do the clicks it lists: creating the Project's environment and selecting it on the Project. Stop before every secret field. The main thread has a work thread create the relay routine.
 - The user enters the webhook key in the "Onyo Key" Bearer secret field, or in the environment variable when there's no Network secrets section.
 - Leave the routine's API trigger to the user. Never click **Add another trigger** or **Generate token** in your browser, because the token would appear on your screen. The user adds the API trigger and generates the token on their own computer, then copies the fire URL and token straight into your secret-requests.
 - When you're done, suggest the user sign out of claude.ai in your browser, unless they want other bots to use it.

@@ -1,6 +1,6 @@
 # Claude Project instructions
 
-This section of the Claude Project's instructions, with the relay routine the main thread creates, is the whole Claude side of the bridge. Claude passes the Project instructions to the Project's main conversation and to every thread started in the Project, so they all read the same few rules.
+This section of the Claude Project's instructions, with the relay routine a thread spawned by the main thread creates, is the whole Claude side of the bridge. Claude passes the Project instructions to the Project's main conversation and to every thread started in the Project, so they all read the same few rules.
 
 `bridge.mjs handoff` fills in `<WEBHOOK_URL>` and embeds the section in the paste prompt. The paste asks the main thread to add the section to the Project instructions itself, replacing an older "ONYO messages", "Onyo Tasks", or "Claude bridge" section and keeping everything else. Pasting it by hand in Project settings > Memory > Project instructions is the fallback.
 

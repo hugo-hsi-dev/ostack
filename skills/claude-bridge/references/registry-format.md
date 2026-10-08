@@ -65,7 +65,7 @@ For example, `docs-site` uses `CLAUDE_BRIDGE_DOCS_SITE_FIRE_URL` and `CLAUDE_BRI
 
 - `owner` is the Grok Bot that owns the package. Only it fires or updates this Project's package. Its name stays in the registry and never reaches the Claude side.
 - `environment` is the Project's Claude cloud environment. It holds the webhook key, as a Bearer network secret named "Onyo Key". The Project's threads and the relay routine both run in it. The default is `<slug>-env`. It must be dedicated to this Project, never Default or one other Projects share, because it holds the webhook secret. Pass `--environment` only when that dedicated environment already exists under another name.
-- `relay_routine` is the name of the Claude routine the bot fires. The Project's main thread creates it under this name. The default is `<slug>-relay`.
+- `relay_routine` is the name of the Claude routine the bot fires. A work thread the Project's main thread spawns creates it under this name. The default is `<slug>-relay`.
 - `webhook_routine` is the folder id of the bot's webhook routine, as UpdateRoutine returns it. Setup builds the webhook URL and key links from it. It's `null` until setup records it with `update --webhook-routine`.
 - `webhook_url` isn't secret, but it lives only here, never in the repository. `bridge.mjs handoff` fills it into the Project instructions. The webhook key is never stored here.
 
