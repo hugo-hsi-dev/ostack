@@ -89,6 +89,9 @@ function str(value) {
 function claim(flags) {
   const slug = need(flags, "slug");
   const dir = bridgeDir(slug);
+  // Check every required flag before the mkdir, so a typo can't leave an empty claimed folder.
+  for (const key of ["project", "owner-name", "owner-id", "approver", "repo", "webhook-routine"]) need(flags, key);
+  if (flags.mode !== undefined && !["coordinator", "direct"].includes(flags.mode)) fail("--mode must be coordinator or direct");
   mkdirSync(ROOT, { recursive: true });
   try {
     mkdirSync(dir);
@@ -101,7 +104,6 @@ function claim(flags) {
     throw error;
   }
   const mode = flags.mode || "coordinator";
-  if (!["coordinator", "direct"].includes(mode)) fail("--mode must be coordinator or direct");
   const prefix = envPrefix(slug);
   const bridge = {
     version: 2,
