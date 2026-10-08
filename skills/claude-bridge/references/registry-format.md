@@ -1,6 +1,6 @@
 # Project registry
 
-The unit is a **Project package**: one Claude Project, the Claude cloud environment that belongs to it, and the bridge into it (relay routine, coordinator session, and the Grok Bot webhook routine that receives replies). The registry is keyed by Project. Each entry records everything about the package except the two secrets.
+The unit is a **Project package**: one Claude Project, the Claude cloud environment that belongs to it, and the bridge into it (the relay routine that forwards tasks to the Project's main thread, and the Grok Bot webhook routine that receives replies). The registry is keyed by Project. Each entry records everything about the package except the two secrets.
 
 Every Grok Bot on a computer shares one filesystem and one set of secrets. The registry stops bots from taking over each other's Projects.
 
@@ -53,10 +53,8 @@ For example, `docs-site` uses `CLAUDE_BRIDGE_DOCS_SITE_FIRE_URL` and `CLAUDE_BRI
   "approver": "<the user who approves tasks>",
   "repo": "owner/repo",
   "environment": "docs-site-env",
-  "mode": "coordinator",
+  "mode": "relay",
   "relay_routine": "docs-site-relay",
-  "coordinator_session_id": "<session id, or null in direct mode>",
-  "coordinator_updated_at": "<ISO time>",
   "webhook_routine": "<folder of the Grok Bot webhook routine>",
   "webhook_url": "https://api2.cursor.sh/automations/webhook/<id>",
   "env": {
@@ -69,18 +67,17 @@ For example, `docs-site` uses `CLAUDE_BRIDGE_DOCS_SITE_FIRE_URL` and `CLAUDE_BRI
 
 - `owner` is the Grok Bot that owns the package. Only it fires, updates, or receives replies for this Project.
 - `environment` is the Project's Claude cloud environment. It holds the reply settings (allowlist and webhook key). The Project's threads and the relay routine both run in it. The default is `<slug>-env`. Pass `--environment` when the Project already has a dedicated environment under another name.
-- `mode` is `coordinator` (the relay routine hands tasks to a coordinator session in the Project) or `direct` (the routine does the work itself).
+- `mode` is `relay` (the relay routine forwards tasks to the Project's main thread, which hands them to work threads) or `direct` (the routine does the work itself).
 - `relay_routine` is the name of the Claude routine the bot fires. The default is `<slug>-relay`.
-- `coordinator_session_id` isn't secret. `fire` sends it in every coordinator-mode payload.
 - `webhook_routine` is the folder id of the bot's webhook routine, as the routine list shows it. `webhook_url` isn't secret. The webhook key is never stored here.
 - `approver` and the names above fill in the paste prompt that `bridge.mjs handoff` prints.
 
 ## threads.jsonl
 
-The helper appends one line per event: `fired`, `fire_failed`, or `fire_unknown` for each fire, `coordinator_updated` for `update --coordinator`, and `reply` or `reply_unparsed` for each reply the webhook routine passes in.
+The helper appends one line per event: `fired`, `fire_failed`, or `fire_unknown` for each fire, and `reply` or `reply_unparsed` for each reply the webhook routine passes in.
 
 ```json
-{"at": "<ISO time>", "thread_id": "docs-site:json-flag-20260101-093000", "event": "fired", "summary": "<first 200 characters of the task>", "session_id": "<routine session id>", "session_url": "<routine session URL>", "coordinator_session_id": "<id>"}
+{"at": "<ISO time>", "thread_id": "docs-site:json-flag-20260101-093000", "event": "fired", "summary": "<first 200 characters of the task>", "session_id": "<routine session id>", "session_url": "<routine session URL>"}
 {"at": "<ISO time>", "thread_id": "docs-site:json-flag-20260101-093000", "event": "reply", "status": "done", "message": "<text>", "pr_url": "<url>"}
 ```
 
@@ -94,12 +91,13 @@ node bridge.mjs reply --slug <slug> --as <agent id> <<'CLAUDE_BRIDGE_BODY_<rando
 CLAUDE_BRIDGE_BODY_<random>
 ```
 
-It accepts `summary` or `text` in place of `message`, `pr` in place of `pr_url`, and a bare `url` as the PR link only when it looks like one. It reads `session_id` as the coordinator's id only on `coordinator_online`. It appends the reply to the log and prints the normalized reply with these flags:
+It accepts `summary` or `text` in place of `message`, `pr` in place of `pr_url`, and a bare `url` as the PR link only when it looks like one. A status outside the five in the schema comes out as `status: null`, with the original in `raw_status`. It appends the reply to the log and prints the normalized reply with these flags:
 
 - `known_thread`: the thread id matches a fire in the log.
 - `duplicate`: the same reply arrived before.
 - `pr_in_repo`: the PR link is in the package's repository.
-- On `coordinator_online`: `previous_coordinator_session_id` and `coordinator_changed`. In coordinator mode, a new id is written to `project.json`. In direct mode, the reply is logged with `ignored` set and the registry stays as it is.
+
+A reply never changes `project.json`.
 
 ## Rules
 

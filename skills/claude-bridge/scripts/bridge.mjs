@@ -1,7 +1,9 @@
 #!/usr/bin/env node
 // Claude bridge registry and fire helper. Node 18+, no dependencies.
 // The unit is a Project package: one Claude Project, its cloud environment, and
-// the bridge into it (relay routine, coordinator, Grok Bot webhook routine).
+// the bridge into it (relay routine, Grok Bot webhook routine). In relay mode the
+// routine forwards each task to the Project's main thread, which Claude finds by
+// itself, so no session id is recorded anywhere.
 // Registry root: $CLAUDE_BRIDGE_HOME, default /workspace/claude-bridge.
 // Each package lives in <root>/<project-slug>/project.json and threads.jsonl.
 
@@ -20,15 +22,16 @@ function fail(message) {
 
 // The flags each command accepts. Every flag takes a value except --dry-run.
 const FLAGS = {
-  claim: ["slug", "project", "owner-name", "owner-id", "approver", "repo", "webhook-routine", "environment", "relay-routine", "webhook-url", "mode", "coordinator"],
+  claim: ["slug", "project", "owner-name", "owner-id", "approver", "repo", "webhook-routine", "environment", "relay-routine", "webhook-url", "mode"],
   show: ["slug"],
-  update: ["slug", "as", "coordinator", "repo", "project", "approver", "environment", "relay-routine", "webhook-routine", "webhook-url", "mode", "new-owner-name", "new-owner-id"],
+  update: ["slug", "as", "repo", "project", "approver", "environment", "relay-routine", "webhook-routine", "webhook-url", "mode", "new-owner-name", "new-owner-id"],
   fire: ["slug", "as", "dry-run"],
   handoff: ["slug", "as"],
   reply: ["slug", "as"],
   find: ["thread-id", "slug"],
 };
 const BOOLEAN_FLAGS = ["dry-run"];
+const MODES = ["relay", "direct"];
 
 function parseArgs(argv) {
   const [command, ...rest] = argv;
@@ -119,7 +122,7 @@ function claim(flags) {
   const dir = bridgeDir(slug);
   // Check every required flag before the mkdir, so a typo can't leave an empty claimed folder.
   for (const key of ["project", "owner-name", "owner-id", "approver", "repo", "webhook-routine"]) need(flags, key);
-  if (flags.mode !== undefined && !["coordinator", "direct"].includes(flags.mode)) fail("--mode must be coordinator or direct");
+  if (flags.mode !== undefined && !MODES.includes(flags.mode)) fail("--mode must be relay or direct");
   mkdirSync(ROOT, { recursive: true });
   try {
     mkdirSync(dir);
@@ -131,7 +134,7 @@ function claim(flags) {
     }
     throw error;
   }
-  const mode = flags.mode || "coordinator";
+  const mode = flags.mode || "relay";
   const prefix = envPrefix(slug);
   const bridge = {
     version: 2,
@@ -143,8 +146,6 @@ function claim(flags) {
     environment: str(flags.environment) || `${slug}-env`,
     mode,
     relay_routine: str(flags["relay-routine"]) || `${slug}-relay`,
-    coordinator_session_id: str(flags.coordinator),
-    coordinator_updated_at: str(flags.coordinator) ? new Date().toISOString() : null,
     webhook_routine: need(flags, "webhook-routine"),
     webhook_url: str(flags["webhook-url"]),
     env: { fire_url: `${prefix}_FIRE_URL`, token: `${prefix}_TOKEN` },
@@ -172,13 +173,8 @@ function show(flags) {
 function update(flags) {
   const bridge = readBridge(need(flags, "slug"));
   requireOwner(bridge, need(flags, "as"));
-  if (flags.mode !== undefined && !["coordinator", "direct"].includes(flags.mode)) fail("--mode must be coordinator or direct");
+  if (flags.mode !== undefined && !MODES.includes(flags.mode)) fail("--mode must be relay or direct");
   if ((flags["new-owner-id"] === undefined) !== (flags["new-owner-name"] === undefined)) fail("--new-owner-id and --new-owner-name go together");
-  if (typeof flags.coordinator === "string") {
-    bridge.coordinator_session_id = flags.coordinator;
-    bridge.coordinator_updated_at = new Date().toISOString();
-    logThread(bridge.slug, { thread_id: "none", event: "coordinator_updated", coordinator_session_id: flags.coordinator });
-  }
   if (typeof flags["new-owner-id"] === "string") {
     bridge.owner = { name: flags["new-owner-name"], agent_id: flags["new-owner-id"] };
   }
@@ -207,10 +203,6 @@ async function fire(flags) {
     context: input.context || "",
     reply_expected: input.reply_expected !== false,
   };
-  if (bridge.mode === "coordinator") {
-    if (!bridge.coordinator_session_id) fail("no coordinator_session_id recorded. Get it from the coordinator and run update --coordinator.");
-    payload.coordinator_session_id = bridge.coordinator_session_id;
-  }
   const text = JSON.stringify(payload);
   if (text.length > 65536) fail(`payload is ${text.length} characters; the limit is 65,536`);
   if (flags["dry-run"]) { process.stdout.write(text + "\n"); return; }
@@ -250,7 +242,6 @@ async function fire(flags) {
     summary: input.task.slice(0, 200),
     session_id: result.claude_code_session_id,
     session_url: result.claude_code_session_url,
-    coordinator_session_id: payload.coordinator_session_id || null,
   });
   process.stdout.write(JSON.stringify({ thread_id: threadId, session_id: result.claude_code_session_id, session_url: result.claude_code_session_url }, null, 2) + "\n");
 }
@@ -284,12 +275,12 @@ function handoff(flags) {
     .replace("{{PROJECT_INSTRUCTIONS}}", () => bridge.mode === "direct" ? "(Not needed in direct mode.)" : fill(projectInstructions))
     .replace("{{ROUTINE_PROMPT}}", () => fill(bridge.mode === "direct" ? directPrompt : relayPrompt));
   const out = fill(prompt);
-  const left = [...new Set(out.match(/<[A-Z][A-Z_]{2,}>/g) || [])].filter((p) => p !== "<DEFAULT_COORDINATOR_SESSION_ID>");
+  const left = [...new Set(out.match(/<[A-Z][A-Z_]{2,}>/g) || [])];
   if (left.length) fail(`unfilled placeholders: ${left.join(", ")}`);
   process.stdout.write(out + "\n");
 }
 
-const STATUSES = ["received", "question", "progress", "done", "error", "coordinator_online"];
+const STATUSES = ["received", "question", "progress", "done", "error"];
 
 function pick(body, keys) {
   for (const key of keys) {
@@ -324,8 +315,6 @@ function reply(flags) {
   // A bare "url" counts as the PR link only when it looks like one, because Claude also sends session URLs.
   const bareUrl = pick(body, ["url"]);
   const prUrl = pick(body, ["pr_url", "prUrl", "pr", "pull_request_url"]) || (bareUrl && looksLikePr(bareUrl) ? bareUrl : null);
-  // "session_id" is the coordinator's id only on coordinator_online. On other replies it's the sender's own session.
-  const coordinatorKeys = known === "coordinator_online" ? ["coordinator_session_id", "coordinatorSessionId", "session_id"] : ["coordinator_session_id", "coordinatorSessionId"];
   const normalized = {
     thread_id: pick(body, ["thread_id", "threadId", "thread"]) || "none",
     status: known,
@@ -334,25 +323,11 @@ function reply(flags) {
     pr_url: prUrl,
     pr_in_repo: prUrl ? prUrl.toLowerCase().startsWith(`https://github.com/${bridge.repo}/pull/`.toLowerCase()) : null,
     session_url: pick(body, ["session_url", "sessionUrl"]) || (bareUrl && !prUrl ? bareUrl : null),
-    coordinator_session_id: pick(body, coordinatorKeys),
   };
   const lines = readLog(bridge.slug);
   normalized.known_thread = lines.some((e) => e.thread_id === normalized.thread_id && e.event === "fired");
   normalized.duplicate = lines.some((e) => e.event === "reply" && e.thread_id === normalized.thread_id && e.status === normalized.status
-    && e.message === normalized.message && e.pr_url === normalized.pr_url && e.coordinator_session_id === normalized.coordinator_session_id);
-  if (normalized.status === "coordinator_online") {
-    // Record the id only in coordinator mode, and say what it replaced, so the user can spot a change they didn't expect.
-    normalized.previous_coordinator_session_id = bridge.coordinator_session_id;
-    normalized.coordinator_changed = false;
-    if (bridge.mode !== "coordinator") normalized.ignored = "coordinator_online in direct mode";
-    else if (!normalized.coordinator_session_id) normalized.ignored = "coordinator_online without a session id";
-    else if (normalized.coordinator_session_id !== bridge.coordinator_session_id) {
-      bridge.coordinator_session_id = normalized.coordinator_session_id;
-      bridge.coordinator_updated_at = new Date().toISOString();
-      writeBridge(bridge);
-      normalized.coordinator_changed = true;
-    }
-  }
+    && e.raw_status === normalized.raw_status && e.message === normalized.message && e.pr_url === normalized.pr_url);
   logThread(bridge.slug, { event: "reply", ...normalized });
   process.stdout.write(JSON.stringify({ parsed: true, ...normalized }, null, 2) + "\n");
 }
@@ -369,12 +344,12 @@ function find(flags) {
 }
 
 const USAGE = `usage:
-  bridge.mjs claim  --slug PROJECT_SLUG --project "Project name" --owner-name N --owner-id ID --approver NAME --repo OWNER/REPO --webhook-routine FOLDER [--environment NAME (default <slug>-env)] [--relay-routine NAME (default <slug>-relay)] [--webhook-url URL] [--mode coordinator|direct] [--coordinator SESSION_ID]
+  bridge.mjs claim  --slug PROJECT_SLUG --project "Project name" --owner-name N --owner-id ID --approver NAME --repo OWNER/REPO --webhook-routine FOLDER [--environment NAME (default <slug>-env)] [--relay-routine NAME (default <slug>-relay)] [--webhook-url URL] [--mode relay|direct (default relay)]
   bridge.mjs show   [--slug S]
-  bridge.mjs update --slug S --as ID [--coordinator SESSION_ID] [--repo R] [--project P] [--approver A] [--environment E] [--relay-routine R] [--webhook-routine F] [--webhook-url U] [--mode M] [--new-owner-name N --new-owner-id ID]
+  bridge.mjs update --slug S --as ID [--repo R] [--project P] [--approver A] [--environment E] [--relay-routine R] [--webhook-routine F] [--webhook-url U] [--mode M] [--new-owner-name N --new-owner-id ID]
   bridge.mjs fire   --slug S --as ID [--dry-run] < {"task": "...", "context": "...", "name": "short-name", "thread_id": "optional, reuse for follow-ups"}
   bridge.mjs handoff --slug S --as ID   (prints the complete paste prompt for the Claude Project)
-  bridge.mjs reply  --slug S --as ID < <raw webhook body>   (normalizes, logs, and records coordinator_online in coordinator mode)
+  bridge.mjs reply  --slug S --as ID < <raw webhook body>   (normalizes and logs; never changes the registry)
   bridge.mjs find   --thread-id T [--slug S]`;
 
 const { command, flags } = parseArgs(process.argv.slice(2));

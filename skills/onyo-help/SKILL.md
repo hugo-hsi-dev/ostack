@@ -88,7 +88,7 @@ The default answer is `/onyo-mode`, which runs most of the others when its steps
 | Turn what a finished task taught into skill edits | [`/reflect`](../reflect/SKILL.md) |
 | Stop agents from repeating the same mistakes in this repo | [`/correct`](../correct/SKILL.md) |
 | Build a page whose buttons wake a Grok Bot over a webhook | [`/make-bot-ui`](../make-bot-ui/SKILL.md) |
-| Send tasks from a Grok Bot to a Claude Code routine and get replies back | [`/claude-bridge`](../claude-bridge/SKILL.md) |
+| Send tasks from a Grok Bot to a Claude Project and get replies back, or set up that connection | [`/claude-bridge`](../claude-bridge/SKILL.md) |
 | Find their way around ostack | `/onyo-help` |
 
 If a skill directory next to this one is missing from the table, read its frontmatter and route by its description. The `principle-*` directories are covered under principles below.
