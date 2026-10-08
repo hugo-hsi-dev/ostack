@@ -80,7 +80,7 @@ It fills in [`claude-side-setup.md`](claude-side-setup.md) from the registry, an
 
 1. The output, as one code block, to paste into the Claude Project's main thread. If you know the Project's link (`https://claude.ai/code/project/<project id>`, or whatever the user pasted), put it right above the block.
 2. The **Webhook key** link, outside the code block, built from the same folder id: `grokbot://app/v1/sidebar?target=webhook-key&automation=<folder id>`. If you don't have the folder id, use the link from your routine status, and never a generic Routines tab link. Say that the key goes straight into the Project's environment, never into either chat.
-3. One line on what happens next: the main thread writes its own instructions, lists the environment clicks, and spawns a work thread to create the relay routine. The key goes under Network secrets as a Bearer secret named "Onyo Key". Then the main thread passes on the routine's direct link from that thread, where the user adds the API trigger. When the user reaches the Generate token click, they come back here first.
+3. One line on what happens next: the main thread writes its own instructions, lists the environment clicks, and spawns a work thread to create the relay routine. The key goes under Network secrets as a Bearer secret named "Onyo Key". Then the main thread passes on the routine's direct link from that thread, where the user adds the API trigger. The option is a bit hidden: on the routine's page, click the downward-pointing chevron in the breadcrumbs at the top, or follow the instructions at the top of the right-hand side panel. When the user reaches the Generate token click, they come back here first.
 
 Network access stays at its default. The network secret's host is reachable without any allowlist change.
 
@@ -92,7 +92,7 @@ Network access stays at its default. The network secret's host is reachable with
 
 ## 6. Store the fire URL and token
 
-The user opens the relay routine from the direct link the main thread gave (fallback: the routine list in the left sidebar at claude.ai/code), clicks **Add another trigger**, chooses **API**, and tells you they're ready before clicking **Generate token**. The Project never generates or shows the token. Then send two secret-requests, one per turn. The token is shown only once, so ask the user to keep that window open until both are stored, and to copy each value straight into your masked secret prompt, never into a chat:
+The user opens the relay routine from the direct link the main thread gave (fallback: the routine list in the left sidebar at claude.ai/code), clicks **Add another trigger**, chooses **API**, and tells you they're ready before clicking **Generate token**. Tell them the option is a bit hidden: on the routine's page, they click the downward-pointing chevron in the breadcrumbs at the top, or follow the instructions at the top of the right-hand side panel. The Project never generates or shows the token. Then send two secret-requests, one per turn. The token is shown only once, so ask the user to keep that window open until both are stored, and to copy each value straight into your masked secret prompt, never into a chat:
 
 - Secret `CLAUDE_BRIDGE_<SLUG>_FIRE_URL`, labeled "Claude relay routine fire URL for <slug>".
 - Secret `CLAUDE_BRIDGE_<SLUG>_TOKEN`, labeled "Claude relay routine token for <slug>".
