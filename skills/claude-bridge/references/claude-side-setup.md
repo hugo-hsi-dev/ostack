@@ -1,6 +1,6 @@
 # Claude-side paste prompt
 
-Setup has one command, and it runs on the Grok Bot side. When the bot finishes its half, it gives the user one self-contained prompt to paste into the Claude Project's main thread. That prompt carries the handoff block, tells the coordinator what to set up itself, and lists the clicks that are left. Claude has no separate setup command.
+A Project package is one Claude Project, its own cloud environment, and the bridge into it. Setup has one command, and it runs on the Grok Bot side. When the bot finishes its half, it gives the user one self-contained prompt to paste into the Claude Project's main thread. That prompt carries the handoff block, tells the coordinator what to set up itself, and lists the clicks that are left. Claude has no separate setup command.
 
 Build the prompt with `bridge.mjs handoff --slug <slug>`, which fills in this template from the registry. If you have to build it by hand:
 
@@ -11,18 +11,19 @@ Build the prompt with `bridge.mjs handoff --slug <slug>`, which fills in this te
 Send the result as one code block. Nothing in it is secret.
 
 ```text
-Set up the Claude side of a Claude bridge in this Project. My Grok Bot "<BOT_NAME>" prepared everything below. Nothing here is secret, and you must never ask me to paste the webhook key or the routine token into this chat.
+Set up this Project as a Claude bridge package: this Project, its own cloud environment, and a relay routine that my Grok Bot "<BOT_NAME>" fires. My bot prepared everything below. Nothing here is secret, and you must never ask me to paste the webhook key or the routine token into this chat.
 
-=== CLAUDE BRIDGE HANDOFF v1 ===
-slug: <SLUG>
-grok_bot: <BOT_NAME>
-approver: <USER_NAME>
-claude_project: <PROJECT_NAME>
+=== CLAUDE PROJECT PACKAGE HANDOFF v2 ===
+project: <PROJECT_NAME>
+project_slug: <SLUG>
+environment: <ENVIRONMENT>
+relay_routine: <RELAY_ROUTINE>
 repo: <REPO>
 mode: <MODE>
-claude_environment: <ENVIRONMENT>
+grok_bot: <BOT_NAME>
+approver: <USER_NAME>
 webhook_url: <WEBHOOK_URL>
-webhook_auth: a Bearer network secret for host api2.cursor.sh in the claude_environment. I paste the key into Claude myself.
+webhook_auth: a Bearer network secret for host api2.cursor.sh in the environment. I paste the key into Claude myself.
 reply_schema: {"thread_id": "<from the payload>", "status": "received | question | progress | done | error | coordinator_online", "message": "<plain text, under 4,000 characters>", "pr_url": "<optional>", "session_url": "<optional>", "coordinator_session_id": "<optional>"}
 === END HANDOFF ===
 
@@ -34,19 +35,19 @@ In coordinator mode, this thread becomes the coordinator. In direct mode, this t
 
 3. Make sure this Project has the handoff's repo. In coordinator mode, add it to the Project yourself if you can. In direct mode, the routine needs it instead.
 
-4. Give me a numbered checklist of only the clicks left, each with its exact value, and put anything I have to paste in its own code block. Explain step a in one sentence: the cloud environment holds the reply settings, and a dedicated one keeps the webhook key and allowlist away from my other sessions and routines.
-   a. Create a cloud environment named after the handoff's claude_environment. Don't edit Default. At claude.ai/code, click the cloud icon above the message box, choose Cloud, then Add cloud environment. Set Network access to Custom, add api2.cursor.sh to Allowed domains, keep "Also include default list of common package managers" checked, and create it.
+4. Give me a numbered checklist of only the clicks left, each with its exact value, and put anything I have to paste in its own code block. Explain step a in one sentence: this Project's environment holds the reply settings, and giving the Project its own keeps the webhook key and allowlist away from my other Projects, sessions, and routines.
+   a. Create this Project's cloud environment, named after the handoff's environment. Don't edit Default or reuse an environment other Projects use. At claude.ai/code, click the cloud icon above the message box, choose Cloud, then Add cloud environment. Set Network access to Custom, add api2.cursor.sh to Allowed domains, keep "Also include default list of common package managers" checked, and create it.
    b. Add the webhook key to that environment. Open it again for editing (hover, then the settings icon).
       - If a "Network secrets" section appears (Pro and Max plans): choose Add secret, credential type Bearer. Name it "Grok Bot webhook <SLUG>", set Allowed websites to api2.cursor.sh, keep the Authorization header with prefix Bearer, and paste the webhook key from my Grok Bot's link as the value. Select Connect.
       - If there's no Network secrets section (Team and Enterprise plans): add the line CLAUDE_BRIDGE_WEBHOOK_KEY=<key> under Environment variables instead, and save. Warn me that anyone who uses this environment can read that value, so the environment must stay personal and must never be shared with the organization.
-   c. Coordinator mode: in Project settings > Environment, choose the claude_environment as this Project's cloud environment. Changes reach new threads, not threads already running.
+   c. In Project settings > Environment, choose the handoff's environment as this Project's cloud environment. Changes reach new threads, not threads already running.
    d. Coordinator mode, and only if step 2 or 3 couldn't do it: paste the PROJECT INSTRUCTIONS block into Project settings > Memory > Project instructions, or add the repo in Project settings > Environment.
-   e. Create a routine named "Claude bridge <SLUG>". Its prompt is the filled-in ROUTINE PROMPT. Below the Instructions box, select the claude_environment with the cloud icon. Routines use their own environment setting, not the Project's. In coordinator mode, give it no repositories, and keep the connector that provides send_message turned on. In direct mode, attach the handoff's repo.
+   e. Create the relay routine, named after the handoff's relay_routine. Its prompt is the filled-in ROUTINE PROMPT. Below the Instructions box, select the Project's environment with the cloud icon. Routines use their own environment setting, not the Project's. In coordinator mode, give it no repositories, and keep the connector that provides send_message turned on. In direct mode, attach the handoff's repo.
    f. On that routine, click Add another trigger, choose API, and click Generate token. Copy the fire URL and the token straight into my Grok Bot's secret prompts, not into this chat.
    Then stop and wait for me.
 
 5. When I tell you a to c are done, POST this JSON to the handoff's webhook_url with the header Content-Type: application/json:
-   {"thread_id": "none", "status": "coordinator_online", "coordinator_session_id": "<your session id>", "message": "Claude side set up for bridge <SLUG>."}
+   {"thread_id": "none", "status": "coordinator_online", "coordinator_session_id": "<your session id>", "message": "Project package <SLUG> set up."}
    With a network secret, don't set Authorization, because the secret adds it. If the CLAUDE_BRIDGE_WEBHOOK_KEY variable is set instead, add Authorization: Bearer $CLAUDE_BRIDGE_WEBHOOK_KEY, reading the variable inside the command so the key never shows up in a message.
    Tell me the result. If it failed, show me the HTTP status, any x-deny-reason header, and your session id, so I can give the id to my Grok Bot myself. This conversation may not run in the new environment, because environment changes reach new threads, and that's fine: the work threads will.
 

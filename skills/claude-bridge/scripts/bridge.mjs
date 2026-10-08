@@ -1,7 +1,9 @@
 #!/usr/bin/env node
 // Claude bridge registry and fire helper. Node 18+, no dependencies.
+// The unit is a Project package: one Claude Project, its cloud environment, and
+// the bridge into it (relay routine, coordinator, Grok Bot webhook routine).
 // Registry root: $CLAUDE_BRIDGE_HOME, default /workspace/claude-bridge.
-// Each bridge owns <root>/<slug>/bridge.json and <root>/<slug>/threads.jsonl.
+// Each package lives in <root>/<project-slug>/project.json and threads.jsonl.
 
 import { mkdirSync, readFileSync, writeFileSync, renameSync, appendFileSync, readdirSync, existsSync } from "node:fs";
 import { join, dirname } from "node:path";
@@ -41,18 +43,18 @@ function envPrefix(slug) {
 }
 
 function bridgeDir(slug) {
-  if (!SLUG_RE.test(slug)) fail(`invalid slug "${slug}": use lowercase letters, digits, and single hyphens`);
+  if (!SLUG_RE.test(slug)) fail(`invalid Project slug "${slug}": use lowercase letters, digits, and single hyphens`);
   return join(ROOT, slug);
 }
 
 function readBridge(slug) {
-  const file = join(bridgeDir(slug), "bridge.json");
-  if (!existsSync(file)) fail(`no bridge "${slug}" in ${ROOT}`);
+  const file = join(bridgeDir(slug), "project.json");
+  if (!existsSync(file)) fail(`no Project package "${slug}" in ${ROOT}`);
   return JSON.parse(readFileSync(file, "utf8"));
 }
 
 function writeBridge(bridge) {
-  const file = join(bridgeDir(bridge.slug), "bridge.json");
+  const file = join(bridgeDir(bridge.slug), "project.json");
   const tmp = `${file}.${process.pid}.tmp`;
   writeFileSync(tmp, JSON.stringify(bridge, null, 2) + "\n");
   renameSync(tmp, file);
@@ -60,7 +62,7 @@ function writeBridge(bridge) {
 
 function requireOwner(bridge, agentId) {
   if (bridge.owner.agent_id !== agentId) {
-    fail(`bridge "${bridge.slug}" belongs to ${bridge.owner.name} (${bridge.owner.agent_id}), not ${agentId}. Only the owner may change or fire it.`);
+    fail(`Project package "${bridge.slug}" belongs to ${bridge.owner.name} (${bridge.owner.agent_id}), not ${agentId}. Only the owning bot may change or fire it.`);
   }
 }
 
@@ -80,6 +82,10 @@ function timestamp() {
   return `${d.getFullYear()}${p(d.getMonth() + 1)}${p(d.getDate())}-${p(d.getHours())}${p(d.getMinutes())}${p(d.getSeconds())}`;
 }
 
+function str(value) {
+  return typeof value === "string" && value !== "" ? value : null;
+}
+
 function claim(flags) {
   const slug = need(flags, "slug");
   const dir = bridgeDir(slug);
@@ -88,9 +94,9 @@ function claim(flags) {
     mkdirSync(dir);
   } catch (error) {
     if (error.code === "EEXIST") {
-      const file = join(dir, "bridge.json");
+      const file = join(dir, "project.json");
       const owner = existsSync(file) ? JSON.parse(readFileSync(file, "utf8")).owner : null;
-      fail(`slug "${slug}" is taken${owner ? ` by ${owner.name} (${owner.agent_id})` : ""}. Pick another slug.`);
+      fail(`Project slug "${slug}" is taken${owner ? ` by ${owner.name} (${owner.agent_id})` : ""}. Use that package through its owner, or pick another slug.`);
     }
     throw error;
   }
@@ -98,19 +104,20 @@ function claim(flags) {
   if (!["coordinator", "direct"].includes(mode)) fail("--mode must be coordinator or direct");
   const prefix = envPrefix(slug);
   const bridge = {
-    version: 1,
+    version: 2,
     slug,
-    owner: { name: need(flags, "owner-name"), agent_id: need(flags, "owner-id") },
     claude_project: need(flags, "project"),
-    repo: need(flags, "repo"),
-    mode,
-    env: { fire_url: `${prefix}_FIRE_URL`, token: `${prefix}_TOKEN` },
+    owner: { name: need(flags, "owner-name"), agent_id: need(flags, "owner-id") },
     approver: need(flags, "approver"),
-    claude_environment: typeof flags.environment === "string" ? flags.environment : `claude-bridge-${slug}`,
+    repo: need(flags, "repo"),
+    environment: str(flags.environment) || `${slug}-env`,
+    mode,
+    relay_routine: str(flags["relay-routine"]) || `${slug}-relay`,
+    coordinator_session_id: str(flags.coordinator),
+    coordinator_updated_at: str(flags.coordinator) ? new Date().toISOString() : null,
     webhook_routine: need(flags, "webhook-routine"),
-    webhook_url: typeof flags["webhook-url"] === "string" ? flags["webhook-url"] : null,
-    coordinator_session_id: typeof flags["coordinator"] === "string" ? flags["coordinator"] : null,
-    coordinator_updated_at: typeof flags["coordinator"] === "string" ? new Date().toISOString() : null,
+    webhook_url: str(flags["webhook-url"]),
+    env: { fire_url: `${prefix}_FIRE_URL`, token: `${prefix}_TOKEN` },
     created_at: new Date().toISOString(),
   };
   writeBridge(bridge);
@@ -125,10 +132,10 @@ function show(flags) {
   }
   if (!existsSync(ROOT)) return;
   for (const name of readdirSync(ROOT).sort()) {
-    const file = join(ROOT, name, "bridge.json");
+    const file = join(ROOT, name, "project.json");
     if (!existsSync(file)) continue;
     const b = JSON.parse(readFileSync(file, "utf8"));
-    process.stdout.write(`${b.slug}\towner=${b.owner.name} (${b.owner.agent_id})\tproject=${b.claude_project}\trepo=${b.repo}\tmode=${b.mode}\n`);
+    process.stdout.write(`${b.slug}\tproject=${b.claude_project}\towner=${b.owner.name} (${b.owner.agent_id})\tenvironment=${b.environment}\trepo=${b.repo}\tmode=${b.mode}\n`);
   }
 }
 
@@ -143,7 +150,7 @@ function update(flags) {
   if (typeof flags["new-owner-id"] === "string") {
     bridge.owner = { name: need(flags, "new-owner-name"), agent_id: flags["new-owner-id"] };
   }
-  const fields = { repo: "repo", project: "claude_project", approver: "approver", environment: "claude_environment", "webhook-routine": "webhook_routine", "webhook-url": "webhook_url", mode: "mode" };
+  const fields = { repo: "repo", project: "claude_project", approver: "approver", environment: "environment", "relay-routine": "relay_routine", "webhook-routine": "webhook_routine", "webhook-url": "webhook_url", mode: "mode" };
   for (const [flag, field] of Object.entries(fields)) {
     if (typeof flags[flag] === "string") bridge[field] = flags[flag];
   }
@@ -220,7 +227,8 @@ function handoff(flags) {
     "<PROJECT_NAME>": bridge.claude_project,
     "<REPO>": bridge.repo,
     "<MODE>": bridge.mode,
-    "<ENVIRONMENT>": bridge.claude_environment || `claude-bridge-${bridge.slug}`,
+    "<ENVIRONMENT>": bridge.environment,
+    "<RELAY_ROUTINE>": bridge.relay_routine,
     "<WEBHOOK_URL>": bridge.webhook_url,
   };
   const fill = (text) => Object.entries(values).reduce((t, [k, v]) => t.split(k).join(v), text);
@@ -292,9 +300,9 @@ function find(flags) {
 }
 
 const USAGE = `usage:
-  bridge.mjs claim  --slug S --owner-name N --owner-id ID --approver NAME --project P --repo OWNER/REPO --webhook-routine FOLDER [--environment NAME] [--webhook-url URL] [--mode coordinator|direct] [--coordinator SESSION_ID]
+  bridge.mjs claim  --slug PROJECT_SLUG --project "Project name" --owner-name N --owner-id ID --approver NAME --repo OWNER/REPO --webhook-routine FOLDER [--environment NAME (default <slug>-env)] [--relay-routine NAME (default <slug>-relay)] [--webhook-url URL] [--mode coordinator|direct] [--coordinator SESSION_ID]
   bridge.mjs show   [--slug S]
-  bridge.mjs update --slug S --as ID [--coordinator SESSION_ID] [--repo R] [--project P] [--approver A] [--environment E] [--webhook-routine F] [--webhook-url U] [--mode M] [--new-owner-name N --new-owner-id ID]
+  bridge.mjs update --slug S --as ID [--coordinator SESSION_ID] [--repo R] [--project P] [--approver A] [--environment E] [--relay-routine R] [--webhook-routine F] [--webhook-url U] [--mode M] [--new-owner-name N --new-owner-id ID]
   bridge.mjs fire   --slug S --as ID [--dry-run] < {"task": "...", "context": "...", "name": "short-name", "thread_id": "optional, reuse for follow-ups"}
   bridge.mjs handoff --slug S --as ID   (prints the complete paste prompt for the Claude Project)
   bridge.mjs reply  --slug S --as ID < <raw webhook body>   (normalizes, logs, and records coordinator_online)

@@ -5,7 +5,7 @@ This block goes into the Claude Project's instructions in coordinator mode. It t
 ```text
 ## Claude bridge "<SLUG>"
 
-The Grok Bot "<BOT_NAME>" sends tasks to this Project through a relay routine. A bridge request is a message whose first line starts with:
+The Grok Bot "<BOT_NAME>" sends tasks to this Project through its relay routine. Bridge sessions in this Project run in its own cloud environment, which lets replies reach the Grok Bot. A bridge request is a message whose first line starts with:
 [CLAUDE BRIDGE TASK] bridge=<SLUG>
 After that line comes a JSON payload: {"bridge", "from", "thread_id", "coordinator_session_id", "task", "context", "reply_expected"}. "context" carries everything from earlier turns, because no session remembers earlier runs.
 

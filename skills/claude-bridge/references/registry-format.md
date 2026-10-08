@@ -1,67 +1,79 @@
-# Bridge registry
+# Project registry
 
-Every Grok Bot on a computer shares one filesystem and one set of secrets. The registry stops bots from taking over each other's bridges, and it holds everything about a bridge except the two secrets.
+The unit is a **Project package**: one Claude Project, the Claude cloud environment that belongs to it, and the bridge into it (relay routine, coordinator session, and the Grok Bot webhook routine that receives replies). The registry is keyed by Project. Each entry records everything about the package except the two secrets.
+
+Every Grok Bot on a computer shares one filesystem and one set of secrets. The registry stops bots from taking over each other's Projects.
 
 ## Layout
 
 ```
 /workspace/claude-bridge/
-  <slug>/
-    bridge.json      registry entry (not secret)
+  <project-slug>/
+    project.json     the package's registry entry (not secret)
     threads.jsonl    thread log, one JSON object per line
 ```
 
-Set `CLAUDE_BRIDGE_HOME` to use another root. `bridge.mjs show` lists every bridge.
+Set `CLAUDE_BRIDGE_HOME` to use another root. `bridge.mjs show` lists every Project package.
 
-Each bridge gets its own folder instead of a shared `bridges.json`:
+Each Project gets its own folder instead of a shared registry file:
 
-- **Claiming a slug is atomic.** `bridge.mjs claim` creates the folder with one `mkdir`, which fails if the folder already exists. Two bots can't claim the same slug at once.
-- **No lost writes.** Each bot writes only its own folder, so two bots can't overwrite each other's change to a shared file. Writes to `bridge.json` go through a temporary file and a rename.
+- **Claiming a Project is atomic.** `bridge.mjs claim` creates the folder with one `mkdir`, which fails if the folder already exists. Two bots can't claim the same Project at once.
+- **No lost writes.** Each bot writes only its own folders, so two bots can't overwrite each other's change to a shared file. Writes to `project.json` go through a temporary file and a rename.
 
-## Slug
+## Project slug
 
-Derive the slug from the Claude Project name: lowercase, with runs of other characters replaced by one hyphen. For example, "Docs Site" becomes `docs-site`. The helper rejects anything that isn't lowercase letters, digits, and single hyphens.
+The slug is the Claude Project's slug: its name in lowercase, with runs of other characters replaced by one hyphen. "Docs Site" becomes `docs-site`. The helper rejects anything that isn't lowercase letters, digits, and single hyphens. The rest of the package is named from it:
+
+| Part of the package | Default name | For `docs-site` |
+|---|---|---|
+| Claude cloud environment | `<slug>-env` | `docs-site-env` |
+| Claude relay routine | `<slug>-relay` | `docs-site-relay` |
+| Grok Bot webhook routine | `Claude replies <slug>` | `Claude replies docs-site` |
+| Thread ids | `<slug>:<name>-<time>` | `docs-site:json-flag-20260101-093000` |
 
 ## Secret names
 
-The fire URL and token are Grok Bot secrets, and Grok Bot exposes them to Shell as environment variables. Name them from the slug, uppercased, with hyphens turned into underscores:
+The fire URL and token are Grok Bot secrets, and Grok Bot exposes them to Shell as environment variables. Name them from the Project slug, uppercased, with hyphens turned into underscores:
 
 | Value | Secret name |
 |---|---|
-| Routine fire URL | `CLAUDE_BRIDGE_<SLUG>_FIRE_URL` |
-| Routine token | `CLAUDE_BRIDGE_<SLUG>_TOKEN` |
+| Relay routine fire URL | `CLAUDE_BRIDGE_<SLUG>_FIRE_URL` |
+| Relay routine token | `CLAUDE_BRIDGE_<SLUG>_TOKEN` |
 
 For example, `docs-site` uses `CLAUDE_BRIDGE_DOCS_SITE_FIRE_URL` and `CLAUDE_BRIDGE_DOCS_SITE_TOKEN`. Check that they arrived by listing names only: `env | cut -d= -f1 | grep '^CLAUDE_BRIDGE_'`. Never print the values.
 
-## bridge.json
+## project.json
 
 ```json
 {
-  "version": 1,
+  "version": 2,
   "slug": "docs-site",
-  "owner": { "name": "<Grok Bot name>", "agent_id": "<Grok Bot agent id>" },
   "claude_project": "Docs Site",
+  "owner": { "name": "<Grok Bot name>", "agent_id": "<Grok Bot agent id>" },
   "approver": "<the user who approves tasks>",
-  "claude_environment": "claude-bridge-docs-site",
   "repo": "owner/repo",
+  "environment": "docs-site-env",
   "mode": "coordinator",
+  "relay_routine": "docs-site-relay",
+  "coordinator_session_id": "<session id, or null in direct mode>",
+  "coordinator_updated_at": "<ISO time>",
+  "webhook_routine": "<folder of the Grok Bot webhook routine>",
+  "webhook_url": "https://api2.cursor.sh/automations/webhook/<id>",
   "env": {
     "fire_url": "CLAUDE_BRIDGE_DOCS_SITE_FIRE_URL",
     "token": "CLAUDE_BRIDGE_DOCS_SITE_TOKEN"
   },
-  "webhook_routine": "<folder of the Grok Bot webhook routine>",
-  "webhook_url": "https://api2.cursor.sh/automations/webhook/<id>",
-  "coordinator_session_id": "<session id, or null in direct mode>",
-  "coordinator_updated_at": "<ISO time>",
   "created_at": "<ISO time>"
 }
 ```
 
-- `mode` is `coordinator` (the routine relays to a coordinator session) or `direct` (the routine does the work itself).
+- `owner` is the Grok Bot that owns the package. Only it fires, updates, or receives replies for this Project.
+- `environment` is the Project's Claude cloud environment. It holds the reply settings (allowlist and webhook key). The Project's threads and the relay routine both run in it. The default is `<slug>-env`. Pass `--environment` when the Project already has a dedicated environment under another name.
+- `mode` is `coordinator` (the relay routine hands tasks to a coordinator session in the Project) or `direct` (the routine does the work itself).
+- `relay_routine` is the name of the Claude routine the bot fires. The default is `<slug>-relay`.
 - `coordinator_session_id` isn't secret. `fire` sends it in every coordinator-mode payload.
-- `webhook_routine` is the folder id of the bot's webhook routine, as the routine list shows it.
-- `claude_environment` names the Claude cloud environment that holds the bridge's reply settings. It defaults to `claude-bridge-<slug>`. Both the routine and the Project must use it.
-- `webhook_url` and `approver` fill in the paste prompt that `bridge.mjs handoff` prints. The URL isn't secret. The webhook key is never stored here.
+- `webhook_routine` is the folder id of the bot's webhook routine, as the routine list shows it. `webhook_url` isn't secret. The webhook key is never stored here.
+- `approver` and the names above fill in the paste prompt that `bridge.mjs handoff` prints.
 
 ## threads.jsonl
 
@@ -72,7 +84,7 @@ The helper appends one line per event, and the reply routine appends one line pe
 {"at": "<ISO time>", "thread_id": "docs-site:json-flag-20260101-093000", "event": "reply", "status": "done", "message": "<text>", "pr_url": "<url>"}
 ```
 
-Thread ids start with the slug and a colon, so any reply can be traced back to its bridge. The routine's `session_url` is the relay run. The work thread's URL arrives later as `session_url` in a reply.
+Thread ids start with the Project slug and a colon, so any reply can be traced back to its Project. The routine's `session_url` is the relay run. The work thread's URL arrives later as `session_url` in a reply.
 
 `bridge.mjs reply` logs a reply. Pipe in the raw webhook body through a quoted heredoc with an unusual delimiter, so that no text from the body runs as a shell command:
 
@@ -82,11 +94,11 @@ node bridge.mjs reply --slug <slug> --as <agent id> <<'CLAUDE_BRIDGE_BODY_7f3a'
 CLAUDE_BRIDGE_BODY_7f3a
 ```
 
-It accepts `summary` or `text` in place of `message`, and `pr` or `url` in place of `pr_url`. It appends the reply to the log, and on `coordinator_online` it writes the new coordinator id to `bridge.json`. It prints the normalized reply with `known_thread` and `duplicate` flags.
+It accepts `summary` or `text` in place of `message`, and `pr` or `url` in place of `pr_url`. It appends the reply to the log, and on `coordinator_online` it writes the new coordinator id to `project.json`. It prints the normalized reply with `known_thread` and `duplicate` flags.
 
 ## Rules
 
-1. **Check before you claim.** Run `bridge.mjs show` before you pick a slug. If the Project already has a bridge owned by another bot, tell the user and stop. Don't reuse it.
-2. **Fire only bridges you own.** `fire`, `update`, and `reply` refuse to run unless `--as` matches `owner.agent_id`.
-3. **Never move secrets between bridges.** Each bridge has its own two secrets, even when two bridges point at the same Claude account.
-4. **Hand a bridge over only when the user asks.** The current owner runs `update --new-owner-name <name> --new-owner-id <id>`. The new owner then requests fresh secrets under the same names.
+1. **Check before you claim.** Run `bridge.mjs show` before you set up a Project. If the Project already has a package owned by another bot, tell the user and stop. Don't reuse it.
+2. **Use only Project packages you own.** `fire`, `update`, `handoff`, and `reply` refuse to run unless `--as` matches `owner.agent_id`.
+3. **Never move secrets between Projects.** Each Project has its own two secrets, its own environment, and its own webhook key, even when two Projects live in the same Claude account.
+4. **Hand a Project over only when the user asks.** The current owner runs `update --new-owner-name <name> --new-owner-id <id>`. The new owner then requests fresh secrets under the same names.
