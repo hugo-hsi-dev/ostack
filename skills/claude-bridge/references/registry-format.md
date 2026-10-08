@@ -69,19 +69,21 @@ For example, `docs-site` uses `CLAUDE_BRIDGE_DOCS_SITE_FIRE_URL` and `CLAUDE_BRI
 - `environment` is the Project's Claude cloud environment. It holds the reply settings (allowlist and webhook key). The Project's threads and the relay routine both run in it. The default is `<slug>-env`. Pass `--environment` when the Project already has a dedicated environment under another name.
 - `mode` is `relay` (the relay routine forwards tasks to the Project's main thread, which hands them to work threads) or `direct` (the routine does the work itself).
 - `relay_routine` is the name of the Claude routine the bot fires. The default is `<slug>-relay`.
-- `webhook_routine` is the folder id of the bot's webhook routine, as the routine list shows it. `webhook_url` isn't secret. The webhook key is never stored here.
-- `approver` and the names above fill in the paste prompt that `bridge.mjs handoff` prints.
+- `webhook_routine` is the folder id of the bot's webhook routine, as the routine list shows it. It's `null` until setup records it with `update --webhook-routine`. `webhook_url` isn't secret. The webhook key is never stored here.
+- `approver` and the names above fill in the paste prompt that `bridge.mjs handoff` prints, and the reply routine prompt and memory note that `bridge.mjs grokbot-setup` prints.
 
 ## threads.jsonl
 
 The helper appends one line per event: `fired`, `fire_failed`, or `fire_unknown` for each fire, and `reply` or `reply_unparsed` for each reply the webhook routine passes in.
 
 ```json
-{"at": "<ISO time>", "thread_id": "docs-site:json-flag-20260101-093000", "event": "fired", "summary": "<first 200 characters of the task>", "session_id": "<routine session id>", "session_url": "<routine session URL>"}
+{"at": "<ISO time>", "thread_id": "docs-site:json-flag-20260101-093000", "event": "fired", "task": "<the task as sent>", "context": "<the context as sent>", "session_id": "<routine session id>", "session_url": "<routine session URL>"}
 {"at": "<ISO time>", "thread_id": "docs-site:json-flag-20260101-093000", "event": "reply", "status": "done", "message": "<text>", "pr_url": "<url>"}
 ```
 
 Thread ids start with the Project slug and a colon, so any reply can be traced back to its Project. The routine's `session_url` is the relay run. The work thread's URL arrives later as `session_url` in a reply.
+
+A `fired` line keeps the full task and context, because a reply routine wake starts without the chat. `bridge.mjs find --slug <slug> --thread-id <id>` prints every line for a thread, so the reply routine can answer a `question` with a follow-up that carries the full context.
 
 `bridge.mjs reply` logs a reply. Pipe in the raw webhook body through a quoted heredoc, with a delimiter that has a new random suffix every time and that no line of the body equals, so that no text from the body runs as a shell command:
 
@@ -102,6 +104,6 @@ A reply never changes `project.json`.
 ## Rules
 
 1. **Check before you claim.** Run `bridge.mjs show` before you set up a Project. If the Project already has a package owned by another bot, tell the user and stop. Don't reuse it.
-2. **Use only Project packages you own.** `fire`, `update`, `handoff`, and `reply` refuse to run unless `--as` matches `owner.agent_id`. That check stops mistakes between bots that follow this skill. It isn't access control, because every bot on the computer can read the same files and secrets.
+2. **Use only Project packages you own.** `fire`, `update`, `handoff`, `grokbot-setup`, and `reply` refuse to run unless `--as` matches `owner.agent_id`. That check stops mistakes between bots that follow this skill. It isn't access control, because every bot on the computer can read the same files and secrets.
 3. **Never move secrets between Projects.** Each Project has its own two secrets, its own environment, and its own webhook key, even when two Projects live in the same Claude account.
 4. **Hand a Project over only when the user asks.** The current owner runs `update --new-owner-name <name> --new-owner-id <id>`. The new owner then requests fresh secrets under the same names.

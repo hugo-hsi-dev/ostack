@@ -65,17 +65,19 @@ differently in other harnesses. `claude-bridge` and `make-bot-ui` assume a Grok 
 [`claude-bridge`](./skills/claude-bridge/SKILL.md) connects a Grok Bot to a Claude Project. The unit
 is a Project package: the Claude Project, its own cloud environment, and the bridge into it. The bot
 fires the Project's relay routine through the `/fire` API. The routine forwards the task to the
-Project's main thread, which hands it to a work thread, or does the work itself in direct mode. Claude POSTs its replies
-to a Grok Bot webhook routine, which wakes the bot. The Project's environment holds the allowlist and
-webhook key that let those replies out.
+Project's main thread as an Onyo Task, and the main thread hands it to a work thread. In direct mode
+the routine does the work itself. Claude POSTs its replies to a Grok Bot webhook routine, which wakes
+the bot. The Project's environment holds the allowlist and webhook key that let those replies out.
 
 Setup is one command on the Grok Bot side
 ([walkthrough](./skills/claude-bridge/references/walkthrough.md)). The bot does its half, then hands
-the user one paste for the Project's main thread. There Claude does what it can and lists the few
-clicks left. A registry keyed by Project records the environment, relay routine, repo, mode, and
-owning bot, so several Grok Bots on one computer don't clash. A small helper,
-[`scripts/bridge.mjs`](./skills/claude-bridge/scripts/bridge.mjs), claims Projects, fires tasks, and
-logs replies.
+the user one paste for the Project's main thread. There Claude writes its own instructions and lists
+the few clicks left. After setup each side's instructions live in one place: the "Onyo Tasks"
+section of the Project instructions on Claude's side, and the bot's reply routine prompt plus one
+memory note on the bot's side. Daily use doesn't load the skill. A registry keyed by Project records
+the environment, relay routine, repo, mode, and owning bot, so several Grok Bots on one computer
+don't clash. A small helper, [`scripts/bridge.mjs`](./skills/claude-bridge/scripts/bridge.mjs),
+claims Projects, prints the setup texts, fires tasks, and logs replies.
 
 ---
 
