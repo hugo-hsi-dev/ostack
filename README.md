@@ -4,7 +4,7 @@ ostack is a fork of [pstack](https://github.com/cursor/plugins/tree/main/pstack)
 [poteto](https://x.com/poteto) (Lauren Tan), with every `poteto` swapped for `onyo`. `poteto-mode`
 is `onyo-mode`, `poteto-help` is `onyo-help`, `poteto-agent` is `onyo-agent`, and `setup-pstack` is
 `setup-ostack`. ostack also adds [`claude-bridge`](./skills/claude-bridge/SKILL.md), which lets a
-Grok Bot hand work to a Claude Code routine and get the answer back.
+Grok Bot send messages to a Claude Project and get the answers back.
 
 All credit for the original skills, playbooks, principles, guide, and automations goes to poteto.
 ostack keeps pstack's MIT license and copyright notice. See [LICENSE](./LICENSE) and
@@ -62,11 +62,19 @@ differently in other harnesses. `claude-bridge` and `make-bot-ui` assume a Grok 
 
 ## claude-bridge
 
-[`claude-bridge`](./skills/claude-bridge/SKILL.md) connects a Grok Bot to a Claude Code routine.
-The bot sends a task through the routine's `/fire` API. Claude POSTs its answer to a Grok Bot
-webhook routine, which wakes the bot. The skill covers setup on both sides, the routine
-instructions to paste into Claude ([`references/routine-prompt.md`](./skills/claude-bridge/references/routine-prompt.md)),
-how to send a task, and how to handle each reply.
+[`claude-bridge`](./skills/claude-bridge/SKILL.md) connects a Grok Bot to a Claude Project with
+plain Markdown both ways. The bot sends ONYO messages, Markdown whose first line is
+`# ONYO MESSAGE`, through the `/fire` API of the Project's relay routine. The relay forwards each one
+unchanged to the Project's main thread, which answers it or hands the work to threads and tracks
+them. Claude POSTs its replies to a Grok Bot webhook routine, which wakes the bot.
+
+Setup runs on the Grok Bot side ([walkthrough](./skills/claude-bridge/references/walkthrough.md))
+and ends with one paste for the Project's main thread. There Claude writes the "ONYO messages"
+section of its Project instructions and creates the relay routine itself. The user creates a
+dedicated cloud environment for the Project, which holds the webhook secret, and adds the routine's
+API trigger. After setup, daily use doesn't load the skill. A small helper,
+[`scripts/bridge.mjs`](./skills/claude-bridge/scripts/bridge.mjs), claims Projects, prints the setup
+texts, and sends messages.
 
 ---
 
@@ -175,7 +183,7 @@ to keep [`/onyo-mode`](./skills/onyo-mode/SKILL.md) on across turns, pick it fro
 | [`/interrogate`](./skills/interrogate/SKILL.md) | you have a diff and want different models to try to break it, including a strict code-quality lens. |
 | [`/automate-me`](./skills/automate-me/SKILL.md) | you want your own `-mode` skill, drafted from how you've actually worked. |
 | [`/make-bot-ui`](./skills/make-bot-ui/SKILL.md) | you want a page or dashboard whose buttons wake a Grok Bot over a webhook, including the sender-key handoff and Tailscale. |
-| [`/claude-bridge`](./skills/claude-bridge/SKILL.md) | you want a Grok Bot to send tasks to a Claude Code routine and get replies back through a webhook. covers setup on both sides and the routine instructions to paste in. |
+| [`/claude-bridge`](./skills/claude-bridge/SKILL.md) | you want a Grok Bot to send messages to a Claude Project and get replies back through a webhook. relay mode only: the Project creates its own relay routine and runs in a dedicated environment. |
 | [`/setup-ostack`](./skills/setup-ostack/SKILL.md) | you want to pick which models ostack uses per role. detects your models and writes a config rule. |
 | [`/reflect`](./skills/reflect/SKILL.md) | a long task landed and you want the recipe captured as a skill edit. |
 | [`/correct`](./skills/correct/SKILL.md) | you keep correcting agents for the same mistakes. mines history for mistake classes, fixes each at the highest level that works (architecture, then types, lint, and ci, then tests, with docs last), and keeps a table pairing each rule with what enforces it. |
