@@ -18,16 +18,33 @@ function fail(message) {
   process.exit(1);
 }
 
+// The flags each command accepts. Every flag takes a value except --dry-run.
+const FLAGS = {
+  claim: ["slug", "project", "owner-name", "owner-id", "approver", "repo", "webhook-routine", "environment", "relay-routine", "webhook-url", "mode", "coordinator"],
+  show: ["slug"],
+  update: ["slug", "as", "coordinator", "repo", "project", "approver", "environment", "relay-routine", "webhook-routine", "webhook-url", "mode", "new-owner-name", "new-owner-id"],
+  fire: ["slug", "as", "dry-run"],
+  handoff: ["slug", "as"],
+  reply: ["slug", "as"],
+  find: ["thread-id", "slug"],
+};
+const BOOLEAN_FLAGS = ["dry-run"];
+
 function parseArgs(argv) {
   const [command, ...rest] = argv;
   const flags = {};
+  if (!FLAGS[command]) return { command, flags };
+  const allowed = FLAGS[command];
   for (let i = 0; i < rest.length; i++) {
     const arg = rest[i];
     if (!arg.startsWith("--")) fail(`unexpected argument: ${arg}`);
     const key = arg.slice(2);
+    if (!allowed.includes(key)) fail(`${command} doesn't take --${key}`);
+    if (BOOLEAN_FLAGS.includes(key)) { flags[key] = true; continue; }
     const next = rest[i + 1];
-    if (next === undefined || next.startsWith("--")) flags[key] = true;
-    else { flags[key] = next; i++; }
+    if (next === undefined || next.startsWith("--")) fail(`--${key} needs a value`);
+    flags[key] = next;
+    i++;
   }
   return { command, flags };
 }
@@ -68,6 +85,17 @@ function requireOwner(bridge, agentId) {
 
 function logThread(slug, entry) {
   appendFileSync(join(bridgeDir(slug), "threads.jsonl"), JSON.stringify({ at: new Date().toISOString(), ...entry }) + "\n");
+}
+
+function readLog(slug) {
+  const file = join(bridgeDir(slug), "threads.jsonl");
+  if (!existsSync(file)) return [];
+  const entries = [];
+  for (const line of readFileSync(file, "utf8").split("\n")) {
+    if (!line.trim()) continue;
+    try { entries.push(JSON.parse(line)); } catch { /* skip a damaged line */ }
+  }
+  return entries;
 }
 
 function readStdinJson() {
@@ -144,13 +172,15 @@ function show(flags) {
 function update(flags) {
   const bridge = readBridge(need(flags, "slug"));
   requireOwner(bridge, need(flags, "as"));
+  if (flags.mode !== undefined && !["coordinator", "direct"].includes(flags.mode)) fail("--mode must be coordinator or direct");
+  if ((flags["new-owner-id"] === undefined) !== (flags["new-owner-name"] === undefined)) fail("--new-owner-id and --new-owner-name go together");
   if (typeof flags.coordinator === "string") {
     bridge.coordinator_session_id = flags.coordinator;
     bridge.coordinator_updated_at = new Date().toISOString();
     logThread(bridge.slug, { thread_id: "none", event: "coordinator_updated", coordinator_session_id: flags.coordinator });
   }
   if (typeof flags["new-owner-id"] === "string") {
-    bridge.owner = { name: need(flags, "new-owner-name"), agent_id: flags["new-owner-id"] };
+    bridge.owner = { name: flags["new-owner-name"], agent_id: flags["new-owner-id"] };
   }
   const fields = { repo: "repo", project: "claude_project", approver: "approver", environment: "environment", "relay-routine": "relay_routine", "webhook-routine": "webhook_routine", "webhook-url": "webhook_url", mode: "mode" };
   for (const [flag, field] of Object.entries(fields)) {
@@ -164,7 +194,9 @@ async function fire(flags) {
   const bridge = readBridge(need(flags, "slug"));
   requireOwner(bridge, need(flags, "as"));
   const input = readStdinJson();
+  if (!input || typeof input !== "object" || Array.isArray(input)) fail("stdin needs a JSON object");
   if (typeof input.task !== "string" || input.task === "") fail('stdin needs a non-empty "task"');
+  if (input.thread_id !== undefined && (typeof input.thread_id !== "string" || input.thread_id === "")) fail('"thread_id" must be a non-empty string');
   const name = String(input.name || "task").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 32) || "task";
   const threadId = input.thread_id || `${bridge.slug}:${name}-${timestamp()}`;
   const payload = {
@@ -185,20 +217,33 @@ async function fire(flags) {
   const fireUrl = process.env[bridge.env.fire_url];
   const token = process.env[bridge.env.token];
   if (!fireUrl || !token) fail(`missing secret ${!fireUrl ? bridge.env.fire_url : bridge.env.token}. Request it from the user with a secret-request.`);
+  // Check the URL's shape without printing it, so a swapped or mistyped secret never reaches an error message or another host.
+  if (!/^https:\/\/api\.anthropic\.com\/v1\/claude_code\/routines\/[^/\s]+\/fire$/.test(fireUrl.trim())) {
+    fail(`${bridge.env.fire_url} doesn't look like https://api.anthropic.com/v1/claude_code/routines/<id>/fire. Request it again (were the URL and token swapped?).`);
+  }
 
-  const response = await fetch(fireUrl, {
-    method: "POST",
-    headers: { Authorization: `Bearer ${token}`, "anthropic-version": "2023-06-01", "Content-Type": "application/json" },
-    body: JSON.stringify({ text }),
-    signal: AbortSignal.timeout(20000),
-  });
-  const body = await response.text();
+  let response;
+  let body;
+  try {
+    response = await fetch(fireUrl.trim(), {
+      method: "POST",
+      headers: { Authorization: `Bearer ${token.trim()}`, "anthropic-version": "2023-06-01", "Content-Type": "application/json" },
+      body: JSON.stringify({ text }),
+      signal: AbortSignal.timeout(20000),
+    });
+    body = await response.text();
+  } catch (error) {
+    // The routine may have started anyway, and /fire has no idempotency, so don't refire blindly.
+    logThread(bridge.slug, { thread_id: threadId, event: "fire_unknown", error: error.name });
+    fail(`fire got no answer (${error.name}). The routine may have started anyway. Ask the user to check the routine's runs before you fire ${threadId} again.`);
+  }
   if (!response.ok) {
     const retry = response.headers.get("retry-after");
     logThread(bridge.slug, { thread_id: threadId, event: "fire_failed", http_status: response.status });
     fail(`fire returned HTTP ${response.status}${retry ? `, retry after ${retry}s` : ""}: ${body.slice(0, 500)}`);
   }
-  const result = JSON.parse(body);
+  let result;
+  try { result = JSON.parse(body); } catch { result = {}; }
   logThread(bridge.slug, {
     thread_id: threadId,
     event: "fired",
@@ -222,6 +267,7 @@ function handoff(flags) {
   const [template] = textBlocks("claude-side-setup.md");
   const [projectInstructions] = textBlocks("claude-project-instructions.md");
   const [relayPrompt, directPrompt] = textBlocks("claude-routine-relay-prompt.md");
+  if (!template || !projectInstructions || !relayPrompt || !directPrompt) fail("a ```text block is missing from the references");
   const values = {
     "<SLUG>": bridge.slug,
     "<BOT_NAME>": bridge.owner.name,
@@ -253,6 +299,10 @@ function pick(body, keys) {
   return null;
 }
 
+function looksLikePr(value) {
+  return /^https:\/\/[^\s]+\/(pull|merge_requests)\/\d+/.test(value);
+}
+
 function reply(flags) {
   const bridge = readBridge(need(flags, "slug"));
   requireOwner(bridge, need(flags, "as"));
@@ -260,30 +310,48 @@ function reply(flags) {
   try { raw = readFileSync(0, "utf8"); } catch { fail("expected the webhook body on stdin"); }
   let body;
   try { body = JSON.parse(raw); } catch { body = null; }
+  // A body pasted as a quoted JSON string decodes to a string. Decode it once more.
+  if (typeof body === "string") { try { body = JSON.parse(body); } catch { body = null; } }
   if (!body || typeof body !== "object" || Array.isArray(body)) {
     logThread(bridge.slug, { thread_id: "none", event: "reply_unparsed", raw: raw.slice(0, 2000) });
     process.stdout.write(JSON.stringify({ parsed: false, raw: raw.slice(0, 2000) }, null, 2) + "\n");
     return;
   }
   const status = typeof body.status === "string" ? body.status.trim().toLowerCase() : null;
+  const known = STATUSES.includes(status) ? status : null;
+  let message = pick(body, ["message", "summary", "text", "body"]);
+  if (message === null && body.message !== undefined && body.message !== null) message = JSON.stringify(body.message);
+  // A bare "url" counts as the PR link only when it looks like one, because Claude also sends session URLs.
+  const bareUrl = pick(body, ["url"]);
+  const prUrl = pick(body, ["pr_url", "prUrl", "pr", "pull_request_url"]) || (bareUrl && looksLikePr(bareUrl) ? bareUrl : null);
+  // "session_id" is the coordinator's id only on coordinator_online. On other replies it's the sender's own session.
+  const coordinatorKeys = known === "coordinator_online" ? ["coordinator_session_id", "coordinatorSessionId", "session_id"] : ["coordinator_session_id", "coordinatorSessionId"];
   const normalized = {
     thread_id: pick(body, ["thread_id", "threadId", "thread"]) || "none",
-    status: STATUSES.includes(status) ? status : null,
+    status: known,
     raw_status: status,
-    message: pick(body, ["message", "summary", "text", "body"]),
-    pr_url: pick(body, ["pr_url", "prUrl", "pr", "pull_request_url", "url"]),
-    session_url: pick(body, ["session_url", "sessionUrl"]),
-    coordinator_session_id: pick(body, ["coordinator_session_id", "coordinatorSessionId", "session_id"]),
+    message,
+    pr_url: prUrl,
+    pr_in_repo: prUrl ? prUrl.toLowerCase().startsWith(`https://github.com/${bridge.repo}/pull/`.toLowerCase()) : null,
+    session_url: pick(body, ["session_url", "sessionUrl"]) || (bareUrl && !prUrl ? bareUrl : null),
+    coordinator_session_id: pick(body, coordinatorKeys),
   };
-  const log = join(bridgeDir(bridge.slug), "threads.jsonl");
-  const lines = existsSync(log) ? readFileSync(log, "utf8").split("\n").filter(Boolean).map((l) => JSON.parse(l)) : [];
+  const lines = readLog(bridge.slug);
   normalized.known_thread = lines.some((e) => e.thread_id === normalized.thread_id && e.event === "fired");
-  normalized.duplicate = lines.some((e) => e.event === "reply" && e.thread_id === normalized.thread_id && e.status === normalized.status && e.message === normalized.message);
-  if (normalized.status === "coordinator_online" && normalized.coordinator_session_id) {
-    bridge.coordinator_session_id = normalized.coordinator_session_id;
-    bridge.coordinator_updated_at = new Date().toISOString();
-    writeBridge(bridge);
-    normalized.registry_updated = true;
+  normalized.duplicate = lines.some((e) => e.event === "reply" && e.thread_id === normalized.thread_id && e.status === normalized.status
+    && e.message === normalized.message && e.pr_url === normalized.pr_url && e.coordinator_session_id === normalized.coordinator_session_id);
+  if (normalized.status === "coordinator_online") {
+    // Record the id only in coordinator mode, and say what it replaced, so the user can spot a change they didn't expect.
+    normalized.previous_coordinator_session_id = bridge.coordinator_session_id;
+    normalized.coordinator_changed = false;
+    if (bridge.mode !== "coordinator") normalized.ignored = "coordinator_online in direct mode";
+    else if (!normalized.coordinator_session_id) normalized.ignored = "coordinator_online without a session id";
+    else if (normalized.coordinator_session_id !== bridge.coordinator_session_id) {
+      bridge.coordinator_session_id = normalized.coordinator_session_id;
+      bridge.coordinator_updated_at = new Date().toISOString();
+      writeBridge(bridge);
+      normalized.coordinator_changed = true;
+    }
   }
   logThread(bridge.slug, { event: "reply", ...normalized });
   process.stdout.write(JSON.stringify({ parsed: true, ...normalized }, null, 2) + "\n");
@@ -293,9 +361,8 @@ function find(flags) {
   const threadId = need(flags, "thread-id");
   const slugs = typeof flags.slug === "string" ? [flags.slug] : (existsSync(ROOT) ? readdirSync(ROOT) : []);
   for (const slug of slugs) {
-    const file = join(ROOT, slug, "threads.jsonl");
-    if (!existsSync(file)) continue;
-    const hits = readFileSync(file, "utf8").split("\n").filter(Boolean).map((l) => JSON.parse(l)).filter((e) => e.thread_id === threadId);
+    if (!SLUG_RE.test(slug)) continue;
+    const hits = readLog(slug).filter((e) => e.thread_id === threadId);
     if (hits.length) { process.stdout.write(JSON.stringify({ slug, entries: hits }, null, 2) + "\n"); return; }
   }
   fail(`thread ${threadId} not found`);
@@ -307,7 +374,7 @@ const USAGE = `usage:
   bridge.mjs update --slug S --as ID [--coordinator SESSION_ID] [--repo R] [--project P] [--approver A] [--environment E] [--relay-routine R] [--webhook-routine F] [--webhook-url U] [--mode M] [--new-owner-name N --new-owner-id ID]
   bridge.mjs fire   --slug S --as ID [--dry-run] < {"task": "...", "context": "...", "name": "short-name", "thread_id": "optional, reuse for follow-ups"}
   bridge.mjs handoff --slug S --as ID   (prints the complete paste prompt for the Claude Project)
-  bridge.mjs reply  --slug S --as ID < <raw webhook body>   (normalizes, logs, and records coordinator_online)
+  bridge.mjs reply  --slug S --as ID < <raw webhook body>   (normalizes, logs, and records coordinator_online in coordinator mode)
   bridge.mjs find   --thread-id T [--slug S]`;
 
 const { command, flags } = parseArgs(process.argv.slice(2));
