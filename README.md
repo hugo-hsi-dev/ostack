@@ -184,7 +184,7 @@ to keep [`/onyo-mode`](./skills/onyo-mode/SKILL.md) on across turns, pick it fro
 | [`/interrogate`](./skills/interrogate/SKILL.md) | you have a diff and want different models to try to break it, including a strict code-quality lens. |
 | [`/automate-me`](./skills/automate-me/SKILL.md) | you want your own `-mode` skill, drafted from how you've actually worked. |
 | [`/make-bot-ui`](./skills/make-bot-ui/SKILL.md) | you want a page or dashboard whose buttons wake a Grok Bot over a webhook, including the sender-key handoff and Tailscale. |
-| [`/claude-bridge`](./skills/claude-bridge/SKILL.md) | you want a Grok Bot to send tasks to Claude Code and get replies back through a webhook. a step-by-step setup the bot leads, a per-bridge registry so several bots don't clash, and the prompts to paste on both sides. |
+| [`/claude-bridge`](./skills/claude-bridge/SKILL.md) | you want a Grok Bot to send tasks to Claude Code and get replies back through a webhook. a step-by-step setup the bot leads, one paste for the Claude Project, and a registry keyed by Project so several bots don't clash. |
 | [`/setup-ostack`](./skills/setup-ostack/SKILL.md) | you want to pick which models ostack uses per role. detects your models and writes a config rule. |
 | [`/reflect`](./skills/reflect/SKILL.md) | a long task landed and you want the recipe captured as a skill edit. |
 | [`/correct`](./skills/correct/SKILL.md) | you keep correcting agents for the same mistakes. mines history for mistake classes, fixes each at the highest level that works (architecture, then types, lint, and ci, then tests, with docs last), and keeps a table pairing each rule with what enforces it. |

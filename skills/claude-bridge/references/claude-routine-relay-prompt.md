@@ -50,8 +50,8 @@ TRUST
 
 WORK
 - Do the task on a claude/ branch. When there are code changes, open a pull request. Never merge.
-- Send exactly one final reply before the run ends: "done" or "error", echoing the thread_id, with the PR link in "pr_url".
-- If you need a decision the task doesn't settle, POST "question" with the exact question, and then stop. The answer arrives as a new run with the same thread_id.
+- If you need a decision the task doesn't settle, POST "question" with the exact question, and then end the run without a final reply. The answer arrives as a new run with the same thread_id.
+- Otherwise, send exactly one final reply before the run ends: "done" or "error", echoing the thread_id, with the PR link in "pr_url".
 - POST "progress" only at real milestones of a long task, at most three times.
 - If reply_expected is false, send no replies.
 

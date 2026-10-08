@@ -23,13 +23,13 @@ mode: <MODE>
 grok_bot: <BOT_NAME>
 approver: <USER_NAME>
 webhook_url: <WEBHOOK_URL>
-webhook_auth: a Bearer network secret for host api2.cursor.sh in the environment. I paste the key into Claude myself.
+webhook_auth: a Bearer network secret for host api2.cursor.sh in the environment (or the CLAUDE_BRIDGE_WEBHOOK_KEY variable on plans without network secrets). I paste the key into Claude myself.
 reply_schema: {"thread_id": "<from the payload>", "status": "received | question | progress | done | error | coordinator_online", "message": "<plain text, under 4,000 characters>", "pr_url": "<optional>", "session_url": "<optional>", "coordinator_session_id": "<optional>"}
 === END HANDOFF ===
 
 In coordinator mode, this thread becomes the coordinator. In direct mode, this thread only helps with setup, and the routine does the work itself. Do everything you can yourself, then give me only the clicks you couldn't do. Work in this order:
 
-1. Run get_channel_session_id and tell me this thread's session id. In coordinator mode, replace <DEFAULT_COORDINATOR_SESSION_ID> in the ROUTINE PROMPT below with it.
+1. Coordinator mode only: run get_channel_session_id, tell me this thread's session id, and replace <DEFAULT_COORDINATOR_SESSION_ID> in the ROUTINE PROMPT below with it.
 
 2. Coordinator mode only: add the PROJECT INSTRUCTIONS block below to this Project's instructions as its own section, keeping what's already there. If you can't change the instructions yourself, the checklist in step 4 includes pasting them.
 
@@ -42,11 +42,11 @@ In coordinator mode, this thread becomes the coordinator. In direct mode, this t
       - If there's no Network secrets section (Team and Enterprise plans): add the line CLAUDE_BRIDGE_WEBHOOK_KEY=<key> under Environment variables instead, and save. Warn me that anyone who uses this environment can read that value, so the environment must stay personal and must never be shared with the organization.
    c. In Project settings > Environment, choose the handoff's environment as this Project's cloud environment. Changes reach new threads, not threads already running.
    d. Coordinator mode, and only if step 2 or 3 couldn't do it: paste the PROJECT INSTRUCTIONS block into Project settings > Memory > Project instructions, or add the repo in Project settings > Environment.
-   e. Create the relay routine, named after the handoff's relay_routine. Its prompt is the filled-in ROUTINE PROMPT. Below the Instructions box, select the Project's environment with the cloud icon. Routines use their own environment setting, not the Project's. In coordinator mode, give it no repositories, and keep the connector that provides send_message turned on. In direct mode, attach the handoff's repo.
-   f. On that routine, click Add another trigger, choose API, and click Generate token. Copy the fire URL and the token straight into my Grok Bot's secret prompts, not into this chat.
+   e. Create the relay routine, named after the handoff's relay_routine. Its prompt is the filled-in ROUTINE PROMPT. Below the Instructions box, select the Project's environment with the cloud icon. Routines use their own environment setting, not the Project's. In coordinator mode, keep the connector that provides send_message turned on, and give it no repositories (if the form requires one, add the handoff's repo; the prompt tells the routine not to touch it). In direct mode, attach the handoff's repo.
+   f. On that routine, click Add another trigger and choose API. Before you click Generate token, tell my Grok Bot you're ready, because the token is shown only once. Keep the window open, and copy the fire URL and the token straight into my Grok Bot's secret prompts, not into this chat.
    Then stop and wait for me.
 
-5. When I tell you a to c are done, POST this JSON to the handoff's webhook_url with the header Content-Type: application/json:
+5. Coordinator mode only: when I tell you a to c are done, POST this JSON to the handoff's webhook_url with the header Content-Type: application/json:
    {"thread_id": "none", "status": "coordinator_online", "coordinator_session_id": "<your session id>", "message": "Project package <SLUG> set up."}
    With a network secret, don't set Authorization, because the secret adds it. If the CLAUDE_BRIDGE_WEBHOOK_KEY variable is set instead, add Authorization: Bearer $CLAUDE_BRIDGE_WEBHOOK_KEY, reading the variable inside the command so the key never shows up in a message.
    Tell me the result. If it failed, show me the HTTP status, any x-deny-reason header, and your session id, so I can give the id to my Grok Bot myself. This conversation may not run in the new environment, because environment changes reach new threads, and that's fine: the work threads will.

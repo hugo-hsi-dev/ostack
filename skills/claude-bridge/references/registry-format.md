@@ -40,7 +40,7 @@ The fire URL and token are Grok Bot secrets, and Grok Bot exposes them to Shell 
 | Relay routine fire URL | `CLAUDE_BRIDGE_<SLUG>_FIRE_URL` |
 | Relay routine token | `CLAUDE_BRIDGE_<SLUG>_TOKEN` |
 
-For example, `docs-site` uses `CLAUDE_BRIDGE_DOCS_SITE_FIRE_URL` and `CLAUDE_BRIDGE_DOCS_SITE_TOKEN`. Check that they arrived by listing names only: `env | cut -d= -f1 | grep '^CLAUDE_BRIDGE_'`. Never print the values.
+For example, `docs-site` uses `CLAUDE_BRIDGE_DOCS_SITE_FIRE_URL` and `CLAUDE_BRIDGE_DOCS_SITE_TOKEN`. Check that they arrived by listing names only: `compgen -e | grep '^CLAUDE_BRIDGE_'`. Never print the values.
 
 ## project.json
 
@@ -77,7 +77,7 @@ For example, `docs-site` uses `CLAUDE_BRIDGE_DOCS_SITE_FIRE_URL` and `CLAUDE_BRI
 
 ## threads.jsonl
 
-The helper appends one line per event, and the reply routine appends one line per reply:
+The helper appends one line per event: `fired`, `fire_failed`, or `fire_unknown` for each fire, `coordinator_updated` for `update --coordinator`, and `reply` or `reply_unparsed` for each reply the webhook routine passes in.
 
 ```json
 {"at": "<ISO time>", "thread_id": "docs-site:json-flag-20260101-093000", "event": "fired", "summary": "<first 200 characters of the task>", "session_id": "<routine session id>", "session_url": "<routine session URL>", "coordinator_session_id": "<id>"}
@@ -86,19 +86,24 @@ The helper appends one line per event, and the reply routine appends one line pe
 
 Thread ids start with the Project slug and a colon, so any reply can be traced back to its Project. The routine's `session_url` is the relay run. The work thread's URL arrives later as `session_url` in a reply.
 
-`bridge.mjs reply` logs a reply. Pipe in the raw webhook body through a quoted heredoc with an unusual delimiter, so that no text from the body runs as a shell command:
+`bridge.mjs reply` logs a reply. Pipe in the raw webhook body through a quoted heredoc, with a delimiter that has a new random suffix every time and that no line of the body equals, so that no text from the body runs as a shell command:
 
 ```bash
-node bridge.mjs reply --slug <slug> --as <agent id> <<'CLAUDE_BRIDGE_BODY_7f3a'
+node bridge.mjs reply --slug <slug> --as <agent id> <<'CLAUDE_BRIDGE_BODY_<random>'
 <the body string from the webhook_event, unchanged>
-CLAUDE_BRIDGE_BODY_7f3a
+CLAUDE_BRIDGE_BODY_<random>
 ```
 
-It accepts `summary` or `text` in place of `message`, and `pr` or `url` in place of `pr_url`. It appends the reply to the log, and on `coordinator_online` it writes the new coordinator id to `project.json`. It prints the normalized reply with `known_thread` and `duplicate` flags.
+It accepts `summary` or `text` in place of `message`, `pr` in place of `pr_url`, and a bare `url` as the PR link only when it looks like one. It reads `session_id` as the coordinator's id only on `coordinator_online`. It appends the reply to the log and prints the normalized reply with these flags:
+
+- `known_thread`: the thread id matches a fire in the log.
+- `duplicate`: the same reply arrived before.
+- `pr_in_repo`: the PR link is in the package's repository.
+- On `coordinator_online`: `previous_coordinator_session_id` and `coordinator_changed`. In coordinator mode, a new id is written to `project.json`. In direct mode, the reply is logged with `ignored` set and the registry stays as it is.
 
 ## Rules
 
 1. **Check before you claim.** Run `bridge.mjs show` before you set up a Project. If the Project already has a package owned by another bot, tell the user and stop. Don't reuse it.
-2. **Use only Project packages you own.** `fire`, `update`, `handoff`, and `reply` refuse to run unless `--as` matches `owner.agent_id`.
+2. **Use only Project packages you own.** `fire`, `update`, `handoff`, and `reply` refuse to run unless `--as` matches `owner.agent_id`. That check stops mistakes between bots that follow this skill. It isn't access control, because every bot on the computer can read the same files and secrets.
 3. **Never move secrets between Projects.** Each Project has its own two secrets, its own environment, and its own webhook key, even when two Projects live in the same Claude account.
 4. **Hand a Project over only when the user asks.** The current owner runs `update --new-owner-name <name> --new-owner-id <id>`. The new owner then requests fresh secrets under the same names.

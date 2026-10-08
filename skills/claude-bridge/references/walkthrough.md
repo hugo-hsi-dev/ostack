@@ -62,18 +62,18 @@ When the Claude thread POSTs `coordinator_online`, your reply routine records th
 
 ## 6. Store the fire URL and token
 
-When the user has the relay routine's token window open, send two secret-requests, one per turn:
+When the user has the relay routine's API trigger window open, send two secret-requests, one per turn. The token is shown only once, so ask the user to keep that window open until both are stored:
 
 - Secret `CLAUDE_BRIDGE_<SLUG>_FIRE_URL`, labeled "Claude relay routine fire URL for <slug>".
 - Secret `CLAUDE_BRIDGE_<SLUG>_TOKEN`, labeled "Claude relay routine token for <slug>".
 
-Confirm both names exist with `env | cut -d= -f1 | grep '^CLAUDE_BRIDGE_<SLUG>_'`, without printing the values. If they don't show up in your shell yet, go on to the test anyway, because `fire` names any missing secret.
+Confirm both names exist with `compgen -e | grep '^CLAUDE_BRIDGE_<SLUG>_'`, which lists names only, never values. If they don't show up in your shell yet, go on to the test anyway, because `fire` names any missing secret.
 
 ## 7. Round-trip test
 
 ```bash
 bridge.mjs fire --slug <slug> --as <agent id> <<'EOF'
-{"name": "setup-test", "task": "Connectivity test. Reply with status received, then status done, echoing the thread_id. Make no repository changes.", "context": "First run on this Project package."}
+{"name": "setup-test", "task": "Connectivity test. Make no repository changes and open no pull request. Reply with status done, echoing the thread_id, with a one-line message.", "context": "First run on this Project package."}
 EOF
 ```
 
