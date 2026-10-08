@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
+  "name": "ostack",
+  "version": "0.1.0",
+  "description": "pstack's rigorous agent workflows with poteto renamed to onyo, plus a claude-bridge skill that connects a Grok Bot to Claude Code routines.",
+  "owner": {
+    "name": "Hugo Hsi",
+    "email": "hugohsidev@gmail.com",
+    "url": "https://github.com/hugo-hsi-dev"
+  },
+  "plugins": [
+    {
+      "name": "ostack",
+      "description": "pstack's rigorous agent workflows with poteto renamed to onyo, plus a claude-bridge skill that connects a Grok Bot to Claude Code routines.",
+      "author": {
+        "name": "Hugo Hsi"
+      },
+      "source": "./",
+      "category": "development"
+    }
+  ]
+}

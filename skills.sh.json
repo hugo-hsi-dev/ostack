@@ -1,0 +1,16 @@
+{
+  "$schema": "https://skills.sh/schemas/skills.sh.schema.json",
+  "notGrouped": "bottom",
+  "groupings": [
+    {
+      "title": "Start here",
+      "description": "The routing skill, help, and model setup.",
+      "skills": ["onyo-mode", "onyo-help", "setup-ostack"]
+    },
+    {
+      "title": "Grok Bot",
+      "description": "Skills that connect a Grok Bot to other tools.",
+      "skills": ["claude-bridge", "make-bot-ui"]
+    }
+  ]
+}

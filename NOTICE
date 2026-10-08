@@ -1,0 +1,28 @@
+ostack
+Copyright (c) 2026 Hugo Hsi
+
+ostack is a modified copy of pstack by Lauren Tan (poteto, https://x.com/poteto).
+
+  Upstream:  https://github.com/cursor/plugins/tree/main/pstack
+  Commit:    ccb5507cec1546dc88135c1139c811e6c59115ba (2026-10-07)
+  Version:   pstack 0.15.15
+  License:   MIT, Copyright (c) 2026 Lauren Tan (kept in LICENSE)
+
+Changes from pstack:
+
+- Renamed poteto to onyo everywhere: poteto-mode -> onyo-mode, poteto-help -> onyo-help,
+  poteto-agent -> onyo-agent, docs/guide/02-poteto-mode.md -> 02-onyo-mode.md, and every
+  cross-reference, frontmatter field, and line of prose that used the name.
+- Renamed pstack to ostack: setup-pstack -> setup-ostack, pstack-models.mdc -> ostack-models.mdc,
+  and prose.
+- Set the frontmatter name of onyo-mode and make-bot-ui to their folder names so every
+  harness resolves them the same way.
+- Added the claude-bridge skill.
+- Added packaging for Claude Code (.claude-plugin), Codex (.codex-plugin, .agents/plugins),
+  and skills.sh (skills.sh.json), and replaced the Cursor manifest with ostack's own.
+- Rewrote the top of README.md and the install steps for a repository that isn't in the
+  Cursor Marketplace.
+
+The logo in assets/logo.png comes from pstack.
+
+ostack is not affiliated with or endorsed by Lauren Tan or Cursor.
