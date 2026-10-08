@@ -28,4 +28,4 @@ Ask the user before destructive or irreversible actions.
 - **No fallbacks.** If the main thread can't POST, it says so in its own conversation, where the user will see it. Work threads don't stand in for it.
 - **Content-Type is text/plain.** The Grok Bot webhook rejects `text/markdown` with `415 Unsupported Media Type` (tested 2026-10-08) and accepts `text/plain`. The body is still Markdown.
 - **The webhook URL is written inline.** Claude reads it from the instructions. A URL passed through an environment variable has come up empty in testing.
-- **Team and Enterprise plans** have no network secrets. See "The Project's cloud environment" in SKILL.md for the variable alternative and the sentence it adds to this section.
+- **No Network secrets section.** Some accounts don't offer network secrets. See "The Project's cloud environment" in SKILL.md for the variable alternative and the sentence it adds to this section.

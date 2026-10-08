@@ -15,11 +15,12 @@ Throughout, `bridge.mjs` means `node <this skill>/scripts/bridge.mjs`, and `<age
 
 ## 1. Agree on the Project
 
-Ask three things in one message:
+Ask two things in one message:
 
 1. The Claude Project's name, for example "Docs Site".
 2. The repository the work happens in, as `owner/repo`.
-3. Their Claude plan. Pro and Max keep the webhook key in a network secret. Team and Enterprise have to use an environment variable instead (see step 5).
+
+Don't ask which Claude subscription they have. Where the webhook key goes depends on what the user sees when they edit the environment (see step 5).
 
 Derive the Project slug following [`registry-format.md`](registry-format.md). Run `bridge.mjs show`. If the Project already has a package owned by another bot, tell the user who owns it and stop.
 
@@ -79,10 +80,13 @@ It fills in [`claude-side-setup.md`](claude-side-setup.md) from the registry, an
 
 1. The output, as one code block, to paste into the Claude Project's main thread. If you know the Project's link (`https://claude.ai/code/project/<project id>`, or whatever the user pasted), put it right above the block.
 2. The **Webhook key** link, outside the code block, built from the same folder id: `grokbot://app/v1/sidebar?target=webhook-key&automation=<folder id>`. If you don't have the folder id, use the link from your routine status, and never a generic Routines tab link. Say that the key goes straight into the Project's environment, never into either chat.
-3. One line on what happens next: the main thread writes its own instructions, creates the relay routine, and lists the environment clicks. Then it gives the routine's direct link, where the user adds the API trigger. When the user reaches the Generate token click, they come back here first.
+3. One line on what happens next: the main thread writes its own instructions, creates the relay routine, and lists the environment clicks. The key goes under Network secrets as a Bearer secret named "Onyo Key". Then the main thread gives the routine's direct link, where the user adds the API trigger. When the user reaches the Generate token click, they come back here first.
 
-**Team and Enterprise plans** have no Network secrets section. Tell the user, outside the code block, to do this instead of the network-secret click:
+Network access stays at its default. The network secret's host is reachable without any allowlist change.
 
+**If the environment has no Network secrets section,** the user tells you when they edit it. Only then, give them this alternative instead of the network-secret click:
+
+- Allow the webhook host: in the environment's Network access, choose the level with an allowlist (Limited, or Custom in older apps), add `api2.cursor.sh` to Allowed domains, and keep package managers allowed. The variable sends the key from inside the session, so the host has to be on the allowlist.
 - Add `CLAUDE_BRIDGE_WEBHOOK_KEY=<key>` under the environment's Environment variables. Anyone who uses the environment can read it, so the environment must stay personal and never be shared with the organization.
 - Ask the main thread to change the reply paragraph of its "ONYO messages" section from "The environment adds the Authorization header, so don't set it yourself." to "Add the header Authorization: Bearer $CLAUDE_BRIDGE_WEBHOOK_KEY, reading the variable inside the command so the key never appears in a message or log."
 
@@ -106,7 +110,7 @@ EOF
 Expect one reply within a few minutes. Your reply routine handles it, so this also tests its prompt.
 
 - **It arrives:** tell the user the Project is connected and that they can ask you to send Claude anything in any chat.
-- **Nothing arrives:** ask the user to open the Project's main thread and the relay routine's latest run (from the routine link the main thread gave), and tell you what they say. Claude reports a failed POST there. A `403` with `host_not_allowed`, a `401`, or an empty variable points at the environment. Use the troubleshooting table in SKILL.md.
+- **Nothing arrives:** ask the user to open the Project's main thread and the relay routine's latest run (from the routine link the main thread gave), and tell you what they say. Claude reports a failed POST there. A `403` with `host_not_allowed`, a `401`, or an empty variable points at the environment or its Onyo Key secret. Use the troubleshooting table in SKILL.md.
 
 After any later change on the Claude side, send one test. Environment changes reach only new threads.
 
@@ -119,7 +123,7 @@ Manual setup is the default. Only offer this if the user finds the clicks tediou
 If the user agrees:
 
 - The user signs in themselves, on your desktop. Never type their Claude credentials.
-- Paste the step 5 prompt into the Project's main thread, then do the clicks it lists: the Project's environment and its allowlist, and selecting it on the Project. Stop before every secret field. The main thread creates the relay routine itself.
-- The user enters the webhook key in the Bearer secret field, or in the environment variable on Team and Enterprise.
+- Paste the step 5 prompt into the Project's main thread, then do the clicks it lists: creating the Project's environment and selecting it on the Project. Stop before every secret field. The main thread creates the relay routine itself.
+- The user enters the webhook key in the "Onyo Key" Bearer secret field, or in the environment variable when there's no Network secrets section.
 - Leave the routine's API trigger to the user. Never click **Add another trigger** or **Generate token** in your browser, because the token would appear on your screen. The user adds the API trigger and generates the token on their own computer, then copies the fire URL and token straight into your secret-requests.
 - When you're done, suggest the user sign out of claude.ai in your browser, unless they want other bots to use it.

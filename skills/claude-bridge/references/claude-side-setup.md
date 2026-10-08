@@ -16,7 +16,7 @@ environment: <ENVIRONMENT>
 relay_routine: <RELAY_ROUTINE>
 repo: <REPO>
 webhook_url: <WEBHOOK_URL>
-webhook_auth: a Bearer network secret for host api2.cursor.sh in the environment. I paste the key into Claude myself.
+webhook_auth: a Bearer network secret named "Onyo Key" for host api2.cursor.sh in the environment. I paste the key into Claude myself.
 === END HANDOFF ===
 
 A relay routine will forward each message to this Project's main thread, and you handle it as the PROJECT INSTRUCTIONS below say. Do everything you can yourself, and give me only the clicks you can't do:
@@ -24,8 +24,8 @@ A relay routine will forward each message to this Project's main thread, and you
 1. Add the PROJECT INSTRUCTIONS section below to this Project's instructions, replacing any older "ONYO messages", "Onyo Tasks", or "Claude bridge" section and keeping everything else. Add the handoff's repo to this Project.
 
 2. Give me the environment clicks, each with its exact value and a direct link wherever you have one. Start with a link to this Project's page (https://claude.ai/code/project/<its id>) if you know it. This Project runs in whatever environment is selected in Project settings > Environment, which is Default unless I picked another. It doesn't get its own, and you can't create or edit environments or secrets, so these are my clicks. The environment holds the secret that reaches my assistant's webhook, so it must be a dedicated one, named after the handoff's environment. Never use Default or an environment other Projects share.
-   a. Open Project settings > Environment, then the Cloud environment menu, then the gear beside the selected environment, and create the dedicated environment there. Set Network access to Limited (Custom in older apps), add api2.cursor.sh to Allowed domains, and keep package managers allowed. An organization-owned environment opens read-only, and only an organization admin can change it.
-   b. In the same place, under Network secrets, choose Add secret, credential type Bearer. Name it "Webhook <SLUG>", set Allowed websites to api2.cursor.sh, keep the Authorization header with prefix Bearer, and paste the webhook key from my assistant's link as the value. Select Connect. If Network secrets isn't offered, tell me, and my assistant gives me the alternative.
+   a. Open Project settings > Environment, then the Cloud environment menu, then the gear beside the selected environment, and create the dedicated environment there. Leave Network access at its default. An organization-owned environment opens read-only, and only an organization admin can change it.
+   b. Edit that environment and, under Network secrets, choose Add secret, credential type Bearer. Name it "Onyo Key", set Allowed websites to api2.cursor.sh, keep the Authorization header with prefix Bearer, and paste the webhook key from my assistant's link as the value. Select Connect. If there's no Network secrets section, tell me, and my assistant gives me the alternative.
    c. In Project settings > Environment, select the dedicated environment.
    Wait until I say they're done.
 
@@ -51,6 +51,8 @@ Keep your messages short.
 - **It creates the relay routine.** Routines the Project's main thread creates are attached to the Project automatically (verified by the user). Unverified: which connector the relay needs to reach the main thread. Earlier tests used claude-code-remote.
 - **The user adds the API trigger and generates the token** on the routine's page. They open it from the direct link the main thread gives after creating it, or from the routine list in the left sidebar at claude.ai/code as the fallback (verified by the user). The Project never generates or shows the token, so it reaches only the bot's masked secret prompts.
 - **Links (URL shapes).** Confirmed: a Project page is `https://claude.ai/code/project/<project id>`, and a routine's fire URL is `https://api.anthropic.com/v1/claude_code/routines/<routine id>/fire`. Unverified: the URL of a routine's page (possibly `https://claude.ai/code/routines/<routine id>`), the Project settings and environment-editor pages, and whether the routine tool returns a link. So the prompt asks the main thread for the link its tool returns, and falls back to the sidebar path.
-- **It can't:** create or edit cloud environments, set network access, add network secrets, or pick the Project's environment (verified: no tool for any of them). Those stay as clicks for the user. Unverified: whether creating a new environment from the Project settings menu works the same as Add cloud environment from the cloud icon.
-- **Team and Enterprise plans** have no Network secrets section. The bot tells the user about the variable alternative outside this paste (see the walkthrough), so the prompt stays one path.
+- **It can't:** create or edit cloud environments, add network secrets, or pick the Project's environment (verified: no tool for any of them). Those stay as clicks for the user. Unverified: whether creating a new environment from the Project settings menu works the same as Add cloud environment from the cloud icon.
+- **Network access stays at its default.** A Bearer network secret's allowed host is reachable even when the environment's allowlist doesn't list it, so the secret alone lets replies through.
+- **One secret per environment, named "Onyo Key".** The environment is dedicated to one Project, so the name needs no slug.
+- **No Network secrets section.** Some accounts don't offer it. The user says so when they edit the environment, and the bot gives the variable alternative outside this paste (see the walkthrough), so the prompt stays one path.
 - **Changing the rules later.** Ask the main thread to replace its "ONYO messages" section with the new one. The relay prompt never changes.
