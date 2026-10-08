@@ -41,6 +41,8 @@ For example, `docs-site` uses `CLAUDE_BRIDGE_DOCS_SITE_FIRE_URL` and `CLAUDE_BRI
   "slug": "docs-site",
   "owner": { "name": "<Grok Bot name>", "agent_id": "<Grok Bot agent id>" },
   "claude_project": "Docs Site",
+  "approver": "<the user who approves tasks>",
+  "claude_environment": "claude-bridge-docs-site",
   "repo": "owner/repo",
   "mode": "coordinator",
   "env": {
@@ -48,6 +50,7 @@ For example, `docs-site` uses `CLAUDE_BRIDGE_DOCS_SITE_FIRE_URL` and `CLAUDE_BRI
     "token": "CLAUDE_BRIDGE_DOCS_SITE_TOKEN"
   },
   "webhook_routine": "<folder of the Grok Bot webhook routine>",
+  "webhook_url": "https://api2.cursor.sh/automations/webhook/<id>",
   "coordinator_session_id": "<session id, or null in direct mode>",
   "coordinator_updated_at": "<ISO time>",
   "created_at": "<ISO time>"
@@ -57,6 +60,8 @@ For example, `docs-site` uses `CLAUDE_BRIDGE_DOCS_SITE_FIRE_URL` and `CLAUDE_BRI
 - `mode` is `coordinator` (the routine relays to a coordinator session) or `direct` (the routine does the work itself).
 - `coordinator_session_id` isn't secret. `fire` sends it in every coordinator-mode payload.
 - `webhook_routine` is the folder id of the bot's webhook routine, as the routine list shows it.
+- `claude_environment` names the Claude cloud environment that holds the bridge's reply settings. It defaults to `claude-bridge-<slug>`. Both the routine and the Project must use it.
+- `webhook_url` and `approver` fill in the paste prompt that `bridge.mjs handoff` prints. The URL isn't secret. The webhook key is never stored here.
 
 ## threads.jsonl
 

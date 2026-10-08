@@ -4,9 +4,11 @@
 // Each bridge owns <root>/<slug>/bridge.json and <root>/<slug>/threads.jsonl.
 
 import { mkdirSync, readFileSync, writeFileSync, renameSync, appendFileSync, readdirSync, existsSync } from "node:fs";
-import { join } from "node:path";
+import { join, dirname } from "node:path";
+import { fileURLToPath } from "node:url";
 
 const ROOT = process.env.CLAUDE_BRIDGE_HOME || "/workspace/claude-bridge";
+const REFERENCES = join(dirname(fileURLToPath(import.meta.url)), "..", "references");
 const SLUG_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
 function fail(message) {
@@ -103,7 +105,10 @@ function claim(flags) {
     repo: need(flags, "repo"),
     mode,
     env: { fire_url: `${prefix}_FIRE_URL`, token: `${prefix}_TOKEN` },
+    approver: need(flags, "approver"),
+    claude_environment: typeof flags.environment === "string" ? flags.environment : `claude-bridge-${slug}`,
     webhook_routine: need(flags, "webhook-routine"),
+    webhook_url: typeof flags["webhook-url"] === "string" ? flags["webhook-url"] : null,
     coordinator_session_id: typeof flags["coordinator"] === "string" ? flags["coordinator"] : null,
     coordinator_updated_at: typeof flags["coordinator"] === "string" ? new Date().toISOString() : null,
     created_at: new Date().toISOString(),
@@ -138,8 +143,9 @@ function update(flags) {
   if (typeof flags["new-owner-id"] === "string") {
     bridge.owner = { name: need(flags, "new-owner-name"), agent_id: flags["new-owner-id"] };
   }
-  for (const key of ["repo", "project", "webhook-routine", "mode"]) {
-    if (typeof flags[key] === "string") bridge[{ project: "claude_project", "webhook-routine": "webhook_routine" }[key] || key] = flags[key];
+  const fields = { repo: "repo", project: "claude_project", approver: "approver", environment: "claude_environment", "webhook-routine": "webhook_routine", "webhook-url": "webhook_url", mode: "mode" };
+  for (const [flag, field] of Object.entries(fields)) {
+    if (typeof flags[flag] === "string") bridge[field] = flags[flag];
   }
   writeBridge(bridge);
   process.stdout.write(JSON.stringify(bridge, null, 2) + "\n");
@@ -193,6 +199,38 @@ async function fire(flags) {
     coordinator_session_id: payload.coordinator_session_id || null,
   });
   process.stdout.write(JSON.stringify({ thread_id: threadId, session_id: result.claude_code_session_id, session_url: result.claude_code_session_url }, null, 2) + "\n");
+}
+
+function textBlocks(file) {
+  const source = readFileSync(join(REFERENCES, file), "utf8");
+  return [...source.matchAll(/```text\n([\s\S]*?)\n```/g)].map((m) => m[1]);
+}
+
+function handoff(flags) {
+  const bridge = readBridge(need(flags, "slug"));
+  requireOwner(bridge, need(flags, "as"));
+  if (!bridge.webhook_url) fail("no webhook_url recorded. Run update --webhook-url <url> first.");
+  const [template] = textBlocks("claude-side-setup.md");
+  const [projectInstructions] = textBlocks("claude-project-instructions.md");
+  const [relayPrompt, directPrompt] = textBlocks("claude-routine-relay-prompt.md");
+  const values = {
+    "<SLUG>": bridge.slug,
+    "<BOT_NAME>": bridge.owner.name,
+    "<USER_NAME>": bridge.approver,
+    "<PROJECT_NAME>": bridge.claude_project,
+    "<REPO>": bridge.repo,
+    "<MODE>": bridge.mode,
+    "<ENVIRONMENT>": bridge.claude_environment || `claude-bridge-${bridge.slug}`,
+    "<WEBHOOK_URL>": bridge.webhook_url,
+  };
+  const fill = (text) => Object.entries(values).reduce((t, [k, v]) => t.split(k).join(v), text);
+  const prompt = template
+    .replace("{{PROJECT_INSTRUCTIONS}}", () => bridge.mode === "direct" ? "(Not needed in direct mode.)" : fill(projectInstructions))
+    .replace("{{ROUTINE_PROMPT}}", () => fill(bridge.mode === "direct" ? directPrompt : relayPrompt));
+  const out = fill(prompt);
+  const left = [...new Set(out.match(/<[A-Z][A-Z_]{2,}>/g) || [])].filter((p) => p !== "<DEFAULT_COORDINATOR_SESSION_ID>");
+  if (left.length) fail(`unfilled placeholders: ${left.join(", ")}`);
+  process.stdout.write(out + "\n");
 }
 
 const STATUSES = ["received", "question", "progress", "done", "error", "coordinator_online"];
@@ -254,14 +292,15 @@ function find(flags) {
 }
 
 const USAGE = `usage:
-  bridge.mjs claim  --slug S --owner-name N --owner-id ID --project P --repo OWNER/REPO --webhook-routine FOLDER [--mode coordinator|direct] [--coordinator SESSION_ID]
+  bridge.mjs claim  --slug S --owner-name N --owner-id ID --approver NAME --project P --repo OWNER/REPO --webhook-routine FOLDER [--environment NAME] [--webhook-url URL] [--mode coordinator|direct] [--coordinator SESSION_ID]
   bridge.mjs show   [--slug S]
-  bridge.mjs update --slug S --as ID [--coordinator SESSION_ID] [--repo R] [--project P] [--webhook-routine F] [--mode M] [--new-owner-name N --new-owner-id ID]
+  bridge.mjs update --slug S --as ID [--coordinator SESSION_ID] [--repo R] [--project P] [--approver A] [--environment E] [--webhook-routine F] [--webhook-url U] [--mode M] [--new-owner-name N --new-owner-id ID]
   bridge.mjs fire   --slug S --as ID [--dry-run] < {"task": "...", "context": "...", "name": "short-name", "thread_id": "optional, reuse for follow-ups"}
+  bridge.mjs handoff --slug S --as ID   (prints the complete paste prompt for the Claude Project)
   bridge.mjs reply  --slug S --as ID < <raw webhook body>   (normalizes, logs, and records coordinator_online)
   bridge.mjs find   --thread-id T [--slug S]`;
 
 const { command, flags } = parseArgs(process.argv.slice(2));
-const commands = { claim, show, update, fire, reply, find };
+const commands = { claim, show, update, fire, handoff, reply, find };
 if (!commands[command]) { process.stderr.write(USAGE + "\n"); process.exit(command ? 1 : 0); }
 await commands[command](flags);

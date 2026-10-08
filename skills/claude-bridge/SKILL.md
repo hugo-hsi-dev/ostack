@@ -25,19 +25,33 @@ The `/fire` response holds only the routine's session id and URL. Every answer c
 
 ## Set up a bridge
 
-Setup is a two-sided command. Follow [`references/walkthrough.md`](references/walkthrough.md).
+Setup is one command, and it runs here, on the Grok Bot side. Follow [`references/walkthrough.md`](references/walkthrough.md).
 
-1. **Grok Bot side.** The user asks for bridge setup in this chat. You create the webhook routine, claim the slug, and get the webhook URL. Then you send one paste-ready handoff with no secrets in it: the Claude-side setup prompt, a handoff block (slug, webhook URL, bot name, repo, reply schema), and the two Claude prompts with every value you know filled in.
-2. **Claude side.** The user pastes the handoff into the Claude Project's main thread. The coordinator follows [`references/claude-side-setup.md`](references/claude-side-setup.md). It returns its session id, fills in the relay prompt, writes or hands over the Project instructions, and lists only the clicks the user must make: the network allowlist and Bearer secret, the routine with its API trigger, and the token.
-3. **Back here.** The coordinator's `coordinator_online` POST records its id. You send the two secret-requests and run a round-trip test.
+1. Create the webhook routine, claim the slug, and record the webhook URL.
+2. Run `bridge.mjs handoff`. It prints one self-contained prompt for the user to paste into the Claude Project's main thread ([`references/claude-side-setup.md`](references/claude-side-setup.md)). The prompt carries the handoff block (slug, webhook URL, bot name, repo, environment name, and reply schema), tells the coordinator what to set up itself, and lists the clicks that are left: the dedicated cloud environment with its allowlist and webhook key, selecting that environment on the Project and the routine, the routine with its API trigger, and the token. It has no secrets in it. Claude has no separate setup command.
+3. Record the coordinator id (its `coordinator_online` POST does this automatically), send the two secret-requests, and run a round-trip test.
 
 Manual clicks are the default. The walkthrough ends with an optional section where you offer to drive claude.ai in your browser. Never make it the default.
 
-The prompts the handoff carries:
+The prompts the paste carries, and the one your webhook routine runs:
 
 - [`references/claude-project-instructions.md`](references/claude-project-instructions.md): the Claude Project's instructions for the coordinator and work threads.
 - [`references/claude-routine-relay-prompt.md`](references/claude-routine-relay-prompt.md): the Claude routine's prompt.
 - [`references/grokbot-reply-routine-prompt.md`](references/grokbot-reply-routine-prompt.md): your webhook routine's prompt, and what goes in it.
+
+## The Claude cloud environment
+
+The Claude cloud environment holds the reply settings: the network access that lets sessions reach `api2.cursor.sh`, and the webhook key that authorizes each POST. Every Claude session that POSTs a reply has to run in it.
+
+- **One dedicated environment per bridge,** named `claude-bridge-<slug>` (recorded as `claude_environment` in the registry). Don't edit **Default**. Anyone who uses an environment can read its variables, and every routine and session in it gets its allowlist and secrets.
+- **Network access:** **Custom**, with `api2.cursor.sh` in **Allowed domains** and **Also include default list of common package managers** checked. Without the allowlist, a POST fails with `403` and `x-deny-reason: host_not_allowed`.
+- **The webhook key:**
+  - **Pro and Max** plans store it as a network secret: type **Bearer**, allowed website `api2.cursor.sh`, the key alone as the value. Claude's proxy attaches it after the request leaves the session, so no session can read it. The **Network secrets** section only appears when you edit an environment that already exists, so create the environment first.
+  - **Team and Enterprise** plans don't have network secrets yet. The fallback is an environment variable, `CLAUDE_BRIDGE_WEBHOOK_KEY=<key>`, which the prompts send as `Authorization: Bearer $CLAUDE_BRIDGE_WEBHOOK_KEY`. Anyone who uses the environment can read that value, so keep the environment personal and never share it with the organization.
+- **Both ends have to select it.** A routine runs in the environment set on the routine itself (the cloud icon below its instructions), not the Project's. Project threads run in the environment chosen in **Project settings > Environment**. So the user selects the bridge environment twice: on the relay routine, and on the Project.
+- **Changing the Grok Bot webhook key.** Claude can't edit a network secret, so delete it and add it again with the new key (or update the variable on Team and Enterprise). Every bridge that uses that webhook needs the change. The old key stops working right away.
+
+What Claude's docs at code.claude.com confirm: network access levels and the Custom allowlist; that changes to network access reach running sessions within about a minute; that network secrets are Pro and Max only, need an existing Anthropic-hosted environment and the organization admin role, and can't be edited; that a network secret's hosts are reachable even when the allowlist leaves them out (the allowlist still matters for the variable fallback); that routines choose their own environment; that Project threads use the Project's environment; and that environment and setting changes reach new threads, not running ones. What the docs don't say: which environment the Project conversation (the coordinator) itself runs in, or whether it can make network calls at all. So the coordinator's own POSTs (`received`, `coordinator_online`) may fail, and the Project instructions fall back to the work thread and to the user passing the id along. The docs also don't mention `send_message` or `get_channel_session_id`. Those come from testing.
 
 ## Send a task
 
@@ -92,11 +106,7 @@ A coordinator restart changes its session id. If the Project instructions are in
 
 ## Direct mode
 
-Skip the coordinator when the user wants fewer moving parts. Attach the repository to the routine itself. Routine runs use the routine's own repositories, environment, and prompt, not the Project's. Claim the bridge with `--mode direct`. There's no coordinator id to record. For the routine's prompt, take the TRUST, WORK THREAD, and REPLYING sections of [`references/claude-project-instructions.md`](references/claude-project-instructions.md), and start with this line:
-
-```text
-You are the worker for the Claude bridge "<SLUG>". The routine-fire-payload block holds one JSON request from the Grok Bot "<BOT_NAME>". Do its task yourself in this run.
-```
+Skip the coordinator when the user wants fewer moving parts. Attach the repository to the routine itself. Routine runs use the routine's own repositories, environment, and prompt, not the Project's. Claim the bridge with `--mode direct`. `bridge.mjs handoff` then embeds the direct-mode prompt from [`references/claude-routine-relay-prompt.md`](references/claude-routine-relay-prompt.md) and leaves out the Project instructions. There's no coordinator id to record.
 
 Expect `done` or `error` with no `received`.
 
@@ -110,9 +120,10 @@ Claude routines can also start on GitHub pull request or release events, with la
 | `error`: `send_message` isn't available | The routine's claude-code-remote connector is off | Turn the connector on for the routine |
 | Claude says a relay tool such as `get_channel_session_id` isn't available | Routine runs don't have that tool | Use the relay prompt from this skill, which only calls `send_message` |
 | The coordinator acknowledges the task but treats it as information | The task went through `post_message`, or the Project instructions are missing | Relay with `send_message`, and paste the Project instructions |
-| Claude says the webhook URL is empty, or curl reports a malformed URL | The URL was passed in an environment variable | Write the URL inline in the prompt or instructions. Environment variables didn't work in testing |
-| Claude's POST is blocked or times out | `api2.cursor.sh` isn't allowed, or the session uses another environment | Set network access to Custom with `api2.cursor.sh` and the default list, on the environment the routine and Project use |
-| The webhook rejects the POST as unauthorized | The network secret's host or type is wrong, or the key was regenerated | Re-add the key as a Bearer secret for host `api2.cursor.sh` |
+| POST fails with `403` and `x-deny-reason: host_not_allowed` | The session's environment doesn't allow `api2.cursor.sh`. With a network secret in place, it usually means the session isn't running in the bridge environment at all | Select `claude-bridge-<slug>` on the routine and in Project settings > Environment, and set it to Custom with `api2.cursor.sh` and the default list |
+| `401` from `api2.cursor.sh` | The webhook key is missing or stale: no network secret (or variable) in the session's environment, the wrong host on the secret, or a regenerated Grok Bot key | Delete the secret and add it again with the current key, as Bearer for host `api2.cursor.sh` |
+| `CLAUDE_BRIDGE_WEBHOOK_KEY` or another variable is empty | The session runs in a different environment, or started before the variable was added (sessions read variables when they start or resume) | Check the routine's and the Project's environment, then fire again so a new session starts |
+| Claude says the webhook URL is empty, or curl reports a malformed URL | The URL was passed in an environment variable | Write the URL inline in the prompt or instructions |
 | The work thread asks which repository to use | No repository on the Project (coordinator mode) or the routine (direct mode) | Attach it where that mode needs it |
 | `fire` reports a missing secret | The secret-request didn't finish, or used another name | Request it again under the exact name the error prints |
 | `fire` refuses: the bridge belongs to another bot | You don't own this bridge | Use your own bridge, or ask the user to transfer it |
