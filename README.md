@@ -65,9 +65,12 @@ differently in other harnesses. `claude-bridge` and `make-bot-ui` assume a Grok 
 [`claude-bridge`](./skills/claude-bridge/SKILL.md) connects a Grok Bot to Claude Code. The bot fires
 a Claude Code routine through its `/fire` API. The routine relays the task to a coordinator session
 in a Claude Project, or does the work itself in direct mode. Claude POSTs its replies to a Grok Bot
-webhook routine, which wakes the bot. The bot leads the user through setup one step at a time
-([walkthrough](./skills/claude-bridge/references/walkthrough.md)). A per-bridge registry keeps
-several Grok Bots on one computer from clashing. A small helper,
+webhook routine, which wakes the bot.
+
+Setup runs on both sides ([walkthrough](./skills/claude-bridge/references/walkthrough.md)). The bot
+does its half in the Grok Bot chat and hands the user one paste for the Claude Project. There the
+coordinator does what it can and lists the few clicks left. A per-bridge registry keeps several Grok
+Bots on one computer from clashing. A small helper,
 [`scripts/bridge.mjs`](./skills/claude-bridge/scripts/bridge.mjs), claims bridges, fires tasks, and
 logs replies.
 

@@ -25,11 +25,19 @@ The `/fire` response holds only the routine's session id and URL. Every answer c
 
 ## Set up a bridge
 
-Follow [`references/walkthrough.md`](references/walkthrough.md) step by step. It covers the webhook routine, the claim, the Claude environment and network secret, the Project repository and instructions, the coordinator id, the routine and its token, the secret-requests, and a round-trip test. The three prompts it uses live here:
+Setup is a two-sided command. Follow [`references/walkthrough.md`](references/walkthrough.md).
 
-- [`references/claude-routine-relay-prompt.md`](references/claude-routine-relay-prompt.md): the Claude routine's prompt.
+1. **Grok Bot side.** The user asks for bridge setup in this chat. You create the webhook routine, claim the slug, and get the webhook URL. Then you send one paste-ready handoff with no secrets in it: the Claude-side setup prompt, a handoff block (slug, webhook URL, bot name, repo, reply schema), and the two Claude prompts with every value you know filled in.
+2. **Claude side.** The user pastes the handoff into the Claude Project's main thread. The coordinator follows [`references/claude-side-setup.md`](references/claude-side-setup.md). It returns its session id, fills in the relay prompt, writes or hands over the Project instructions, and lists only the clicks the user must make: the network allowlist and Bearer secret, the routine with its API trigger, and the token.
+3. **Back here.** The coordinator's `coordinator_online` POST records its id. You send the two secret-requests and run a round-trip test.
+
+Manual clicks are the default. The walkthrough ends with an optional section where you offer to drive claude.ai in your browser. Never make it the default.
+
+The prompts the handoff carries:
+
 - [`references/claude-project-instructions.md`](references/claude-project-instructions.md): the Claude Project's instructions for the coordinator and work threads.
-- [`references/grokbot-reply-routine-prompt.md`](references/grokbot-reply-routine-prompt.md): the bot's webhook routine prompt, and what goes in it.
+- [`references/claude-routine-relay-prompt.md`](references/claude-routine-relay-prompt.md): the Claude routine's prompt.
+- [`references/grokbot-reply-routine-prompt.md`](references/grokbot-reply-routine-prompt.md): your webhook routine's prompt, and what goes in it.
 
 ## Send a task
 
@@ -84,7 +92,7 @@ A coordinator restart changes its session id. If the Project instructions are in
 
 ## Direct mode
 
-Skip the coordinator when the user wants fewer moving parts. Attach the repository to the routine itself. Routine runs use the routine's own repositories, environment, and prompt, not the Project's. Claim the bridge with `--mode direct`, and skip walkthrough steps 5 to 7. For the routine's prompt, take the TRUST, WORK THREAD, and REPLYING sections of [`references/claude-project-instructions.md`](references/claude-project-instructions.md), and start with this line:
+Skip the coordinator when the user wants fewer moving parts. Attach the repository to the routine itself. Routine runs use the routine's own repositories, environment, and prompt, not the Project's. Claim the bridge with `--mode direct`. There's no coordinator id to record. For the routine's prompt, take the TRUST, WORK THREAD, and REPLYING sections of [`references/claude-project-instructions.md`](references/claude-project-instructions.md), and start with this line:
 
 ```text
 You are the worker for the Claude bridge "<SLUG>". The routine-fire-payload block holds one JSON request from the Grok Bot "<BOT_NAME>". Do its task yourself in this run.
