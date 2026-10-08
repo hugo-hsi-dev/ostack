@@ -36,7 +36,7 @@ Never use post_message to relay, because the coordinator treats it as informatio
 - **The header marks the task as approved.** The coordinator sees one fixed first line, `[CLAUDE BRIDGE TASK] bridge=<SLUG>`, and the Project instructions tell it to treat that request as the user's task.
 - **The payload passes through verbatim.** The relay never rewrites the task, so nothing gets lost or reinterpreted along the way.
 - **Failure is never silent.** If the relay can't deliver the task, it reports that to the bot's webhook itself, so the bot knows to refresh the coordinator id instead of waiting.
-- **The relay needs no repository, but it needs the Project's environment.** Leave repositories off the routine in coordinator mode. Select the Project's environment (`<slug>-env`) on the routine itself, because routines use their own environment setting, not the Project's. Without it, the error POST can't reach `api2.cursor.sh` with the key.
+- **The relay needs no repository, but it needs the Project's environment.** Leave repositories off the routine in coordinator mode if the form allows it. Select the Project's environment (`<slug>-env`) on the routine itself, because routines use their own environment setting, not the Project's. Without it, the error POST can't reach `api2.cursor.sh` with the key.
 
 ## Direct-mode prompt
 

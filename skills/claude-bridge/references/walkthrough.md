@@ -19,7 +19,7 @@ Ask four things in one message:
 
 Derive the Project slug following [`registry-format.md`](registry-format.md). Run `bridge.mjs show`. If the Project already has a package owned by another bot, tell the user who owns it and stop.
 
-The package's names come from the slug: the environment `<slug>-env`, the relay routine `<slug>-relay`, and your webhook routine `Claude replies <slug>`. If the Project already has a dedicated environment, use its name with `--environment`. Never use Default, and never use an environment that other Projects or routines share. Read "The Project's cloud environment" in SKILL.md before you go on, because most setup failures happen there.
+The package's names come from the slug: the environment `<slug>-env`, the relay routine `<slug>-relay`, and your webhook routine `Claude replies <slug>`. If the Project already has a dedicated environment, use its name with `--environment`. Never use Default, and never use an environment that other Projects, or routines outside this package, share. Read "The Project's cloud environment" in SKILL.md before you go on, because most setup failures happen there.
 
 ## 2. Create the webhook routine and claim the Project
 
