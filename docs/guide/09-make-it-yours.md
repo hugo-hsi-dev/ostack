@@ -97,7 +97,7 @@ One situational skill is for Grok Bot users. [`/make-bot-ui`](../../skills/make-
 
 ## Hand work to Claude Code with `/claude-bridge`
 
-[`/claude-bridge`](../../skills/claude-bridge/SKILL.md) is the other Grok Bot skill. The bot sends a task to a Claude Code routine through the routine's `/fire` API, and Claude posts its reply to a webhook routine that wakes the bot. The skill walks through setup on both sides, gives you the routine instructions to paste into Claude, and says how to handle each reply.
+[`/claude-bridge`](../../skills/claude-bridge/SKILL.md) is the other Grok Bot skill. It connects a bot to a Claude Project with plain Markdown both ways. The bot sends ONYO messages through the `/fire` API of the Project's relay routine, the relay forwards each one to the Project's main thread, and Claude posts its replies to a webhook routine that wakes the bot. Setup is one paste into the Project's main thread, which writes its own instructions and creates the relay routine. You create a dedicated cloud environment for the Project and add the routine's API trigger. After setup the skill isn't needed day to day.
 
 **Pitfall:** don't edit a skill mid-task because it's misbehaving. Fix it in its own PR and keep the task moving. A skill edit that ships tangled into feature work is invisible to review and impossible to evaluate.
 
