@@ -2,7 +2,7 @@
 
 benny gives you two claude code routines for slack issue reports. one triages each report. the other reproduces confirmed bugs and may prepare a small draft fix.
 
-routines have no slack trigger. by default each routine runs on a schedule, reads the source channel through the slack connector, and picks up new top-level reports that carry no benny marker yet. teams that can relay slack events may fire the routines through their api trigger instead. for interactive help in a channel, use claude tag (claude in slack).
+routines have no slack trigger. by default each routine runs on a schedule, reads the source channel through the slack connector, and picks up new top-level reports that carry no benny marker yet. teams that can relay slack events may fire the routines through their api trigger instead.
 
 the files in this directory are dormant setup and routine sources. they do not appear as slash skills.
 

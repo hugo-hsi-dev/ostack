@@ -41,8 +41,6 @@ For a scheduled run:
 5. For each report, re-read the thread and repeat the check in step 3. Then add the `seen` reaction to the root as the triage identity before any other work. A reaction is not a post. If the reaction fails, skip the report.
 6. Run sections 1 through 10 for one report at a time, with the trigger's `source_channel_id` set to the scanned channel, `trigger.ts` set to the report's timestamp, and `trigger.thread_ts` empty. Finish or stop one report before starting the next.
 
-If the Slack connector has no reaction tool, dedupe on the Benny marker reply alone. Claim a report by posting a short `[benny:triaging]` reply in its thread instead of the `seen` reaction, and treat that reply like a marker in step 3. The claim reply is not a verdict and does not count against the one verdict.
-
 For an API run, read the coordinates from the `text` field in the routine-fire-payload block. Parse it as JSON with `source_channel_id`, `message_ts`, and optional `thread_ts`, and use them as the trigger's `source_channel_id`, `trigger.ts`, and `trigger.thread_ts`. If the block is missing or the JSON is malformed, stop with no writes. Apply the same dedupe check and claim before section 1.
 
 ## 1. Freeze source coordinates
@@ -239,7 +237,7 @@ Marker contract:
 [benny:other]
 ```
 
-Use only the configured marker strings. The repro routine trusts a verdict only when the configured triage identity posts it in this source thread and it ends with exactly one marker line in this format. The Slack connector posts as the account that connected it, so a marker typed by hand from that account is trusted too.
+Use only the configured marker strings. The repro routine trusts the marker only when it comes from the configured triage identity in this source thread. The Slack connector posts as the account that connected it, so a marker typed by hand from that account is trusted too.
 
 After posting, read the same source thread and verify the verdict appears under `SOURCE_THREAD_TS`. If it does not, never retry at the root.
 

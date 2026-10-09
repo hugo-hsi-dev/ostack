@@ -17,7 +17,6 @@ Changes from pstack:
   (now ostack-models.md), and prose.
 - Set the frontmatter name of onyo-mode and make-bot-ui to their folder names so every
   harness resolves them the same way.
-- Added the claude-bridge skill.
 - Added packaging for Claude Code (.claude-plugin), Codex (.codex-plugin, .agents/plugins),
   and skills.sh (skills.sh.json), and replaced the Cursor manifest with ostack's own.
 - Rewrote the top of README.md and the install steps for a repository that isn't in the
@@ -27,7 +26,9 @@ Changes from pstack:
   ~/.claude/rules/ostack-models.md, Custom Modes became the onyo output style, Bugbot became
   Claude Code Review, cursor-team-kit and Cursor built-ins became Claude Code built-ins, cloud
   agents became cloud sessions, Cursor Automations became Claude Code routines, and the Origin
-  forge branches were removed. Added the onyo-reader agent for read-only roles.
+  forge branches were removed. The Grok Bot layer was removed: make-bot-ui now wakes a Claude Code
+  routine over its API trigger, and work reaches a Claude Project through project routines or
+  the user's own messages. Added the onyo-reader agent for read-only roles.
 
 The logo in assets/logo.png comes from pstack.
 

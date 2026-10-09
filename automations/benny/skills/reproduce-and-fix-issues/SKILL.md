@@ -45,8 +45,6 @@ For a scheduled run:
 5. For each report, re-read its thread and repeat the check in step 3. Then add the `reproducing` reaction to the root before any other work. A reaction is not a post. If the reaction fails, stop.
 6. Continue with section 1, with the trigger channel set to the scanned channel, `trigger.ts` set to the report's timestamp, and `trigger.thread_ts` empty. Section 2 finds the verdict already in the thread. Finish or stop one report before starting the next.
 
-If the Slack connector has no reaction tool, dedupe on the Benny marker replies alone. Claim a report by posting a short `[benny:reproducing]` reply in its thread instead of the `reproducing` reaction, and skip a report whose thread already holds that reply in step 3.
-
 For an API run, read the coordinates from the `text` field in the routine-fire-payload block. Parse it as JSON with `source_channel_id`, `message_ts`, and optional `thread_ts`, and use them as the trigger channel, `trigger.ts`, and `trigger.thread_ts`. If the block is missing or the JSON is malformed, stop without posting. Apply the same claim check before section 1, then wait for the verdict in section 2.
 
 ## 1. Freeze source coordinates
@@ -79,7 +77,7 @@ Accept a verdict only when:
 
 - Its author matches `slack.triage_identity_user_id`.
 - It is a reply under `SOURCE_THREAD_TS`.
-- It ends with exactly one marker line in a public form below, and contains no other configured marker.
+- It contains exactly one configured marker.
 
 Public marker forms:
 
@@ -221,9 +219,9 @@ Post detailed evidence only in the operations thread when configured. Keep the s
 
 Update the operations status first.
 
-For `Could not reproduce` or `Blocked`, post nothing more in the source thread. A `[benny:reproducing]` claim reply from the scan is the only exception. The operations thread or run output carries the result.
+For `Could not reproduce` or `Blocked`, post nothing in the source thread. The operations thread or run output carries the result.
 
-For a confirmed repro, run the source preflight and post at most one unprompted source reply. A `[benny:reproducing]` claim reply does not count against it. The reply follows these rules.
+For a confirmed repro, run the source preflight and post at most one unprompted source reply:
 
 - Say the issue reproduced.
 - Link the operations evidence thread when one exists.

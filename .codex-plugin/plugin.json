@@ -1,7 +1,7 @@
 {
   "name": "ostack",
   "version": "0.1.0",
-  "description": "pstack's rigorous agent workflows, ported from Cursor to Claude Code with poteto renamed to onyo, plus a claude-bridge skill that connects a Grok Bot to a Claude Project.",
+  "description": "pstack's rigorous agent workflows, ported from Cursor to Claude Code with poteto renamed to onyo.",
   "author": {
     "name": "Hugo Hsi",
     "email": "hugohsidev@gmail.com",
@@ -13,14 +13,13 @@
     "ostack",
     "onyo-mode",
     "workflow",
-    "principles",
-    "claude-bridge"
+    "principles"
   ],
   "skills": "./skills/",
   "interface": {
     "displayName": "ostack",
-    "shortDescription": "Rigorous agent workflows, plus a Grok Bot to Claude Code bridge",
-    "longDescription": "A fork of poteto's pstack with poteto renamed to onyo: onyo-mode playbooks, review panels, principles, and verification skills. Adds claude-bridge for sending messages from a Grok Bot to a Claude Project and receiving replies over a webhook.",
+    "shortDescription": "Rigorous agent workflows",
+    "longDescription": "A fork of poteto's pstack with poteto renamed to onyo: onyo-mode playbooks, review panels, principles, and verification skills.",
     "developerName": "Hugo Hsi",
     "category": "Productivity",
     "capabilities": [
@@ -31,8 +30,7 @@
     "websiteURL": "https://github.com/hugo-hsi-dev/ostack",
     "defaultPrompt": [
       "Use $onyo-mode to fix this bug. Reproduce it first, then verify the fix.",
-      "Use $interrogate to review this branch.",
-      "Use $claude-bridge to send this to my Claude Project."
+      "Use $interrogate to review this branch."
     ]
   }
 }

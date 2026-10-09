@@ -93,11 +93,7 @@ Read every output yourself before accepting the verdict. If you disagree with th
 
 ## Build a bot UI with `/make-bot-ui`
 
-One situational skill is for Grok Bot users. [`/make-bot-ui`](../../skills/make-bot-ui/SKILL.md) builds a small page whose buttons wake a bot over a webhook routine. For example, you could swipe through a review queue and have each swipe ask the bot to act on that item. A server on your machine holds the webhook's sender key, so the key never reaches the browser or the chat. The skill also covers exposing the page on Tailscale.
-
-## Hand work to Claude Code with `/claude-bridge`
-
-[`/claude-bridge`](../../skills/claude-bridge/SKILL.md) is the other Grok Bot skill. It connects a bot to a Claude Project with plain Markdown both ways. The bot sends ONYO messages through the `/fire` API of the Project's relay routine, the relay forwards each one to the Project's main thread, and Claude posts its replies to a webhook routine that wakes the bot. Setup is one paste into the Project's main thread, which writes its own instructions and creates the relay routine. You create a dedicated cloud environment for the Project and add the routine's API trigger. After setup the skill isn't needed day to day.
+One situational skill wakes a routine from a page you click. [`/make-bot-ui`](../../skills/make-bot-ui/SKILL.md) builds a small page whose buttons wake a Claude Code routine over its API trigger. For example, you could swipe through a review queue and have each swipe ask the routine to act on that item, as a new thread in the Claude Project that owns the routine. A server on your machine holds the routine's token, so the token never reaches the browser or the chat. The skill also covers exposing the page on Tailscale.
 
 **Pitfall:** don't edit a skill mid-task because it's misbehaving. Fix it in its own PR and keep the task moving. A skill edit that ships tangled into feature work is invisible to review and impossible to evaluate.
 

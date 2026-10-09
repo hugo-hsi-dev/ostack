@@ -10,6 +10,8 @@ Find what a change breaks somewhere else, before it ships. Use for "blast radius
 
 Companion to `how` and `why`. `how` tells you what the code does. `why` tells you why it's shaped that way. Blast radius tells you what it breaks somewhere else.
 
+To run `how`, `why`, `arena`, or `unslop`, read `${CLAUDE_SKILL_DIR}/../<name>/SKILL.md` in full and follow it. These skills are user-only slash commands, so the Skill tool cannot load them. If `${CLAUDE_SKILL_DIR}` appears literally, it is the directory that holds this file.
+
 Listing the callers is not the job. The agent can grep those in a second. The job is the breakage grep won't show you.
 
 ## Don't trust your own writeup

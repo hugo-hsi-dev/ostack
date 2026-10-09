@@ -10,7 +10,7 @@ Investigate the motivation and intent behind code.
 
 Companion to the `how` skill. `how` answers what the code does and how it works. `why` answers what forces led to its shape.
 
-Each spawn below names a role line in the `~/.claude/rules/ostack-models.md` rule and a default. Pass that line's model and effort as the Agent tool's `model` and `effort`, or the default's when the rule or the line is missing. Omit both when the value is `inherit`. If the Agent tool rejects a model, use the default and say so.
+Each spawn below names a role line in the `~/.claude/rules/ostack-models.md` rule and a default. Pass that line's model and effort as the Agent tool's `model` and `effort`, or the default's when the rule or the line is missing. Omit both when the value is `inherit`. If the Agent tool rejects a model, use the default and say so. If it rejects the default, use the closest valid model from its error message.
 
 ## Operating Posture
 
@@ -20,7 +20,7 @@ Operate as a **careful, cautious, and precise investigator**. Be honest about wh
 
 Parse what the user is asking. The **target** is usually a chunk of code, a pattern, a feature, or a named design decision. The **question** is usually a design rationale, a tradeoff, a motivating edge case, an external constraint, dead code, or a broad history sweep.
 
-If the target is vague ("why do we do it this way?" with no clear referent), make your best guess from conversation context (open files, recent edits, IDE selection, what was just discussed). State your interpretation briefly so the user can redirect if you're off, then proceed.
+If the target is vague ("why do we do it this way?" with no clear referent), make your best guess from conversation context (open files, recent edits, cursor location, what was just discussed). State your interpretation briefly so the user can redirect if you're off, then proceed.
 
 ## Step 2. Establish the Code Anchor
 

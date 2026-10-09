@@ -12,7 +12,7 @@ The human enters setup by pointing Claude Code at the pack's `FOR_AGENTS.md`. Th
 
 Benny needs external configuration and two live Claude Code routines.
 
-Routines have no Slack trigger. The default is a scheduled routine (hourly is the minimum interval) that reads the source channel through the Slack connector and picks up new top-level reports with no Benny marker or claim reaction yet. Teams that can relay Slack events may use each routine's API trigger instead, which fires `/fire` with the report coordinates in `text`. For interactive help inside a channel, point users at Claude Tag (Claude in Slack). It is not a substitute for these routines.
+Routines have no Slack trigger. The default is a scheduled routine (hourly is the minimum interval) that reads the source channel through the Slack connector and picks up new top-level reports with no Benny marker or claim reaction yet. Teams that can relay Slack events may use each routine's API trigger instead, which fires `/fire` with the report coordinates in `text`.
 
 Do not create or update a routine until the user explicitly asks. Never put a secret value in plugin files, prompts, or committed configuration.
 
@@ -145,6 +145,8 @@ The repro routine needs:
 - A pull request action that can open a draft pull request
 - The configured control-adapter skill, runnable inside the routine's cloud environment
 
+The claim reactions are the routines' only dedupe state, so if the Slack connector has no reaction tool, leave both routines disabled.
+
 Prefer configured Slack connector tools for reads, reactions, and posts. The optional `BENNY_SLACK_BOT_TOKEN` may fill a narrow gap such as editing one operations status message or downloading an attachment. Store the value in the routine's cloud environment or a secret manager, not in YAML.
 
 Claude Code subagents inherit the session's MCP tools, the Slack connector included. If the user wants delegated workers, have them define a project agent whose `tools` or `disallowedTools` removes every Slack connector write tool. Without one, the operational files keep that work in the coordinator.
@@ -204,7 +206,7 @@ The triage routine, filled from configuration:
 
 - Name `benny-triage`.
 - Read and follow `.claude/automations/benny/skills/triage-issue-reports/SKILL.md` for every run.
-- On a scheduled run, scan the configured source Slack channel for new top-level reports with no Benny marker and no `seen` reaction from the triage identity. Claim them oldest first, up to `scan.triage_max_reports_per_run`, with that reaction. If the Slack connector has no reaction tool, dedupe on the Benny marker replies alone and claim with a short `[benny:triaging]` reply instead.
+- On a scheduled run, scan the configured source Slack channel for new top-level reports with no Benny marker and no `seen` reaction from the triage identity. Claim them oldest first, up to `scan.triage_max_reports_per_run`, with that reaction.
 - On an API run, read the report coordinates from the `text` field in the routine-fire-payload block.
 - Read each report's thread and reply only inside it.
 - Use the configured issue-tracker integration.
@@ -216,7 +218,7 @@ After the triage routine is saved, the repro and fix routine:
 
 - Name `benny-reproduce`.
 - Read and follow `.claude/automations/benny/skills/reproduce-and-fix-issues/SKILL.md` for every run.
-- On a scheduled run, scan the configured source Slack channel for up to `scan.reproduce_max_reports_per_run` reports (default 1) with a trusted bug or performance marker and no `reproducing` claim reaction, and claim each with that reaction. If the Slack connector has no reaction tool, claim with a short `[benny:reproducing]` reply instead.
+- On a scheduled run, scan the configured source Slack channel for up to `scan.reproduce_max_reports_per_run` reports (default 1) with a trusted bug or performance marker and no `reproducing` claim reaction, and claim each with that reaction.
 - On an API run, read the report coordinates from the `text` field in the routine-fire-payload block.
 - Use the configured repository and default branch.
 - Read the source thread and reply only inside it.
