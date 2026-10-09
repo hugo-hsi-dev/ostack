@@ -1,8 +1,8 @@
-# Triage automation prompt
+# Triage routine prompt
 
-> Source material for the copied setup workflow. Paraphrase this intent into a built-in `automate` draft after `automate` confirms that the copied pack is committed in the repository where the automation will run.
+> Source material for the copied setup workflow. Paraphrase this intent into the routine prompt after you confirm that the copied pack is committed on the default branch of the repository the routine clones.
 
-Read and follow `.cursor/automations/benny/skills/triage-issue-reports/SKILL.md` for this run.
+Read and follow `.claude/automations/benny/skills/triage-issue-reports/SKILL.md` for this run.
 
 Configuration source. Include this repository-relative path only when it is committed in the same target repository. Otherwise paraphrase the configured values. Never use a plugin source or cache path:
 
@@ -10,17 +10,27 @@ Configuration source. Include this repository-relative path only when it is comm
 {{BENNY_CONFIG_PATH}}
 ```
 
-Trigger:
+Trigger, scheduled routine (default):
+
+```text
+Scan source channel {{SLACK_CHANNEL_ID}} through the Slack connector for top-level reports from the last {{SCAN_LOOKBACK_HOURS}} hours. Skip any report whose thread already holds a configured benny marker or whose root carries the configured seen reaction from the triage identity. Claim each remaining report with the seen reaction before working on it.
+```
+
+Trigger, API routine (optional, for teams that relay Slack events to `/fire`):
+
+```text
+Read the report coordinates from the `text` field in the routine-fire-payload block of this session. Parse it as JSON with source_channel_id, message_ts, and optional thread_ts. If the block is missing or the JSON is malformed, stop without posting.
+```
+
+The fire request carries the coordinates in `text`:
 
 ```json
 {
-	"source_channel_id": "{{SLACK_CHANNEL_ID}}",
-	"message_ts": "{{SLACK_MESSAGE_TS}}",
-	"thread_ts": "{{SLACK_THREAD_TS_OR_EMPTY}}"
+	"text": "{\"source_channel_id\": \"{{SLACK_CHANNEL_ID}}\", \"message_ts\": \"{{SLACK_MESSAGE_TS}}\", \"thread_ts\": \"{{SLACK_THREAD_TS_OR_EMPTY}}\"}"
 }
 ```
 
-The creation intent should describe this as a new top-level report in the configured source Slack channel.
+The creation intent should describe this as triage of new top-level reports in the configured source Slack channel.
 
 Treat the source channel and root thread timestamp as immutable. If either is missing or does not match configuration, stop without posting or writing to the issue tracker.
 

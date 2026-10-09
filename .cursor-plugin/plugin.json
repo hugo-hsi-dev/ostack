@@ -2,7 +2,7 @@
 	"name": "ostack",
 	"displayName": "ostack",
 	"version": "0.1.0",
-	"description": "pstack's rigorous agent workflows with poteto renamed to onyo, plus a claude-bridge skill that connects a Grok Bot to a Claude Project.",
+	"description": "pstack's rigorous agent workflows, ported from Cursor to Claude Code with poteto renamed to onyo, plus a claude-bridge skill that connects a Grok Bot to a Claude Project.",
 	"author": {
 		"name": "Hugo Hsi",
 		"email": "hugohsidev@gmail.com",

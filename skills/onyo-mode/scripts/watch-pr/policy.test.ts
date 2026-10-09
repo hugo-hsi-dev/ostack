@@ -151,6 +151,22 @@ describe("snapshot query planning", () => {
   });
 });
 
+it("flags a pending Claude Code Review check as running review automation", async () => {
+  const snapshot = await readSnapshot({
+    reader: fakeReader({
+      fastPath: {
+        kind: "checks",
+        checks: [passingCheck(), pendingCheck("Claude Code Review")],
+      },
+    }),
+    context: context(2),
+    pendingHistory: "omit",
+    allowDraft: false,
+  });
+  if (snapshot.kind !== "open") throw new Error("expected open snapshot");
+  expect(snapshot.reviewAutomationRunning).toBe(true);
+});
+
 it("scans stacks tier-major so an upstack conflict outranks frontier CI", async () => {
   const frontier = await readSnapshot({
     reader: fakeReader({
