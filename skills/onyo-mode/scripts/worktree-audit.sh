@@ -22,9 +22,13 @@ prs=$(mktemp)
 gh pr list --author "@me" --state all --limit 1000 \
 	--json number,state,headRefName 2>/dev/null > "$prs" || echo "[]" > "$prs"
 
-# Transcripts dir: ~/.cursor/projects/<slugified-repo-path>/agent-transcripts.
-slug=$(printf '%s' "$main_wt" | sed 's#^/##; s#/#-#g')
-transcripts="$HOME/.cursor/projects/$slug/agent-transcripts"
+# Transcripts dir: ~/.claude/projects/<slug>, where the slug is the absolute
+# path with each non-alphanumeric character turned into "-". A session started
+# inside a worktree (.claude/worktrees/<name>) is filed under that worktree's
+# own slug, so each worktree scans the main checkout's dir and its own.
+slugify() { printf '%s' "$1" | sed 's#[^A-Za-z0-9]#-#g'; }
+projects="$HOME/.claude/projects"
+main_transcripts="$projects/$(slugify "$main_wt")"
 now=$(date +%s)
 
 printf "SIZE\tAGE\tMERGED\tDIRTY\tREMOTE\tPR\tLAST_CHAT\tBUCKET\tWORKTREE\n"
@@ -63,8 +67,12 @@ git worktree list --porcelain | awk '/^worktree /{print $2}' | while read -r wt;
 	# Most recent chat whose transcript operated in this worktree. Match path
 	# followed by "/" or a quote so glint-482 does not match glint-482-r37.
 	last="-"; last_ts=0
-	if [ -d "$transcripts" ]; then
-		f=$(rg -l -e "${wt}/" -e "${wt}\"" "$transcripts" 2>/dev/null \
+	transcripts=()
+	for d in "$main_transcripts" "$projects/$(slugify "$wt")"; do
+		[ -d "$d" ] && transcripts+=("$d")
+	done
+	if [ ${#transcripts[@]} -gt 0 ]; then
+		f=$(rg -l -e "${wt}/" -e "${wt}\"" "${transcripts[@]}" 2>/dev/null \
 			| xargs stat -f '%m %N' 2>/dev/null | sort -rn | head -1)
 		if [ -n "$f" ]; then last_ts=$(echo "$f" | awk '{print $1}')
 			last=$(date -r "$last_ts" '+%Y-%m-%d' 2>/dev/null); fi

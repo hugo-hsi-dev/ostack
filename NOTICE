@@ -13,7 +13,7 @@ Changes from pstack:
 - Renamed poteto to onyo everywhere: poteto-mode -> onyo-mode, poteto-help -> onyo-help,
   poteto-agent -> onyo-agent, docs/guide/02-poteto-mode.md -> 02-onyo-mode.md, and every
   cross-reference, frontmatter field, and line of prose that used the name.
-- Renamed pstack to ostack: setup-pstack -> setup-ostack, pstack-models.mdc -> ostack-models.mdc,
+- Renamed pstack to ostack: setup-pstack -> setup-ostack, pstack-models.mdc -> ostack-models.mdc (now ostack-models.md),
   and prose.
 - Set the frontmatter name of onyo-mode and make-bot-ui to their folder names so every
   harness resolves them the same way.
@@ -22,6 +22,12 @@ Changes from pstack:
   and skills.sh (skills.sh.json), and replaced the Cursor manifest with ostack's own.
 - Rewrote the top of README.md and the install steps for a repository that isn't in the
   Cursor Marketplace.
+- Ported the Cursor-specific parts to Claude Code: the Task tool and its parameters became the
+  Agent tool, Cursor model slugs became a model and an effort per role, ostack-models.mdc became
+  ~/.claude/rules/ostack-models.md, Custom Modes became the onyo output style, Bugbot became
+  Claude Code Review, cursor-team-kit and Cursor built-ins became Claude Code built-ins, cloud
+  agents became cloud sessions, Cursor Automations became Claude Code routines, and the Origin
+  forge branches were removed. Added the onyo-reader agent for read-only roles.
 
 The logo in assets/logo.png comes from pstack.
 

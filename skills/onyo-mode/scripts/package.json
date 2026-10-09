@@ -1,5 +1,5 @@
 {
-  "name": "@cursor-skill/onyo-mode-tools",
+  "name": "@ostack/onyo-mode-tools",
   "private": true,
   "type": "module",
   "scripts": {

@@ -343,6 +343,14 @@ function isBugbot(comment: T.ReviewComment | null): boolean {
         "agentic security review",
         "description start",
         "severity",
+      ].some((token) => body.includes(token))) ||
+    ((author === "claude" || author === "claude[bot]") &&
+      [
+        "🔴",
+        "🟡",
+        "🟣",
+        "why this was flagged",
+        "claude code review",
       ].some((token) => body.includes(token)))
   );
 }

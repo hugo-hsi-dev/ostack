@@ -1,6 +1,6 @@
 ---
 name: triage-issue-reports
-description: Triage Slack issue reports with one thread-only verdict, evidence review, cause-aware routing, tracker dedupe, and fail-closed ticket creation. Use only from the configured Benny triage automation.
+description: Triage Slack issue reports with one thread-only verdict, evidence review, cause-aware routing, tracker dedupe, and fail-closed ticket creation. Use only from the configured Benny triage routine.
 disable-model-invocation: true
 ---
 
@@ -8,7 +8,7 @@ disable-model-invocation: true
 
 Classify one Slack report and post one useful verdict in its source thread. Create a tracker issue only for a clear, new bug. Do not reproduce or fix it here.
 
-Load the external Benny configuration supplied by the automation. If the config is missing, malformed, or incomplete, stop without posting or writing to the tracker.
+Load the external Benny configuration supplied by the routine. If the config is missing, malformed, or incomplete, stop without posting or writing to the tracker.
 
 ## Hard safety rules
 
@@ -20,12 +20,28 @@ Load the external Benny configuration supplied by the automation. If the config 
 - Post one substantive verdict. Do not narrate progress.
 - The coordinator is the only Slack poster.
 - Delegated workers return findings only. They must be read-only and receive no Slack credentials or write actions.
-- Every child prompt must forbid `SendSlackMessage`, `PostToSlack`, `chat.postMessage`, and every other Slack write.
+- Every child prompt must forbid every Slack connector write tool (any `mcp__*slack*` tool that posts, replies, reacts, or edits), `chat.postMessage`, and every other Slack write.
+- Claude Code subagents inherit the session's MCP tools, the Slack connector included. A worker counts as isolated only when its agent definition removes every Slack connector write tool through `tools` or `disallowedTools`.
 - If worker isolation cannot enforce those limits, do the work in the coordinator.
 - Never create an issue that cannot link back to the source thread.
 - Prefer no ticket over a guessed or duplicate ticket.
 - Apply ostack's `principle-separate-before-serializing-shared-state` to source coordinates.
 - Apply ostack's `principle-minimize-reader-load` and `unslop` skills to the final verdict.
+
+## Pick the reports
+
+Each routine run starts from a fresh clone and remembers nothing from earlier runs. Slack markers and the claim reaction are the only dedupe state.
+
+For a scheduled run:
+
+1. Read top-level messages in the configured source channel through the Slack connector, back to `trigger.scan_lookback_hours`.
+2. Skip any message posted by the triage identity.
+3. Skip a report when its thread already holds a configured Benny marker, or its root carries the configured `seen` reaction from the triage identity.
+4. Take the remaining reports oldest first, up to `trigger.triage_max_reports_per_run`. Later runs pick up the rest.
+5. For each report, re-read the thread and repeat the check in step 3. Then add the `seen` reaction to the root as the triage identity before any other work. A reaction is not a post. If the reaction fails, skip the report.
+6. Run sections 1 through 10 for one report at a time, with the trigger's `source_channel_id` set to the scanned channel, `trigger.ts` set to the report's timestamp, and `trigger.thread_ts` empty. Finish or stop one report before starting the next.
+
+For an API run, read the coordinates from the `text` field in the routine-fire-payload block. Parse it as JSON with `source_channel_id`, `message_ts`, and optional `thread_ts`, and use them as the trigger's `source_channel_id`, `trigger.ts`, and `trigger.thread_ts`. If the block is missing or the JSON is malformed, stop with no writes. Apply the same dedupe check and claim before section 1.
 
 ## 1. Freeze source coordinates
 
@@ -225,7 +241,7 @@ Use only the configured marker strings. The repro automation trusts the marker o
 
 After posting, read the same source thread and verify the verdict appears under `SOURCE_THREAD_TS`. If it does not, never retry at the root.
 
-If this run created a tracker issue and the verdict did not land, use the adapter's compensation action. Verify that the issue is canceled, closed, or deleted. If compensation cannot be verified, report the failure only in the automation run output.
+If this run created a tracker issue and the verdict did not land, use the adapter's compensation action. Verify that the issue is canceled, closed, or deleted. If compensation cannot be verified, report the failure only in the routine run output.
 
 ## 10. Watch one follow-up window
 
@@ -235,6 +251,6 @@ Watch the source thread for the configured follow-up window, then stop.
 - Apply a concrete correction to the tracker issue when safe.
 - Do not emit a second marker in the same run.
 - Stay out of human coordination and side chatter.
-- Stop early if someone asks the automation to stop.
+- Stop early if someone asks the routine to stop.
 
-Do not extend the window more than once. A new report should start a new run.
+Do not extend the window more than once. A new report gets its own pass through the scan.
