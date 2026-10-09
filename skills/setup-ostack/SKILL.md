@@ -1,6 +1,6 @@
 ---
 name: setup-ostack
-description: Configure which models ostack uses per role and at what reasoning budget. Detects your available models and writes an always-loaded rule that overrides the skill defaults. Use for /setup-ostack, "configure ostack models", "ostack budget", or changing ostack's model choices.
+description: Configure which models ostack uses per role and at what effort budget. Detects your available models and writes an always-loaded rule that overrides the skill defaults. Use for /setup-ostack, "configure ostack models", "ostack budget", or changing ostack's model choices.
 ---
 
 # Setup ostack

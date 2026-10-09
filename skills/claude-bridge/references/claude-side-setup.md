@@ -55,4 +55,4 @@ Keep your messages short.
 - **Network access stays at its default.** A Bearer network secret's allowed host is reachable even when the environment's allowlist doesn't list it, so the secret alone lets replies through.
 - **One secret per environment, named "Onyo Key".** The environment is dedicated to one Project, so the name needs no slug.
 - **No Network secrets section.** Some accounts don't offer it. The user says so when they edit the environment, and the bot gives the variable alternative outside this paste (see the walkthrough), so the prompt stays one path.
-- **Changing the rules later.** Ask the main thread to replace its "ONYO messages" section with the new one. The relay prompt never changes.
+- **Changing the rules later.** Ask the main thread to replace its "ONYO messages" section with the new one. The relay prompt is the same for every Project and changes only when this skill changes it.

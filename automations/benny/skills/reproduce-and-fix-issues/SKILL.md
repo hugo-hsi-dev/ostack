@@ -221,9 +221,9 @@ Post detailed evidence only in the operations thread when configured. Keep the s
 
 Update the operations status first.
 
-For `Could not reproduce` or `Blocked`, post nothing in the source thread. The operations thread or run output carries the result.
+For `Could not reproduce` or `Blocked`, post nothing more in the source thread. A `[benny:reproducing]` claim reply from the scan is the only exception. The operations thread or run output carries the result.
 
-For a confirmed repro, run the source preflight and post at most one unprompted source reply:
+For a confirmed repro, run the source preflight and post at most one unprompted source reply. A `[benny:reproducing]` claim reply does not count against it. The reply follows these rules.
 
 - Say the issue reproduced.
 - Link the operations evidence thread when one exists.

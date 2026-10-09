@@ -21,7 +21,7 @@ Run:
 /setup-ostack
 ```
 
-[`/setup-ostack`](../../skills/setup-ostack/SKILL.md) detects the models you have access to, asks for a reasoning budget, shows you each role (code delegates, judgment, the review panels), and asks what you want. Answer the questions. It writes `~/.claude/rules/ostack-models.md`, a small rule file Claude Code loads into every session and every ostack skill reads.
+[`/setup-ostack`](../../skills/setup-ostack/SKILL.md) detects the models you have access to, asks for a effort budget, shows you each role (code delegates, judgment, the review panels), and asks what you want. Answer the questions. It writes `~/.claude/rules/ostack-models.md`, a small rule file Claude Code loads into every session and every ostack skill reads.
 
 The defaults run at `xhigh` reasoning, the same as the `large` budget. `unlimited` lifts each model to its highest effort, up to `max`. `medium` and `small` lower the reasoning and spend fewer tokens.
 
@@ -43,7 +43,7 @@ After setup, start a new session. The model rule applies to new sessions.
 
 ostack spends extra tokens on subagents and review panels. That's the price of the rigor. To spend fewer:
 
-- Rerun `/setup-ostack` and pick a smaller reasoning budget or cheaper models. A strong model in the main chat with cheaper, faster models in the code roles is a good split.
+- Rerun `/setup-ostack` and pick a smaller effort budget or cheaper models. A strong model in the main chat with cheaper, faster models in the code roles is a good split.
 - Set a role to `inherit` so it runs on the session's own model.
 - Shorten a panel list. Each entry runs one subagent.
 - Save `/onyo-mode` for work that needs rigor. A small, obvious edit doesn't.

@@ -346,7 +346,7 @@ models are configurable too. type [`/setup-ostack`](./skills/setup-ostack/SKILL.
 
 when a default changes, a rule written before the change still pins the old default. delete those role lines, or delete the file, then run `/setup-ostack` again. a rerun keeps any role whose model differs from the default.
 
-## automations
+## routines
 
 ostack also ships a dormant [benny routine pack](./automations/benny/). benny triages slack issue reports, then reproduces and fixes confirmed bugs with real ui evidence. its files are not registered as slash skills.
 
