@@ -38,7 +38,7 @@ When the model rule is missing and it matters, ask whether the user wants to pic
 2. Run [`/setup-ostack`](../setup-ostack/SKILL.md). It asks for an effort budget, maps a model to each role, and writes a rule. The rule applies to new sessions.
 3. Start a real task with `/onyo-mode`, a goal, and a check that can pass or fail.
 
-Installing changes nothing until the user invokes a skill. Only `/setup-ostack`, `/claude-bridge`, and `/typescript-best-practices` load on their own. The first two load from the user's words, and `/typescript-best-practices` loads on `.ts` or `.tsx` work. The [README](../../README.md) and [guide page 1](../../docs/guide/01-setup.md) have the details. Offer to word their first prompt with them, per [`references/prompting.md`](references/prompting.md).
+Installing changes nothing until the user invokes a skill. Only `/setup-ostack` and `/typescript-best-practices` load on their own. `/setup-ostack` loads from the user's words, and `/typescript-best-practices` loads on `.ts` or `.tsx` work. The [README](../../README.md) and [guide page 1](../../docs/guide/01-setup.md) have the details. Offer to word their first prompt with them, per [`references/prompting.md`](references/prompting.md).
 
 If cost is the worry, say where the tokens go and how to spend fewer. ostack spends extra tokens on subagents and review panels. Rerun `/setup-ostack` and pick a smaller budget or cheaper models. A role set to `inherit` runs on the session's model and effort, which saves tokens when the session runs on a cheaper model or a lower effort. A shorter panel list runs fewer subagents, one for each entry. Save `/onyo-mode` for work that needs rigor.
 
@@ -87,8 +87,7 @@ The default answer is `/onyo-mode`, which runs most of the others when its steps
 | Turn their own working habits into a personal mode skill | [`/automate-me`](../automate-me/SKILL.md) |
 | Turn what a finished task taught into skill edits | [`/reflect`](../reflect/SKILL.md) |
 | Stop agents from repeating the same mistakes in this repo | [`/correct`](../correct/SKILL.md) |
-| Build a page whose buttons wake a Grok Bot over a webhook | [`/make-bot-ui`](../make-bot-ui/SKILL.md) |
-| Send messages from a Grok Bot to a Claude Project and get replies back | [`/claude-bridge`](../claude-bridge/SKILL.md) |
+| Build a page whose buttons wake a Claude Code routine over its API trigger | [`/make-bot-ui`](../make-bot-ui/SKILL.md) |
 | Find their way around ostack | `/onyo-help` |
 
 If a skill directory next to this one is missing from the table, read its frontmatter and route by its description. The `principle-*` directories are covered under principles below.
@@ -133,7 +132,7 @@ Principles are one-rule skills that `/onyo-mode` reads and cites in its replies.
 | A question got treated as the next step of the last task | Say "new task", or say the turn doesn't need the mode. |
 | A new model choice had no effect | The rule from `/setup-ostack` applies to new sessions. Start one. Cloud sessions and routines don't read `~/.claude/rules/`, so commit a copy at `.claude/rules/ostack-models.md` for them. |
 | Runs cost more than expected | See the cost paragraph under Get set up. |
-| A skill didn't load on its own | Only `/setup-ostack`, `/claude-bridge`, and `/typescript-best-practices` load on their own. The first two load from the user's words, and `/typescript-best-practices` loads on `.ts` or `.tsx` work. The others load when the user types them or when `/onyo-mode` runs them, and it doesn't run every skill. |
+| A skill didn't load on its own | Only `/setup-ostack` and `/typescript-best-practices` load on their own. `/setup-ostack` loads from the user's words, and `/typescript-best-practices` loads on `.ts` or `.tsx` work. The others load when the user types them or when `/onyo-mode` runs them, and it doesn't run every skill. |
 | Parallel agents overwrote each other | Give each agent its own worktree (`isolation: "worktree"`), or run them as cloud sessions, which each get their own machine. |
 | An overnight run moved but finished nothing | `/loop` needs a check that can pass or fail, not a duration. See [guide page 7](../../docs/guide/07-overnight.md). |
 | The reply claims success from a green build | Ask for the real command, flow, stored value, or profile. That's the prove-it-works principle. |

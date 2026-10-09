@@ -6,11 +6,6 @@
       "title": "Start here",
       "description": "The routing skill, help, and model setup.",
       "skills": ["onyo-mode", "onyo-help", "setup-ostack"]
-    },
-    {
-      "title": "Grok Bot",
-      "description": "Skills that connect a Grok Bot to other tools.",
-      "skills": ["claude-bridge", "make-bot-ui"]
     }
   ]
 }

@@ -3,8 +3,7 @@
 ostack is a fork of [pstack](https://github.com/cursor/plugins/tree/main/pstack), the skill pack by
 [poteto](https://x.com/poteto) (Lauren Tan), with every `poteto` swapped for `onyo`. `poteto-mode`
 is `onyo-mode`, `poteto-help` is `onyo-help`, `poteto-agent` is `onyo-agent`, and `setup-pstack` is
-`setup-ostack`. ostack also adds [`claude-bridge`](./skills/claude-bridge/SKILL.md), which lets a
-Grok Bot send messages to a Claude Project and get the answers back.
+`setup-ostack`.
 
 All credit for the original skills, playbooks, principles, guide, and automations goes to poteto.
 ostack keeps pstack's MIT license and copyright notice. See [LICENSE](./LICENSE) and
@@ -52,7 +51,7 @@ codex plugin add ostack@ostack
 
 ```bash
 npx skills add hugo-hsi-dev/ostack --list
-npx skills add hugo-hsi-dev/ostack --skill claude-bridge
+npx skills add hugo-hsi-dev/ostack --skill onyo-mode
 ```
 
 skills.sh copies skills only. The `onyo-agent`, `onyo-reader`, and Comment Sicko subagents and the
@@ -64,14 +63,17 @@ The skills use the Agent Skills format, so every harness above can read them. Th
 including `onyo-mode`, `how`, `why`, and `teach`, spawn Claude Code subagents through the Agent tool
 with a model and effort per role. The `onyo` output style, `/loop`, `/simplify`, `/run`, and cloud
 sessions are Claude Code features, so those parts may behave differently in other harnesses.
-`claude-bridge` and `make-bot-ui` assume a Grok Bot.
+`make-bot-ui` assumes a Claude Code routine with an API trigger.
 
 ## Claude Code port
 
-pstack's creator runs it inside Cursor. Her public posts describe a Grok Bot in Slack acting as a
-manager, Cursor cloud agents doing the coding on their own machines, Cursor Projects grouping those
-agents into one conversation, and Cursor Automations and Grok Bot routines running work on a
-schedule or on events, such as the benny bug-report pack. ostack keeps that shape on Claude:
+pstack's creator runs it inside Cursor. Her public posts describe three layers: Cursor cloud agents
+doing the coding in threads on their own machines, Cursor Projects grouping those agents into one
+conversation, and a Grok Bot in Slack acting as a manager that takes in work and hands tasks down to
+the Projects. Cursor Automations and Grok Bot routines run work on a schedule or on events, such as
+the benny bug-report pack. ostack keeps the first two layers on Claude, as threads and Claude
+Projects, and drops the bot. What the bot did, taking in work, comes from project routines on a
+schedule or trigger, or from you typing in a Project's threads:
 
 | pstack in Cursor | ostack in Claude Code |
 | --- | --- |
@@ -82,28 +84,12 @@ schedule or on events, such as the benny bug-report pack. ostack keeps that shap
 | `AskQuestion` | `AskUserQuestion` |
 | Cursor cloud agents and Cursor Projects | Claude Code cloud sessions (`claude --cloud`) and Claude Projects |
 | Cursor Automations | Claude Code routines (schedule, API, and GitHub triggers) |
-| Grok Bot in Slack | Claude Tag in Slack, or a Grok Bot bridged with [`claude-bridge`](./skills/claude-bridge/SKILL.md) |
+| Grok Bot in Slack, taking in work for Projects | No bot. Project routines (schedule, API, and GitHub triggers) take in work, or you type in a Project's threads |
 | Bugbot | Claude Code Review, and `/code-review` locally |
 | `cursor-team-kit` `/deslop`, `control-ui`, `control-cli` | Claude Code's `/simplify` and `/run` |
 | Cursor's `create-skill` | Anthropic's `skill-creator` plugin |
 | Cursor's built-in babysit | Claude Code's PR Auto-fix. The Babysit playbook still owns PR-status requests under `/onyo-mode` |
 | Origin forge CLI | `gh`, or the GitHub MCP tools in cloud sessions |
-
-## claude-bridge
-
-[`claude-bridge`](./skills/claude-bridge/SKILL.md) connects a Grok Bot to a Claude Project with
-plain Markdown both ways. The bot sends ONYO messages, Markdown whose first line is
-`# ONYO MESSAGE`, through the `/fire` API of the Project's relay routine. The relay forwards each one
-unchanged to the Project's main thread, which answers it or hands the work to threads and tracks
-them. Claude POSTs its replies to a Grok Bot webhook routine, which wakes the bot.
-
-Setup runs on the Grok Bot side ([walkthrough](./skills/claude-bridge/references/walkthrough.md))
-and ends with one paste for the Project's main thread. There Claude writes the "ONYO messages"
-section of its Project instructions and creates the relay routine itself. The user creates a
-dedicated cloud environment for the Project, which holds the webhook secret, and adds the routine's
-API trigger. After setup, daily use doesn't load the skill. A small helper,
-[`scripts/bridge.mjs`](./skills/claude-bridge/scripts/bridge.mjs), claims Projects, prints the setup
-texts, and sends messages.
 
 ---
 
@@ -211,8 +197,7 @@ to keep [`/onyo-mode`](./skills/onyo-mode/SKILL.md) on across turns, run `/outpu
 | [`/swarm`](./skills/swarm/SKILL.md) | you want N parallel workers across different slices or races, then one aggregated report. |
 | [`/interrogate`](./skills/interrogate/SKILL.md) | you have a diff and want different models to try to break it, including a strict code-quality lens. |
 | [`/automate-me`](./skills/automate-me/SKILL.md) | you want your own `-mode` skill, drafted from how you've actually worked. |
-| [`/make-bot-ui`](./skills/make-bot-ui/SKILL.md) | you want a page or dashboard whose buttons wake a Grok Bot over a webhook, including the sender-key handoff and Tailscale. |
-| [`/claude-bridge`](./skills/claude-bridge/SKILL.md) | you want a Grok Bot to send messages to a Claude Project and get replies back through a webhook. relay mode only: the Project creates its own relay routine and runs in a dedicated environment. |
+| [`/make-bot-ui`](./skills/make-bot-ui/SKILL.md) | you want a page or dashboard whose buttons wake a Claude Code routine over its API trigger, including the token handoff and Tailscale. |
 | [`/setup-ostack`](./skills/setup-ostack/SKILL.md) | you want to pick which models ostack uses per role. detects your models and writes a config rule. |
 | [`/reflect`](./skills/reflect/SKILL.md) | a long task landed and you want the recipe captured as a skill edit. |
 | [`/correct`](./skills/correct/SKILL.md) | you keep correcting agents for the same mistakes. mines history for mistake classes, fixes each at the highest level that works (architecture, then types, lint, and ci, then tests, with docs last), and keeps a table pairing each rule with what enforces it. |
