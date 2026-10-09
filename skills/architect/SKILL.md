@@ -30,7 +30,7 @@ Skip Phase A only when the work is genuinely greenfield with no surrounding syst
 
 ## Phase B: Sketch
 
-Run the **arena** skill with the design-sketch task and the Phase A grounding artifacts. Pass `${CLAUDE_SKILL_DIR}/references/runner-prompt.md` as each runner's prompt. Each candidate produces a design package shaped per `references/rationale-template.md`.
+Run the **arena** skill with the design-sketch task and the Phase A grounding artifacts. Pass `${CLAUDE_SKILL_DIR}/references/runner-prompt.md` as each runner's prompt, and put the absolute paths of this `SKILL.md` and of the skills directory that holds it (`${CLAUDE_SKILL_DIR}/..`) in each runner's brief. Each candidate produces a design package shaped per `references/rationale-template.md`.
 
 Take the runners from the `architect runners` line in the `ostack-models.md` rule, in place of the `arena runners` line. If the rule or that line is missing, use `opus xhigh` and `sonnet xhigh`. Alias and rejected entries follow the runner rules in the **arena** skill's Phase A.
 
