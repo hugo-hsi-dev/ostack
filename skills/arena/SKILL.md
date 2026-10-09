@@ -40,7 +40,7 @@ If a candidate fails to produce output, proceed with N-1 and note the dropout in
 
 ## Phase C: Cross-judge
 
-After all Phase B candidates complete, choose one model from the `arena cross-judge pool` line in `~/.claude/rules/ostack-models.md`. If the rule or that line is missing, choose from `opus xhigh` and `sonnet xhigh`. Prefer a model other than the parent's. Spawn one read-only judge subagent (`subagent_type: "onyo-reader"`, or `"general-purpose"` with "Read-only. Do not edit, write, or commit files." in the brief) on that model. It sees the rubric and the candidates by path label, scores each criterion, and recommends a base with rationale. It runs in parallel with the parent's reading in Phase D, not with the candidates themselves. Don't spawn the judge while candidates are still writing.
+After all Phase B candidates complete, choose one model from the `arena cross-judge pool` line in `~/.claude/rules/ostack-models.md`. If the rule or that line is missing, choose from `opus xhigh` and `sonnet xhigh`. Prefer a different model family from the parent's. Spawn one read-only judge subagent (`subagent_type: "onyo-reader"`, or `"general-purpose"` with "Read-only. Do not edit, write, or commit files." in the brief) on that model. It sees the rubric and the candidates by path label, scores each criterion, and recommends a base with rationale. It runs in parallel with the parent's reading in Phase D, not with the candidates themselves. Don't spawn the judge while candidates are still writing.
 
 ## Phase D: Pick a base
 

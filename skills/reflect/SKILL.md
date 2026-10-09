@@ -34,7 +34,7 @@ For each candidate, read the first `"type":"user"` JSONL line and check that its
 
 One message, three `Agent` calls, `subagent_type: "onyo-reader"`, with `model` and `effort` set as below. If `onyo-reader` is not installed, use `"general-purpose"` and put "Read-only. Do not edit, write, or commit files." in the brief. Reviewers need MCP access for context lookups (tickets, chat threads, observability traces referenced in the transcript). Read-only agents keep MCP.
 
-Each reviewer and the synthesizer name a role line in the `~/.claude/rules/ostack-models.md` rule and a default. Pass that line's model and effort as the Agent tool's `model` and `effort`, or the default's when the rule or the line is missing. Omit both when the value is `inherit`. If the Agent tool rejects a model, use the default and say so.
+Each reviewer and the synthesizer name a role line in the `~/.claude/rules/ostack-models.md` rule and a default. Pass that line's model and effort as the Agent tool's `model` and `effort`, or the default's when the rule or the line is missing. Omit both when the value is `inherit`. If the Agent tool rejects a model, use the default and say so. If it rejects the default, use the closest valid model from its error message.
 
 | Lens | Role line | Default | Prompt template |
 |---|---|---|---|
@@ -62,7 +62,7 @@ For each approved Accepted item, follow the Routing field exactly:
 
 - Trivial existing-skill edit (a one-line bullet, a tightened sentence, a stale fact corrected): parent does directly.
 - Substantive existing-skill edit (a new section, a new pattern table, more than ~10 lines): hand to the `skill-creator` skill (Anthropic's skill-authoring plugin, `/plugin install skill-creator@claude-plugins-official`) and run its draft / eval / iterate loop.
-- `tune description: <skill path>` (the skill exists but didn't trigger when it should have): hand to `skill-creator` and run its description-tuning loop. This applies only to skills without `disable-model-invocation: true`.
+- `tune description: <skill path>` (the skill exists but didn't trigger when it should have): hand to `skill-creator` and run its description-tuning loop.
 - `new skill via skill-creator: <kebab-name>`: hand creation to `skill-creator`. Do not invent the shape ad hoc.
 
 If your environment ships a SKILL.md validator, run it on every touched skill before declaring done. Skip this step if it doesn't.

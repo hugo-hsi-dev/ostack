@@ -32,7 +32,7 @@ Walk through what each line buys you:
 - "done means..." turns the goal into checks every iteration can run.
 - "fresh worktree off `<base>`" keeps the run from colliding with anything else you have open.
 - "don't ask me before committing" pre-answers the permission the agent would otherwise block on.
-- "then run /loop" asks the agent to start `/loop`, Claude Code's built-in wake mechanism, not a ostack skill. A slash command runs only at the start of a message, so mid-message it goes in prose like this. The [Autonomous run playbook](../../skills/onyo-mode/playbooks/autonomous-run.md) uses it to re-check the finish condition on a fixed interval or at its own pace.
+- "then run /loop" asks the agent to start `/loop`, Claude Code's built-in wake mechanism, not a ostack skill. A slash command runs only at the start of a message, so mid-message it goes in prose like this. The [Autonomous run playbook](../../skills/onyo-mode/playbooks/autonomous-run.md) uses it to re-check the finish condition on events or a heartbeat.
 - The escape hatch lets it stop at a genuine dead end and write up why, which beats eight hours of creative goal reinterpretation.
 
 Because you'll review this work after stepping away, `/onyo-mode` routes it through [`/figure-it-out`](../../skills/figure-it-out/SKILL.md), which designs the run's phases before any code and wires in the decision log.

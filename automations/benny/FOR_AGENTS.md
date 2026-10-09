@@ -12,7 +12,7 @@ routines have no slack trigger. by default each routine runs on a schedule (hour
 - behavior: i want it to read the thread and attachments, classify the report as a bug or performance issue, feature request, question or feedback, or reroute, and trace the likely owning layer before routing.
 - tracker: i want it to search my configured tracker for duplicates, update a confident duplicate, and create a ticket only for a clear net-new bug.
 - tools: i want slack connector thread read, reaction, and reply access, my configured tracker integration, and my optional routing map.
-- outcome: i want exactly one verdict reply in the source thread with a short verdict and `[benny:bug]`, `[benny:performance]`, or `[benny:other]`. a bug or performance marker may include the tracker url. when the slack connector has no reaction tool, benny also posts a short `[benny:triaging]` or `[benny:reproducing]` claim reply, which does not count against that one reply.
+- outcome: i want exactly one reply in the source thread with a short verdict and `[benny:bug]`, `[benny:performance]`, or `[benny:other]`. a bug or performance marker may include the tracker url.
 - boundary: i never want this routine to post a root message in the source channel.
 
 ### routine 2: reproduce and fix confirmed bugs
@@ -30,7 +30,6 @@ routines have no slack trigger. by default each routine runs on a schedule (hour
 - i want the source channel and root thread coordinates to stay immutable for the whole run.
 - each routine run starts from a fresh clone and remembers nothing. i want slack markers and claim reactions to be the only dedupe state, so a report is never handled twice.
 - the claude.ai slack connector acts as the person who connected it. i want it connected with a dedicated slack account for benny, because repro trusts any marker in the verdict format from that account, even one typed by hand.
-- if the slack connector has no reaction tool, i want dedupe to rely on the benny marker replies alone, with a short claim reply in the thread in place of each claim reaction.
 - i treat utility and debug bots as evidence, not delegation or fix ownership.
 - i allow subagents to help, but they cannot post to slack or receive slack credentials or slack connector write tools.
 - i want this entire pack committed at `.claude/automations/benny/` in the target repository. its `SKILL.md` files are direct routine instructions, not registered plugin skills.

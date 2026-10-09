@@ -26,7 +26,7 @@ The API trigger is added on the web. `/schedule` cannot add it or create a token
 Tell the user to do this:
 
 1. Open the routine from claude.ai/code/routines, or from the Project's **Routines** tab.
-2. Open the menu next to the routine's name and select **Edit**.
+2. Open the menu next to the routine's name (the chevron in the breadcrumbs at the top of its page) and select **Edit**.
 3. Under **Select a trigger**, click **Add another trigger** and choose **API**.
 4. Copy the URL. The user may paste the URL in chat.
 5. Click **Generate token** and copy the token. It is shown once. The user must not paste the token in chat.
@@ -66,7 +66,7 @@ Each routine accepts 30 fires per hour, shared with **Run now**. Over the limit,
 Before you tell the user that the UI is live, probe once with a harmless payload.
 Use an action that the prompt ignores.
 
-If a POST can fail, append the same JSON to a local log. Re-send that log from the server. Do not poll as the primary path. Do not send media bytes in the fire text.
+If a POST can fail, append the same JSON to a local log. Do not retry it from the server. Do not poll as the primary path. Do not send media bytes in the fire text.
 
 ## Put the page on the tailnet
 

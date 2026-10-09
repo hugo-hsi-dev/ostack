@@ -93,7 +93,7 @@ Read every output yourself before accepting the verdict. If you disagree with th
 
 ## Build a bot UI with `/make-bot-ui`
 
-One situational skill wakes a routine from a page you click. [`/make-bot-ui`](../../skills/make-bot-ui/SKILL.md) builds a small page whose buttons wake a Claude Code routine over its API trigger. For example, you could swipe through a review queue and have each swipe ask the routine to act on that item, as a new thread in your Claude Project. A server on your machine holds the routine's token, so the token never reaches the browser or the chat. The skill also covers exposing the page on Tailscale.
+One situational skill wakes a routine from a page you click. [`/make-bot-ui`](../../skills/make-bot-ui/SKILL.md) builds a small page whose buttons wake a Claude Code routine over its API trigger. For example, you could swipe through a review queue and have each swipe ask the routine to act on that item, as a new thread in the Claude Project that owns the routine. A server on your machine holds the routine's token, so the token never reaches the browser or the chat. The skill also covers exposing the page on Tailscale.
 
 **Pitfall:** don't edit a skill mid-task because it's misbehaving. Fix it in its own PR and keep the task moving. A skill edit that ships tangled into feature work is invisible to review and impossible to evaluate.
 
