@@ -8,7 +8,7 @@ paths: ["**/*.ts", "**/*.tsx"]
 
 Apply the **type-system-discipline** principle skill first.
 
-A **<name>** principle skill sits at `${CLAUDE_SKILL_DIR}/../principle-<name>/SKILL.md`. Read it in full. These skills are user-only slash commands, so the Skill tool cannot load them.
+A **<name>** principle skill sits at `${CLAUDE_SKILL_DIR}/../principle-<name>/SKILL.md`. Read it in full. These skills are user-only slash commands, so the Skill tool cannot load them. If `${CLAUDE_SKILL_DIR}` appears literally, it is the directory that holds this file.
 
 | Rule | Summary |
 |------|---------|

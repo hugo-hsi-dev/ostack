@@ -118,7 +118,7 @@ two steps:
 
 new here? the [ostack guide](./docs/guide/README.md) walks you through a first real task, from setup and prompting through verification and overnight runs. stuck, or unsure which skill fits? ask [`/onyo-help`](./skills/onyo-help/SKILL.md).
 
-that's it. the other skills are situational; the mode skill uses them for you as needed. out of the box the mode splits work by model strength: code delegates (feature, refactoring, bug fix, perf, hillclimb) go to sonnet 5.5, while the hardest changes, prose, and judgment go to opus 5.5, both at xhigh effort. the default panel is opus 5.5 / sonnet 5.5. [`/setup-ostack`](./skills/setup-ostack/SKILL.md) changes any of it.
+that's it. the other skills are situational; the mode skill uses them for you as needed. out of the box the mode splits work by model strength: code delegates (feature, refactoring, bug fix, perf, hillclimb) go to the `sonnet` model alias, while the hardest changes, prose, and judgment go to the `opus` alias, both at xhigh effort. the default panel is `opus` / `sonnet`. [`/setup-ostack`](./skills/setup-ostack/SKILL.md) changes any of it.
 
 ## usage
 
@@ -282,7 +282,7 @@ help:              /onyo-help which skill should i use to review this branch?
 
 ## the `onyo-agent` and Comment Sicko subagents
 
-ostack also ships a subagent that runs my style end to end. spawn it from a parent agent via [`subagent_type: "onyo-agent"`](./agents/onyo-agent.md). it reads `onyo-mode` in full, including its inline principles index, before doing any work. substituting `general-purpose` skips that read and drifts.
+ostack also ships a subagent that runs my style end to end. spawn it from a parent agent via [`subagent_type: "onyo-agent"`](./agents/onyo-agent.md) (`ostack:onyo-agent` in a plugin install). it reads `onyo-mode` in full, including its inline principles index, before doing any work. substituting `general-purpose` skips that read and drifts.
 
 [`/onyo-mode`](./skills/onyo-mode/SKILL.md) and [`subagent_type: "onyo-agent"`](./agents/onyo-agent.md) route through the same wrapper.
 
@@ -348,7 +348,7 @@ when a default changes, a rule written before the change still pins the old defa
 
 ## automations
 
-ostack also ships a dormant [benny automation pack](./automations/benny/). benny triages slack issue reports, then reproduces and fixes confirmed bugs with real ui evidence. its files are not registered as slash skills.
+ostack also ships a dormant [benny routine pack](./automations/benny/). benny triages slack issue reports, then reproduces and fixes confirmed bugs with real ui evidence. its files are not registered as slash skills.
 
 to set it up, point claude code at [`FOR_AGENTS.md`](./automations/benny/FOR_AGENTS.md). setup copies the pack into the target repository at `.claude/automations/benny/`, enables ostack there for shared skills, keeps user configuration outside the copied pack, and helps you create the two claude code routines.
 
