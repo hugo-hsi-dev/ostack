@@ -41,7 +41,7 @@ Launch all reviewers in a single message using the Agent tool. Use the `interrog
 | Reviewer B | `sonnet xhigh` |
 
 For each reviewer:
-- `subagent_type`: `"onyo-reader"`. If `onyo-reader` is not installed, use `"general-purpose"` and put "Read-only. Do not edit, write, or commit files." in the brief
+- `subagent_type`: `"onyo-reader"`. If `onyo-reader` is not installed, use `"general-purpose"` and put "Read-only. Do not edit, write, or commit files." in the brief.
 - `model` and `effort`: the configured `interrogate reviewers` entry, or the table default with no configured line. For an `inherit` entry, omit both so that reviewer runs on the parent model.
 
 If the Agent tool rejects a configured entry, run that reviewer on the table default of its family and say so. Each model alias (`fable`, `opus`, `sonnet`, `haiku`) is its own family. With no family match, use Reviewer A's default. If it rejects a table default, use the other table default, spawn with it, and open a separate PR to update the default table. Do not block the review on the model issue. Never treat an `inherit` entry as a rejected model or apply either fallback to it.

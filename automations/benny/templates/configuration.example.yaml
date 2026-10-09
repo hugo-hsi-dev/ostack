@@ -6,10 +6,10 @@ routines:
 
 # Routines have no Slack trigger. "schedule" scans the source channel each run.
 # "api" reads the report coordinates from the routine-fire-payload text.
-trigger:
+scan:
   type: "schedule"
   schedule: "hourly"
-  scan_lookback_hours: 24
+  lookback_hours: 24
   triage_max_reports_per_run: 5
   reproduce_max_reports_per_run: 1
 

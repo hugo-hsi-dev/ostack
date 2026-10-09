@@ -8,6 +8,8 @@ disable-model-invocation: true
 
 Fan out N parallel attempts at the same task. Read every candidate end to end. Pick the strongest as the base. Graft the best ideas from the others into it. Verify the synthesized result.
 
+A **<name>** principle skill below sits at `${CLAUDE_SKILL_DIR}/../principle-<name>/SKILL.md`. Read it in full. These skills are user-only slash commands, so the Skill tool cannot load them.
+
 ## Start
 
 Open a todolist with one entry per phase before launching anything.

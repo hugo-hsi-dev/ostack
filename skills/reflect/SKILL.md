@@ -8,6 +8,8 @@ disable-model-invocation: true
 
 Mine the current conversation for durable learnings, then route them into skill edits.
 
+A **<name>** principle skill below sits at `${CLAUDE_SKILL_DIR}/../principle-<name>/SKILL.md`. Read it in full. These skills are user-only slash commands, so the Skill tool cannot load them.
+
 ## When to invoke
 
 Invoke when the user says "reflect" or "/reflect". Skip when the conversation is trivial, off-topic, or already covered by an existing skill the parent followed correctly. One-offs are not learnings.
@@ -16,7 +18,7 @@ Invoke when the user says "reflect" or "/reflect". Skip when the conversation is
 
 ### 1. Locate the active transcript
 
-The parent finds its own transcript file before fanning out. The active project's transcript directory is `~/.claude/projects/<slug>/` for the current working directory, where `<slug>` is the absolute working directory with every `/` turned into `-`. Use that path. Do not glob across `~/.claude/projects/*/`. That crosses workspace boundaries and reads private chats from unrelated projects.
+The parent finds its own transcript file before fanning out. The active project's transcript directory is `~/.claude/projects/<slug>/` for the current working directory, where `<slug>` is the absolute working directory with every character that is not a letter or digit turned into `-`. Use that path, called `<transcripts>` below. Do not glob across `~/.claude/projects/*/`. That crosses workspace boundaries and reads private chats from unrelated projects.
 
 The current session's transcript is `<transcripts>/${CLAUDE_SESSION_ID}.jsonl`. If it is missing, list candidates:
 

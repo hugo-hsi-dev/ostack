@@ -105,7 +105,7 @@ Ask for or confirm:
 - Source Slack channel ID
 - Optional operations or status channel ID
 - Repository URL and default branch
-- Triage identity or Slack user ID. It must be the Slack account the routines' Slack connector acts as, because the claim reactions and verdicts come from it.
+- Triage identity or Slack user ID. It must be the Slack account the routines' Slack connector acts as, because the claim reactions and verdicts come from it. The claude.ai Slack connector acts as the person who connected it, not as a bot. Recommend connecting it with a dedicated Slack account for Benny. Repro trusts any marker in the verdict format from that account, even one typed by hand, and triage skips every message that account posts, so a personal account mixes its owner's messages with Benny's.
 - Trigger type, `schedule` (default) or `api`, the schedule interval (hourly or longer), the scan lookback, and the per-run report limits
 - Issue tracker type, team, project, labels, and intake status
 - Tracker adapter skill or MCP actions
@@ -204,7 +204,7 @@ The triage routine, filled from configuration:
 
 - Name `benny-triage`.
 - Read and follow `.claude/automations/benny/skills/triage-issue-reports/SKILL.md` for every run.
-- On a scheduled run, scan the configured source Slack channel for new top-level reports with no Benny marker and no `seen` reaction from the triage identity, and claim each with that reaction.
+- On a scheduled run, scan the configured source Slack channel for new top-level reports with no Benny marker and no `seen` reaction from the triage identity, and claim each with that reaction. If the Slack connector has no reaction tool, dedupe on the Benny marker replies alone and claim with a short `[benny:triaging]` reply instead.
 - On an API run, read the report coordinates from the `text` field in the routine-fire-payload block.
 - Read each report's thread and reply only inside it.
 - Use the configured issue-tracker integration.
@@ -216,7 +216,7 @@ After the triage routine is saved, the repro and fix routine:
 
 - Name `benny-reproduce`.
 - Read and follow `.claude/automations/benny/skills/reproduce-and-fix-issues/SKILL.md` for every run.
-- On a scheduled run, scan the configured source Slack channel for one report with a trusted bug or performance marker and no `reproducing` claim reaction, and claim it with that reaction.
+- On a scheduled run, scan the configured source Slack channel for up to `scan.reproduce_max_reports_per_run` reports (default 1) with a trusted bug or performance marker and no `reproducing` claim reaction, and claim each with that reaction. If the Slack connector has no reaction tool, claim with a short `[benny:reproducing]` reply instead.
 - On an API run, read the report coordinates from the `text` field in the routine-fire-payload block.
 - Use the configured repository and default branch.
 - Read the source thread and reply only inside it.

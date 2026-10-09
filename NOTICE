@@ -22,7 +22,7 @@ Changes from pstack:
   and skills.sh (skills.sh.json), and replaced the Cursor manifest with ostack's own.
 - Rewrote the top of README.md and the install steps for a repository that isn't in the
   Cursor Marketplace.
-- Ported the Cursor-specific parts to Claude Code: the Task tool and its parameters became the
+- Ported the Cursor-specific parts to Claude Code. The Task tool and its parameters became the
   Agent tool, Cursor model slugs became a model and an effort per role, ostack-models.mdc became
   ~/.claude/rules/ostack-models.md, Custom Modes became the onyo output style, Bugbot became
   Claude Code Review, cursor-team-kit and Cursor built-ins became Claude Code built-ins, cloud

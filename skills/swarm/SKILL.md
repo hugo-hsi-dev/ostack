@@ -27,7 +27,7 @@ Open a todolist with one entry per phase before launching anything.
 
 ## Phase B: Fan out
 
-Spawn all N workers in one message with `subagent_type: "general-purpose"`, `isolation: "remote"`, `run_in_background: true`, and the step 4 model and effort, left unset for `inherit`. Each remote worker is a Claude Code cloud session with its own machine. Where the Agent tool does not offer `isolation: "remote"`, start each worker with `claude --cloud "<brief>"` from Bash and track it at claude.ai/code. Drop `isolation: "remote"` only when the worker needs access to something on the user's computer, and use `isolation: "worktree"` when it writes.
+Spawn all N workers in one message with `subagent_type: "general-purpose"`, `isolation: "remote"`, `run_in_background: true`, and the step 4 model and effort, left unset for `inherit`. Each remote worker is a Claude Code cloud session with its own machine. Where the Agent tool does not offer `isolation: "remote"`, start each worker with `claude --cloud "<brief>"` from Bash and track it at claude.ai/code. That command takes no model, so name the step 4 model and effort in the brief and say the worker can switch to them with `/model`. Each such brief also tells the worker to commit its report as a file on its own branch and push that branch. Drop `isolation: "remote"` only when the worker needs access to something on the user's computer, and use `isolation: "worktree"` when it writes.
 
 When a worker must start from a non-default pushed branch, name the branch in its brief and have it check that branch out first.
 
@@ -37,7 +37,7 @@ If a worker drops out, proceed with N-1 and note it.
 
 ## Phase C: Aggregate
 
-Read the terminal results. Drop a result that does not record the SHAs and method its brief names, and respawn that worker once. After a second miss, record a gap. A gap does not count as a pass. For coverage, every required slice needs a result. For a race, apply the selection rule declared up front. Use first pass, rank all, or best-of. Do not paste raw worker dumps.
+Read the terminal results. A subagent worker returns its result to you. A `claude --cloud` worker returns its pushed branch with the report file in it. Read that file from the session at claude.ai/code, or run `claude --teleport <session-id>` to pull the session and its branch, then read it locally. Drop a result that does not record the SHAs and method its brief names, and respawn that worker once. After a second miss, record a gap. A gap does not count as a pass. For coverage, every required slice needs a result. For a race, apply the selection rule declared up front. Use first pass, rank all, or best-of. Do not paste raw worker dumps.
 
 Keep a compact result table, one-line evidenced issues, and explicit gaps or dropouts.
 

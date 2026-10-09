@@ -21,6 +21,8 @@ Scan for:
 Findings must point to skills, tools, or MCPs invoked in this transcript. Speculative routings to skills the parent never opened do not count. To check whether a skill was used, scan the transcript for:
 
 - `Read` tool calls against any `SKILL.md` file (workspace `.claude/skills/`, user-level `~/.claude/skills/`, or plugin-installed paths under `~/.claude/plugins/`)
+- `Skill` tool calls, whose input names the skill
+- User slash-command invocations, recorded in user messages as `<command-name>/<skill></command-name>`
 - `Agent` prompts that name a skill path
 - Tool calls (Bash, Grep, MCP, etc.) that match a skill's documented commands
 

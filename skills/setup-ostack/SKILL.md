@@ -11,22 +11,22 @@ Write `~/.claude/rules/ostack-models.md`, a user-level rule that sets ostack's m
 
 ### 1. Detect available models
 
-Read the `model` parameter of the Agent tool in this session. Its allowed values (`opus`, `sonnet`, `haiku`, and `fable` when the account has it) are the dependable source. A full model ID such as `claude-opus-5-5` also works when the user names one. If you cannot read the parameter, ask the user which models they have access to. Never write a model you have not confirmed is available. The alias `inherit` is always valid even though it is not a detected model.
+Read the `model` parameter of the Agent tool in this session. Its allowed values (`opus`, `sonnet`, `haiku`, and `fable` when the account has it) are the dependable source. A full model ID also works when the user names one. If you cannot read the parameter, ask the user which models they have access to. Never write a model you have not confirmed is available. The alias `inherit` is always valid even though it is not a detected model.
 
-Every current model accepts the effort levels `low`, `medium`, `high`, `xhigh`, and `max`. The Agent tool takes them in its `effort` parameter.
+The Agent tool takes the effort levels `low`, `medium`, `high`, `xhigh`, and `max` in its `effort` parameter. On the Anthropic API the aliases resolve to models that take all five. Some older models, such as those on some Bedrock or Vertex routes, take fewer. If the Agent tool rejects an effort, use the nearest lower level and say so.
 
 ### 2. Load current state
 
-The default role-to-model mapping is the rule shape shown in step 5 below. If `~/.claude/rules/ostack-models.md` already exists, read it and treat its `# budget` line and its role values as the current choices. Otherwise start from those defaults. A line whose role is not in step 5, such as `how critics`, is from a retired role. Drop it. A value of `inherit-parent` or `auto` from an older rule means `inherit`. A Cursor-era slug such as `claude-opus-5-5-xhigh` or `grok-4.7-xhigh-fast` maps to `opus xhigh` or `sonnet xhigh`. Rewrite it in the new form and list the rewrite in step 3(c). If a Cursor rule exists at `~/.cursor/rules/ostack-models.mdc` and no Claude rule does, offer to carry its choices over the same way.
+The default role-to-model mapping is the rule shape shown in step 5 below. If `~/.claude/rules/ostack-models.md` already exists, read it and treat its `# budget` line and its role values as the current choices. Otherwise start from those defaults. A line whose role is not in step 5, such as `how critics`, is from a retired role. Drop it. A value of `inherit-parent` or `auto` from an older rule means `inherit`. A Cursor-era slug maps by its prefix. `claude-opus-*` becomes `opus`, `claude-sonnet-*` becomes `sonnet`, and `grok-*` becomes `sonnet`. Keep its effort token and drop any `fast` suffix, so `claude-opus-5-5-xhigh` becomes `opus xhigh` and `grok-4.7-xhigh-fast` becomes `sonnet xhigh`. Rewrite it in the new form and list the rewrite in step 3(c). If a Cursor rule exists at `~/.cursor/rules/ostack-models.mdc` and no Claude rule does, offer to carry its choices over the same way.
 
 ### 3. Budget, map, and confirm
 
 **(a) Ask for a budget.** Prefer AskUserQuestion over free text. Offer these four options with these exact labels, and name the current budget when the rule records one. With no rule, say that `large` matches the skill defaults.
 
-- `unlimited — max effort`
-- `large — xhigh effort`
-- `medium — high effort`
-- `small — medium effort`
+- `unlimited (max effort)`
+- `large (xhigh effort)`
+- `medium (high effort)`
+- `small (medium effort)`
 
 **(b) Apply it.** Build the working table from the skill defaults, and on a re-run keep any role you changed by model, list, or alias (`inherit`). `unlimited`, `large`, `medium`, and `small` set the effort of every role value, panel entries included, to `max`, `xhigh`, `high`, or `medium`. The model stays the same. `inherit` does not change, because it takes the parent's model and effort. So `unlimited` turns `opus xhigh` into `opus max` and `sonnet xhigh` into `sonnet max`. `large` keeps both defaults. `small` turns them into `opus medium` and `sonnet medium`.
 
@@ -43,7 +43,7 @@ Create `~/.claude/rules/` if it is missing. Write `~/.claude/rules/ostack-models
 ```
 # ostack model configuration (overrides skill defaults)
 # One line per role. Delete a line to fall back to the skill default.
-# A value is `<model> <effort>`: pass the model as the Agent tool's `model` and the effort as its `effort`.
+# A value is `<model> <effort>`. Pass the model as the Agent tool's `model` and the effort as its `effort`.
 # `inherit`: the role runs on the parent chat model and effort (omit `model` and `effort`). Inherit entries in a panel list still count toward its fan-out.
 # budget: large (xhigh)
 feature, refactoring: sonnet xhigh
@@ -71,4 +71,4 @@ Tell the user the rule was written and that it applies to new sessions. Re-runni
 
 ### 7. Offer a verification skill (optional)
 
-Check whether the project has a way to drive the real app for proof (a `verify-*` skill, or an existing harness). If not, offer once: "want a project-local verification skill, so agents can drive the app the way a user does and prove changes work? I can generate one with /create-verification-skill." On yes, invoke `/create-verification-skill` (resolves wherever ostack is installed: project, user, or plugin). On no, move on without pushing.
+Check whether the project has a way to drive the real app for proof (a `verify-*` skill, or an existing harness). If not, offer once: "want a project-local verification skill, so agents can drive the app the way a user does and prove changes work? I can generate one with /create-verification-skill." On yes, read `${CLAUDE_SKILL_DIR}/../create-verification-skill/SKILL.md` in full and follow it. It is a user-only slash command, so the Skill tool cannot load it. On no, move on without pushing.
