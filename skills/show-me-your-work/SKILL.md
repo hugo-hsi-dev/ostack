@@ -8,7 +8,7 @@ disable-model-invocation: true
 
 Keep one canonical log.
 
-A bold ostack skill name below means read `${CLAUDE_SKILL_DIR}/../<name>/SKILL.md` in full and follow it. A **<name>** principle skill sits at `${CLAUDE_SKILL_DIR}/../principle-<name>/SKILL.md`. These skills are user-only slash commands, so the Skill tool cannot load them.
+A bold ostack skill name below means read `${CLAUDE_SKILL_DIR}/../<name>/SKILL.md` in full and follow it. A **<name>** principle skill sits at `${CLAUDE_SKILL_DIR}/../principle-<name>/SKILL.md`. These skills are user-only slash commands, so the Skill tool cannot load them. If `${CLAUDE_SKILL_DIR}` appears literally, it is the directory that holds this file.
 
 ## The format
 
@@ -56,7 +56,7 @@ Commit it only when the work is ambitious enough that a reviewer needs the trail
 
 ## Audit the log against the transcript
 
-At the end of the run, before handing back, check the log told the truth. Read this run's transcript, `~/.claude/projects/<slug>/${CLAUDE_SESSION_ID}.jsonl`, where `<slug>` is the absolute working directory with every character that is not a letter or digit turned into `-`. Don't glob across `~/.claude/projects/*/`. That reads unrelated private chats. Walk this run's rows against what actually happened. Each stretch of them begins at one of this run's `start` rows, or at the first row if this run created the log, and ends at the next `start` row of another run:
+At the end of the run, before handing back, check the log told the truth. Read this run's transcript, `~/.claude/projects/<slug>/${CLAUDE_SESSION_ID}.jsonl`, where `<slug>` is the absolute working directory with every character that is not a letter or digit turned into `-`. If `${CLAUDE_SESSION_ID}` appears literally, take the newest `.jsonl` in that directory whose first `"type":"user"` line matches this conversation's opening prompt, as the **reflect** skill does. Don't glob across `~/.claude/projects/*/`. That reads unrelated private chats. Walk this run's rows against what actually happened. Each stretch of them begins at one of this run's `start` rows, or at the first row if this run created the log, and ends at the next `start` row of another run:
 
 - Check that every row maps to a real decision or action.
 - Check that each row's evidence resolves and shows what the row claims.
@@ -66,7 +66,7 @@ Correct the log, not the story. The audit never edits or removes a row, even an 
 
 ## Cross-model review of the trail
 
-Before handing back, spawn a read-only subagent (`subagent_type: "onyo-reader"`) on a model other than the one that did the work. Self-review is not a substitute. The subagent reads the audit trail and the run's transcript, then flags what the user should pay attention to. Not a redo of the work, a scan for what's suboptimal or risky.
+Before handing back, spawn a read-only subagent (`subagent_type: "onyo-reader"`) on a model other than the one that did the work. If `onyo-reader` is not installed, use `"general-purpose"` and put "Read-only. Do not edit, write, or commit files." in the brief. Self-review is not a substitute. The subagent reads the audit trail and the run's transcript, then flags what the user should pay attention to. Not a redo of the work, a scan for what's suboptimal or risky.
 
 - Decisions logged with weak or absent evidence.
 - Verification steps skipped or claimed without proof in the transcript.

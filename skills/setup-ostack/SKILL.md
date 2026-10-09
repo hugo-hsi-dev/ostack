@@ -13,7 +13,7 @@ Write `~/.claude/rules/ostack-models.md`, a user-level rule that sets ostack's m
 
 Read the `model` parameter of the Agent tool in this session. Its allowed values (`opus`, `sonnet`, `haiku`, and `fable` when the account has it) are the dependable source. A full model ID also works when the user names one. If you cannot read the parameter, ask the user which models they have access to. Never write a model you have not confirmed is available. The alias `inherit` is always valid even though it is not a detected model.
 
-The Agent tool takes the effort levels `low`, `medium`, `high`, `xhigh`, and `max` in its `effort` parameter. On the Anthropic API the aliases resolve to models that take all five. Some older models, such as those on some Bedrock or Vertex routes, take fewer. If the Agent tool rejects an effort, use the nearest lower level and say so.
+The Agent tool takes the effort levels `low`, `medium`, `high`, `xhigh`, and `max` in its `effort` parameter. On the Anthropic API the aliases resolve to models that take all five. Some older models, such as those on some Bedrock or Vertex routes, take fewer. An unsupported effort falls back on its own to the highest supported level at or below it. Note that fallback when you report the mapping.
 
 ### 2. Load current state
 
@@ -71,4 +71,4 @@ Tell the user the rule was written and that it applies to new sessions. Re-runni
 
 ### 7. Offer a verification skill (optional)
 
-Check whether the project has a way to drive the real app for proof (a `verify-*` skill, or an existing harness). If not, offer once: "want a project-local verification skill, so agents can drive the app the way a user does and prove changes work? I can generate one with /create-verification-skill." On yes, read `${CLAUDE_SKILL_DIR}/../create-verification-skill/SKILL.md` in full and follow it. It is a user-only slash command, so the Skill tool cannot load it. On no, move on without pushing.
+Check whether the project has a way to drive the real app for proof (a `verify-*` skill, or an existing harness). If not, offer once: "want a project-local verification skill, so agents can drive the app the way a user does and prove changes work? I can generate one with /create-verification-skill." On yes, read `${CLAUDE_SKILL_DIR}/../create-verification-skill/SKILL.md` in full and follow it. It is a user-only slash command, so the Skill tool cannot load it. On no, move on without pushing. If `${CLAUDE_SKILL_DIR}` appears literally, it is the directory that holds this file.

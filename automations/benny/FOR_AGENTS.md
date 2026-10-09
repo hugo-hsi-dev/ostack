@@ -48,12 +48,12 @@ routines have no slack trigger. by default each routine runs on a schedule (hour
 - tracker: `<type, team, project, labels, intake status>`
 - routing map: `<path or none>`
 - triage identity: `<slack identity the slack connector posts as>`
-- scan: `<schedule (default) or api>`, `<schedule interval, hourly or longer>`, `<reports per run for triage and for repro>`
+- scan: `<schedule (default) or api>`, `<schedule interval, hourly or longer>`, `<scan lookback>`, `<reports per run for triage and for repro>`
 - control skill: `<configured skill or adapter>`
 - feature map: `<committed same-repo path outside the copied pack, or behavior to paraphrase>`
 - models: `<triage, reproduce, code, media review>`
 - status emoji strings: `<seen, reproducing, reproduced, blocked, fixing, failed, pull request opened>`
-- budgets: `<scan lookback, polling, verdict wait, follow-up, repro, rejection, fix>`
+- budgets: `<polling, verdict wait, follow-up, repro, rejection, fix>`
 - optional bot token capability: `<none, file download, or editable operations status>`
 
 start from [`configuration.example.yaml`](./templates/configuration.example.yaml) and [`feature-map.example.md`](./skills/reproduce-and-fix-issues/references/feature-map.example.md). copy and fill them outside this pack, for example under `.claude/benny/`. keep secret values in a secret manager or the routine's cloud environment.

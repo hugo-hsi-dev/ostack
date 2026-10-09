@@ -1,6 +1,6 @@
 ---
 name: onyo-reader
-description: Read-only subagent for ostack's routed skills. Use where a skill asks for a read-only explorer, reviewer, investigator, or judge (how, why, interrogate, arena, reflect). It reads files, runs read-only commands, and calls MCP tools, but cannot edit or write files.
+description: Read-only subagent for ostack's routed skills. Use where one of ostack's routed skills asks for a read-only explorer, reviewer, investigator, or judge. It reads files, runs read-only commands, and calls MCP tools, but cannot edit or write files.
 disallowedTools: Edit, Write, NotebookEdit
 ---
 

@@ -6,7 +6,7 @@ disable-model-invocation: true
 
 # Onyo mode
 
-A bold ostack skill name below, such as the **how** skill or **principle-model-the-domain**, means read `${CLAUDE_SKILL_DIR}/../<name>/SKILL.md` in full and follow it. These skills are user-only slash commands, so the Skill tool cannot load them.
+A bold ostack skill name below, such as the **how** skill or **principle-model-the-domain**, means read `${CLAUDE_SKILL_DIR}/../<name>/SKILL.md` in full and follow it. These skills are user-only slash commands, so the Skill tool cannot load them. If `${CLAUDE_SKILL_DIR}` appears literally, it is the directory that holds this file.
 
 ## Non-negotiables
 
@@ -25,7 +25,7 @@ Remaining triggers:
 - Docs, RFCs, readmes, PR descriptions, or commit messages → the **technical-writing** skill (`/technical-writing`).
 - Before commit → Claude Code's built-in `/simplify` over the diff. It reviews the changed code for reuse, simplification, and cleanup, then applies the fixes.
 - Before review → the **no-comments** skill (`/no-comments`).
-- Shipping UI / IDE / CLI → the matching control skill. Use the project's `verify-<app>` skill when one exists. Otherwise use Claude Code's built-in `/run`, which launches and drives CLIs, TUIs, servers, and browser or Electron apps, with Claude in Chrome or Playwright for browser UIs. For bug fixes, reproduce first on the same surface yourself. Hand to the user only under the narrow Bug fix step 1 exception.
+- Shipping UI / IDE / CLI → the matching control skill. Use the project's `verify-<app>` skill when one exists. Otherwise use Claude Code's built-in `/run`, which launches and drives CLIs, TUIs, servers, and browser or Electron apps, with Claude in Chrome (local sessions only) or Playwright for browser UIs. For bug fixes, reproduce first on the same surface yourself. Hand to the user only under the narrow Bug fix step 1 exception.
 - Running a benchmark, measuring perf yourself, or reporting a speedup or regression you measured → the **benchmark-checklist** skill before you report or act on the number.
 - Any PR-status request → the **Babysit** playbook (`playbooks/babysit.md`), and not Claude Code's PR Auto-fix (`/autofix-pr`), whose purpose overlaps. That includes "babysit this", "get it green", "address the review comments", and the commonest phrasing, "check on PR X" / "anything outstanding on X". Never triggered by merely opening a PR. Declare its mode before polling. The playbook's step 1 owns the request-to-mode mapping. Reaching for `drive` inside a phase agent stops that agent finishing its turn.
 - Asked to land or ship a green stack → the **Shipping** playbook (`playbooks/shipping.md`). Green is not safe. Nothing gets armed before an independent per-PR verdict, and only the contiguous verified run from the root lands.
@@ -88,7 +88,9 @@ Read the leaf skill at `${CLAUDE_SKILL_DIR}/../<name>/SKILL.md` in full for any 
 
 ## Subagents
 
-**Use `subagent_type: "onyo-agent"` for any subagent you spawn inside a playbook step** (code-writing delegates, ad-hoc helpers). A plugin install may list it as `ostack:onyo-agent`. The bare name works when it is unambiguous. `/onyo-mode` and `onyo-agent` route through the same wrapper. Routed workflow skills (`how`, `why`, `interrogate`, `reflect`, `swarm`) set their own `subagent_type` for diverse-model review. Respect what the skill prescribes, don't override to `onyo-agent`.
+**Use `subagent_type: "onyo-agent"` for any subagent you spawn inside a playbook step** (code-writing delegates, ad-hoc helpers). A plugin install may list it as `ostack:onyo-agent`. The bare name works when it is unambiguous. `onyo-agent` reads this same file, so a delegate follows the same rules. Routed workflow skills (`how`, `why`, `interrogate`, `reflect`, `swarm`, `arena`, `architect`) set their own `subagent_type` for diverse-model review. Respect what the skill prescribes, don't override to `onyo-agent`.
+
+**No nested fan-out.** Claude Code subagents cannot spawn subagents. When you run as `onyo-agent` or any other subagent, do every fan-out step inline and sequentially on your own model. That covers the **how** explorers, the **why** investigators, the **arena** runners and judge, the **interrogate** reviewers, the **swarm** workers, the trail reviewer, and Comment Sicko. Or mark the step `skip: subagent, no nesting` in your report so the parent runs it. Never wait on a nested agent.
 
 **Defaults for every `Agent` call.** `run_in_background: true`, file pointers not inlined context, explicit `model` and `effort` per role (configurable via `/setup-ostack`). The defaults are `sonnet xhigh` for code, `opus xhigh` for prose and judgment, passed as `model: "sonnet"`, `effort: "xhigh"` and so on. A read-only role uses `subagent_type: "onyo-reader"`, which keeps MCP tools but cannot edit or write files. Code delegates tier by difficulty. The hardest changes (cross-cutting design, gnarly concurrency, subtle algorithms) go to your strongest judgment model (`opus xhigh`), whether the task needs judgment on vague intent or is a precisely specified sequence of steps to execute to the letter. Trivial mechanical edits go to your fast code model. Per-role lines in the `/setup-ostack` rule override these defaults and the model choices in the routed skills (`how`, `why`, `arena`, `swarm`, `architect`, `interrogate`, `reflect`). A role with no line keeps its default, and a role line of `inherit` runs that role on the parent chat model (omit the Agent call's `model` and `effort`). Each code playbook's configured model comes from its line (`feature, refactoring`, `bug-fix`, `perf-issue`, or `hillclimb`), and the hardest changes read `hardest tasks`. Prose and judgment read `judgment and prose`.
 

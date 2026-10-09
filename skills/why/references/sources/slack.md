@@ -13,7 +13,7 @@ Slack is frequently where the *real* decisions got made, especially for smaller 
 
 ## How to search it
 
-Slack MCP tools vary. Check which Slack MCP is available and inspect its tool schema first. It may require `mcp_auth`. If authentication fails, stop and report the gap.
+Slack MCP tools vary. Check which Slack MCP is available and inspect its tool schema first. If its tools are missing or return an auth error, the user must authenticate the server with `/mcp`. Report the gap and stop.
 
 1. **Author-bounded search.** Messages from the PR author around the PR merge date. Limits scope dramatically and often hits gold.
 2. **Keyword search for the feature name and key symbols.** Include misspellings and casual phrasings.

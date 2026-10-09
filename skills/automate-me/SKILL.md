@@ -8,7 +8,7 @@ disable-model-invocation: true
 
 A guided flow for turning the user's working conventions into a skill agents will follow. The output is one `-mode` skill tailored to them (e.g. `jay-mode`, `priya-mode`).
 
-A bold ostack skill name below means read `${CLAUDE_SKILL_DIR}/../<name>/SKILL.md` in full and follow it. These skills are user-only slash commands, so the Skill tool cannot load them.
+A bold ostack skill name below means read `${CLAUDE_SKILL_DIR}/../<name>/SKILL.md` in full and follow it. These skills are user-only slash commands, so the Skill tool cannot load them. If `${CLAUDE_SKILL_DIR}` appears literally, it is the directory that holds this file.
 
 This skill orchestrates three others: an inline mining pass (see step 1), the `skill-creator` skill (authoring, from Anthropic's `skill-creator@claude-plugins-official` plugin), and the **unslop** skill (prose discipline). It sequences them. It doesn't replace them.
 
@@ -30,7 +30,7 @@ Update mode changes the rest of the flow:
 
 Locate the active workspace's transcripts before fanning out. The active project's transcript directory is `~/.claude/projects/<slug>/` for the current working directory, where `<slug>` is the absolute working directory with every character that is not a letter or digit turned into `-`. Use only that path. Don't glob across `~/.claude/projects/*/`. That crosses workspace boundaries and reads private chats from unrelated projects.
 
-Survey recent agent conversations within that scope for recurring patterns. Run multiple parallel read-only subagents (`subagent_type: "onyo-reader"`) across slices of history (e.g. last 2-4 weeks, split into 3 slices so each has enough material). Each slice mining subagent reads transcripts from the workspace-scoped path the parent provides, looks for the signals below, and returns a short structured list of patterns it saw with evidence pointers. Default signals worth hunting:
+Survey recent agent conversations within that scope for recurring patterns. Run multiple parallel read-only subagents (`subagent_type: "onyo-reader"`) across slices of history (e.g. last 2-4 weeks, split into 3 slices so each has enough material). If `onyo-reader` is not installed, use `"general-purpose"` and put "Read-only. Do not edit, write, or commit files." in the brief. Each slice mining subagent reads transcripts from the workspace-scoped path the parent provides, looks for the signals below, and returns a short structured list of patterns it saw with evidence pointers. Default signals worth hunting:
 
 - Response preferences (length, tone, format, "dumb it down" corrections)
 - Delegation habits (subagents, models, specialized workflows, parallelism)
@@ -70,7 +70,7 @@ Use the `skill-creator` skill to author the skill. Placement:
 
 - Path: `.claude/skills/<handle>-mode/SKILL.md` in the project, or `~/.claude/skills/<handle>-mode/SKILL.md` if the user prefers a personal skill. Claude Code finds skills only one level under `skills/`, so never nest a mode skill in a category folder.
 - Handle: the user's first name or chosen identifier.
-- Frontmatter `description`: trigger on their name + `/<handle>-mode` + "work in their style", not on generic keywords like "write code" or "review PR".
+- Frontmatter `description`: one line that labels the skill in the `/` menu, such as "<Name>'s working style". With `disable-model-invocation: true` it never triggers the skill, so don't tune it for trigger keywords.
 - Frontmatter formatting: follow `skill-creator`'s YAML rules. Keep `description` as one YAML scalar. Quote it or use `description: >-` with indented continuation lines when punctuation or wrapping requires it.
 - Frontmatter `disable-model-invocation: true`. If the user wants their mode on every turn, keep the flag and offer one of two additions. An output style that tells the agent to read the skill works like ostack's `onyo` style. A `~/.claude/rules/<handle>-mode.md` file loads into every session.
 
@@ -97,7 +97,7 @@ Work in a worktree off main. Commit and open a PR. Don't push to main directly.
 
 A `-mode` skill is subjective output. A `skill-creator`-style eval/benchmark loop isn't useful here. Vibe-check with the user: does it read like them? Did it miss anything? Then ship.
 
-Run a description-optimization loop only if the skill's trigger accuracy turns out to be a problem in practice.
+Skip description optimization. With `disable-model-invocation: true` the description only labels the `/` menu, so trigger accuracy is not in play. Run that loop only on a skill without the flag, and only if its trigger accuracy turns out to be a problem in practice.
 
 ## When not to use
 

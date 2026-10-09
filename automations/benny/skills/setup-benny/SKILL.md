@@ -204,7 +204,7 @@ The triage routine, filled from configuration:
 
 - Name `benny-triage`.
 - Read and follow `.claude/automations/benny/skills/triage-issue-reports/SKILL.md` for every run.
-- On a scheduled run, scan the configured source Slack channel for new top-level reports with no Benny marker and no `seen` reaction from the triage identity, and claim each with that reaction. If the Slack connector has no reaction tool, dedupe on the Benny marker replies alone and claim with a short `[benny:triaging]` reply instead.
+- On a scheduled run, scan the configured source Slack channel for new top-level reports with no Benny marker and no `seen` reaction from the triage identity. Claim them oldest first, up to `scan.triage_max_reports_per_run`, with that reaction. If the Slack connector has no reaction tool, dedupe on the Benny marker replies alone and claim with a short `[benny:triaging]` reply instead.
 - On an API run, read the report coordinates from the `text` field in the routine-fire-payload block.
 - Read each report's thread and reply only inside it.
 - Use the configured issue-tracker integration.

@@ -57,7 +57,7 @@ Tests alone are not sufficient verification. A PR is verified only when its unit
 - [ ] Open the PR ready, never draft, per **Opening a PR**. Use `gh pr create --base <base-branch>`. Where `gh` is absent, create it with `mcp__github__create_pull_request` and pass `draft: false`. A stack child targets its parent branch.
 - [ ] Run the repo's lint and typecheck once before the PR-facing push. Push with hooks on.
 - [ ] Run `/simplify` before each commit and `/no-comments` before review.
-- [ ] Triage every review-bot and security-reviewer comment per `../references/review-bot-triage.md`.
+- [ ] Triage every review-bot and security-reviewer comment per `skills/onyo-mode/references/review-bot-triage.md`.
 - [ ] Rebase onto current trunk before the code-ready report and babysit. Keep that merge base in fix rounds. Rebase again only at merge prep, on a `git merge-tree` conflict with trunk, or on a CI failure that comes from a change on trunk.
 
 ### Verdict and merge, for every PR
@@ -68,7 +68,7 @@ Tests alone are not sufficient verification. A PR is verified only when its unit
 
 ### Boot recipe, for every live lane
 
-Each live lane runs in its own Claude Code cloud session at the PR head. Drive through `/run` or the project's `verify-<app>` skill. Drive browser UIs with Playwright, because Claude in Chrome is a local browser extension that cloud sessions cannot reach.
+Each live lane runs in its own Claude Code cloud session at the PR head. Spawn it with `isolation: "remote"` so it runs on the `swarm workers` model. A `claude --cloud` session runs its default model and cannot pin one, so a lane started that way records the model it ran. Drive through `/run` or the project's `verify-<app>` skill. Drive browser UIs with Playwright, because Claude in Chrome is a local browser extension that cloud sessions cannot reach.
 
 - [ ] `git fetch origin <head-branch> && git checkout <head SHA>`.
 - [ ] <Start the backend and the surface. Wait for ready.>
