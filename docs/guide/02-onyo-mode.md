@@ -96,7 +96,7 @@ A long chat accumulates context from the last task. When you change subjects, sa
 
 ## Give parallel work its own machine
 
-If you run several agents against one repository on one computer, they will fight over the working tree, the ports, and the build output. The cleanest isolation is a Claude Code cloud session. Each one gets its own machine and branch, so it can install dependencies, run your app, and record video of the result without touching your machine. Start one with `claude --cloud "<task>"` from a terminal, or ask the parent chat to hand work to cloud sessions. Check on them in the session list at claude.ai/code.
+If you run several agents against one repository on one computer, they will fight over the working tree, the ports, and the build output. The cleanest isolation is a Claude Code cloud session. Each one gets its own machine and branch, so it can install dependencies, run your app, and record video of the result when the app's control skill can record, all without touching your machine. Start one with `claude --cloud "<task>"` from a terminal, or ask the parent chat to hand work to cloud sessions. Check on them in the session list at claude.ai/code.
 
 When the work has to stay local, ask for a worktree up front:
 

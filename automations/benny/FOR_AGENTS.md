@@ -29,6 +29,8 @@ routines have no slack trigger. by default each routine runs on a schedule (hour
 
 - i want the source channel and root thread coordinates to stay immutable for the whole run.
 - each routine run starts from a fresh clone and remembers nothing. i want slack markers and claim reactions to be the only dedupe state, so a report is never handled twice.
+- the claude.ai slack connector acts as the person who connected it. i want it connected with a dedicated slack account for benny, because repro trusts any marker in the verdict format from that account, even one typed by hand.
+- if the slack connector has no reaction tool, i want dedupe to rely on the benny marker replies alone, with a short claim reply in the thread in place of each claim reaction.
 - i treat utility and debug bots as evidence, not delegation or fix ownership.
 - i allow subagents to help, but they cannot post to slack or receive slack credentials or slack connector write tools.
 - i want this entire pack committed at `.claude/automations/benny/` in the target repository. its `SKILL.md` files are direct routine instructions, not registered plugin skills.
@@ -46,7 +48,7 @@ routines have no slack trigger. by default each routine runs on a schedule (hour
 - tracker: `<type, team, project, labels, intake status>`
 - routing map: `<path or none>`
 - triage identity: `<slack identity the slack connector posts as>`
-- trigger: `<schedule (default) or api>`, `<schedule interval, hourly or longer>`
+- scan: `<schedule (default) or api>`, `<schedule interval, hourly or longer>`, `<reports per run for triage and for repro>`
 - control skill: `<configured skill or adapter>`
 - feature map: `<committed same-repo path outside the copied pack, or behavior to paraphrase>`
 - models: `<triage, reproduce, code, media review>`

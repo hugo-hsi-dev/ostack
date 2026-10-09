@@ -8,7 +8,7 @@ disable-model-invocation: true
 
 Answer the user's question about ostack, hand them a prompt they can send, and link the file the answer came from. For a help question, don't start the work. The user asked how, and a ostack run spends real tokens, so let them send the prompt.
 
-A message that asks for work, such as "use ostack to fix this bug", is not a help question. Read [`onyo-mode`](../onyo-mode/SKILL.md), do the work under it, and mention once that the `onyo` output style (`/output-style onyo`) keeps it on.
+A message that asks for work, such as "use ostack to fix this bug", is not a help question. Read `${CLAUDE_SKILL_DIR}/../onyo-mode/SKILL.md` in full (the Skill tool cannot load it, since it is a user-only slash command), do the work under it, and mention once that the `onyo` output style (`/output-style onyo`, or `/config` > Output style) keeps it on.
 
 This file maps questions to the skills and guide pages that hold the answers. Those files own the details. Read the file you route to before you quote it, and trust it when it disagrees with this map. The links here point into the installed plugin, which the user may not be able to open, so give the user the file's public copy: `https://github.com/hugo-hsi-dev/ostack/blob/main/` followed by its path.
 
@@ -51,7 +51,7 @@ ostack targets Claude Code. Its skills use the Agent Skills format, so other too
 Whether `/onyo-mode` stays on depends on how the user starts it:
 
 - `/onyo-mode` attaches the skill to one message. It fades as the session moves on.
-- `/output-style onyo` turns on ostack's `onyo` output style. It reminds Claude every turn to run new tasks through `/onyo-mode`, and it stays out of casual turns. It stays on until the user picks another style with `/output-style`. Setting `"outputStyle": "onyo"` in `~/.claude/settings.json` makes it the default.
+- `/output-style onyo` turns on ostack's `onyo` output style. It reminds Claude every turn to run new tasks through `/onyo-mode`, and it stays out of casual turns. It stays on until the user picks another style with `/output-style` or in `/config` > Output style. Setting `"outputStyle": "onyo"` in `~/.claude/settings.json` makes it the default.
 - Where output styles aren't available, such as other harnesses, start each new task with `/onyo-mode`.
 
 Link [Claude Code's skills docs](https://code.claude.com/docs/en/skills) and [output styles docs](https://code.claude.com/docs/en/output-styles) when this comes up. Mid-chat, "new task" makes the mode match a fresh playbook. `/onyo-mode` already uses `onyo-agent` for the subagents its playbook steps spawn. To get the same style from a subagent of your own, spawn it with `subagent_type: "onyo-agent"`.
@@ -119,7 +119,7 @@ Playbooks are step lists inside `/onyo-mode`, not skills, so they have no slash 
 - "full autopilot on this queue" runs Autopilot-full. "stack them, don't ship" runs Autopilot-stack.
 - "run the eval playbook" runs Eval.
 
-Without `/onyo-mode`, a phrase such as "babysit this pr" can start Claude Code's own PR Auto-fix for the same job instead. The Playbooks section of [`onyo-mode`](../onyo-mode/SKILL.md) lists every playbook and when it applies. [Guide page 6](../../docs/guide/06-verify-and-ship.md) covers opening, babysitting, and landing a PR.
+Without `/onyo-mode`, a phrase such as "babysit this pr" does not route to the Babysit playbook. Claude Code's PR Auto-fix (`/autofix-pr`) covers similar ground. The Playbooks section of [`onyo-mode`](../onyo-mode/SKILL.md) lists every playbook and when it applies. [Guide page 6](../../docs/guide/06-verify-and-ship.md) covers opening, babysitting, and landing a PR.
 
 ostack has no planning skill. Claude Code's plan mode (Shift+Tab) works alongside it. For work that spans phases or stacked PRs, asking `/onyo-mode` for a plan runs the [Multi-phase plan playbook](../onyo-mode/playbooks/multi-phase-plan.md), which writes the plan and doesn't implement it. For a design question, the Prototype playbook or `/architect` settles it in code first.
 
@@ -129,7 +129,7 @@ Principles are one-rule skills that `/onyo-mode` reads and cites in its replies.
 
 | Symptom | Fix |
 |---|---|
-| The mode stopped applying after a few turns | It was attached to one message. Turn on the `onyo` output style with `/output-style onyo`, or start each task with `/onyo-mode`. |
+| The mode stopped applying after a few turns | It was attached to one message. Turn on the `onyo` output style with `/output-style onyo` or in `/config` > Output style, or start each task with `/onyo-mode`. |
 | A question got treated as the next step of the last task | Say "new task", or say the turn doesn't need the mode. |
 | A new model choice had no effect | The rule from `/setup-ostack` applies to new sessions. Start one. Cloud sessions and routines don't read `~/.claude/rules/`, so commit a copy at `.claude/rules/ostack-models.md` for them. |
 | Runs cost more than expected | See the cost paragraph under Get set up. |

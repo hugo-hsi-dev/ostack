@@ -8,9 +8,11 @@ disable-model-invocation: true
 
 When the task matches no playbook, design one. The deliverable before any code is the workflow itself: a sequence of phases that scales rigor to the task, runs the scientific method, and leaves a decision trail a human can audit after stepping away.
 
+A bold ostack skill name below means read `${CLAUDE_SKILL_DIR}/../<name>/SKILL.md` in full and follow it. A **<name>** principle skill sits at `${CLAUDE_SKILL_DIR}/../principle-<name>/SKILL.md`. These skills are user-only slash commands, so the Skill tool cannot load them.
+
 ## Start
 
-Open a todolist whose first item is to read the Principles section of the **onyo-mode** skill. Then add the phases below as todos.
+Open a todolist whose first item is to read the Principles section of the **onyo-mode** skill (`${CLAUDE_SKILL_DIR}/../onyo-mode/SKILL.md`). Then add the phases below as todos.
 
 ## Phase A: Frame
 

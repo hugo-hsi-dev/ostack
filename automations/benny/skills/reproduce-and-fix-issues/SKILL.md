@@ -34,16 +34,18 @@ Load the external Benny configuration supplied by the routine. If the config, re
 
 ## Pick the report
 
-Each routine run starts from a fresh clone and remembers nothing from earlier runs. Slack markers and the claim reaction are the only dedupe state. A run handles one report.
+Each routine run starts from a fresh clone and remembers nothing from earlier runs. Slack markers and the claim reaction are the only dedupe state. A run handles up to `scan.reproduce_max_reports_per_run` reports, default 1, one at a time.
 
 For a scheduled run:
 
-1. Read top-level messages in the configured source channel through the Slack connector, back to `trigger.scan_lookback_hours`.
+1. Read top-level messages in the configured source channel through the Slack connector, back to `scan.lookback_hours`.
 2. Keep only reports whose thread already holds a verdict that section 2 would accept with `bug` or `performance`.
 3. Skip a report when its root already carries the configured `reproducing` reaction from the Slack identity this routine acts as.
-4. Take the oldest remaining report. Later runs pick up the rest.
-5. Re-read its thread and repeat the check in step 3. Then add the `reproducing` reaction to the root before any other work. A reaction is not a post. If the reaction fails, stop.
-6. Continue with section 1, with the trigger channel set to the scanned channel, `trigger.ts` set to the report's timestamp, and `trigger.thread_ts` empty. Section 2 finds the verdict already in the thread.
+4. Take the remaining reports oldest first, up to `scan.reproduce_max_reports_per_run` (default 1). Later runs pick up the rest.
+5. For each report, re-read its thread and repeat the check in step 3. Then add the `reproducing` reaction to the root before any other work. A reaction is not a post. If the reaction fails, stop.
+6. Continue with section 1, with the trigger channel set to the scanned channel, `trigger.ts` set to the report's timestamp, and `trigger.thread_ts` empty. Section 2 finds the verdict already in the thread. Finish or stop one report before starting the next.
+
+If the Slack connector has no reaction tool, dedupe on the Benny marker replies alone. Claim a report by posting a short `[benny:reproducing]` reply in its thread instead of the `reproducing` reaction, and skip a report whose thread already holds that reply in step 3.
 
 For an API run, read the coordinates from the `text` field in the routine-fire-payload block. Parse it as JSON with `source_channel_id`, `message_ts`, and optional `thread_ts`, and use them as the trigger channel, `trigger.ts`, and `trigger.thread_ts`. If the block is missing or the JSON is malformed, stop without posting. Apply the same claim check before section 1, then wait for the verdict in section 2.
 
@@ -77,7 +79,7 @@ Accept a verdict only when:
 
 - Its author matches `slack.triage_identity_user_id`.
 - It is a reply under `SOURCE_THREAD_TS`.
-- It contains exactly one configured marker.
+- It ends with exactly one marker line in a public form below, and contains no other configured marker.
 
 Public marker forms:
 
@@ -90,6 +92,8 @@ Public marker forms:
 ```
 
 Proceed only for `bug` or `performance`. Capture the optional tracker URL. Stop silently for `other`, a missing verdict, an untrusted author, conflicting markers, or a timeout.
+
+The Slack connector posts as the account that connected it. A marker typed by hand from that account in this format passes these checks and is trusted, which is why setup asks for a dedicated Benny account.
 
 This marker replaces private bot identities and free-form verdict matching.
 
@@ -207,7 +211,7 @@ For a successful repro:
 - Save a short note with the exact steps and observed state.
 - Keep artifacts in the configured temporary artifact directory.
 
-Have a read-only media reviewer answer one question: does the evidence visibly show the discriminating broken state?
+Extract frames from each recording, for example `ffmpeg -i <video> -vf fps=2 <dir>/frame-%03d.png`, because Read takes images but not video. Have a read-only media reviewer read the frames and screenshots as images and answer one question: does the evidence visibly show the discriminating broken state?
 
 If the answer is no or uncertain, the repro is not confirmed. Capture better evidence or use `Could not reproduce`.
 

@@ -13,7 +13,7 @@ Configuration source. Include this repository-relative path only when it is comm
 Trigger, scheduled routine (default):
 
 ```text
-Scan source channel {{SLACK_CHANNEL_ID}} through the Slack connector for top-level reports from the last {{SCAN_LOOKBACK_HOURS}} hours whose thread holds a trusted [benny:bug] or [benny:performance] marker from the triage identity. Skip any report whose root already carries the configured reproducing reaction. Claim the oldest remaining report with the reproducing reaction, then work on that one report.
+Scan source channel {{SLACK_CHANNEL_ID}} through the Slack connector for top-level reports from the last {{SCAN_LOOKBACK_HOURS}} hours whose thread holds a trusted [benny:bug] or [benny:performance] marker from the triage identity. Skip any report whose root already carries the configured reproducing reaction. Claim the remaining reports oldest first, up to {{REPRODUCE_MAX_REPORTS_PER_RUN}} (default 1), with the reproducing reaction, then work on them one at a time. If the Slack connector has no reaction tool, claim with a short [benny:reproducing] reply instead and skip reports that already hold one.
 ```
 
 Trigger, API routine (optional, for teams that relay Slack events to `/fire`):

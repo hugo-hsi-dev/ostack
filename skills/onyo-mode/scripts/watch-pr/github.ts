@@ -2,7 +2,7 @@ import { spawn } from "node:child_process";
 import type * as T from "./types.ts";
 import { nonEmpty, parsePrNumber } from "./types.ts";
 export const REVIEW_THREADS_QUERY =
-  "\nquery ReviewThreads($owner: String!, $repo: String!, $pr: Int!) {\n  repository(owner: $owner, name: $repo) {\n    pullRequest(number: $pr) {\n      reviewThreads(first: 100) {\n        nodes {\n          id\n          isResolved\n          comments(first: 10) {\n            nodes {\n              body\n              createdAt\n              path\n              line\n              author { login }\n            }\n          }\n        }\n      }\n    }\n  }\n}\n";
+  "\nquery ReviewThreads($owner: String!, $repo: String!, $pr: Int!) {\n  repository(owner: $owner, name: $repo) {\n    pullRequest(number: $pr) {\n      reviewThreads(first: 100) {\n        nodes {\n          id\n          isResolved\n          comments(first: 10) {\n            nodes {\n              body\n              createdAt\n              path\n              line\n              author { login }\n              originalCommit { oid }\n            }\n          }\n        }\n      }\n    }\n  }\n}\n";
 export const PR_COMMIT_STATUS_QUERY =
   "\nquery PrCommitStatuses($owner: String!, $repo: String!, $pr: Int!) {\n  repository(owner: $owner, name: $repo) {\n    pullRequest(number: $pr) {\n      commits(last: 50) {\n        nodes {\n          commit {\n            oid\n            statusCheckRollup {\n              state\n            }\n          }\n        }\n      }\n    }\n  }\n}\n";
 export const PR_CHECK_ROLLUP_QUERY =
@@ -328,6 +328,13 @@ function parseComment(value: unknown): T.ReviewComment {
           ? Number(object.line)
           : missing("review comment.line", object.line),
     createdAt: string(object.createdAt, "review comment.createdAt"),
+    commitOid:
+      object.originalCommit === undefined || object.originalCommit === null
+        ? null
+        : optionalString(
+            record(object.originalCommit, "review comment.originalCommit").oid,
+            "review comment.originalCommit.oid"
+          ),
   };
 }
 function isBugbot(comment: T.ReviewComment | null): boolean {
@@ -344,14 +351,21 @@ function isBugbot(comment: T.ReviewComment | null): boolean {
         "description start",
         "severity",
       ].some((token) => body.includes(token))) ||
-    ((author === "claude" || author === "claude[bot]") &&
-      [
-        "🔴",
-        "🟡",
-        "🟣",
-        "why this was flagged",
-        "claude code review",
-      ].some((token) => body.includes(token)))
+    isClaudeCodeReview(comment)
+  );
+}
+function isClaudeCodeReview(comment: T.ReviewComment): boolean {
+  const author = (comment.authorLogin ?? "").toLowerCase();
+  const body = comment.body.toLowerCase();
+  return (
+    (author === "claude" || author === "claude[bot]") &&
+    [
+      "🔴",
+      "🟡",
+      "🟣",
+      "why this was flagged",
+      "claude code review",
+    ].some((token) => body.includes(token))
   );
 }
 function passKey(comment: T.ReviewComment | null): string | null {
@@ -363,6 +377,10 @@ function passKey(comment: T.ReviewComment | null): string | null {
     const match = pattern.exec(comment.body);
     if (match?.[1]) return match[1];
   }
+  // Claude Code Review carries no run marker. Each review runs at one head
+  // commit, so the commit the comment was first posted on keys the pass.
+  if (comment.commitOid !== null && isClaudeCodeReview(comment))
+    return `commit:${comment.commitOid}`;
   return null;
 }
 export function parseReviewThreads(value: unknown): readonly T.ReviewThread[] {

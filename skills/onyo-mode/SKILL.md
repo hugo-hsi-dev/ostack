@@ -6,6 +6,8 @@ disable-model-invocation: true
 
 # Onyo mode
 
+A bold ostack skill name below, such as the **how** skill or **principle-model-the-domain**, means read `${CLAUDE_SKILL_DIR}/../<name>/SKILL.md` in full and follow it. These skills are user-only slash commands, so the Skill tool cannot load them.
+
 ## Non-negotiables
 
 The Principles section below grounds every trigger. In your reply, name each principle that shaped a decision and the specific choice it changed. Cite only principles whose leaf SKILL.md you read this session.
@@ -33,7 +35,7 @@ Remaining triggers:
 
 ## Principles
 
-Read the leaf skill in full for any principle you apply. Each entry names when it applies.
+Read the leaf skill at `${CLAUDE_SKILL_DIR}/../<name>/SKILL.md` in full for any principle you apply. Each entry names when it applies.
 
 **Core**
 
@@ -88,7 +90,7 @@ Read the leaf skill in full for any principle you apply. Each entry names when i
 
 **Use `subagent_type: "onyo-agent"` for any subagent you spawn inside a playbook step** (code-writing delegates, ad-hoc helpers). A plugin install may list it as `ostack:onyo-agent`. The bare name works when it is unambiguous. `/onyo-mode` and `onyo-agent` route through the same wrapper. Routed workflow skills (`how`, `why`, `interrogate`, `reflect`, `swarm`) set their own `subagent_type` for diverse-model review. Respect what the skill prescribes, don't override to `onyo-agent`.
 
-**Defaults for every `Agent` call.** `run_in_background: true`, file pointers not inlined context, explicit `model` and `effort` per role (configurable via `/setup-ostack`. Defaults `sonnet xhigh` for code, `opus xhigh` for prose and judgment, passed as `model: "sonnet"`, `effort: "xhigh"` and so on). A read-only role uses `subagent_type: "onyo-reader"`, which keeps MCP tools but cannot edit or write files. Code delegates tier by difficulty. The hardest changes (cross-cutting design, gnarly concurrency, subtle algorithms) go to your strongest judgment model (`opus xhigh`), whether the task needs judgment on vague intent or is a precisely specified sequence of steps to execute to the letter. Trivial mechanical edits go to your fast code model. Per-role lines in the `/setup-ostack` rule override these defaults and the model choices in the routed skills (`how`, `why`, `arena`, `swarm`, `architect`, `interrogate`, `reflect`). A role with no line keeps its default, and a role line of `inherit` runs that role on the parent chat model (omit the Agent call's `model` and `effort`). Each code playbook's configured model comes from its line (`feature, refactoring`, `bug-fix`, `perf-issue`, or `hillclimb`), and the hardest changes read `hardest tasks`. Prose and judgment read `judgment and prose`.
+**Defaults for every `Agent` call.** `run_in_background: true`, file pointers not inlined context, explicit `model` and `effort` per role (configurable via `/setup-ostack`). The defaults are `sonnet xhigh` for code, `opus xhigh` for prose and judgment, passed as `model: "sonnet"`, `effort: "xhigh"` and so on. A read-only role uses `subagent_type: "onyo-reader"`, which keeps MCP tools but cannot edit or write files. Code delegates tier by difficulty. The hardest changes (cross-cutting design, gnarly concurrency, subtle algorithms) go to your strongest judgment model (`opus xhigh`), whether the task needs judgment on vague intent or is a precisely specified sequence of steps to execute to the letter. Trivial mechanical edits go to your fast code model. Per-role lines in the `/setup-ostack` rule override these defaults and the model choices in the routed skills (`how`, `why`, `arena`, `swarm`, `architect`, `interrogate`, `reflect`). A role with no line keeps its default, and a role line of `inherit` runs that role on the parent chat model (omit the Agent call's `model` and `effort`). Each code playbook's configured model comes from its line (`feature, refactoring`, `bug-fix`, `perf-issue`, or `hillclimb`), and the hardest changes read `hardest tasks`. Prose and judgment read `judgment and prose`.
 
 You own every subagent's work. Review the diff and write your own summary, don't pass through what it said. A second opinion is the same prompt against a different model. Agreement is high-signal.
 
@@ -136,7 +138,7 @@ A large or cross-cutting effort (a migration across many call sites, an ambitiou
 - **Orchestrate.** A standing project handed to one coordinator chat: multi-day, many stacked PRs, dozens to hundreds of subagents, minimal human turns ("run this whole project", "own this migration until it lands"). Distinct from Autonomous run, which drives one task to a predicate. Work one agent could finish inside the session's budget routes there, not here, however program-shaped the phrasing sounds. `playbooks/orchestrate.md`.
 - **Autopilot-full.** A queue of independent PRs run to merged with full autonomy. One owner per PR carries build through merge, and the root swarm-verifies each PR before its owner merges ("autopilot this queue", "full autopilot", one-owner-per-PR programs). `playbooks/autopilot-full.md`.
 - **Autopilot-stack.** A queue of changes built and verified with full autonomy, delivered as one linear reviewed base-branch stack the operator lands ("autopilot-stack", "stack them, don't ship", "build the stack, I'll land it"). `playbooks/autopilot-stack.md`.
-- **Session pickup.** Resuming or taking over a prior agent's in-flight work from a transcript, cloud-agent URL, or pushed branch. `playbooks/session-pickup.md`.
+- **Session pickup.** Resuming or taking over a prior agent's in-flight work from a transcript, cloud session URL (claude.ai/code), or pushed branch. `playbooks/session-pickup.md`.
 - **Pause safely.** Suspending in-flight work cleanly so it can be resumed, on an explicit pause, going offline, a Claude Code restart, or imminent context compaction. The complement to Session pickup. Full steps: `playbooks/pause-safely.md`.
 - **Multi-phase or multi-PR plan.** Work that spans phases or stacked PRs. `playbooks/multi-phase-plan.md`.
 - **Worktree and simulator cleanup.** Reclaiming local disk by pruning merged or abandoned git worktrees and stale iOS simulators ("what's using my disk", "clean up worktrees", "prune safe-to-prune worktrees", "free up space", "delete old simulators"). `playbooks/worktree-cleanup.md`.

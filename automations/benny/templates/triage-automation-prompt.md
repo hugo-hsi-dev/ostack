@@ -13,7 +13,7 @@ Configuration source. Include this repository-relative path only when it is comm
 Trigger, scheduled routine (default):
 
 ```text
-Scan source channel {{SLACK_CHANNEL_ID}} through the Slack connector for top-level reports from the last {{SCAN_LOOKBACK_HOURS}} hours. Skip any report whose thread already holds a configured benny marker or whose root carries the configured seen reaction from the triage identity. Claim each remaining report with the seen reaction before working on it.
+Scan source channel {{SLACK_CHANNEL_ID}} through the Slack connector for top-level reports from the last {{SCAN_LOOKBACK_HOURS}} hours. Skip any report whose thread already holds a configured benny marker or whose root carries the configured seen reaction from the triage identity. Claim each remaining report with the seen reaction before working on it. If the Slack connector has no reaction tool, dedupe on benny marker replies alone and claim with a short [benny:triaging] reply instead.
 ```
 
 Trigger, API routine (optional, for teams that relay Slack events to `/fire`):

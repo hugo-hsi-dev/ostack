@@ -72,10 +72,14 @@ git worktree list --porcelain | awk '/^worktree /{print $2}' | while read -r wt;
 		[ -d "$d" ] && transcripts+=("$d")
 	done
 	if [ ${#transcripts[@]} -gt 0 ]; then
+		# GNU stat/date first, BSD (macOS) forms as the fallback.
 		f=$(rg -l -e "${wt}/" -e "${wt}\"" "${transcripts[@]}" 2>/dev/null \
-			| xargs stat -f '%m %N' 2>/dev/null | sort -rn | head -1)
+			| while IFS= read -r t; do
+				stat -c '%Y %n' "$t" 2>/dev/null || stat -f '%m %N' "$t" 2>/dev/null
+			done | sort -rn | head -1)
 		if [ -n "$f" ]; then last_ts=$(echo "$f" | awk '{print $1}')
-			last=$(date -r "$last_ts" '+%Y-%m-%d' 2>/dev/null); fi
+			last=$(date -d "@$last_ts" '+%Y-%m-%d' 2>/dev/null \
+				|| date -r "$last_ts" '+%Y-%m-%d' 2>/dev/null); fi
 	fi
 	recent=$([ "$last_ts" -gt 0 ] 2>/dev/null && [ $(( (now - last_ts) / 86400 )) -le 4 ] && echo yes || echo no)
 

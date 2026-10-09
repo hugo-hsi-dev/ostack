@@ -3,7 +3,7 @@
 ## What this source contains
 
 - Commit history (messages, dates, authors, diffs)
-- PR descriptions, review comments, and discussion threads (via `gh`)
+- PR descriptions, review comments, and discussion threads (via `gh`, or the GitHub MCP tools `mcp__github__*` where `gh` is absent)
 - Inline code comments, TODOs, FIXMEs, deprecation notes
 - ADRs (architectural decision records) if the repo keeps them
 - Tests. Names and assertions often encode the edge cases that motivated a change

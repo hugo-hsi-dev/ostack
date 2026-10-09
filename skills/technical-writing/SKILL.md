@@ -8,6 +8,8 @@ disable-model-invocation: true
 
 The goal is writing a tired engineer understands on the first read. Four layers get you there, one question each: what kind of document is this, how do sentences address the reader, how much does each sentence carry, and can any sentence be read two ways. Apply all four.
 
+A bold ostack skill name below means read `${CLAUDE_SKILL_DIR}/../<name>/SKILL.md` in full and follow it. These skills are user-only slash commands, so the Skill tool cannot load them.
+
 Three rules sit above the layers:
 
 - **Cut every word that does no work.** If the sentence survives without a word, the word goes. "In order to" is "to". "It is important to note that" is nothing.

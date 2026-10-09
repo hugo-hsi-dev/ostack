@@ -302,6 +302,49 @@ it("annotates Claude Code Review threads as review-bot threads", () => {
   ]);
 });
 
+it("counts Claude Code Review passes by the commit each review ran on", () => {
+  const thread = (id: string, body: string, oid: string | null) => ({
+    id,
+    isResolved: id === "resolved",
+    comments: {
+      nodes: [
+        {
+          body,
+          createdAt: "now",
+          path: "a.ts",
+          line: 1,
+          author: { login: "claude[bot]" },
+          originalCommit: oid === null ? null : { oid },
+        },
+      ],
+    },
+  });
+  const response = {
+    data: {
+      repository: {
+        pullRequest: {
+          reviewThreads: {
+            nodes: [
+              thread("first", "🔴 **Important** null deref", "aaa111"),
+              thread("same-pass", "🟡 Nit. Why this was flagged", "aaa111"),
+              thread("second", "🔴 **Important** race", "bbb222"),
+              thread("resolved", "🟣 Pre-existing leak", "ccc333"),
+            ],
+          },
+        },
+      },
+    },
+  };
+  const threads = parseReviewThreads(response);
+  expect(threads.map((item) => item.id)).toEqual([
+    "first",
+    "same-pass",
+    "second",
+  ]);
+  expect(threads.map((item) => item.bugbotReviewPasses)).toEqual([3, 3, 3]);
+  expect(threads[0]?.firstComment?.commitOid).toBe("aaa111");
+});
+
 describe("context and stack discovery", () => {
   it("returns a fully explicit context without any reader call", async () => {
     const reader = fakeReader();
