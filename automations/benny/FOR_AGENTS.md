@@ -12,7 +12,7 @@ routines have no slack trigger. by default each routine runs on a schedule (hour
 - behavior: i want it to read the thread and attachments, classify the report as a bug or performance issue, feature request, question or feedback, or reroute, and trace the likely owning layer before routing.
 - tracker: i want it to search my configured tracker for duplicates, update a confident duplicate, and create a ticket only for a clear net-new bug.
 - tools: i want slack connector thread read, reaction, and reply access, my configured tracker integration, and my optional routing map.
-- outcome: i want exactly one reply in the source thread with a short verdict and `[benny:bug]`, `[benny:performance]`, or `[benny:other]`. a bug or performance marker may include the tracker url.
+- outcome: i want exactly one verdict reply in the source thread with a short verdict and `[benny:bug]`, `[benny:performance]`, or `[benny:other]`. a bug or performance marker may include the tracker url. when the slack connector has no reaction tool, benny also posts a short `[benny:triaging]` or `[benny:reproducing]` claim reply, which does not count against that one reply.
 - boundary: i never want this routine to post a root message in the source channel.
 
 ### routine 2: reproduce and fix confirmed bugs

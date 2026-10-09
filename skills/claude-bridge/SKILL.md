@@ -98,7 +98,8 @@ Your webhook routine's saved prompt handles every reply by itself, without this 
 
 - **Package details change** (Project name, repo, or owner): run `bridge.mjs update`, then `bridge.mjs grokbot-setup`, and replace your memory note with what it prints. The reply routine prompt only changes when this skill changes it. For changes that reach the Claude side, run `bridge.mjs handoff` and ask the main thread to replace its "ONYO messages" section with the PROJECT INSTRUCTIONS part.
 - **The helper moved** (for example, a reinstall in another folder): run `grokbot-setup` from the new copy and replace the memory note, because it holds the helper's path.
-- **New webhook URL** (the webhook routine was recreated): run `update --webhook-url`, then `handoff`, and update the "ONYO messages" section. The new routine also needs its new key in the Project's environment. The relay prompt doesn't change.
+- **New webhook URL** (the webhook routine was recreated): run `update --webhook-url`, then `handoff`, and update the "ONYO messages" section. The new routine also needs its new key in the Project's environment. Create it with the relay prompt from [`references/claude-routine-relay-prompt.md`](references/claude-routine-relay-prompt.md).
+- **Package set up before the relay forwarded only the payload `text`:** replace the relay routine's prompt, on the routine's page at claude.ai/code, with the one in [`references/claude-routine-relay-prompt.md`](references/claude-routine-relay-prompt.md). The older prompt can forward the whole routine-fire-payload block instead of its `text` field.
 - **The main thread restarts:** nothing to do. It keeps its session id, and the relay finds it by itself.
 
 ## Other triggers
