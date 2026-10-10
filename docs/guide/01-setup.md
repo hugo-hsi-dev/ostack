@@ -58,14 +58,12 @@ Pick something real but small, and describe it the way you'd describe it to a co
 
 Watch the todo list. Its first items are the matched playbook's steps copied in, the Feature playbook for this prompt. If `/onyo-mode` skips a step, the step stays in the list with `skip: <reason>`, so you can see what it chose not to do.
 
-From here you can type normal follow-ups. In a plugin install, `/onyo-mode` stays on for the rest of the session, whether you typed it or Claude loaded it on its own, for example because your instructions say "use onyo-mode". ostack's hook reminds Claude on every later message to follow it, until you type:
+From here you can type normal follow-ups. In a Claude Project, type `/onyo-mode` in the project chat instead. Claude adds "use onyo-mode" to the project instructions, so every new thread works in it, and `/onyo-mode off` removes it. In a local session, keep `/onyo-mode` on for the whole session by switching to ostack's `onyo` output style:
 
 ```text
-/onyo-mode off
+/output-style onyo
 ```
 
-To start every session with it on, set `OSTACK_ONYO_MODE=on` in the environment, under `env` in your settings or in a cloud environment's variables. Claude Code Projects start each thread as a new session, so this is how the mode carries across threads.
-
-If you'd rather have it apply only to tasks that need rigor, switch to ostack's `onyo` output style with `/output-style onyo` instead. Without the plugin, a plain `/onyo-mode` attaches the skill to one message, and it fades as the chat moves on, so start each task with `/onyo-mode`.
+The output style keeps the onyo-mode reminder in context on every turn until you switch styles. To make it stick across sessions, set `"outputStyle": "onyo"` in your settings. Without it, a plain `/onyo-mode` attaches the skill to one message, and it fades as the chat moves on, so start each task with `/onyo-mode`.
 
 Next: [Route work through `/onyo-mode`](./02-onyo-mode.md).

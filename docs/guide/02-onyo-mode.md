@@ -82,7 +82,7 @@ continue
 keep going until done
 ```
 
-Short works because the playbook holds the structure, and ostack's hook keeps `/onyo-mode` on for the rest of the session. [Set up ostack](./01-setup.md#run-your-first-task) shows how to turn it on. Your words carry the intent, and the skill carries the rigor.
+Short works because the playbook holds the structure, and the `onyo` output style keeps `/onyo-mode` in context on every turn. [Set up ostack](./01-setup.md#run-your-first-task) shows how to turn it on. Your words carry the intent, and the skill carries the rigor.
 
 ## Switch tasks with "new task"
 
