@@ -5,7 +5,16 @@ description: Configure which models ostack uses per role and at what effort budg
 
 # Setup ostack
 
-Write `~/.claude/rules/ostack-models.md`, a user-level rule that sets ostack's model and effort per role. Claude Code loads every `~/.claude/rules/*.md` file without `paths` frontmatter into every session, in every project.
+Write ostack's model and effort per role where it lasts for this user. On their own machine, that is `~/.claude/rules/ostack-models.md`, a user-level rule. Claude Code loads every `~/.claude/rules/*.md` file without `paths` frontmatter into every session, in every project. In a Claude Projects session, it is the project instructions, because a cloud session starts from a fresh container and never sees `~/.claude/rules/`. Never commit the rule to the repository unless the user asks for that in so many words.
+
+## Where the rule goes
+
+Decide this before step 2, and use the first case that fits.
+
+- **Claude Projects, with the project settings tools.** The session has tools that read and write the project instructions, such as `get_project_settings` and `update_project_settings`. Write the rule into the project instructions (step 5b).
+- **Claude Projects, without those tools.** `CLAUDE_CODE_ENTRYPOINT` is `remote_projects`, or the session is a Projects thread, but no tool can write the project instructions. Do steps 1 to 4, then give the user the step 5 block to paste into the project instructions, or tell them to ask the project chat to add it. Write nothing else.
+- **Another cloud session.** `CLAUDE_CODE_REMOTE` is `true`, outside Projects. Write `~/.claude/rules/ostack-models.md` (step 5a) so it applies to sessions this container starts. Say that it ends with the container, and offer the user a setup script for their cloud environment that writes the same file, so new cloud sessions start with it.
+- **Local.** Everything else. Write `~/.claude/rules/ostack-models.md` (step 5a).
 
 ## Steps
 
@@ -17,7 +26,7 @@ The Agent tool takes the effort levels `low`, `medium`, `high`, `xhigh`, and `ma
 
 ### 2. Load current state
 
-The default role-to-model mapping is the rule shape shown in step 5 below. If `~/.claude/rules/ostack-models.md` already exists, read it and treat its `# budget` line and its role values as the current choices. Otherwise start from those defaults. A line whose role is not in step 5, such as `how critics`, is from a retired role. Drop it. A value of `inherit-parent` or `auto` from an older rule means `inherit`. A Cursor-era slug maps by its prefix. `claude-opus-*` becomes `opus`, `claude-sonnet-*` becomes `sonnet`, and `grok-*` becomes `sonnet`. Keep its effort token and drop any `fast` suffix, so `claude-opus-5-5-xhigh` becomes `opus xhigh` and `grok-4.7-xhigh-fast` becomes `sonnet xhigh`. Rewrite it in the new form and list the rewrite in step 3(c). If a Cursor rule exists at `~/.cursor/rules/ostack-models.mdc` and no Claude rule does, offer to carry its choices over the same way.
+The default role-to-model mapping is the rule shape shown in step 5 below. If the rule already exists where it goes (the `~/.claude/rules/ostack-models.md` file, or the ostack block in the project instructions), read it and treat its `# budget` line and its role values as the current choices. Otherwise start from those defaults. A line whose role is not in step 5, such as `how critics`, is from a retired role. Drop it. A value of `inherit-parent` or `auto` from an older rule means `inherit`. A Cursor-era slug maps by its prefix. `claude-opus-*` becomes `opus`, `claude-sonnet-*` becomes `sonnet`, and `grok-*` becomes `sonnet`. Keep its effort token and drop any `fast` suffix, so `claude-opus-5-5-xhigh` becomes `opus xhigh` and `grok-4.7-xhigh-fast` becomes `sonnet xhigh`. Rewrite it in the new form and list the rewrite in step 3(c). If a Cursor rule exists at `~/.cursor/rules/ostack-models.mdc` and no Claude rule does, offer to carry its choices over the same way.
 
 ### 3. Budget, map, and confirm
 
@@ -38,10 +47,10 @@ Every model written must be in the detected set, and every effort must be one of
 
 ### 5. Write the rule
 
-Create `~/.claude/rules/` if it is missing. Write `~/.claude/rules/ostack-models.md` with no frontmatter, so Claude Code loads it in every session. Include a `# budget` line with the chosen label and its target effort, and one line per role, using the same labels onyo-mode uses. Each value is `<model> <effort>`, a comma-separated list of those for panels, or `inherit`. Overwrite the whole file so re-runs stay idempotent. Shape:
+The rule has the same content wherever it goes. Include a `# budget` line with the chosen label and its target effort, and one line per role, using the same labels onyo-mode uses. Each value is `<model> <effort>`, a comma-separated list of those for panels, or `inherit`. Replace the whole rule so re-runs stay idempotent. Shape:
 
 ```
-# ostack model configuration (overrides skill defaults)
+# ostack model configuration: the ostack-models.md rule (overrides skill defaults)
 # One line per role. Delete a line to fall back to the skill default.
 # A value is `<model> <effort>`. Pass the model as the Agent tool's `model` and the effort as its `effort`.
 # `inherit`: the role runs on the parent chat model and effort (omit `model` and `effort`). Inherit entries in a panel list still count toward its fan-out.
@@ -65,9 +74,13 @@ architect runners: opus xhigh, sonnet xhigh
 interrogate reviewers: opus xhigh, sonnet xhigh
 ```
 
+**(a) As a file.** Create `~/.claude/rules/` if it is missing. Write `~/.claude/rules/ostack-models.md` with the block above and no frontmatter, so Claude Code loads it in every session.
+
+**(b) In the project instructions.** Read the current instructions first. Add the block above, then a closing `# end ostack model configuration` line. Its first line names it as the `ostack-models.md` rule, so ostack skills read it the same way as the file. If the instructions already hold an ostack block, replace only the lines from its `# ostack model configuration` line through its closing line. Otherwise append it after one blank line. Keep every other line exactly as it was, such as a line asking for onyo-mode. The instructions reach threads started after the change, not running ones.
+
 ### 6. Confirm
 
-Tell the user the rule was written and that it applies to new sessions. Re-running this skill updates it. A rule in `~/.claude/rules/` lives on this machine. Cloud sessions and routines do not see it, so they run on the skill defaults unless the repository commits its own copy at `.claude/rules/ostack-models.md`. Offer that copy once when the user runs ostack in cloud sessions.
+Tell the user where the rule went and that it applies to new sessions, or to new threads for project instructions. Re-running this skill updates it. For a file in `~/.claude/rules/`, say once that it lives on this machine: cloud sessions, routines, and Projects threads don't see it and run on the skill defaults. For a Claude project, running `/setup-ostack` in the project chat writes the rule into that project's instructions.
 
 ### 7. Offer a verification skill (optional)
 
