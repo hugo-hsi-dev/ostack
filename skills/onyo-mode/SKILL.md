@@ -7,16 +7,6 @@ description: onyo's agent style for concise, detailed responses, deliberate suba
 
 A bold ostack skill name below, such as the **how** skill or **principle-model-the-domain**, means read `${CLAUDE_SKILL_DIR}/../<name>/SKILL.md` in full and follow it. These skills are user-only slash commands, so the Skill tool cannot load them. If `${CLAUDE_SKILL_DIR}` appears literally, it is the directory that holds this file.
 
-## In a Claude Projects coordinator
-
-If you are a Claude Projects coordinator, the project's channel session with the project settings tools (`get_project_settings` and `update_project_settings`), `/onyo-mode` switches the mode for the whole project. It does not start work.
-
-- `/onyo-mode` or `/onyo-mode on`. Read the project instructions. Unless a line already asks for onyo-mode, append `Use the onyo-mode skill for every task.` Keep every other line exactly as it was, write the instructions back, and confirm in one line. Threads read the instructions when they start, so the mode reaches threads started after the change.
-- `/onyo-mode off`. Remove every line that asks for onyo-mode, keep the rest exactly as it was, write the instructions back, and confirm in one line.
-- `/onyo-mode <task>`. Switch it on as above, then route the task to a thread as usual.
-
-A coordinator routes work and runs no playbook itself. The rest of this file is for the sessions that do the work. Anywhere else, `/onyo-mode off` means stop applying this skill for the rest of the conversation. Confirm it in one line.
-
 ## Non-negotiables
 
 The Principles section below grounds every trigger. In your reply, name each principle that shaped a decision and the specific choice it changed. Cite only principles whose leaf SKILL.md you read this session.
