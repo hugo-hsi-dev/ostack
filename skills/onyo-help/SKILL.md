@@ -34,7 +34,7 @@ When the model rule is missing and it matters, ask whether the user wants to pic
 ## Get set up
 
 1. Install from the repository per the [README](../../README.md#install). In Claude Code that is `/plugin marketplace add hugo-hsi-dev/ostack`, then `/plugin install ostack@ostack`. Plugin skills are namespaced, so `/onyo-mode` also shows as `/ostack:onyo-mode`.
-2. Run [`/setup-ostack`](../setup-ostack/SKILL.md). It asks for an effort budget, maps a model to each role, and writes a rule. The rule applies to new sessions.
+2. Run [`/setup-ostack`](../setup-ostack/SKILL.md). It asks for an effort budget, the models to use, and the role mapping, then writes a rule. The rule applies to new sessions. In a Claude project, run it in the project chat. [`/setup-onyo-project`](../setup-onyo-project/SKILL.md) runs it and then turns onyo-mode on for the project.
 3. Start a real task with `/onyo-mode`, a goal, and a check that can pass or fail.
 
 Installing changes nothing until the user invokes a skill. Most skills can load on their own when the user's words, instructions such as Project instructions, or the files at hand match their description. `/unslop`, `/arena`, `/swarm`, `/correct`, and `/recall` are the exceptions. They load only when the user types them or `/onyo-mode` runs them. The [README](../../README.md) and [guide page 1](../../docs/guide/01-setup.md) have the details. Offer to word their first prompt with them, per [`references/prompting.md`](references/prompting.md).
@@ -51,7 +51,7 @@ Whether `/onyo-mode` stays on depends on how the user starts it:
 
 - `/onyo-mode` attaches the skill to one message. It fades as the session moves on.
 - "Use onyo-mode" in Project instructions or a CLAUDE.md keeps it on, since Claude can load the skill on its own. In a Claude Project, the user can ask Claude in the project chat to add or remove that line, and every new thread follows it.
-- `/output-style onyo` turns on ostack's `onyo` output style. It reminds Claude every turn to run new tasks through `/onyo-mode`, and it stays out of casual turns. It stays on until the user picks another style with `/output-style` or in `/config` > Output style. Setting `"outputStyle": "onyo"` in `~/.claude/settings.json` makes it the default.
+- `/output-style onyo` turns on ostack's `onyo` output style. It reminds Claude every turn to run new tasks through `/onyo-mode`, and it stays out of casual turns. It stays on until the user picks another style with `/output-style` or in `/config` > Output style. Setting `"outputStyle": "ostack:onyo"` in `~/.claude/settings.json` makes it the default.
 - Where output styles aren't available, such as other harnesses, start each new task with `/onyo-mode`.
 
 Link [Claude Code's skills docs](https://code.claude.com/docs/en/skills) and [output styles docs](https://code.claude.com/docs/en/output-styles) when this comes up. Mid-chat, "new task" makes the mode match a fresh playbook. `/onyo-mode` already uses `onyo-agent` for the subagents its playbook steps spawn. An `onyo-agent` takes one playbook step, not a whole task, because a subagent cannot spawn the subagents a playbook fans out to. Run a whole task with `/onyo-mode` in the main thread.

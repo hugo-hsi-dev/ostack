@@ -102,6 +102,8 @@ two steps:
 1. run [`/setup-ostack`](./skills/setup-ostack/SKILL.md), pick an effort budget, and choose which models you want.
 2. use [`/onyo-mode`](./skills/onyo-mode/SKILL.md) whenever you're doing anything that requires rigor.
 
+to do both for a project in one go, run [`/setup-onyo-project`](./skills/setup-onyo-project/SKILL.md). it runs `/setup-ostack`, then adds "use onyo-mode" to the project instructions in a claude project, or to `CLAUDE.local.md` locally. in a claude project, run it in the project chat.
+
 new here? the [ostack guide](./docs/guide/README.md) walks you through a first real task, from setup and prompting through verification and overnight runs. stuck, or unsure which skill fits? ask [`/onyo-help`](./skills/onyo-help/SKILL.md).
 
 that's it. the other skills are situational; the mode skill uses them for you as needed. out of the box the mode splits work by model strength: feature code goes to the `sonnet` model alias; refactoring, bug fixes, perf, hillclimb, the hardest changes, prose, and judgment go to the `opus` alias; and read-heavy fan-outs (swarm workers, explorers, investigators) go to the `haiku` alias, all at xhigh effort. the default panel is `opus` / `sonnet`. [`/setup-ostack`](./skills/setup-ostack/SKILL.md) changes any of it.
@@ -200,7 +202,8 @@ in a local session, to keep [`/onyo-mode`](./skills/onyo-mode/SKILL.md) on acros
 | [`/interrogate`](./skills/interrogate/SKILL.md) | you have a diff and want different models to try to break it, including a strict code-quality lens. |
 | [`/automate-me`](./skills/automate-me/SKILL.md) | you want your own `-mode` skill, drafted from how you've actually worked. |
 | [`/make-bot-ui`](./skills/make-bot-ui/SKILL.md) | you want a page or dashboard whose buttons wake a Claude Code routine over its API trigger, including the token handoff and Tailscale. |
-| [`/setup-ostack`](./skills/setup-ostack/SKILL.md) | you want to pick which models ostack uses per role. detects your models and writes a config rule. |
+| [`/setup-ostack`](./skills/setup-ostack/SKILL.md) | you want to pick which models ostack uses per role. asks for a budget, your models, and the role mapping, then writes a config rule. |
+| [`/setup-onyo-project`](./skills/setup-onyo-project/SKILL.md) | you want a project fully set up: `/setup-ostack`, then onyo-mode on for every new session or thread. |
 | [`/reflect`](./skills/reflect/SKILL.md) | a long task landed and you want the recipe captured as a skill edit. |
 | [`/correct`](./skills/correct/SKILL.md) | you keep correcting agents for the same mistakes. mines history for mistake classes, fixes each at the highest level that works (architecture, then types, lint, and ci, then tests, with docs last), and keeps a table pairing each rule with what enforces it. |
 | [`/teach`](./skills/teach/SKILL.md) | you want to actually understand a change or subsystem, not just have it summarized. runs how + why and weaves one plain explanation, built up diagram by diagram. |

@@ -21,7 +21,9 @@ Run:
 /setup-ostack
 ```
 
-[`/setup-ostack`](../../skills/setup-ostack/SKILL.md) detects the models you have access to, asks for an effort budget, shows you each role (code delegates, judgment, the review panels), and asks what you want. Answer the questions. It writes `~/.claude/rules/ostack-models.md`, a small rule file Claude Code loads into every session and every ostack skill reads. In a Claude project it writes the same rule into the project instructions instead, since cloud threads never see `~/.claude/rules/`.
+[`/setup-ostack`](../../skills/setup-ostack/SKILL.md) detects the models you have access to and asks three questions: an effort budget, which models to use, and whether to keep the resulting role mapping (code delegates, judgment, the review panels) or change some roles. It asks every time, with multiple-choice questions, and writes nothing until you answer. It writes `~/.claude/rules/ostack-models.md`, a small rule file Claude Code loads into every session and every ostack skill reads. In a Claude project it writes the same rule into the project instructions instead, since cloud threads never see `~/.claude/rules/`. Run it in the project chat, which can edit the project instructions. Run in a thread, it hands the setup back to the project chat.
+
+To set up a project and turn onyo-mode on in one go, run [`/setup-onyo-project`](../../skills/setup-onyo-project/SKILL.md) instead. It runs `/setup-ostack`, then adds "use onyo-mode" to the project instructions in a Claude project, or to `CLAUDE.local.md` in a local session.
 
 The defaults run at `xhigh` reasoning, the same as the `large` budget. `unlimited` lifts each model to its highest effort, up to `max`. `medium` and `small` lower the reasoning and spend fewer tokens.
 
@@ -64,6 +66,6 @@ From here you can type normal follow-ups. In a Claude Project, put "use onyo-mod
 /output-style onyo
 ```
 
-The output style keeps the onyo-mode reminder in context on every turn until you switch styles. To make it stick across sessions, set `"outputStyle": "onyo"` in your settings. Without it, a plain `/onyo-mode` attaches the skill to one message, and it fades as the chat moves on, so start each task with `/onyo-mode`.
+The output style keeps the onyo-mode reminder in context on every turn until you switch styles. To make it stick across sessions, set `"outputStyle": "ostack:onyo"` in your settings. Without it, a plain `/onyo-mode` attaches the skill to one message, and it fades as the chat moves on, so start each task with `/onyo-mode`.
 
 Next: [Route work through `/onyo-mode`](./02-onyo-mode.md).
