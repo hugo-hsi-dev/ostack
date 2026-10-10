@@ -81,7 +81,7 @@ Launch all matching investigators in a single message so they run concurrently. 
 
 Subagent config (each):
 - `subagent_type`: `"onyo-reader"`. If `onyo-reader` is not installed, use `"general-purpose"` and put "Read-only. Do not edit, write, or commit files." in the brief. Read-only agents keep MCP access. Investigators shouldn't write anything.
-- `model` and `effort`: the `why investigators` line, default `sonnet xhigh`
+- `model` and `effort`: the `why investigators` line, default `haiku xhigh`
 
 Each investigator gets:
 1. The base prompt from `references/investigator-prompt.md`

@@ -78,7 +78,7 @@ schedule or trigger, or from you typing in a Project's threads:
 | pstack in Cursor | ostack in Claude Code |
 | --- | --- |
 | `Task` tool, `subagent_type: generalPurpose`, `readonly: true` | Agent tool, `general-purpose`, and ostack's read-only `onyo-reader` agent |
-| Model slugs such as `claude-opus-5-5-xhigh` and `grok-4.7-xhigh-fast` | A model and an effort per role, defaulting to `opus xhigh` for judgment and `sonnet xhigh` for code |
+| Model slugs such as `claude-opus-5-5-xhigh` and `grok-4.7-xhigh-fast` | A model and an effort per role, defaulting to `opus xhigh` for judgment and most code, `sonnet xhigh` for feature code, and `haiku xhigh` for fan-out exploration |
 | `~/.cursor/rules/ostack-models.mdc` | `~/.claude/rules/ostack-models.md`, written by `/setup-ostack` |
 | Custom Mode for `/onyo-mode` | The `onyo` output style (`/output-style onyo`) |
 | `AskQuestion` | `AskUserQuestion` |
@@ -104,7 +104,7 @@ two steps:
 
 new here? the [ostack guide](./docs/guide/README.md) walks you through a first real task, from setup and prompting through verification and overnight runs. stuck, or unsure which skill fits? ask [`/onyo-help`](./skills/onyo-help/SKILL.md).
 
-that's it. the other skills are situational; the mode skill uses them for you as needed. out of the box the mode splits work by model strength: code delegates (feature, refactoring, bug fix, perf, hillclimb) go to the `sonnet` model alias, while the hardest changes, prose, and judgment go to the `opus` alias, both at xhigh effort. the default panel is `opus` / `sonnet`. [`/setup-ostack`](./skills/setup-ostack/SKILL.md) changes any of it.
+that's it. the other skills are situational; the mode skill uses them for you as needed. out of the box the mode splits work by model strength: feature code goes to the `sonnet` model alias; refactoring, bug fixes, perf, hillclimb, the hardest changes, prose, and judgment go to the `opus` alias; and read-heavy fan-outs (swarm workers, explorers, investigators) go to the `haiku` alias, all at xhigh effort. the default panel is `opus` / `sonnet`. [`/setup-ostack`](./skills/setup-ostack/SKILL.md) changes any of it.
 
 ## usage
 
