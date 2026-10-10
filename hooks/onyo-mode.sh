@@ -68,11 +68,11 @@ if [ "$said" = off ]; then
 fi
 [ "$state" = off ] && exit 0
 
+skill="the onyo-projects skill (ostack:onyo-projects, or $root/skills/onyo-projects/SKILL.md)"
+if [ -n "$projects" ] && [ "$CLAUDE_CODE_COORDINATOR_MODE" = 1 ]; then
+  echo "This is a Claude Projects project chat and you are its coordinator. Do not load onyo-mode here. For each new work ask, follow the Coordinator section of $skill: a planning thread routes the ask and writes the unit briefs, and you start the threads and relay."
+  exit 0
+fi
 echo "onyo-mode is on. Follow the onyo-mode skill for this task. If its full text is not in your context, load it with the Skill tool (ostack:onyo-mode) or read $root/skills/onyo-mode/SKILL.md in full. A message of just \`onyo-mode off\` turns it off for this session, and that line in CLAUDE.md, CLAUDE.local.md, or the project instructions turns it off for the project."
 [ -n "$projects" ] || exit 0
-if [ "$CLAUDE_CODE_COORDINATOR_MODE" = 1 ]; then
-  role="the project chat's coordinator" section=Coordinator
-else
-  role="a thread" section=Thread
-fi
-echo "This is a Claude Projects session and you are $role. Also follow the $section section of the onyo-projects skill (ostack:onyo-projects, or $root/skills/onyo-projects/SKILL.md)."
+echo "This is a Claude Projects thread. Also follow $skill: its Planning thread section if your brief names this the ask's planning thread, its Unit thread section otherwise."

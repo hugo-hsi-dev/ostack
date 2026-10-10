@@ -44,7 +44,7 @@ ostack targets Claude Code. Its skills use the Agent Skills format, so other too
 
 `/onyo-mode` matches the task to a playbook, copies the playbook's steps into the todo list, and runs the other skills as the steps need them. A step it skips stays in the list as `skip: <reason>`. A good prompt states the goal and how to tell it's done. It doesn't list skills, because a hand-written sequence tends to drop or reorder steps the playbook would keep. Read [`references/prompting.md`](references/prompting.md) before you help word one. [Guide page 2](../../docs/guide/02-onyo-mode.md) has examples.
 
-`/onyo-mode` is on by default. ostack's `UserPromptSubmit` hook (`hooks/onyo-mode.sh`) tells Claude on every message to follow it. In a Claude project, the hook also names the session's role and adds the `onyo-projects` skill, so the coordinator routes each ask into research and work threads, and threads report back to the project chat. A line of just `onyo-mode off` opts out:
+`/onyo-mode` is on by default. ostack's `UserPromptSubmit` hook (`hooks/onyo-mode.sh`) tells Claude on every message to follow it. In a Claude project, the hook gives the project chat's coordinator only the `onyo-projects` skill, without onyo-mode. The coordinator hands each ask to a planning thread, which routes it into research and work threads, and the threads report back to the project chat. A line of just `onyo-mode off` opts out:
 
 - In a message, it turns the mode off for the rest of the session. A message of just `onyo-mode on` turns it back on.
 - In a project's `CLAUDE.md` or `CLAUDE.local.md`, or a Claude project's instructions, it turns the mode off for the project.

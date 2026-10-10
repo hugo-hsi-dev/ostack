@@ -9,7 +9,7 @@ A bold ostack skill name below, such as the **how** skill or **principle-model-t
 
 ## Claude Projects
 
-In a Claude project, also follow the **onyo-projects** skill. ostack's hook says so on every message. As the project chat's coordinator, you route each work ask into research and work threads and relay their reports, and you never do the work yourself. As a thread, you run only the unit your brief names and report to the coordinator.
+In a Claude project thread, also follow the **onyo-projects** skill. ostack's hook says so on every message. As an ask's planning thread, you route it, split it into units, write their briefs, and check their results. As a unit thread, you run only the unit your brief names and report to the coordinator. The project chat's coordinator does not load this file.
 
 ## Non-negotiables
 
