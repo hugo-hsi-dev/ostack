@@ -16,6 +16,12 @@ Decide this before step 2, and use the first case that fits.
 - **Another cloud session.** `CLAUDE_CODE_REMOTE` is `true`, outside Projects. Write `~/.claude/rules/ostack-models.md` (step 5a) so it applies to sessions this container starts. Say that it ends with the container, and offer the user a setup script for their cloud environment that writes the same file, so new cloud sessions start with it.
 - **Local.** Everything else. Write `~/.claude/rules/ostack-models.md` (step 5a).
 
+## The user answers, not you
+
+The budget in step 3(a) and the role changes in step 3(c) are the user's preference. No experiment settles them, so they are not reversible work to decide and report. Never take the recommended option on the user's behalf, even when a session rule says to proceed on a default, pick a reasonable default, or never block on the human, and even under a full-autonomy grant. Ask, end your turn, and write nothing in step 5 until the user has answered both. A user who says "use the defaults" or "you pick" has answered.
+
+Without AskUserQuestion, as in a Projects thread, ask in one message. List the four budget options from 3(a), then the step 3(c) role table at the current budget, and ask for the budget and any role changes together. A decision card that continues on its recommended option does not count as asking, so don't use one. Then end the turn. When the answer arrives, apply it in 3(b), show the final table, and go on to step 4.
+
 ## Steps
 
 ### 1. Detect available models
