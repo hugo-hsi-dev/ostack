@@ -80,7 +80,7 @@ schedule or trigger, or from you typing in a Project's threads:
 | `Task` tool, `subagent_type: generalPurpose`, `readonly: true` | Agent tool, `general-purpose`, and ostack's read-only `onyo-reader` agent |
 | Model slugs such as `claude-opus-5-5-xhigh` and `grok-4.7-xhigh-fast` | A model and an effort per role, defaulting to `opus xhigh` for judgment and `sonnet xhigh` for code |
 | `~/.cursor/rules/ostack-models.mdc` | `~/.claude/rules/ostack-models.md`, written by `/setup-ostack` |
-| Custom Mode for `/onyo-mode` | `/onyo-mode` staying on through ostack's hook, or the `onyo` output style (`/output-style onyo`) |
+| Custom Mode for `/onyo-mode` | The `onyo` output style (`/output-style onyo`) |
 | `AskQuestion` | `AskUserQuestion` |
 | Cursor cloud agents and Cursor Projects | Claude Code cloud sessions (`claude --cloud`) and Claude Projects |
 | Cursor Automations | Claude Code routines (schedule, API, and GitHub triggers) |
