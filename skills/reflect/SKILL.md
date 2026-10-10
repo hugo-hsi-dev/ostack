@@ -39,7 +39,7 @@ Each reviewer and the synthesizer name a role line in the `~/.claude/rules/ostac
 | Lens | Role line | Default | Prompt template |
 |---|---|---|---|
 | Judgment | `reflect judgment, divergent, synthesizer` | `opus xhigh` | `references/judgment-reviewer.md` |
-| Tooling | `reflect tooling` | `sonnet xhigh` | `references/tooling-reviewer.md` |
+| Tooling | `reflect tooling` | `haiku xhigh` | `references/tooling-reviewer.md` |
 | Divergent | `reflect judgment, divergent, synthesizer` | `opus xhigh` | `references/divergent-reviewer.md` |
 
 Pass each template verbatim, substituting the transcript path or digest where marked. Reviewers return findings in the `Agent` response body.

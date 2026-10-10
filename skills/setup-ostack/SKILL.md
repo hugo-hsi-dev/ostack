@@ -26,7 +26,7 @@ The Agent tool takes the effort levels `low`, `medium`, `high`, `xhigh`, and `ma
 
 ### 2. Load current state
 
-The default role-to-model mapping is the rule shape shown in step 5 below. If the rule already exists where it goes (the `~/.claude/rules/ostack-models.md` file, or the ostack block in the project instructions), read it and treat its `# budget` line and its role values as the current choices. Otherwise start from those defaults. A line whose role is not in step 5, such as `how critics`, is from a retired role. Drop it. A value of `inherit-parent` or `auto` from an older rule means `inherit`. A Cursor-era slug maps by its prefix. `claude-opus-*` becomes `opus`, `claude-sonnet-*` becomes `sonnet`, and `grok-*` becomes `sonnet`. Keep its effort token and drop any `fast` suffix, so `claude-opus-5-5-xhigh` becomes `opus xhigh` and `grok-4.7-xhigh-fast` becomes `sonnet xhigh`. Rewrite it in the new form and list the rewrite in step 3(c). If a Cursor rule exists at `~/.cursor/rules/ostack-models.mdc` and no Claude rule does, offer to carry its choices over the same way.
+The default role-to-model mapping is the rule shape shown in step 5 below. If the rule already exists where it goes (the `~/.claude/rules/ostack-models.md` file, or the ostack block in the project instructions), read it and treat its `# budget` line and its role values as the current choices. Otherwise start from those defaults. A line whose role is not in step 5, such as `how critics`, is from a retired role. Drop it. A `feature, refactoring` line from an older rule splits into a `feature` line and a `refactoring` line with its value. A value of `inherit-parent` or `auto` from an older rule means `inherit`. A Cursor-era slug maps by its prefix. `claude-opus-*` becomes `opus`, `claude-sonnet-*` becomes `sonnet`, and `grok-*` becomes `sonnet`. Keep its effort token and drop any `fast` suffix, so `claude-opus-5-5-xhigh` becomes `opus xhigh` and `grok-4.7-xhigh-fast` becomes `sonnet xhigh`. Rewrite it in the new form and list the rewrite in step 3(c). If a Cursor rule exists at `~/.cursor/rules/ostack-models.mdc` and no Claude rule does, offer to carry its choices over the same way.
 
 ### 3. Budget, map, and confirm
 
@@ -39,7 +39,7 @@ The default role-to-model mapping is the rule shape shown in step 5 below. If th
 
 **(b) Apply it.** Build the working table from the skill defaults, and on a re-run keep any role you changed by model, list, or alias (`inherit`). `unlimited`, `large`, `medium`, and `small` set the effort of every role value, panel entries included, to `max`, `xhigh`, `high`, or `medium`. The model stays the same. `inherit` does not change, because it takes the parent's model and effort. So `unlimited` turns `opus xhigh` into `opus max` and `sonnet xhigh` into `sonnet max`. `large` keeps both defaults. `small` turns them into `opus medium` and `sonnet medium`.
 
-**(c) Show the roles and confirm.** Show every role with its value, marking any model not in the detected set as needing a choice. Also list each line step 2 dropped or rewrote. Ask whether to accept as-is or change specific roles, offering the detected models plus `inherit` (this role runs on the parent chat model and effort) as the options. Prefer AskUserQuestion over free text. For panel roles (arena runners, architect runners, interrogate reviewers) the value is a list, and one subagent runs per entry, `inherit` entries included, so the list length sets the count. `arena cross-judge pool` is also a list, but Arena selects one value from it whose model differs from the parent's when possible. `swarm workers` is the default model for every worker unless a race or comparison assigns another model per arm.
+**(c) Show the roles and confirm.** Show every role with its value, marking any model not in the detected set as needing a choice. Also list each line step 2 dropped or rewrote. Ask whether to accept as-is or change specific roles, offering the detected models plus `inherit` (this role runs on the parent chat model and effort) as the options. Prefer AskUserQuestion over free text. For panel roles (arena runners, architect runners, interrogate reviewers) the value is a list, and one subagent runs per entry, `inherit` entries included, so the list length sets the count. `arena cross-judge pool` is also a list, but Arena selects one value from it whose model differs from the parent's when possible. `swarm workers` is the default model for every worker unless a race or comparison assigns another model per arm. The `haiku` defaults need a Haiku that takes `xhigh` (Claude Haiku 5.5 does). An older Haiku without effort support runs at its own default.
 
 ### 4. Validate
 
@@ -55,21 +55,22 @@ The rule has the same content wherever it goes. Include a `# budget` line with t
 # A value is `<model> <effort>`. Pass the model as the Agent tool's `model` and the effort as its `effort`.
 # `inherit`: the role runs on the parent chat model and effort (omit `model` and `effort`). Inherit entries in a panel list still count toward its fan-out.
 # budget: large (xhigh)
-feature, refactoring: sonnet xhigh
-bug-fix: sonnet xhigh
-perf-issue: sonnet xhigh
-hillclimb: sonnet xhigh
+feature: sonnet xhigh
+refactoring: opus xhigh
+bug-fix: opus xhigh
+perf-issue: opus xhigh
+hillclimb: opus xhigh
 judgment and prose: opus xhigh
 hardest tasks: opus xhigh
-how explorer: sonnet xhigh
+how explorer: haiku xhigh
 how explainer: opus xhigh
-why investigators: sonnet xhigh
+why investigators: haiku xhigh
 why synthesizer: opus xhigh
-reflect tooling: sonnet xhigh
+reflect tooling: haiku xhigh
 reflect judgment, divergent, synthesizer: opus xhigh
 arena runners: opus xhigh, sonnet xhigh
 arena cross-judge pool: opus xhigh, sonnet xhigh
-swarm workers: sonnet xhigh
+swarm workers: haiku xhigh
 architect runners: opus xhigh, sonnet xhigh
 interrogate reviewers: opus xhigh, sonnet xhigh
 ```
