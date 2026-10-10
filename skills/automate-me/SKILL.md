@@ -1,14 +1,13 @@
 ---
 name: automate-me
 description: "Use for \"automate me\", \"create/update/refresh my -mode skill\", \"turn/capture my preferences or working style into a skill\", or wanting agents to follow how the user works. Drafts or revises a personal -mode skill via skill-creator + unslop, optionally pulling fresh evidence from recent transcripts."
-disable-model-invocation: true
 ---
 
 # Automate me
 
 A guided flow for turning the user's working conventions into a skill agents will follow. The output is one `-mode` skill tailored to them (e.g. `jay-mode`, `priya-mode`).
 
-A bold ostack skill name below means read `${CLAUDE_SKILL_DIR}/../<name>/SKILL.md` in full and follow it. These skills are user-only slash commands, so the Skill tool cannot load them. If `${CLAUDE_SKILL_DIR}` appears literally, it is the directory that holds this file.
+A bold ostack skill name below means read `${CLAUDE_SKILL_DIR}/../<name>/SKILL.md` in full and follow it. If `${CLAUDE_SKILL_DIR}` appears literally, it is the directory that holds this file.
 
 This skill orchestrates three others: an inline mining pass (see step 1), the `skill-creator` skill (authoring, from Anthropic's `skill-creator@claude-plugins-official` plugin), and the **unslop** skill (prose discipline). It sequences them. It doesn't replace them.
 

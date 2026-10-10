@@ -189,7 +189,7 @@ in a local session, to keep [`/onyo-mode`](./skills/onyo-mode/SKILL.md) on acros
 | skill | use it when |
 |---|---|
 | [`/onyo-mode`](./skills/onyo-mode/SKILL.md) | default entry point for any non-trivial task. |
-| [`/onyo-help`](./skills/onyo-help/SKILL.md) | you're new to ostack, or unsure which skill, playbook, or principle fits. finds out what you're trying to do, answers that part, and hands you a prompt to type. runs only when you type `/onyo-help`. |
+| [`/onyo-help`](./skills/onyo-help/SKILL.md) | you're new to ostack, or unsure which skill, playbook, or principle fits. finds out what you're trying to do, answers that part, and hands you a prompt to type. |
 | [`/how`](./skills/how/SKILL.md) | you want a walkthrough of how a subsystem works. |
 | [`/why`](./skills/why/SKILL.md) | you want to know why something was built this way. discovers available MCPs at run time and queries each evidence category in parallel (source control, issue tracker, long-form docs, real-time chat, infra observability, error tracking, analytics warehouse). |
 | [`/recall`](./skills/recall/SKILL.md) | you're starting or resuming work and want your recent context on a topic rebuilt from your own chat history and the shared record, handed back as a tight current-state brief. |
