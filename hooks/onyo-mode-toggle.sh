@@ -1,5 +1,6 @@
 #!/bin/sh
 # expansion: the user typed /onyo-mode as a slash command.
+# skill: Claude loaded onyo-mode with the Skill tool.
 # submit: every prompt, including Projects messages, which arrive as text.
 event=$1
 input=$(cat)
@@ -14,7 +15,13 @@ state_dir="${CLAUDE_PLUGIN_DATA:-${TMPDIR:-/tmp}/ostack}/onyo-mode"
 state_file="$state_dir/$session"
 skill="${CLAUDE_PLUGIN_ROOT}/skills/onyo-mode/SKILL.md"
 
-if [ "$event" = expansion ]; then
+if [ "$event" = skill ]; then
+  [ -z "$(field agent_id)" ] || exit 0
+  case $(field skill) in
+    onyo-mode | ostack:onyo-mode) mkdir -p "$state_dir" && echo on > "$state_file" ;;
+  esac
+  exit 0
+elif [ "$event" = expansion ]; then
   case $(field command_name) in
     onyo-mode | ostack:onyo-mode) ;;
     *) exit 0 ;;
@@ -53,5 +60,5 @@ state=$(cat "$state_file" 2>/dev/null)
 [ "$state" = on ] || exit 0
 
 cat <<MSG
-onyo-mode is on for this session. Treat this message as if the user had typed /onyo-mode before it, and follow the onyo-mode skill at $skill. If its full text is not in your context, because you have not read it this session or compaction dropped it, read the file in full before your first step. The Skill tool cannot load it, since it is a user-only slash command. /onyo-mode off turns the mode off.
+onyo-mode is on for this session. Treat this message as if the user had typed /onyo-mode before it, and follow the onyo-mode skill at $skill. If its full text is not in your context, because you have not read it this session or compaction dropped it, load it before your first step, with the Skill tool or by reading the file in full. /onyo-mode off turns the mode off.
 MSG

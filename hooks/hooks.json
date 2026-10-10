@@ -1,5 +1,5 @@
 {
-  "description": "Keeps /onyo-mode on for the rest of the session once typed. /onyo-mode off turns it off. OSTACK_ONYO_MODE=on starts every session with it on.",
+  "description": "Keeps onyo-mode on for the rest of the session once the user types /onyo-mode or Claude loads it. /onyo-mode off turns it off. OSTACK_ONYO_MODE=on starts every session with it on.",
   "hooks": {
     "UserPromptExpansion": [
       {
@@ -12,6 +12,14 @@
       {
         "hooks": [
           { "type": "command", "command": "\"${CLAUDE_PLUGIN_ROOT}\"/hooks/onyo-mode-toggle.sh submit" }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Skill",
+        "hooks": [
+          { "type": "command", "command": "\"${CLAUDE_PLUGIN_ROOT}\"/hooks/onyo-mode-toggle.sh skill" }
         ]
       }
     ]
