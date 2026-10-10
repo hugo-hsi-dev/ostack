@@ -80,7 +80,7 @@ Launch all matching investigators in a single message so they run concurrently. 
 
 Subagent config (each):
 - `subagent_type`: `"onyo-reader"`. If `onyo-reader` is not installed, use `"general-purpose"` and put "Read-only. Do not edit, write, or commit files." in the brief. Read-only agents keep MCP access. Investigators shouldn't write anything.
-- `model` and `effort`: the `why investigators` line, default `haiku xhigh`
+- `model` and `effort`: the `why investigators` line, default `haiku high`
 
 Each investigator gets:
 1. The base prompt from `references/investigator-prompt.md`
@@ -123,7 +123,7 @@ If your scope assessment suggests a single-commit trivial target where the PR de
 Spawn one synthesizer subagent:
 
 - `subagent_type`: `"onyo-reader"`. If `onyo-reader` is not installed, use `"general-purpose"` and put "Read-only. Do not edit, write, or commit files." in the brief. The synthesizer's quality check spot-verifies citations through MCP, which read-only agents keep.
-- `model` and `effort`: the `why synthesizer` line, default `opus xhigh`
+- `model` and `effort`: the `why synthesizer` line, default `opus high`
 
 The synthesizer gets:
 1. The investigator findings, including any null results and any categories skipped with justification

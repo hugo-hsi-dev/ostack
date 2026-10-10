@@ -36,8 +36,8 @@ Launch all reviewers in a single message using the Agent tool. Use the `interrog
 
 | Subagent | Default model |
 |----------|---------------|
-| Reviewer A | `opus xhigh` |
-| Reviewer B | `sonnet xhigh` |
+| Reviewer A | `opus high` |
+| Reviewer B | `sonnet high` |
 
 For each reviewer:
 - `subagent_type`: `"onyo-reader"`. If `onyo-reader` is not installed, use `"general-purpose"` and put "Read-only. Do not edit, write, or commit files." in the brief.

@@ -17,13 +17,13 @@ Changes from pstack:
   (now ostack-models.md), and prose.
 - Set the frontmatter name of onyo-mode and make-bot-ui to their folder names so every
   harness resolves them the same way.
-- Added packaging for Claude Code (.claude-plugin), Codex (.codex-plugin, .agents/plugins),
-  and skills.sh (skills.sh.json), and replaced the Cursor manifest with ostack's own.
+- Added packaging for Claude Code (.claude-plugin) and skills.sh (skills.sh.json), and
+  replaced the Cursor manifest with ostack's own.
 - Rewrote the top of README.md and the install steps for a repository that isn't in the
   Cursor Marketplace.
 - Ported the Cursor-specific parts to Claude Code. The Task tool and its parameters became the
   Agent tool, Cursor model slugs became a model and an effort per role, ostack-models.mdc became
-  ~/.claude/rules/ostack-models.md, Custom Modes became the onyo output style, Bugbot became
+  ~/.claude/rules/ostack-models.md, Custom Modes became the onyo-mode hook, Bugbot became
   Claude Code Review, cursor-team-kit and Cursor built-ins became Claude Code built-ins, cloud
   agents became cloud sessions, Cursor Automations became Claude Code routines, and the Origin
   forge branches were removed. The Grok Bot layer was removed: make-bot-ui now wakes a Claude Code

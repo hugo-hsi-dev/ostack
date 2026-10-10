@@ -1,15 +1,20 @@
+---
+name: onyo-projects
+description: onyo-mode's rules for Claude Projects. The coordinator routes each work ask into research and work threads, and threads run one unit and report back. Use only in a Claude Projects session (the project chat or a thread), alongside onyo-mode. ostack's hook loads it there.
+---
+
 # onyo-mode in Claude Projects
 
-A Claude project has two roles. Find yours first.
+Follow this with the onyo-mode skill. ostack's onyo-mode hook names your role on every message. Without the hook, find it yourself.
 
-- **Coordinator.** The project chat's session. It has `start_thread_session`, `message_thread`, and `post_message`. It routes and never does the work.
-- **Thread.** A session a coordinator started for one unit. `CLAUDE_CODE_ENTRYPOINT` is `remote_projects`, and it has `reply` and `get_channel_session_id`. It runs its unit and reports to the coordinator.
+- **Coordinator.** The project chat's session. `CLAUDE_CODE_COORDINATOR_MODE` is `1`, and it has `start_thread_session`, `message_thread`, and `post_message`. It routes and never does the work.
+- **Thread.** A session a coordinator started for one unit. `CLAUDE_CODE_ENTRYPOINT` is `remote_projects` without coordinator mode, and it has `reply` and `get_channel_session_id`. It runs its unit and reports to the coordinator.
 
 The user works only in the project chat. Every progress note, result, question, and permission need reaches them there. They never have to open a thread.
 
 ## Coordinator
 
-The project instructions replace your default for a work ask, which is one thread per ask with the user's message passed straight through. Acks, follow-ups to a running thread, greetings, and thanks keep your usual rules.
+This skill replaces your default for a work ask, which is one thread per ask with the user's message passed straight through. Acks, follow-ups to a running thread, greetings, and thanks keep your usual rules.
 
 For each new work ask:
 
@@ -38,16 +43,6 @@ A follow-up that changes the plan goes back through steps 1 to 4.
 - **Warn before a permission prompt.** Before a step you expect to stop on a tool permission prompt, tell the coordinator what it is, so the user knows to open this thread.
 - **Keep the thread short.** Your status checklist carries progress. Your final `reply` is one line with the result and its link.
 
-## Project instructions
+## Turning it off
 
-The coordinator reads the project instructions every session but loads a skill only when told. `/setup-onyo-project` puts this block at the top of the project instructions, so both roles get the routing rules before any skill loads:
-
-```text
-## onyo-mode in this project
-
-Use onyo-mode for every task.
-
-Project chat (coordinator): for every new work ask, load the onyo-mode skill (ostack:onyo-mode) and follow the Coordinator section of its references/claude-projects.md before you start any thread. This replaces your default of one thread per ask with my message passed straight through. Route first: name the playbook and the skills the ask needs, split it into research and work units, and post that plan. Then start one thread per ready unit, with a brief that names its unit, playbook, skills, and inputs. Read each thread's results before you start the work that depends on them. Post every thread's progress, results, questions, and permission needs in the project chat, and forward my answers to the thread. I should never have to open a thread except to answer a tool permission prompt.
-
-Threads: do only the unit your brief names, even when the thread's first message is my whole ask. Send progress, results, questions, and permission needs to the coordinator with send_message (its ID from get_channel_session_id). Ask through the coordinator, not in the thread.
-```
+A line of just `onyo-mode off` in the project instructions turns onyo-mode and this skill off for every new session in the project. The hook then injects nothing. A user message of just `onyo-mode off` turns it off for that one session.

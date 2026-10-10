@@ -5,7 +5,7 @@
     {
       "title": "Start here",
       "description": "The routing skill, help, and model setup.",
-      "skills": ["onyo-mode", "onyo-help", "setup-ostack", "setup-onyo-project"]
+      "skills": ["onyo-mode", "onyo-projects", "onyo-help", "setup-ostack"]
     }
   ]
 }
