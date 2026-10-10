@@ -55,13 +55,13 @@ npx skills add hugo-hsi-dev/ostack --skill onyo-mode
 ```
 
 skills.sh copies skills only. The `onyo-agent`, `onyo-reader`, and Comment Sicko subagents and the
-`onyo` output style and the hook that keeps `/onyo-mode` on ship with the Claude Code plugin install.
+`onyo` output style ship with the Claude Code plugin install.
 
 ### which parts work where
 
 The skills use the Agent Skills format, so every harness above can read them. The workflow skills,
 including `onyo-mode`, `how`, `why`, and `teach`, spawn Claude Code subagents through the Agent tool
-with a model and effort per role. The `onyo` output style, the onyo-mode hook, `/loop`, `/simplify`, `/run`, and cloud
+with a model and effort per role. The `onyo` output style, `/loop`, `/simplify`, `/run`, and cloud
 sessions are Claude Code features, so those parts may behave differently in other harnesses.
 `make-bot-ui` assumes a Claude Code routine with an API trigger.
 
@@ -165,9 +165,9 @@ when invoked it:
 
 the full rules and playbooks live in [`skills/onyo-mode/SKILL.md`](./skills/onyo-mode/SKILL.md).
 
-claude can load [`/onyo-mode`](./skills/onyo-mode/SKILL.md) on its own, so "use onyo-mode" in project instructions or a CLAUDE.md works. in a claude code plugin install, it stays on for the rest of the session once you type it or claude loads it. a [hook](./hooks/hooks.json) reminds claude on every later message to follow it. `/onyo-mode off` turns it off. to start every session with it on, set `OSTACK_ONYO_MODE=on` in the environment, for example under `env` in `~/.claude/settings.json` or in a cloud environment's variables. claude code projects start each thread as a new session, so a toggle typed in one thread doesn't carry to the next, and `OSTACK_ONYO_MODE=on` is how you keep it on across threads.
+claude can load [`/onyo-mode`](./skills/onyo-mode/SKILL.md) on its own, so "use onyo-mode" in project instructions or a CLAUDE.md keeps it on. in a claude project, type `/onyo-mode` in the project chat and claude adds that line to the project instructions, so every new thread works in onyo-mode. `/onyo-mode off` in the project chat removes it.
 
-for a lighter touch, run `/output-style onyo` instead. that turns on ostack's [`onyo` output style](./output-styles/onyo.md), which applies `/onyo-mode` only when a playbook matches or the task needs rigor and stays out of casual turns. switch styles with `/output-style` to turn it off.
+in a local session, to keep [`/onyo-mode`](./skills/onyo-mode/SKILL.md) on across turns, run `/output-style onyo`. that turns on ostack's [`onyo` output style](./output-styles/onyo.md). it stays in context every turn, applies `/onyo-mode` when a playbook matches or the task needs rigor, and stays out of the way otherwise. plain `/onyo-mode` attaches it to one message only. say so to opt out, or switch styles with `/output-style` to turn it off.
 
 [`/onyo-mode`](./skills/onyo-mode/SKILL.md) works extremely well with claude code's `/loop` command. you can make claude work for many hours without sacrificing rigor.
 
