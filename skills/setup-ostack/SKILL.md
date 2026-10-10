@@ -12,7 +12,7 @@ Write ostack's model and effort per role where it lasts for this user. On their 
 Decide this before step 2, and use the first case that fits.
 
 - **Claude Projects, with the project settings tools.** The session has tools that read and write the project instructions, such as `get_project_settings` and `update_project_settings`. Write the rule into the project instructions (step 5b).
-- **Claude Projects, without those tools.** `CLAUDE_CODE_ENTRYPOINT` is `remote_projects`, or the session is a Projects thread, but no tool can write the project instructions. Do steps 1 to 4, then give the user the step 5 block to paste into the project instructions, or tell them to ask the project chat to add it. Write nothing else.
+- **Claude Projects thread.** `CLAUDE_CODE_ENTRYPOINT` is `remote_projects`, or the session is a Projects thread, and no tool here writes the project instructions. The project's channel session (the project chat's coordinator) can. Do steps 1 to 4, then hand the rule to the channel session to write (step 5c). Write nothing else, no file in the repository or the shared project folder.
 - **Another cloud session.** `CLAUDE_CODE_REMOTE` is `true`, outside Projects. Write `~/.claude/rules/ostack-models.md` (step 5a) so it applies to sessions this container starts. Say that it ends with the container, and offer the user a setup script for their cloud environment that writes the same file, so new cloud sessions start with it.
 - **Local.** Everything else. Write `~/.claude/rules/ostack-models.md` (step 5a).
 
@@ -79,9 +79,11 @@ interrogate reviewers: opus xhigh, sonnet xhigh
 
 **(b) In the project instructions.** Read the current instructions first. Add the block above, then a closing `# end ostack model configuration` line. Its first line names it as the `ostack-models.md` rule, so ostack skills read it the same way as the file. If the instructions already hold an ostack block, replace only the lines from its `# ostack model configuration` line through its closing line. Otherwise append it after one blank line. Keep every other line exactly as it was, such as a line asking for onyo-mode. The instructions reach threads started after the change, not running ones.
 
+**(c) Through the channel session.** Get its session ID with `get_channel_session_id`. Send it the block from (b), closing line included, with `send_message`, asking it to merge the block into the project instructions exactly as (b) says: replace only an existing ostack block, otherwise append after one blank line, and keep every other line as it is. Ask it to confirm once written. If no channel session exists or the send fails, give the user the block in the reply to paste into the project instructions instead.
+
 ### 6. Confirm
 
-Tell the user where the rule went and that it applies to new sessions, or to new threads for project instructions. Re-running this skill updates it. For a file in `~/.claude/rules/`, say once that it lives on this machine: cloud sessions, routines, and Projects threads don't see it and run on the skill defaults. For a Claude project, running `/setup-ostack` in the project chat writes the rule into that project's instructions.
+Tell the user where the rule went and that it applies to new sessions, or to new threads for project instructions. After step 5c, say the project chat is adding it to the project instructions, and never ask the user to paste it unless the hand-off failed. Re-running this skill updates it. For a file in `~/.claude/rules/`, say once that it lives on this machine: cloud sessions, routines, and Projects threads don't see it and run on the skill defaults. For a Claude project, running `/setup-ostack` in the project chat writes the rule into that project's instructions.
 
 ### 7. Offer a verification skill (optional)
 
