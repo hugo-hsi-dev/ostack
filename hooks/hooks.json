@@ -1,0 +1,12 @@
+{
+  "description": "Turns onyo-mode on for every prompt, and adds the onyo-projects rules in a Claude Projects session. A line saying `onyo-mode off` in CLAUDE.md, CLAUDE.local.md, or the project instructions turns it off for the project, and one in a message turns it off for the session.",
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          { "type": "command", "command": "\"${CLAUDE_PLUGIN_ROOT}\"/hooks/onyo-mode.sh" }
+        ]
+      }
+    ]
+  }
+}

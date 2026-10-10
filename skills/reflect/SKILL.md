@@ -37,15 +37,15 @@ Each reviewer and the synthesizer name a role line in the `~/.claude/rules/ostac
 
 | Lens | Role line | Default | Prompt template |
 |---|---|---|---|
-| Judgment | `reflect judgment, divergent, synthesizer` | `opus xhigh` | `references/judgment-reviewer.md` |
-| Tooling | `reflect tooling` | `haiku xhigh` | `references/tooling-reviewer.md` |
-| Divergent | `reflect judgment, divergent, synthesizer` | `opus xhigh` | `references/divergent-reviewer.md` |
+| Judgment | `reflect judgment, divergent, synthesizer` | `opus high` | `references/judgment-reviewer.md` |
+| Tooling | `reflect tooling` | `haiku high` | `references/tooling-reviewer.md` |
+| Divergent | `reflect judgment, divergent, synthesizer` | `opus high` | `references/divergent-reviewer.md` |
 
 Pass each template verbatim, substituting the transcript path or digest where marked. Reviewers return findings in the `Agent` response body.
 
 ### 3. Synthesize
 
-One `Agent` call, `subagent_type: "onyo-reader"` (same fallback as the reviewers), with `model` and `effort` from the `reflect judgment, divergent, synthesizer` line (default `opus xhigh`). The synthesizer's quality check includes spot-verifying citations, which can require MCP access. Read-only agents keep MCP. Use `references/synthesizer.md` verbatim, with each reviewer's full output inlined where marked. The synthesizer returns a structured Accepted / Rejected / Backlog list.
+One `Agent` call, `subagent_type: "onyo-reader"` (same fallback as the reviewers), with `model` and `effort` from the `reflect judgment, divergent, synthesizer` line (default `opus high`). The synthesizer's quality check includes spot-verifying citations, which can require MCP access. Read-only agents keep MCP. Use `references/synthesizer.md` verbatim, with each reviewer's full output inlined where marked. The synthesizer returns a structured Accepted / Rejected / Backlog list.
 
 ### 4. Structural enforcement check
 
