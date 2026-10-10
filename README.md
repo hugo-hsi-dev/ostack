@@ -159,7 +159,7 @@ when invoked it:
 
 the full rules and playbooks live in [`skills/onyo-mode/SKILL.md`](./skills/onyo-mode/SKILL.md).
 
-ostack's [hook](./hooks/onyo-mode.sh) keeps [`/onyo-mode`](./skills/onyo-mode/SKILL.md) on. on every message it tells claude to follow the skill, unless a line of just `onyo-mode off` in a message, a `CLAUDE.md`, a `CLAUDE.local.md`, or a claude project's instructions opts out. in a claude project it also names the session's role and adds [`onyo-projects`](./skills/onyo-projects/SKILL.md). with it, the project chat routes each ask into research and work threads, and the threads report back to the project chat. `"disableAllHooks": true` in your settings turns off every hook, this one included.
+ostack's [hook](./hooks/onyo-mode.sh) keeps [`/onyo-mode`](./skills/onyo-mode/SKILL.md) on. on every message it tells claude to follow the skill, unless a line of just `onyo-mode off` in a message, a `CLAUDE.md`, a `CLAUDE.local.md`, or a claude project's instructions opts out. in a claude project it adds [`onyo-projects`](./skills/onyo-projects/SKILL.md), and the project chat gets only that skill, not onyo-mode. the project chat hands each ask to a planning thread, which routes it into research and work threads, and the threads report back to the project chat. `"disableAllHooks": true` in your settings turns off every hook, this one included.
 
 [`/onyo-mode`](./skills/onyo-mode/SKILL.md) works extremely well with claude code's `/loop` command. you can make claude work for many hours without sacrificing rigor.
 

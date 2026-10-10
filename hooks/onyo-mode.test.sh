@@ -44,9 +44,10 @@ rm "$tmp/repo/CLAUDE.local.md"
 thread='CLAUDE_CODE_ENTRYPOINT=remote_projects CLAUDE_CODE_PROJECTS_SESSION=1'
 out=$(run p1 "$head$tail" $thread)
 expect "Projects thread is on" "$on" "$out"
-expect "Projects thread gets the Thread section" 'you are a thread. Also follow the Thread section of the onyo-projects skill' "$out"
-expect "Projects coordinator gets the Coordinator section" 'Coordinator section' \
-  "$(run p2 "$head$tail" $thread CLAUDE_CODE_COORDINATOR_MODE=1)"
+expect "Projects thread gets the planning and unit sections" 'Planning thread section if your brief names this the ask.s planning thread, its Unit thread section otherwise' "$out"
+out=$(run p2 "$head$tail" $thread CLAUDE_CODE_COORDINATOR_MODE=1)
+expect "Projects coordinator gets the Coordinator section" 'follow the Coordinator section of the onyo-projects skill' "$out"
+expect "Projects coordinator does not load onyo-mode" '' "$(printf '%s' "$out" | grep "$on")"
 
 off_block="$head    onyo-mode off\n$tail"
 expect "project instructions turn it off" '' "$(run p3 "$off_block" $thread)"
