@@ -4,7 +4,6 @@ description: >-
   Use when building a custom UI (page, dashboard, buttons) that should wake a
   Claude Code routine over its API trigger, when the user must provide the
   routine's API token, or when exposing that UI on Tailscale.
-disable-model-invocation: true
 ---
 # How to make a bot UI
 
