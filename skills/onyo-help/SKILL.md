@@ -8,7 +8,7 @@ disable-model-invocation: true
 
 Answer the user's question about ostack, hand them a prompt they can send, and link the file the answer came from. For a help question, don't start the work. The user asked how, and a ostack run spends real tokens, so let them send the prompt.
 
-A message that asks for work, such as "use ostack to fix this bug", is not a help question. Read `${CLAUDE_SKILL_DIR}/../onyo-mode/SKILL.md` in full (the Skill tool cannot load it, since it is a user-only slash command), do the work under it, and mention once that the `onyo` output style (`/output-style onyo`, or `/config` > Output style) keeps it on. If `${CLAUDE_SKILL_DIR}` appears literally, it is the directory that holds this file.
+A message that asks for work, such as "use ostack to fix this bug", is not a help question. Read `${CLAUDE_SKILL_DIR}/../onyo-mode/SKILL.md` in full (the Skill tool cannot load it, since it is a user-only slash command), do the work under it, and mention once that typing `/onyo-mode` keeps it on for the session in a plugin install, and that the `onyo` output style (`/output-style onyo`, or `/config` > Output style) is the lighter option. If `${CLAUDE_SKILL_DIR}` appears literally, it is the directory that holds this file.
 
 This file maps questions to the skills and guide pages that hold the answers. Those files own the details. Read the file you route to before you quote it, and trust it when it disagrees with this map. The links here point into the installed plugin, which the user may not be able to open, so give the user the file's public copy: `https://github.com/hugo-hsi-dev/ostack/blob/main/` followed by its path.
 
@@ -50,9 +50,9 @@ ostack targets Claude Code. Its skills use the Agent Skills format, so other too
 
 Whether `/onyo-mode` stays on depends on how the user starts it:
 
-- `/onyo-mode` attaches the skill to one message. It fades as the session moves on.
+- In a Claude Code plugin install, `/onyo-mode` stays on for the rest of the session. ostack's hook reminds Claude on every later message to follow the skill, and `/onyo-mode off` turns it off. Each Claude Code Projects thread is a new session, so the toggle doesn't carry across threads. `OSTACK_ONYO_MODE=on` in the environment starts every session with it on, set under `env` in `~/.claude/settings.json` or in a cloud environment's variables.
 - `/output-style onyo` turns on ostack's `onyo` output style. It reminds Claude every turn to run new tasks through `/onyo-mode`, and it stays out of casual turns. It stays on until the user picks another style with `/output-style` or in `/config` > Output style. Setting `"outputStyle": "onyo"` in `~/.claude/settings.json` makes it the default.
-- Where output styles aren't available, such as other harnesses, start each new task with `/onyo-mode`.
+- Where neither is available, such as a skills-only install or other harnesses, `/onyo-mode` attaches the skill to one message, so start each new task with `/onyo-mode`.
 
 Link [Claude Code's skills docs](https://code.claude.com/docs/en/skills) and [output styles docs](https://code.claude.com/docs/en/output-styles) when this comes up. Mid-chat, "new task" makes the mode match a fresh playbook. `/onyo-mode` already uses `onyo-agent` for the subagents its playbook steps spawn. An `onyo-agent` takes one playbook step, not a whole task, because a subagent cannot spawn the subagents a playbook fans out to. Run a whole task with `/onyo-mode` in the main thread.
 
@@ -128,7 +128,7 @@ Principles are one-rule skills that `/onyo-mode` reads and cites in its replies.
 
 | Symptom | Fix |
 |---|---|
-| The mode stopped applying after a few turns | It was attached to one message. Turn on the `onyo` output style with `/output-style onyo` or in `/config` > Output style, or start each task with `/onyo-mode`. |
+| The mode stopped applying after a few turns | Without the plugin's hook, `/onyo-mode` attaches to one message. Install ostack as a Claude Code plugin, turn on the `onyo` output style with `/output-style onyo`, or start each task with `/onyo-mode`. |
 | A question got treated as the next step of the last task | Say "new task", or say the turn doesn't need the mode. |
 | A new model choice had no effect | The rule from `/setup-ostack` applies to new sessions. Start one. Cloud sessions and routines don't read `~/.claude/rules/`, so commit a copy at `.claude/rules/ostack-models.md` for them. |
 | Runs cost more than expected | See the cost paragraph under Get set up. |
