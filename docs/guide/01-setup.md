@@ -58,7 +58,7 @@ Pick something real but small, and describe it the way you'd describe it to a co
 
 Watch the todo list. Its first items are the matched playbook's steps copied in, the Feature playbook for this prompt. If `/onyo-mode` skips a step, the step stays in the list with `skip: <reason>`, so you can see what it chose not to do.
 
-From here you can type normal follow-ups. In a Claude Project, type `/onyo-mode` in the project chat instead. Claude adds "use onyo-mode" to the project instructions, so every new thread works in it, and `/onyo-mode off` removes it. In a local session, keep `/onyo-mode` on for the whole session by switching to ostack's `onyo` output style:
+From here you can type normal follow-ups. In a Claude Project, put "use onyo-mode" in the project instructions instead, or ask Claude in the project chat to add or remove it, and every new thread follows it. In a local session, keep `/onyo-mode` on for the whole session by switching to ostack's `onyo` output style:
 
 ```text
 /output-style onyo

@@ -165,7 +165,7 @@ when invoked it:
 
 the full rules and playbooks live in [`skills/onyo-mode/SKILL.md`](./skills/onyo-mode/SKILL.md).
 
-claude can load [`/onyo-mode`](./skills/onyo-mode/SKILL.md) on its own, so "use onyo-mode" in project instructions or a CLAUDE.md keeps it on. in a claude project, type `/onyo-mode` in the project chat and claude adds that line to the project instructions, so every new thread works in onyo-mode. `/onyo-mode off` in the project chat removes it.
+claude can load [`/onyo-mode`](./skills/onyo-mode/SKILL.md) on its own, so "use onyo-mode" in project instructions or a CLAUDE.md keeps it on. in a claude project, add that line to the project instructions, or ask claude in the project chat to add or remove it, and every new thread follows it.
 
 in a local session, to keep [`/onyo-mode`](./skills/onyo-mode/SKILL.md) on across turns, run `/output-style onyo`. that turns on ostack's [`onyo` output style](./output-styles/onyo.md). it stays in context every turn, applies `/onyo-mode` when a playbook matches or the task needs rigor, and stays out of the way otherwise. plain `/onyo-mode` attaches it to one message only. say so to opt out, or switch styles with `/output-style` to turn it off.
 
