@@ -23,7 +23,7 @@ Run:
 
 [`/setup-ostack`](../../skills/setup-ostack/SKILL.md) detects the models you have access to and asks three questions: an effort budget, which models to use, and whether to keep the resulting role mapping (code delegates, judgment, the review panels) or change some roles. It asks every time, with multiple-choice questions, and writes nothing until you answer. It writes `~/.claude/rules/ostack-models.md`, a small rule file Claude Code loads into every session and every ostack skill reads. In a Claude project it writes the same rule into the project instructions instead, since cloud threads never see `~/.claude/rules/`. Run it in the project chat, which can edit the project instructions. Run in a thread, it hands the setup back to the project chat.
 
-To set up a project and turn onyo-mode on in one go, run [`/setup-onyo-project`](../../skills/setup-onyo-project/SKILL.md) instead. It runs `/setup-ostack`, then adds "use onyo-mode" to the project instructions in a Claude project, or to `CLAUDE.local.md` in a local session.
+To set up a project and turn onyo-mode on in one go, run [`/setup-onyo-project`](../../skills/setup-onyo-project/SKILL.md) instead. It runs `/setup-ostack`, then adds onyo-mode's routing block to the project instructions in a Claude project, or "use onyo-mode" to `CLAUDE.local.md` in a local session.
 
 The defaults run at `xhigh` reasoning, the same as the `large` budget. `unlimited` lifts each model to its highest effort, up to `max`. `medium` and `small` lower the reasoning and spend fewer tokens.
 
@@ -60,7 +60,7 @@ Pick something real but small, and describe it the way you'd describe it to a co
 
 Watch the todo list. Its first items are the matched playbook's steps copied in, the Feature playbook for this prompt. If `/onyo-mode` skips a step, the step stays in the list with `skip: <reason>`, so you can see what it chose not to do.
 
-From here you can type normal follow-ups. In a Claude Project, put "use onyo-mode" in the project instructions instead, or ask Claude in the project chat to add or remove it, and every new thread follows it. In a local session, keep `/onyo-mode` on for the whole session by switching to ostack's `onyo` output style:
+From here you can type normal follow-ups. In a Claude Project, put the routing block from [`references/claude-projects.md`](../../skills/onyo-mode/references/claude-projects.md) in the project instructions instead, or run `/setup-onyo-project` in the project chat. The project chat then routes each ask into research and work threads, and the threads report back to it. In a local session, keep `/onyo-mode` on for the whole session by switching to ostack's `onyo` output style:
 
 ```text
 /output-style onyo

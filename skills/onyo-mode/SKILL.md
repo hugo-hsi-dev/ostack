@@ -1,11 +1,15 @@
 ---
 name: onyo-mode
-description: onyo's agent style for concise, detailed responses, deliberate subagents, unslopped prose, simple code, and verified work. Use for onyo, /onyo-mode, or requests to work in this style.
+description: onyo's agent style for concise, detailed responses, deliberate subagents, unslopped prose, simple code, and verified work. Use for onyo, /onyo-mode, requests to work in this style, or routing a work ask as a Claude Projects coordinator.
 ---
 
 # Onyo mode
 
 A bold ostack skill name below, such as the **how** skill or **principle-model-the-domain**, means read `${CLAUDE_SKILL_DIR}/../<name>/SKILL.md` in full and follow it. If `${CLAUDE_SKILL_DIR}` appears literally, it is the directory that holds this file.
+
+## Claude Projects
+
+In a Claude project, read `references/claude-projects.md` first and follow it with the rest of this file. As the project chat's coordinator, you route each work ask into research and work threads and relay their reports, and you never do the work yourself. As a thread, you run only the unit your brief names and report to the coordinator.
 
 ## Non-negotiables
 

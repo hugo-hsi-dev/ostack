@@ -50,7 +50,7 @@ ostack targets Claude Code. Its skills use the Agent Skills format, so other too
 Whether `/onyo-mode` stays on depends on how the user starts it:
 
 - `/onyo-mode` attaches the skill to one message. It fades as the session moves on.
-- "Use onyo-mode" in Project instructions or a CLAUDE.md keeps it on, since Claude can load the skill on its own. In a Claude Project, the user can ask Claude in the project chat to add or remove that line, and every new thread follows it.
+- "Use onyo-mode" in Project instructions or a CLAUDE.md keeps it on, since Claude can load the skill on its own. In a Claude Project, that line alone leaves the coordinator passing each ask to one thread. `/setup-onyo-project` writes the routing block from onyo-mode's `references/claude-projects.md` instead. The coordinator then routes each ask into research and work threads, and threads report back to the project chat.
 - `/output-style onyo` turns on ostack's `onyo` output style. It reminds Claude every turn to run new tasks through `/onyo-mode`, and it stays out of casual turns. It stays on until the user picks another style with `/output-style` or in `/config` > Output style. Setting `"outputStyle": "ostack:onyo"` in `~/.claude/settings.json` makes it the default.
 - Where output styles aren't available, such as other harnesses, start each new task with `/onyo-mode`.
 
