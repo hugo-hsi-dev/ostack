@@ -24,7 +24,7 @@ Infer the need from the message and the conversation. A named situation, such as
 
 Check the state that changes the answer, and mention it only when it does:
 
-- No `~/.claude/rules/ostack-models.md` means `/setup-ostack` hasn't run for this user, so every role uses its default model and effort.
+- No `~/.claude/rules/ostack-models.md`, and no ostack model block in the project instructions, means `/setup-ostack` hasn't run for this user, so every role uses its default model and effort.
 - No `verify-*` skill or other app harness in the project means agents have no scripted way to drive the app. Mention `/create-verification-skill` when the question is about proving a change works.
 
 When the model rule is missing and it matters, ask whether the user wants to pick a model for each role and an effort budget now. It matters when the user is new, the question is about setup or cost, or the answer depends on which models run. Ask at most once per chat. If the need is also unclear, ask both questions together. Offer two choices:
@@ -131,7 +131,7 @@ Principles are one-rule skills that `/onyo-mode` reads and cites in its replies.
 |---|---|
 | The mode stopped applying after a few turns | It was attached to one message. Turn on the `onyo` output style with `/output-style onyo` or in `/config` > Output style, or start each task with `/onyo-mode`. |
 | A question got treated as the next step of the last task | Say "new task", or say the turn doesn't need the mode. |
-| A new model choice had no effect | The rule from `/setup-ostack` applies to new sessions. Start one. Cloud sessions and routines don't read `~/.claude/rules/`, so commit a copy at `.claude/rules/ostack-models.md` for them. |
+| A new model choice had no effect | The rule from `/setup-ostack` applies to new sessions. Start one. Cloud sessions, routines, and Projects threads don't read `~/.claude/rules/`. In a project, run `/setup-ostack` in the project chat so it writes the rule into the project instructions. |
 | Runs cost more than expected | See the cost paragraph under Get set up. |
 | A skill didn't load on its own | Only `/onyo-mode`, `/setup-ostack`, and `/typescript-best-practices` load on their own. `/onyo-mode` and `/setup-ostack` load from the user's words or from instructions such as Project instructions, and `/typescript-best-practices` loads on `.ts` or `.tsx` work. The others load when the user types them or when `/onyo-mode` runs them, and it doesn't run every skill. |
 | Parallel agents overwrote each other | Give each agent its own worktree (`isolation: "worktree"`), or run them as cloud sessions, which each get their own machine. |
