@@ -165,7 +165,7 @@ when invoked it:
 
 the full rules and playbooks live in [`skills/onyo-mode/SKILL.md`](./skills/onyo-mode/SKILL.md).
 
-in a claude code plugin install, [`/onyo-mode`](./skills/onyo-mode/SKILL.md) stays on for the rest of the session once you type it. a [hook](./hooks/hooks.json) reminds claude on every later message to follow it. `/onyo-mode off` turns it off. to start every session with it on, set `OSTACK_ONYO_MODE=on` in the environment, for example under `env` in `~/.claude/settings.json` or in a cloud environment's variables. claude code projects start each thread as a new session, so a toggle typed in one thread doesn't carry to the next, and `OSTACK_ONYO_MODE=on` is how you keep it on across threads.
+claude can load [`/onyo-mode`](./skills/onyo-mode/SKILL.md) on its own, so "use onyo-mode" in project instructions or a CLAUDE.md works. in a claude code plugin install, it stays on for the rest of the session once you type it or claude loads it. a [hook](./hooks/hooks.json) reminds claude on every later message to follow it. `/onyo-mode off` turns it off. to start every session with it on, set `OSTACK_ONYO_MODE=on` in the environment, for example under `env` in `~/.claude/settings.json` or in a cloud environment's variables. claude code projects start each thread as a new session, so a toggle typed in one thread doesn't carry to the next, and `OSTACK_ONYO_MODE=on` is how you keep it on across threads.
 
 for a lighter touch, run `/output-style onyo` instead. that turns on ostack's [`onyo` output style](./output-styles/onyo.md), which applies `/onyo-mode` only when a playbook matches or the task needs rigor and stays out of casual turns. switch styles with `/output-style` to turn it off.
 

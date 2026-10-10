@@ -58,7 +58,7 @@ Pick something real but small, and describe it the way you'd describe it to a co
 
 Watch the todo list. Its first items are the matched playbook's steps copied in, the Feature playbook for this prompt. If `/onyo-mode` skips a step, the step stays in the list with `skip: <reason>`, so you can see what it chose not to do.
 
-From here you can type normal follow-ups. In a plugin install, `/onyo-mode` stays on for the rest of the session. ostack's hook reminds Claude on every later message to follow it, until you type:
+From here you can type normal follow-ups. In a plugin install, `/onyo-mode` stays on for the rest of the session, whether you typed it or Claude loaded it on its own, for example because your instructions say "use onyo-mode". ostack's hook reminds Claude on every later message to follow it, until you type:
 
 ```text
 /onyo-mode off
