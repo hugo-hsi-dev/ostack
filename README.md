@@ -102,7 +102,7 @@ two steps:
 1. run [`/setup-ostack`](./skills/setup-ostack/SKILL.md), pick an effort budget, and choose which models you want.
 2. use [`/onyo-mode`](./skills/onyo-mode/SKILL.md) whenever you're doing anything that requires rigor.
 
-to do both for a project in one go, run [`/setup-onyo-project`](./skills/setup-onyo-project/SKILL.md). it runs `/setup-ostack`, then adds "use onyo-mode" to the project instructions in a claude project, or to `CLAUDE.local.md` locally. in a claude project, run it in the project chat.
+to do both for a project in one go, run [`/setup-onyo-project`](./skills/setup-onyo-project/SKILL.md). it runs `/setup-ostack`, then adds onyo-mode's routing block to the project instructions in a claude project, or "use onyo-mode" to `CLAUDE.local.md` locally. in a claude project, run it in the project chat.
 
 new here? the [ostack guide](./docs/guide/README.md) walks you through a first real task, from setup and prompting through verification and overnight runs. stuck, or unsure which skill fits? ask [`/onyo-help`](./skills/onyo-help/SKILL.md).
 
@@ -167,7 +167,7 @@ when invoked it:
 
 the full rules and playbooks live in [`skills/onyo-mode/SKILL.md`](./skills/onyo-mode/SKILL.md).
 
-claude can load [`/onyo-mode`](./skills/onyo-mode/SKILL.md) on its own, so "use onyo-mode" in project instructions or a CLAUDE.md keeps it on. in a claude project, add that line to the project instructions, or ask claude in the project chat to add or remove it, and every new thread follows it.
+claude can load [`/onyo-mode`](./skills/onyo-mode/SKILL.md) on its own, so "use onyo-mode" in project instructions or a CLAUDE.md keeps it on. in a claude project, use the routing block in [`references/claude-projects.md`](./skills/onyo-mode/references/claude-projects.md) instead, which `/setup-onyo-project` writes. with it, the project chat routes each ask into research and work threads, and the threads report back to the project chat.
 
 in a local session, to keep [`/onyo-mode`](./skills/onyo-mode/SKILL.md) on across turns, run `/output-style onyo`. that turns on ostack's [`onyo` output style](./output-styles/onyo.md). it stays in context every turn, applies `/onyo-mode` when a playbook matches or the task needs rigor, and stays out of the way otherwise. plain `/onyo-mode` attaches it to one message only. say so to opt out, or switch styles with `/output-style` to turn it off.
 
