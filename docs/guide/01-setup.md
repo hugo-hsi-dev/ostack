@@ -15,7 +15,7 @@ Run `/plugin` to confirm the plugin loaded. Plugin skills are namespaced, so `/o
 
 ## onyo-mode is on by default
 
-The plugin ships a `UserPromptSubmit` hook, [`hooks/onyo-mode.sh`](../../hooks/onyo-mode.sh). On every message it tells Claude to follow `/onyo-mode`, so you never have to type it. In a Claude project it adds the [`onyo-projects`](../../skills/onyo-projects/SKILL.md) skill, and the project chat's coordinator gets only that skill, not onyo-mode. The coordinator hands each ask to a planning thread, which routes it into research and work threads, and the threads report back to the project chat. No project setup is needed.
+The plugin ships a `UserPromptSubmit` hook, [`hooks/onyo-mode.sh`](../../hooks/onyo-mode.sh). On every message it tells Claude to follow `/onyo-mode`, so you never have to type it. In a Claude project it adds the [`onyo-projects`](../../skills/onyo-projects/SKILL.md) skill, and the project chat's coordinator gets only that skill, not onyo-mode. The coordinator hands each ask to a planning thread, which routes it into research and work threads, and the threads report back to the project chat. A second hook, on `PreToolUse`, holds the coordinator to that. It refuses to start a thread whose brief doesn't open with `onyo-projects: planning thread` or `onyo-projects: unit thread`, and tells the coordinator how to retry. No project setup is needed.
 
 To opt out, write a line of just `onyo-mode off`:
 

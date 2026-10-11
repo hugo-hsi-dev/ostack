@@ -12,6 +12,13 @@ run() { # session, prompt (JSON-escaped), then env assignments
     env -i PATH="$PATH" CLAUDE_PLUGIN_ROOT=/plugin CLAUDE_PLUGIN_DATA="$tmp/data" "$@" sh "$hook"
 }
 
+start() { # session, instructions (JSON-escaped), then env assignments
+  session=$1 instructions=$2; shift 2
+  printf '{"session_id":"%s","transcript_path":"%s","cwd":"%s","hook_event_name":"PreToolUse","tool_name":"mcp__hearthbot__start_thread_session","tool_input":{"message_id":"cmsg_1","project_ack":"yes","ack":"ok","instructions":"%s"}}' \
+    "$session" "$tmp/$session.jsonl" "$tmp/repo" "$instructions" |
+    env -i PATH="$PATH" CLAUDE_PLUGIN_ROOT=/plugin CLAUDE_PLUGIN_DATA="$tmp/data" "$@" sh "$hook"
+}
+
 expect() { # name, pattern ('' = no output), actual
   if [ -z "$2" ]; then [ -z "$3" ] && ok=1 || ok=
   else printf '%s' "$3" | grep -q -- "$2" && ok=1 || ok=
@@ -46,7 +53,10 @@ out=$(run p1 "$head$tail" $thread)
 expect "Projects thread is on" "$on" "$out"
 expect "Projects thread gets the planning and unit sections" 'Planning thread section if your brief names this the ask.s planning thread, its Unit thread section otherwise' "$out"
 out=$(run p2 "$head$tail" $thread CLAUDE_CODE_COORDINATOR_MODE=1)
-expect "Projects coordinator gets the Coordinator section" 'follow the Coordinator section of the onyo-projects skill' "$out"
+expect "Projects coordinator gets the Coordinator section" 'The Coordinator section of the onyo-projects skill' "$out"
+expect "Projects coordinator makes the ask's planning thread" 'the one thread per ask is the ask.s planning thread' "$out"
+expect "Projects coordinator briefs the planning marker" 'begin instructions with the line `onyo-projects: planning thread`' "$out"
+expect "Projects coordinator text is not JSON" '' "$(printf '%s' "$out" | grep '^{')"
 expect "Projects coordinator does not load onyo-mode" '' "$(printf '%s' "$out" | grep "$on")"
 
 off_block="$head    onyo-mode off\n$tail"
@@ -56,5 +66,21 @@ expect "later prompts read the instructions from the transcript" '' "$(run p3 '<
 expect "the instructions apply only in Projects" "$on" "$(run p3 '<wake><message>next</message></wake>')"
 expect "a Projects message turns it off" 'turned onyo-mode off' \
   "$(run p4 '<wake>\n  <message trigger=\"true\" from=\"human\">onyo-mode off</message>\n</wake>' $thread)"
+
+coord="$thread CLAUDE_CODE_COORDINATOR_MODE=1"
+deny='"permissionDecision":"deny".*`onyo-projects: planning thread`'
+expect "coordinator start without a marker is denied" "$deny" "$(start c1 'Fix the login bug.\nRun the tests.' $coord)"
+expect "the denial is one JSON line" '^{"hookSpecificOutput":{"hookEventName":"PreToolUse".*}}$' "$(start c1 'Fix the login bug.' $coord)"
+expect "a marker in prose is still denied" "$deny" "$(start c1 'Start with onyo-projects: planning thread and fix it' $coord)"
+expect "a planning marker passes" '' "$(start c2 'onyo-projects: planning thread\nThis is the ask planning thread.' $coord)"
+expect "a mixed-case unit marker passes" '' "$(start c3 'Unit 2 of 3.\n  Onyo-Projects: Unit Thread  \nDo the unit.' $coord)"
+expect "a unit marker with CRLF passes" '' "$(start c3 'ONYO-PROJECTS: UNIT THREAD\r\nDo the unit.' $coord)"
+expect "a thread start outside the coordinator passes" '' "$(start c4 'Fix the login bug.' $thread)"
+expect "a thread start outside Projects passes" '' "$(start c5 'Fix the login bug.')"
+printf '{"type":"queue-operation","content":"%s"}\n' "$off_block" > "$tmp/c7.jsonl"
+expect "instructions in the transcript that turn it off pass" '' "$(start c7 'Fix it.' $coord)"
+run c8 'onyo-mode off' $coord > /dev/null
+expect "a session that turned it off passes" '' "$(start c8 'Fix it.' $coord)"
+expect "a session that turned it back on is denied again" "$deny" "$(run c8 'onyo-mode on' $coord > /dev/null; start c8 'Fix it.' $coord)"
 
 [ "$fails" = 0 ] && echo "all passed" || { echo "$fails failed"; exit 1; }
