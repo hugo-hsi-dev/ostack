@@ -1,8 +1,16 @@
 {
-  "description": "Turns onyo-mode on for every prompt, and adds the onyo-projects rules in a Claude Projects session. A line saying `onyo-mode off` in CLAUDE.md, CLAUDE.local.md, or the project instructions turns it off for the project, and one in a message turns it off for the session.",
+  "description": "Turns onyo-mode on for every prompt, and adds the onyo-projects rules in a Claude Projects session. A line saying `onyo-mode off` in CLAUDE.md, CLAUDE.local.md, or the project instructions turns it off for the project, and one in a message turns it off for the session. In a Projects coordinator it also refuses a start_thread_session call whose brief lacks the `onyo-projects: planning thread` or `onyo-projects: unit thread` line.",
   "hooks": {
     "UserPromptSubmit": [
       {
+        "hooks": [
+          { "type": "command", "command": "\"${CLAUDE_PLUGIN_ROOT}\"/hooks/onyo-mode.sh" }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "mcp__hearthbot__start_thread_session",
         "hooks": [
           { "type": "command", "command": "\"${CLAUDE_PLUGIN_ROOT}\"/hooks/onyo-mode.sh" }
         ]
