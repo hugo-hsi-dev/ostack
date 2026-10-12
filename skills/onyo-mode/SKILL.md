@@ -7,10 +7,6 @@ description: onyo's agent style for concise, detailed responses, deliberate suba
 
 A bold ostack skill name below, such as the **how** skill or **principle-model-the-domain**, means read `${CLAUDE_SKILL_DIR}/../<name>/SKILL.md` in full and follow it. If `${CLAUDE_SKILL_DIR}` appears literally, it is the directory that holds this file.
 
-## Claude Projects
-
-In a Claude project thread, also follow the **onyo-projects** skill. ostack's hook says so on every message. As an ask's planning thread, you route it, split it into units, write their briefs, and check their results. As a unit thread, you run only the unit your brief names and report to the coordinator. The project chat's coordinator does not load this file.
-
 ## Non-negotiables
 
 The Principles section below grounds every trigger. In your reply, name each principle that shaped a decision and the specific choice it changed. Cite only principles whose leaf SKILL.md you read this session.

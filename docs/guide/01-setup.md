@@ -13,10 +13,6 @@ ostack installs from its own plugin marketplace. In Claude Code, run:
 
 Run `/plugin` to confirm the plugin loaded. Plugin skills are namespaced, so `/onyo-mode` is also `/ostack:onyo-mode`. The bare name works when no other skill shares it. This guide uses bare names. The [README](../../README.md#install) also covers local checkouts, Cursor, and skills.sh.
 
-## In a Claude project
-
-In a Claude project, ostack's hook, [`hooks/onyo-mode.sh`](../../hooks/onyo-mode.sh), adds the [`onyo-projects`](../../skills/onyo-projects/SKILL.md) skill, and the project chat's coordinator gets only that skill, not onyo-mode. The coordinator hands each ask to a planning thread, which routes it into research and work threads, and the threads report back to the project chat. A second hook, on `PreToolUse`, holds the coordinator to that. It refuses to start a thread whose brief doesn't open with `onyo-projects: planning thread` or `onyo-projects: unit thread`, and tells the coordinator how to retry. A third hook, on `SessionStart`, prints the session's part of `onyo-projects` in full when a project session starts, resumes, or compacts, so a fresh or compacted coordinator still has its rules. A fourth, on `Stop`, blocks the end of a coordinator turn once when that turn received a thread's report and the coordinator never posted it in the project chat. No project setup is needed.
-
 ## Pick your models
 
 Run:
@@ -25,7 +21,7 @@ Run:
 /setup-ostack
 ```
 
-[`/setup-ostack`](../../skills/setup-ostack/SKILL.md) detects the models you have access to and asks three questions: an effort budget, which models to use, and whether to keep the resulting role mapping (code delegates, judgment, the review panels) or change some roles. It asks every time, with multiple-choice questions, and writes nothing until you answer. It writes `~/.claude/rules/ostack-models.md`, a small rule file Claude Code loads into every session and every ostack skill reads. In a Claude project it writes the same rule into the project instructions instead, since cloud threads never see `~/.claude/rules/`. Run it in the project chat, which can edit the project instructions. Run in a thread, it hands the setup back to the project chat.
+[`/setup-ostack`](../../skills/setup-ostack/SKILL.md) detects the models you have access to and asks three questions: an effort budget, which models to use, and whether to keep the resulting role mapping (code delegates, judgment, the review panels) or change some roles. It asks every time, with multiple-choice questions, and writes nothing until you answer. It writes `~/.claude/rules/ostack-models.md`, a small rule file Claude Code loads into every session and every ostack skill reads.
 
 The defaults run at `xhigh` reasoning, the same as the `large` budget. `unlimited` lifts each model to its highest tier, up to `max`. `medium` and `small` lower the reasoning and spend fewer tokens.
 

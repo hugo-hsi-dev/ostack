@@ -13,12 +13,11 @@ The patches have no context lines, so each change is its own hunk. Each hunk hea
 | Marker | Meaning |
 | --- | --- |
 | `[A]` | Harness port: a Cursor word, tool, or path mapped to its Claude Code equivalent. |
-| `[C]` | Claude Projects workflow written into pstack text. |
 | `[D]` | ostack's own change that is neither a port nor a default. |
 
-A hunk that mixes codes carries all of them, for example `[CD]`. To find the hunks for one code, run `grep -rn '^@@ .*\[[A-Z]*C' sync/patches`. The README's fork section, above the line that starts pstack's README, is part of the port and carries `[A]`.
+A hunk that mixes codes carries both, `[AD]`. To find the hunks for one code, run `grep -rn '^@@ .*\[[A-Z]*D' sync/patches`. The README's fork section, above the line that starts pstack's README, is part of the port and carries `[A]`.
 
-ostack's own defaults, such as its models and efforts, onyo-mode being on for every task, and setup being optional, never go in a patch. They live in [`hooks/ostack-defaults.md`](../hooks/ostack-defaults.md), the hook, and the README's fork section, so pstack's text keeps pstack's defaults. `check` rejects a `[B]` marker, the code these hunks used to carry.
+ostack's own defaults, such as its models and efforts, onyo-mode being on for every task, and setup being optional, never go in a patch. They live in [`hooks/ostack-defaults.md`](../hooks/ostack-defaults.md), the hook, and the README's fork section, so pstack's text keeps pstack's defaults. The Claude Projects workflow never goes in a patch either. It lives in [`skills/onyo-projects/`](../skills/onyo-projects/SKILL.md), the hook, and [the guide's Projects page](../docs/guide/ostack-projects.md). `check` rejects the `[B]` and `[C]` markers these hunks used to carry.
 
 ## Change a generated file
 

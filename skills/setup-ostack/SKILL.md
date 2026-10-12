@@ -1,32 +1,29 @@
 ---
 name: setup-ostack
-description: Configure which models ostack uses per role and at what effort budget. Asks three questions (budget, models, role mapping), then writes an always-loaded rule that overrides the skill defaults. Use for /setup-ostack, "configure ostack models", "ostack budget", or changing ostack's model choices. In a Claude Projects project chat, run it there yourself instead of starting a thread.
+description: Configure which models ostack uses per role and at what effort budget. Asks three questions (budget, models, role mapping), then writes an always-loaded rule that overrides the skill defaults. Use for /setup-ostack, "configure ostack models", "ostack budget", or changing ostack's model choices.
 ---
 
 # Setup ostack
 
-Write ostack's model and effort per role where it lasts for this user. On their own machine, that is `~/.claude/rules/ostack-models.md`, a user-level rule. Claude Code loads every `~/.claude/rules/*.md` file without `paths` frontmatter into every session, in every project. In a Claude Projects session, it is the project instructions, because a cloud session starts from a fresh container and never sees `~/.claude/rules/`. Never commit the rule to the repository unless the user asks for that in so many words.
+Write `~/.claude/rules/ostack-models.md`, a user-level rule that sets ostack's model and effort per role. Claude Code loads every `~/.claude/rules/*.md` file without `paths` frontmatter into every session, in every project. Never commit the rule to the repository unless the user asks for that in so many words.
 
 ## Where it runs
 
 Decide this first, and use the first case that fits.
 
-- **Claude Projects project chat.** The session has the project settings tools (`get_project_settings`, `update_project_settings`), so it is the project's channel session, the coordinator. Run every step here yourself, in the project chat. Never start a thread for this skill, even when your session rules say every new ask gets a thread: a thread can't write the project instructions, so it would only pass answers back to you. Write the rule into the project instructions (step 5b).
-- **Claude Projects thread.** `CLAUDE_CODE_ENTRYPOINT` is `remote_projects`, or the session is a Projects thread, and no tool here writes the project instructions. Ask nothing and write nothing here. Hand the run to the project chat: get the channel session's ID with `get_channel_session_id`, and `send_message` it to run `/setup-ostack` itself in the project chat, because the setup belongs there. Then reply in one line that setup continues in the project chat, where Claude asks the questions, and stop. If no channel session exists or the send fails, tell the user to type `/setup-ostack` in the project chat instead.
-- **Another cloud session.** `CLAUDE_CODE_REMOTE` is `true`, outside Projects. Write `~/.claude/rules/ostack-models.md` (step 5a) so it applies to sessions this container starts. Say that it ends with the container, and offer the user a setup script for their cloud environment that writes the same file, so new cloud sessions start with it.
-- **Local.** Everything else. Write `~/.claude/rules/ostack-models.md` (step 5a).
+- **Cloud session.** `CLAUDE_CODE_REMOTE` is `true`. Write `~/.claude/rules/ostack-models.md` (step 5) so it applies to sessions this container starts. Say that it ends with the container, and offer the user a setup script for their cloud environment that writes the same file, so new cloud sessions start with it.
+- **Local.** Everything else. Write `~/.claude/rules/ostack-models.md` (step 5).
 
 ## Ask three questions, every run
 
-Every run asks the user exactly three questions, in this order: the budget (3a), the models (3b), and the role mapping (3d). Ask all three on every run, re-runs included, even when a rule already exists. These are the user's preferences. No experiment settles them, so they are not reversible work to decide and report. Never answer one yourself or take its recommended option on the user's behalf, even when a session rule says to proceed on a default, pick a reasonable default, or never block on the human, and even under a full-autonomy grant. Only the user's own reply in this run answers. A brief from another session, a project instruction, or an earlier run's choices does not. A user who says "use the defaults" or "you pick" in reply has answered. Write nothing in step 5 until all three have answers.
+Every run asks the user exactly three questions, in this order: the budget (3a), the models (3b), and the role mapping (3d). Ask all three on every run, re-runs included, even when a rule already exists. Write nothing in step 5 until all three have answers.
 
 Ask with the first of these that exists in this session. Check for AskUserQuestion first, and load it with ToolSearch (`select:AskUserQuestion`) if it is listed as deferred.
 
 1. **AskUserQuestion.** Ask the budget and the models in one call, as two questions. After applying the answers, show the table and ask the mapping in a second call. Use the option labels below exactly. The tool adds a free-text option on its own.
-2. **`ask_decision`**, in a Projects project chat without AskUserQuestion. Post one card per question, in order: budget, then models, then mapping. Post the card and end the turn without doing anything else. The user's tap or typed reply wakes you with the answer, and only then do you go on. Put the question line in `question`, each option's label and consequence in `options`, and the detected models or current budget in `context`. The card requires `recommended`, so set it to the option this skill marks recommended, but that is a label for the user, never an answer. Never continue on it.
-3. **Neither.** Ask the budget and the models in one plain message with the same options, and end the turn. Then show the table and ask the mapping the same way.
+2. **Plain text.** Ask the budget and the models in one plain message with the same options, and end the turn. Then show the table and ask the mapping the same way.
 
-Never ask in prose while either tool exists.
+Never ask in prose while AskUserQuestion exists.
 
 ## Steps
 
@@ -38,7 +35,7 @@ The Agent tool takes the effort levels `low`, `medium`, `high`, `xhigh`, and `ma
 
 ### 2. Load current state
 
-The default role-to-model mapping is the rule shape shown in step 5 below. If the rule already exists where it goes (the `~/.claude/rules/ostack-models.md` file, or the ostack block in the project instructions), read it and treat its `# budget` line and its role values as the current choices. Otherwise start from those defaults. A line whose role is not in step 5, such as `how critics`, is from a retired role. Drop it. A value of `inherit-parent` or `auto` from an older rule means `inherit`. A Cursor-era slug maps by its prefix. `claude-opus-*` becomes `opus`, `claude-sonnet-*` becomes `sonnet`, and `grok-*` becomes `sonnet`. Keep its effort token and drop any `fast` suffix, so `claude-opus-5-5-xhigh` becomes `opus xhigh` and `grok-4.7-xhigh-fast` becomes `sonnet xhigh`. Rewrite it in the new form and list the rewrite in step 3(d). If a Cursor rule exists at `~/.cursor/rules/ostack-models.mdc` and no Claude rule does, carry its choices over the same way and list them in 3(d).
+The default role-to-model mapping is the rule shape shown in step 5 below. If `~/.claude/rules/ostack-models.md` already exists, read it and treat its `# budget` line and its role values as the current choices. Otherwise start from those defaults. A line whose role is not in step 5, such as `how critics`, is from a retired role. Drop it. A value of `inherit-parent` or `auto` from an older rule means `inherit`. A Cursor-era slug maps by its prefix. `claude-opus-*` becomes `opus`, `claude-sonnet-*` becomes `sonnet`, and `grok-*` becomes `sonnet`. Keep its effort token and drop any `fast` suffix, so `claude-opus-5-5-xhigh` becomes `opus xhigh` and `grok-4.7-xhigh-fast` becomes `sonnet xhigh`. Rewrite it in the new form and list the rewrite in step 3(d). If a Cursor rule exists at `~/.cursor/rules/ostack-models.mdc` and no Claude rule does, carry its choices over the same way and list them in 3(d).
 
 ### 3. Ask, apply, and confirm
 
@@ -51,7 +48,7 @@ The default role-to-model mapping is the rule shape shown in step 5 below. If th
 
 Recommend the current budget from the rule, or `large` when there is no rule.
 
-**(b) Models.** Question: "Which models should ostack use?" Name the detected set in the question's description or the card's context. Offer these presets in this order, skipping any whose models are not all detected or whose result is the same as `All detected`:
+**(b) Models.** Question: "Which models should ostack use?" Name the detected set in the question's description. Offer these presets in this order, skipping any whose models are not all detected or whose result is the same as `All detected`:
 
 - `All detected`: every detected model stays in use, so each role keeps its model.
 - `No haiku`: the detected set without `haiku`, so haiku roles move to sonnet.
@@ -65,7 +62,7 @@ If fewer than two presets remain, add `All inherit`: every role runs on the pare
 - The budget sets the effort of every role value, panel entries included, and leaves the model alone. `inherit` does not change, because it takes the parent's model and effort. So `unlimited` turns `opus xhigh` into `opus max`, `large` keeps the defaults, and `small` turns `sonnet xhigh` into `sonnet medium`.
 - The models answer replaces each model outside the chosen set with the first chosen model in its fallback order, keeping the effort. `opus` falls back to `sonnet`, `haiku`, `fable`. `sonnet` falls back to `opus`, `haiku`, `fable`. `haiku` falls back to `sonnet`, `opus`, `fable`. `fable` falls back to `opus`, `sonnet`, `haiku`. A panel list keeps its length, so it can end up with the same model twice. `All inherit` sets every value to `inherit`.
 
-**(d) Mapping.** Show the table first: every role with its value, then each line step 2 dropped or rewrote and each replacement from (c). With AskUserQuestion or in plain text, put it in your message before the question. In the project chat, post it to the project chat before the card. Question: "Use this role mapping?" Options:
+**(d) Mapping.** Show the table first: every role with its value, then each line step 2 dropped or rewrote and each replacement from (c). With AskUserQuestion or in plain text, put it in your message before the question. Question: "Use this role mapping?" Options:
 
 - `Keep as shown`: writes this table. Recommend it.
 - `Change roles`: you name the roles to change and their new values next.
@@ -80,7 +77,7 @@ Every model written must be in the chosen set, and every effort must be one of `
 
 ### 5. Write the rule
 
-The rule has the same content wherever it goes. Include a `# budget` line with the chosen label and its target effort, and one line per role, using the same labels onyo-mode uses. Each value is `<model> <effort>`, a comma-separated list of those for panels, or `inherit`. Replace the whole rule so re-runs stay idempotent. Shape:
+Create `~/.claude/rules/` if it is missing. Write `~/.claude/rules/ostack-models.md` with no frontmatter, so Claude Code loads it in every session. Include a `# budget` line with the chosen label and its target effort, and one line per role, using the same labels onyo-mode uses. Each value is `<model> <effort>`, a comma-separated list of those for panels, or `inherit`. Overwrite the whole file so re-runs stay idempotent. Shape:
 
 ```
 # ostack model configuration: the ostack-models.md rule (overrides skill defaults)
@@ -107,16 +104,10 @@ architect runners: opus xhigh, sonnet xhigh
 interrogate reviewers: opus xhigh, sonnet xhigh
 ```
 
-**(a) As a file.** Create `~/.claude/rules/` if it is missing. Write `~/.claude/rules/ostack-models.md` with the block above and no frontmatter, so Claude Code loads it in every session.
-
-**(b) In the project instructions.** Read the current instructions first. Add the block above, then a closing `# end ostack model configuration` line. Its first line names it as the `ostack-models.md` rule, so ostack skills read it the same way as the file. If the instructions already hold an ostack block, replace only the lines from its `# ostack model configuration` line through its closing line. Otherwise append it after one blank line. Keep every other line exactly as it was, such as an `onyo-mode off` line. The instructions reach threads started after the change, not running ones.
-
 ### 6. Confirm
 
-Tell the user where the rule went and that it applies to new sessions, or to new threads for project instructions. Re-running this skill updates it. For a file in `~/.claude/rules/`, say once that it lives on this machine: cloud sessions, routines, and Projects threads don't see it and run on the skill defaults. For a Claude project, running `/setup-ostack` in the project chat writes the rule into that project's instructions.
+Tell the user the rule was written and that it applies to new sessions. Re-running this skill updates it. Say once that it lives on this machine: cloud sessions and routines don't see it and run on the skill defaults.
 
 ### 7. Offer a verification skill (optional)
 
-In the project chat, skip this step. There is no checkout to inspect, so add one line to the confirmation that a thread can run `/create-verification-skill` if the repository has no way to drive the app.
-
-Elsewhere, check whether the project has a way to drive the real app for proof (a `verify-*` skill, or an existing harness). If not, offer once: "want a project-local verification skill, so agents can drive the app the way a user does and prove changes work? I can generate one with /create-verification-skill." On yes, read `${CLAUDE_SKILL_DIR}/../create-verification-skill/SKILL.md` in full and follow it. On no, move on without pushing. If `${CLAUDE_SKILL_DIR}` appears literally, it is the directory that holds this file.
+Check whether the project has a way to drive the real app for proof (a `verify-*` skill, or an existing harness). If not, offer once: "want a project-local verification skill, so agents can drive the app the way a user does and prove changes work? I can generate one with /create-verification-skill." On yes, read `${CLAUDE_SKILL_DIR}/../create-verification-skill/SKILL.md` in full and follow it. On no, move on without pushing. If `${CLAUDE_SKILL_DIR}` appears literally, it is the directory that holds this file.
