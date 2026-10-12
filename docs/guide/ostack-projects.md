@@ -27,7 +27,7 @@ ostack's hook, [`hooks/onyo-mode.sh`](../../hooks/onyo-mode.sh), knows a project
 
 Threads start in fresh cloud containers, so they never see `~/.claude/rules/ostack-models.md`. In a project, the model rule goes in the project instructions instead.
 
-To change the models or the budget for a project, type `/setup-ostack` in the project chat. The coordinator runs the setup itself and doesn't start a thread for it. It asks the same three questions and waits for your answer to each. It then writes the rule into the project instructions, between a `# ostack model configuration` line and a `# end ostack model configuration` line, and leaves every other line there as it was. Threads started after that use the rule. Running threads don't.
+To change the models or the budget for a project, type `/setup-ostack` in the project chat. The coordinator runs the setup itself and doesn't start a thread for it. It asks for a reasoning budget, then shows the role mapping and asks whether to keep it, and it waits for your answer to each. It then writes the rule into the project instructions, between a `# ostack model configuration` line and a `# end ostack model configuration` line, and leaves every other line there as it was. Threads started after that use the rule. Running threads don't.
 
 If you type `/setup-ostack` in a thread, the thread asks the coordinator to run it in the project chat, and the questions appear there.
 

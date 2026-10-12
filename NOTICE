@@ -29,6 +29,14 @@ Changes from pstack:
   forge branches were removed. The Grok Bot layer was removed: make-bot-ui now wakes a Claude Code
   routine over its API trigger, and work reaches a Claude Project through project routines or
   the user's own messages. Added the onyo-reader agent for read-only roles.
+- Added ostack's own defaults as a layer on top of pstack's text: hooks/ostack-defaults.md
+  (models, effort, and budget per role), printed by the onyo-mode hook, which also keeps
+  onyo-mode on for every task. pstack's text keeps pstack's defaults, mapped to Claude Code.
+- Added a Claude Projects layer: the onyo-projects skill, its hooks in hooks/, and the guide
+  page docs/guide/ostack-projects.md. pstack's skills don't change for it.
+- Added sync/, which generates every pstack-origin file from upstream at the pinned commit plus
+  a port patch per file. CI fails when a file drifts from that result, and every patch hunk is
+  a harness port.
 
 The logo in assets/logo.png comes from pstack.
 
