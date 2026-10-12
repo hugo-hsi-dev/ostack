@@ -48,6 +48,8 @@ projects=
 
 event=$(json hook_event_name)
 [ "$event" = SessionStart ] && [ -z "$projects" ] && exit 0
+# A Stop hook runs at the end of every turn of every session, so everything but a coordinator leaves at once.
+[ "$event" = Stop ] && { [ -z "$projects" ] || [ "$CLAUDE_CODE_COORDINATOR_MODE" != 1 ]; } && exit 0
 [ "$event" = PreToolUse ] || prompt=$(json prompt)
 session=$(json session_id | tr -cd 'A-Za-z0-9_-')
 state_file="${CLAUDE_PLUGIN_DATA:-${TMPDIR:-/tmp}/ostack}/onyo-mode/$session"
@@ -111,6 +113,28 @@ if [ "$event" = PreToolUse ]; then
     grep -Fxq -e 'onyo-projects: planning thread' -e 'onyo-projects: unit thread' && exit 0
   cat <<'EOF'
 {"hookSpecificOutput":{"hookEventName":"PreToolUse","permissionDecision":"deny","permissionDecisionReason":"Every new work ask starts as its planning thread. Call start_thread_session again on the same message with the same project_ack and ack, and the user's message in context_message_ids. Begin instructions with the line `onyo-projects: planning thread`, then say the thread is this ask's planning thread and follows the Planning thread section of the onyo-projects skill. A unit thread's brief comes from the planning thread's plan and already begins with `onyo-projects: unit thread`; start it as written."}}
+EOF
+  exit 0
+fi
+
+if [ "$event" = Stop ]; then
+  printf '%s' "$input" | grep -Eq '"stop_hook_active"[[:space:]]*:[[:space:]]*true' && exit 0
+  transcript=$(json transcript_path)
+  [ -f "$transcript" ] || exit 0
+  # Every user line of a turn, tool results included, carries that turn's promptId. A report this
+  # cannot place in the current turn lets the turn end, so a wrong guess never traps the coordinator.
+  [ -n "$(awk '
+    /"role":"user"/ {
+      id = ""
+      if (match($0, /"promptId":"[^"]*"/)) id = substr($0, RSTART + 12, RLENGTH - 13)
+      if (id != "") turn = id
+      if (index($0, "<cross-session-message from-session=\\\"")) { found = 1; report = id; posted = 0 }
+      next
+    }
+    found && /"role":"assistant"/ && /"name":"mcp__hearthbot__post_message"/ { posted = 1 }
+    END { if (found && report != "" && report == turn && !posted) print "block" }
+  ' "$transcript")" ] && cat <<'EOF'
+{"decision":"block","reason":"This turn received a thread's report through send_message, and you have not posted it in the project chat. Post it now as one short post_message in the project chat that links the thread as [title](#cmsg_…), even though your built-in rules say threads answer in their own threads. Then take the action the report's last line names, as written. If you already posted this same report in the project chat in an earlier turn, end the turn again without posting twice."}
 EOF
   exit 0
 fi
