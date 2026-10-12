@@ -1,0 +1,5 @@
+--- a/skills/ketchup/SKILL.md
++++ b/skills/ketchup/SKILL.md
+@@ -27 +27 @@ [A]
+-Prefer visuals to dense prose. Use a table, a Mermaid diagram, a chart, or a generated image.
++Prefer visuals to dense prose. Use a table, a Mermaid diagram, a chart, or an SVG image.

@@ -16,7 +16,9 @@
     "pstack",
     "workflow",
     "principles",
+    "agent-style",
     "subagents",
+    "unslop",
     "claude-code"
   ]
 }

@@ -76,7 +76,6 @@ A dependency is a context relay, not just ordering. Undeclared upstream context 
 
 #### Stack safety
 
-- Orchestrate alone needs Graphite (`gt`), installed on the stacker's clone, because `orch frontier set` shells out to it. The other playbooks never require it.
 - The frontier is a computed object, never narrative. Recompute `frontier.json` from `gt` after every merge and stack mutation because GitHub base refs drift mid-restack while gt tracking is authoritative: ordered PR list, branch names, head SHAs, a generation number, the lowest unmerged PR. Resolve it where gt knows the stack, normally the stacker's clone. A checkout whose gt metadata never saw the submits reports no PRs and the command errors rather than guessing.
 - Exactly one stacker per stack may run `gt`, serialized within its stack. Record the holder in the standing orders. Restacks run where `gt` is installed, locally or in a cloud session whose setup script installs it. Prefer the cloud session, because a local restack at this scale takes the laptop down.
 - Workers never rebase and never run `gt`. Babysitters follow `playbooks/babysit.md`, one per stack, scoped to one immutable frontier generation. They report conflicts to the stacker rather than restacking.

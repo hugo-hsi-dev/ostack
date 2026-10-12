@@ -16,12 +16,11 @@ PATCHES = ROOT / "sync" / "patches"
 CACHE = Path(os.environ.get("PSTACK_CACHE", Path.home() / ".cache" / "ostack-pstack.git"))
 RENAMES = {
     "plugin.json": ".claude-plugin/plugin.json",
-    "skills/onyo-mode/references/bugbot-triage.md": "skills/onyo-mode/references/review-bot-triage.md",
     "automations/benny/templates/triage-automation-prompt.md": "automations/benny/templates/triage-routine-prompt.md",
     "automations/benny/templates/reproduce-automation-prompt.md": "automations/benny/templates/reproduce-routine-prompt.md",
 }
 KEEP_FLAG = {"arena", "correct", "ketchup", "recall", "swarm", "unslop"}
-CODES = re.compile(r"\[([AD]+|\?)\]")
+CODES = re.compile(r"\[(A|\?)\]")
 HEADER = re.compile(r"^@@ -(\d+)(?:,(\d+))? \+\d+(?:,\d+)? @@ ?(.*)$")
 NO_EOL = "\\ No newline at end of file\n"
 
@@ -54,7 +53,8 @@ def fetch(sha):
 
 
 def map_names(s):
-    return re.sub(r"\bpstack", "ostack", s.replace("poteto", "onyo").replace("Poteto", "Onyo"))
+    s = s.replace("poteto", "onyo").replace("Poteto", "Onyo").replace("bugbot-triage.md", "review-bot-triage.md")
+    return re.sub(r"\bpstack", "ostack", s)
 
 
 def upstream(sha):
@@ -107,8 +107,8 @@ def read_patch(dest):
         if h:
             code = CODES.fullmatch(h.group(3))
             if not code:
-                sys.exit(f"{p}: hunk marker must be [A], [D] or [AD], got {raw!r}. A default belongs in "
-                         "hooks/ostack-defaults.md and Claude Projects text in skills/onyo-projects/, not in a patch.")
+                sys.exit(f"{p}: hunk marker must be [A], got {raw!r}. A patch holds harness-port hunks only. "
+                         "A default belongs in hooks/ostack-defaults.md and Claude Projects text in skills/onyo-projects/.")
             start, n = int(h.group(1)), 1 if h.group(2) is None else int(h.group(2))
             hunks.append(Hunk(start - 1 if n else start, n, [], [], code.group(1)))
         elif raw == NO_EOL:
@@ -231,7 +231,7 @@ def cmd_write(sha, files, args):
 def cmd_refresh(sha, files, args):
     for dest in args.paths or [d for d in files if (ROOT / d).exists() and not is_binary((ROOT / d).read_bytes())]:
         for h in refresh(sha, files, dest, args.code):
-            print(f"sync/patches/{dest}.patch: [?] hunk at line {h.at + 1}, mark it [A] or [D]")
+            print(f"sync/patches/{dest}.patch: [?] hunk at line {h.at + 1}, mark it [A]")
 
 
 def cmd_bump(old, old_files, args):

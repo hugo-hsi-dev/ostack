@@ -19,8 +19,7 @@
 +  "repository": "https://github.com/hugo-hsi-dev/ostack",
 @@ -14,0 +16 @@ [A]
 +    "pstack",
-@@ -17 +18,0 @@ [D]
--    "agent-style",
-@@ -19 +20 @@ [D]
+@@ -19 +21,2 @@ [A]
 -    "unslop"
++    "unslop",
 +    "claude-code"
