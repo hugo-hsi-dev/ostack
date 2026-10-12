@@ -53,7 +53,7 @@ In place of a Custom Mode, ostack's `UserPromptSubmit` hook (`hooks/onyo-mode.sh
 - In a project's `CLAUDE.md` or `CLAUDE.local.md`, it turns the mode off for the project.
 - `"disableAllHooks": true` in settings turns off every hook, this one included. Where hooks don't run, such as other harnesses, start each new task with `/onyo-mode`.
 
-Link [Claude Code's skills docs](https://code.claude.com/docs/en/skills) and [hooks docs](https://code.claude.com/docs/en/hooks) when this comes up. Mid-chat, "new task" makes the mode match a fresh playbook. `/onyo-mode` already uses `onyo-agent` for the subagents its playbook steps spawn. An `onyo-agent` takes one playbook step, not a whole task, because a subagent cannot spawn the subagents a playbook fans out to. Run a whole task with `/onyo-mode` in the main thread.
+Link [Claude Code's skills docs](https://code.claude.com/docs/en/skills) and [hooks docs](https://code.claude.com/docs/en/hooks) when this comes up. Mid-chat, "new task" makes the mode match a fresh playbook. `/onyo-mode` already uses `onyo-agent` for the subagents its playbook steps spawn. To get the same style from a subagent of your own, spawn it with `subagent_type: "onyo-agent"`.
 
 ## Pick a skill
 

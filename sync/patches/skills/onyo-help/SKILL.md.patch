@@ -30,9 +30,9 @@
 +- In a message, it turns the mode off for the rest of the session. A message of just `onyo-mode on` turns it back on.
 +- In a project's `CLAUDE.md` or `CLAUDE.local.md`, it turns the mode off for the project.
 +- `"disableAllHooks": true` in settings turns off every hook, this one included. Where hooks don't run, such as other harnesses, start each new task with `/onyo-mode`.
-@@ -56 +56 @@ [D]
+@@ -56 +56 @@ [A]
 -Link [Cursor's skills docs](https://cursor.com/docs/skills) when this comes up. Mid-chat, "new task" makes the mode match a fresh playbook. `/onyo-mode` already uses `onyo-agent` for the subagents its playbook steps spawn. To get the same style from a subagent of your own, spawn it with `subagent_type: "onyo-agent"`.
-+Link [Claude Code's skills docs](https://code.claude.com/docs/en/skills) and [hooks docs](https://code.claude.com/docs/en/hooks) when this comes up. Mid-chat, "new task" makes the mode match a fresh playbook. `/onyo-mode` already uses `onyo-agent` for the subagents its playbook steps spawn. An `onyo-agent` takes one playbook step, not a whole task, because a subagent cannot spawn the subagents a playbook fans out to. Run a whole task with `/onyo-mode` in the main thread.
++Link [Claude Code's skills docs](https://code.claude.com/docs/en/skills) and [hooks docs](https://code.claude.com/docs/en/hooks) when this comes up. Mid-chat, "new task" makes the mode match a fresh playbook. `/onyo-mode` already uses `onyo-agent` for the subagents its playbook steps spawn. To get the same style from a subagent of your own, spawn it with `subagent_type: "onyo-agent"`.
 @@ -73 +73 @@ [A]
 -| Run parallel checks over slices, or race workers, as cloud agents | [`/swarm`](../swarm/SKILL.md) |
 +| Run parallel checks over slices, or race workers, as cloud sessions | [`/swarm`](../swarm/SKILL.md) |

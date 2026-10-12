@@ -1,79 +1,40 @@
 ---
 name: setup-ostack
-description: Configure which models ostack uses per role and at what effort budget. Asks three questions (budget, models, role mapping), then writes an always-loaded rule that overrides the skill defaults. Use for /setup-ostack, "configure ostack models", "ostack budget", or changing ostack's model choices.
+description: Configure which models ostack uses per role and at what reasoning budget. Detects your available models and writes an always-applied rule that overrides the skill defaults. Use for /setup-ostack, "configure ostack models", "ostack budget", or changing ostack's model choices.
 ---
 
 # Setup ostack
 
-Write `~/.claude/rules/ostack-models.md`, a user-level rule that sets ostack's model and effort per role. Claude Code loads every `~/.claude/rules/*.md` file without `paths` frontmatter into every session, in every project. Never commit the rule to the repository unless the user asks for that in so many words.
-
-## Where it runs
-
-Decide this first, and use the first case that fits.
-
-- **Cloud session.** `CLAUDE_CODE_REMOTE` is `true`. Write `~/.claude/rules/ostack-models.md` (step 5) so it applies to sessions this container starts. Say that it ends with the container, and offer the user a setup script for their cloud environment that writes the same file, so new cloud sessions start with it.
-- **Local.** Everything else. Write `~/.claude/rules/ostack-models.md` (step 5).
-
-## Ask three questions, every run
-
-Every run asks the user exactly three questions, in this order: the budget (3a), the models (3b), and the role mapping (3d). Ask all three on every run, re-runs included, even when a rule already exists. Write nothing in step 5 until all three have answers.
-
-Ask with the first of these that exists in this session. Check for AskUserQuestion first, and load it with ToolSearch (`select:AskUserQuestion`) if it is listed as deferred.
-
-1. **AskUserQuestion.** Ask the budget and the models in one call, as two questions. After applying the answers, show the table and ask the mapping in a second call. Use the option labels below exactly. The tool adds a free-text option on its own.
-2. **Plain text.** Ask the budget and the models in one plain message with the same options, and end the turn. Then show the table and ask the mapping the same way.
-
-Never ask in prose while AskUserQuestion exists.
+Write `~/.claude/rules/ostack-models.md`, an always-applied rule that sets ostack's model and effort per role.
 
 ## Steps
 
 ### 1. Detect available models
 
-Read the `model` parameter of the Agent tool in this session. Its allowed values (`opus`, `sonnet`, `haiku`, and `fable` when the account has it) are the detected set. If you cannot read the parameter, take `opus`, `sonnet`, and `haiku` as the detected set and say in the models question that you could not detect them. The user's answer to 3(b) then confirms them. Never write a model the user has not confirmed or the tool does not list. The alias `inherit` is always valid even though it is not a detected model.
+Read the `model` parameter of the Agent tool in this session. Its allowed values (`opus`, `sonnet`, `haiku`, and `fable` when the account has it) are the detected set. If you cannot read the parameter, ask the user which of those models they have access to. Never write a model you have not confirmed is available. The alias `inherit` is always valid even though it is not a detected model.
 
 The Agent tool takes the effort levels `low`, `medium`, `high`, `xhigh`, and `max` in its `effort` parameter. On the Anthropic API the aliases resolve to models that take all five. Some older models, such as those on some Bedrock or Vertex routes, take fewer. An unsupported effort falls back on its own to the highest supported level at or below it. Note that fallback when you report the mapping.
 
 ### 2. Load current state
 
-The default role-to-model mapping is the rule shape shown in step 5 below. If `~/.claude/rules/ostack-models.md` already exists, read it and treat its `# budget` line and its role values as the current choices. Otherwise start from those defaults. A line whose role is not in step 5, such as `how critics`, is from a retired role. Drop it. A value of `inherit-parent` or `auto` from an older rule means `inherit`. A Cursor-era slug maps by its prefix. `claude-opus-*` becomes `opus`, `claude-sonnet-*` becomes `sonnet`, and `grok-*` becomes `sonnet`. Keep its effort token and drop any `fast` suffix, so `claude-opus-5-5-xhigh` becomes `opus xhigh` and `grok-4.7-xhigh-fast` becomes `sonnet xhigh`. Rewrite it in the new form and list the rewrite in step 3(d). If a Cursor rule exists at `~/.cursor/rules/ostack-models.mdc` and no Claude rule does, carry its choices over the same way and list them in 3(d).
+The default role-to-model mapping is the rule shape shown in step 5 below. If `~/.claude/rules/ostack-models.md` already exists, read it and treat its `# budget` line and its role values as the current choices. Otherwise start from those defaults. A line whose role is not in step 5, such as `how critics`, is from a retired role. Drop it. A value of `inherit-parent` or `auto` from an older rule means `inherit`. A Cursor-era slug maps by its prefix. `claude-opus-*` becomes `opus`, `claude-sonnet-*` becomes `sonnet`, and `grok-*` becomes `sonnet`. Keep its effort token and drop any `fast` suffix, so `claude-opus-5-5-xhigh` becomes `opus xhigh` and `grok-4.7-xhigh-fast` becomes `sonnet xhigh`. Rewrite it in the new form and list the rewrite in step 3(c). If a Cursor rule exists at `~/.cursor/rules/ostack-models.mdc` and no Claude rule does, carry its choices over the same way and list them in 3(c).
 
-### 3. Ask, apply, and confirm
+### 3. Budget, map, and confirm
 
-**(a) Budget.** Question: "Which effort budget should ostack use?" Options, with these exact labels:
+**(a) Ask for a budget.** Prefer AskUserQuestion over free text. Offer these four options with these exact labels, and name the current budget when the rule records one. With no rule, say that `large` matches the skill defaults.
 
-- `unlimited (max effort)`: every role runs at `max`.
-- `large (xhigh effort)`: every role runs at `xhigh`, the skill defaults.
-- `medium (high effort)`: every role runs at `high`.
-- `small (medium effort)`: every role runs at `medium`.
+- `unlimited — max reasoning`
+- `large — xhigh reasoning`
+- `medium — high reasoning`
+- `small — medium reasoning`
 
-Recommend the current budget from the rule, or `large` when there is no rule.
+**(b) Apply it.** Build the working table from the skill defaults, and on a re-run keep any role you changed by model, list, or alias (`inherit`). `unlimited`, `large`, `medium`, and `small` set the effort of every model value, panel entries included, to `max`, `xhigh`, `high`, or `medium`, and leave the model alone. `inherit` does not change. So `unlimited` turns `opus xhigh` into `opus max`. `large` keeps both defaults. `small` turns them into `opus medium` and `sonnet medium`.
 
-**(b) Models.** Question: "Which models should ostack use?" Name the detected set in the question's description. Offer these presets in this order, skipping any whose models are not all detected or whose result is the same as `All detected`:
-
-- `All detected`: every detected model stays in use, so each role keeps its model.
-- `No haiku`: the detected set without `haiku`, so haiku roles move to sonnet.
-- `No opus`: the detected set without `opus`, so opus roles move to sonnet.
-- `Opus only`: only `opus`, so every role runs on opus.
-
-If fewer than two presets remain, add `All inherit`: every role runs on the parent chat model and effort. Recommend `All detected`. A typed answer that names models sets the chosen set to those models.
-
-**(c) Apply.** Build the working table from the skill defaults, and on a re-run keep any role you changed by model, list, or alias (`inherit`). Then apply the two answers.
-
-- The budget sets the effort of every role value, panel entries included, and leaves the model alone. `inherit` does not change, because it takes the parent's model and effort. So `unlimited` turns `opus xhigh` into `opus max`, `large` keeps the defaults, and `small` turns `sonnet xhigh` into `sonnet medium`.
-- The models answer replaces each model outside the chosen set with the first chosen model in its fallback order, keeping the effort. `opus` falls back to `sonnet`, `haiku`, `fable`. `sonnet` falls back to `opus`, `haiku`, `fable`. `haiku` falls back to `sonnet`, `opus`, `fable`. `fable` falls back to `opus`, `sonnet`, `haiku`. A panel list keeps its length, so it can end up with the same model twice. `All inherit` sets every value to `inherit`.
-
-**(d) Mapping.** Show the table first: every role with its value, then each line step 2 dropped or rewrote and each replacement from (c). With AskUserQuestion or in plain text, put it in your message before the question. Question: "Use this role mapping?" Options:
-
-- `Keep as shown`: writes this table. Recommend it.
-- `Change roles`: you name the roles to change and their new values next.
-
-On `Change roles` or a typed change, take the changes in a plain reply, using the chosen models plus `inherit` as values. Apply them, show the table again, and ask (d) again until the answer is `Keep as shown`.
-
-For panel roles (arena runners, architect runners, interrogate reviewers) the value is a list, and one subagent runs per entry, `inherit` entries included, so the list length sets the count. `arena cross-judge pool` is also a list, but Arena selects one value from it whose model differs from the parent's when possible. `swarm workers` is the default model for every worker unless a race or comparison assigns another model per arm.
+**(c) Show the roles and confirm.** Show every role with its value, marking any model not in the detected set as needing a choice. Also list each line step 2 dropped or rewrote. Ask whether to accept as-is or change specific roles, offering the detected models plus `inherit` (this role runs on the parent chat model and effort) as the options. Prefer AskUserQuestion over free text. For panel roles (arena runners, architect runners, interrogate reviewers) the value is a list, and one subagent runs per entry, `inherit` entries included, so the list length sets the count. `arena cross-judge pool` is also a list, but Arena selects one value from it whose model family differs from the parent's when possible. `swarm workers` is the default model for every worker unless a race or comparison assigns another model per arm.
 
 ### 4. Validate
 
-Every model written must be in the chosen set, and every effort must be one of `low`, `medium`, `high`, `xhigh`, `max`. `inherit` always passes. If a typed change names a model outside the chosen set, ask (d) again.
+Every model written must be in the detected set, and every effort must be one of `low`, `medium`, `high`, `xhigh`, `max`. `inherit` always passes. If a chosen model is not available, stop and ask again.
 
 ### 5. Write the rule
 
