@@ -64,11 +64,13 @@ out=$(run p1 "$head$tail" $thread)
 expect "Projects thread is on" "$on" "$out"
 expect "Projects thread gets the planning and unit sections" 'Planning thread section if your brief names this the ask.s planning thread, its Unit thread section otherwise' "$out"
 out=$(run p2 "$head$tail" $thread CLAUDE_CODE_COORDINATOR_MODE=1)
-expect "Projects coordinator posts each thread report" 'Each report a thread sends you with send_message (a plan, progress, a result, a question, or a permission need) becomes one short post_message in the project chat' "$out"
-expect "Projects coordinator relays unit results to the planner" 'Forward each unit.s result to its planning thread with message_thread' "$out"
-expect "Projects coordinator line spells out the rules, not a pointer" '' "$(printf '%s' "$out" | grep 'has the rest')"
-expect "Projects coordinator makes the ask's planning thread" 'the one thread per ask is the ask.s planning thread' "$out"
-expect "Projects coordinator briefs the planning marker" 'begin instructions with the line `onyo-projects: planning thread`' "$out"
+expect "Projects coordinator note is one line" '^1$' "$(printf '%s\n' "$out" | others | grep -c .)"
+expect "Projects coordinator note keeps onyo-mode out" 'Do not load onyo-mode here' "$out"
+expect "Projects coordinator treats a tooling question as work" 'is a work ask and gets a planning thread. This replaces "A question about the project itself that memory or context already answers"' "$out"
+expect "Projects coordinator posts each thread report" 'becomes one short post_message in the project chat that links the thread as \[title\](#cmsg_…). This replaces "Results always come back where the work happened" and "The Coordinator Claude is quiet in the project chat otherwise"' "$out"
+expect "Projects coordinator takes a report's last-line action" 'names, as written. This replaces "A note from another Thread Claude isn.t a fresh obligation"' "$out"
+expect "Projects coordinator note leaves gated rules to the gates" '' "$(printf '%s' "$out" | grep -e 'onyo-projects: planning thread' -e project_post_id)"
+expect "Projects coordinator note points to the Coordinator section" 'the Coordinator section of the onyo-projects skill, in your context from session start or at /plugin/skills/onyo-projects/SKILL.md' "$out"
 expect "Projects coordinator text is not JSON" '' "$(printf '%s' "$out" | grep '^{')"
 expect "Projects coordinator does not load onyo-mode" '' "$(printf '%s' "$out" | grep "$on")"
 
