@@ -10,7 +10,7 @@ fails=0
 seen=
 
 # Cases the hook gets wrong today. A change that fixes one deletes it here.
-gaps='report-posted-earlier-from-reply quoted-marker-in-tool-output unit-start-no-project-post-id unit-start-brief-rewritten'
+gaps='unit-start-no-project-post-id unit-start-brief-rewritten'
 
 # Builds the hook input Claude Code sends: case, event, transcript, tool_input.
 event() {

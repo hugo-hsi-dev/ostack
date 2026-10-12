@@ -14,12 +14,13 @@ The rules for each role are in [`onyo-projects`](../../skills/onyo-projects/SKIL
 
 ## The hook holds each role to its rules
 
-ostack's hook, [`hooks/onyo-mode.sh`](../../hooks/onyo-mode.sh), knows a project session from its environment, so a project needs no setup. In a project it does four things:
+ostack's hook, [`hooks/onyo-mode.sh`](../../hooks/onyo-mode.sh), knows a project session from its environment, so a project needs no setup. In a project it does five things:
 
 - On every message, it names the session's role. A thread is told to follow onyo-mode and `onyo-projects`. The coordinator is told to follow `onyo-projects` only.
 - When a session starts, resumes, or compacts, it prints that role's sections of `onyo-projects` in full, so a fresh or compacted coordinator still has its rules.
 - Before the coordinator starts a thread, it checks that the brief opens with `onyo-projects: planning thread` or `onyo-projects: unit thread`. If not, it refuses the start and tells the coordinator how to retry.
-- At the end of a coordinator turn that received a thread's report, it checks that the coordinator posted the report in the project chat. If not, it blocks the end of the turn once.
+- At the end of a coordinator turn that received a thread's report, it checks that a project chat post links that thread as `#cmsg_…`. A post the coordinator made from the thread's own reply counts. A post that links only a PR does not. If no post links the thread, it blocks the end of the turn once.
+- After the coordinator starts a thread with a `project_ack`, it reminds the coordinator that the `project_ack` already posted in the project chat, so a turn with nothing else to post ends with `no_reply_needed`.
 
 ## Set up ostack in the project chat
 

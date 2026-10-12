@@ -118,10 +118,10 @@ expect "later prompts do not print them again" '' "$(run b5 'next' $coord CLAUDE
 begin b6 startup $coord > /dev/null
 expect "the first prompt in a project turned off prints nothing" '' "$(run b6 "$off_block" $coord CLAUDE_PLUGIN_ROOT="$root")"
 
-stop() { # session, stop_hook_active (true or false), then env assignments
+stop() { # session, stop_hook_active (true or false), then env assignments; $pid is the prompt_id
   session=$1 active=$2; shift 2
-  printf '{"session_id":"%s","transcript_path":"%s","cwd":"%s","hook_event_name":"Stop","stop_hook_active":%s}' \
-    "$session" "$tmp/$session.jsonl" "$tmp/repo" "$active" |
+  printf '{"session_id":"%s","transcript_path":"%s","cwd":"%s","hook_event_name":"Stop","prompt_id":"%s","stop_hook_active":%s}' \
+    "$session" "$tmp/$session.jsonl" "$tmp/repo" "$pid" "$active" |
     env -i PATH="$PATH" CLAUDE_PLUGIN_ROOT=/plugin CLAUDE_PLUGIN_DATA="$tmp/data" "$@" sh "$hook"
 }
 
@@ -155,6 +155,32 @@ cat > "$tmp/f/quoted" <<'EOF'
 {"parentUuid":"u1","isSidechain":false,"message":{"model":"claude-opus-5-5","id":"msg_4","type":"message","role":"assistant","content":[{"type":"tool_use","id":"toolu_4","name":"mcp__hearthbot__message_thread","input":{"text":"Earlier you sent <cross-session-message from-session=\"session_01BERL\"> and I forwarded it."}}]},"type":"assistant","uuid":"a4"}
 EOF
 
+cat > "$tmp/f/start" <<'EOF'
+{"parentUuid":"u1","isSidechain":false,"message":{"model":"claude-opus-5-5","id":"msg_5","type":"message","role":"assistant","content":[{"type":"tool_use","id":"toolu_5","name":"mcp__hearthbot__start_thread_session","input":{"instructions":"onyo-projects: unit thread\nDo unit 1.","project_post_id":"cmsg_8","title":"Unit 1"}}]},"type":"assistant","uuid":"a5"}
+EOF
+cat > "$tmp/f/started" <<'EOF'
+{"parentUuid":"a5","isSidechain":false,"promptId":"p1","type":"user","message":{"role":"user","content":[{"tool_use_id":"toolu_5","type":"tool_result","content":[{"type":"text","text":"{\"ack_message_id\":\"cmsg_7\",\"created\":true,\"session_id\":\"cse_01BERL\",\"thread_id\":\"cmsg_9\"}"}]}]},"uuid":"u5"}
+EOF
+sed 's/"text":"Unit 1 is merged."/"text":"[Unit 1](#cmsg_9) is merged in https:\/\/github.com\/o\/r\/pull\/4."/' "$tmp/f/post" > "$tmp/f/linked"
+sed 's/#cmsg_9/#cmsg_90/' "$tmp/f/linked" > "$tmp/f/elsewhere"
+cat > "$tmp/f/wakeB" <<'EOF'
+{"parentUuid":"a","isSidechain":false,"promptId":"p1","type":"user","isMeta":true,"message":{"role":"user","content":"<wake reason=\"thread-activity\">\n  <thread ts=\"cmsg_9\">\n    <message trigger=\"true\" from=\"agent\" author-id=\"cse_01BERL\">Unit 1 is merged.</message>\n  </thread>\n</wake>"},"uuid":"u6"}
+EOF
+sed 's/"promptId":"p1"/"promptId":"p2"/; s/toolu_1/toolu_6/' "$tmp/f/read" > "$tmp/f/read2"
+sed 's/"promptId":"p1"/"promptId":"p2"/; s/toolu_1/toolu_6/' "$tmp/f/report" > "$tmp/f/report2"
+sed 's/"promptId":"p1"/"promptId":"p2"/' "$tmp/f/posted" > "$tmp/f/posted2"
+cat > "$tmp/f/ack" <<'EOF'
+{"parentUuid":"u2","isSidechain":false,"message":{"model":"claude-opus-5-5","id":"msg_7","type":"message","role":"assistant","content":[{"type":"tool_use","id":"toolu_7","name":"mcp__hearthbot__start_thread_session","input":{"instructions":"onyo-projects: planning thread\nPlan it.","project_ack":"Starting on that.","ack":"Reading the code.","message_id":"cmsg_3"}}]},"type":"assistant","uuid":"a7"}
+EOF
+sed 's/"project_ack":"Starting on that.",//' "$tmp/f/ack" > "$tmp/f/noack"
+cat > "$tmp/f/bash" <<'EOF'
+{"parentUuid":"u1","isSidechain":false,"message":{"model":"claude-opus-5-5","id":"msg_8","type":"message","role":"assistant","content":[{"type":"tool_use","id":"toolu_8","name":"Bash","input":{"command":"cat old.jsonl"}}]},"type":"assistant","uuid":"a8"}
+EOF
+sed 's/toolu_1/toolu_8/' "$tmp/f/report" > "$tmp/f/bashout"
+cat > "$tmp/f/prompted" <<'EOF'
+{"parentUuid":"a","isSidechain":false,"promptId":"p1","type":"user","message":{"role":"user","content":"<cross-session-message from-session=\"session_01BERL\">\n    Result from unit 1. It is merged.\n</cross-session-message>"},"uuid":"u9"}
+EOF
+
 block='"decision":"block".*you have not posted it in the project chat'
 fx k1 wake1 read report noreply
 out=$(stop k1 false $coord)
@@ -180,6 +206,47 @@ expect "a project turned off is not held to the rule" '' "$(stop k6 false $coord
 fx k7 wake1 read quoted noreply
 expect "a report quoted in an assistant call is not a report" '' "$(stop k7 false $coord)"
 expect "a missing transcript lets the turn end" '' "$(stop k8 false $coord)"
+expect "the block says how to escape a post made earlier" "If you already posted this report's content in the project chat, end the turn again without posting twice.\"}$" "$(stop k1 false $coord)"
+fx k9 wake1 bash bashout noreply
+expect "a report quoted in another tool's result is not a report" '' "$(stop k9 false $coord)"
+fx k10 wake1 prompted noreply
+expect "a report delivered as a prompt blocks" "$block" "$(stop k10 false $coord)"
+pid=p1
+expect "the input's prompt_id names the turn" "$block" "$(stop k5 false $coord)"
+pid=p9
+expect "a prompt_id the transcript lacks lets the turn end" '' "$(stop k1 false $coord)"
+pid=
+fx k11 wake1 read report ack noreply
+expect "a start with project_ack after the report is a post" '' "$(stop k11 false $coord)"
+fx k12 wake1 read report noack noreply
+expect "a start without project_ack is not a post" "$block" "$(stop k12 false $coord)"
+fx k13 wake1 start started read report post posted noreply
+expect "a post without the thread's link does not count once the thread is known" "$block" "$(stop k13 false $coord)"
+fx k14 wake1 start started read report linked posted noreply
+expect "a post that links the thread lets the turn end" '' "$(stop k14 false $coord)"
+fx k15 wake1 start started read report elsewhere posted noreply
+expect "a link to another thread does not count" "$block" "$(stop k15 false $coord)"
+fx k16 wakeB linked posted read report noreply
+expect "a post from the thread's reply before its report counts" '' "$(stop k16 false $coord)"
+fx k17 wakeB linked posted wake2 read2 report2 noreply
+expect "a post from the reply in an earlier turn counts" '' "$(stop k17 false $coord)"
+fx k18 wakeB read report linked posted wake2 read2 report2 noreply
+expect "a post that answered the thread's last report does not answer the next" "$block" "$(stop k18 false $coord)"
+fx k19 wakeB read report wake2 read2 report2 linked posted2 noreply
+expect "an earlier report left unposted does not take this turn's post" '' "$(stop k19 false $coord)"
+
+started() { # session, tool_input JSON, then env assignments
+  session=$1 tool_input=$2; shift 2
+  printf '{"session_id":"%s","transcript_path":"%s","cwd":"%s","hook_event_name":"PostToolUse","tool_name":"mcp__hearthbot__start_thread_session","tool_input":%s,"tool_response":{"session_id":"cse_1"}}' \
+    "$session" "$tmp/$session.jsonl" "$tmp/repo" "$tool_input" |
+    env -i PATH="$PATH" CLAUDE_PLUGIN_ROOT=/plugin CLAUDE_PLUGIN_DATA="$tmp/data" "$@" sh "$hook"
+}
+out=$(started e1 '{"message_id":"cmsg_1","project_ack":"On it.","ack":"ok","instructions":"x"}' $coord)
+expect "a coordinator start with project_ack says the post already went out" '^{"hookSpecificOutput":{"hookEventName":"PostToolUse","additionalContext":"The project_ack already posted in the project chat.*end the turn with no_reply_needed."}}$' "$out"
+expect "a start without project_ack gets no note" '' "$(started e1 '{"thread_id":"cmsg_1","ack":"ok","instructions":"x"}' $coord)"
+expect "a start with an empty project_ack gets no note" '' "$(started e1 '{"message_id":"cmsg_1","project_ack":"","instructions":"x"}' $coord)"
+expect "a thread session's start gets no note" '' "$(started e1 '{"message_id":"cmsg_1","project_ack":"On it.","instructions":"x"}' $thread)"
+expect "a start outside Projects gets no note" '' "$(started e1 '{"message_id":"cmsg_1","project_ack":"On it.","instructions":"x"}')"
 
 out=$(begin d1 startup)
 expect "a session start prints the shipped defaults" '^feature: sonnet high$' "$out"
