@@ -27,8 +27,8 @@ Launch all reviewers in a single message with the Agent tool, one per entry on t
 
 | Subagent | Default model |
 |----------|---------------|
-| Reviewer A | `opus high` |
-| Reviewer B | `sonnet high` |
+| Reviewer A | `opus xhigh` |
+| Reviewer B | `sonnet xhigh` |
 
 Each reviewer gets `subagent_type: "onyo-reader"` (or `"general-purpose"` with "Read-only. Do not edit, write, or commit files." in the brief when `onyo-reader` is not installed), and `model` and `effort` set to its configured entry, or its table default when there is no configured line. Omit both for an `inherit` entry, so that reviewer runs on the parent model.
 

@@ -15,12 +15,12 @@
 @@ -46 +46 @@ [A]
 -Source control is always available through git and `gh`. For the other six, classify using the MCP name, server instructions, tool names, and resource descriptors. If an MCP could fit more than one category, choose the one matching its primary evidence. Record ambiguous cases in the coverage map.
 +Source control is always available through git, plus `gh` or the session's GitHub MCP tools (`mcp__github__*`) where `gh` is absent. For the other six, classify using the MCP name, server instructions, tool names, and resource descriptors. If an MCP could fit more than one category, choose the one matching its primary evidence. Record ambiguous cases in the coverage map.
-@@ -48 +48 @@ [B]
+@@ -48 +48 @@ [A]
 -Spawn one investigator per category that has a matching MCP, all in a single message so they run concurrently, each owning exactly one tool or MCP. Don't ask one agent to cover multiple MCPs. `model`: the `why investigators` line, default `grok-4.7-xhigh-fast`.
-+Spawn one investigator per category that has a matching MCP, all in a single message so they run concurrently, each owning exactly one tool or MCP. Don't ask one agent to cover multiple MCPs. `model` and `effort`: the `why investigators` line, default `haiku high`.
++Spawn one investigator per category that has a matching MCP, all in a single message so they run concurrently, each owning exactly one tool or MCP. Don't ask one agent to cover multiple MCPs. `model` and `effort`: the `why investigators` line, default `sonnet xhigh`.
 @@ -59 +59 @@ [A]
 -1. **Source control** (git history, `gh` for PRs, code comments, tests). Always spawn, the only guaranteed source. Best at *implementation-time rationale captured during review*.
 +1. **Source control** (git history, `gh` for PRs or `mcp__github__*` where `gh` is absent, code comments, tests). Always spawn, the only guaranteed source. Best at *implementation-time rationale captured during review*.
-@@ -78 +78 @@ [B]
+@@ -78 +78 @@ [A]
 -Spawn one synthesizer. `model`: the `why synthesizer` line, default `claude-opus-5-5-xhigh`. It gets:
-+Spawn one synthesizer. `model` and `effort`: the `why synthesizer` line, default `opus high`. It gets:
++Spawn one synthesizer. `model` and `effort`: the `why synthesizer` line, default `opus xhigh`. It gets:

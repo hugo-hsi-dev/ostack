@@ -23,19 +23,19 @@
 @@ -28 +32 @@ [A]
 -| Lens | Role line | Default `model` | Prompt template |
 +| Lens | Role line | Default | Prompt template |
-@@ -30,3 +34,3 @@ [B]
+@@ -30,3 +34,3 @@ [A]
 -| Judgment | `reflect judgment, divergent, synthesizer` | `claude-opus-5-5-xhigh` | `references/judgment-reviewer.md` |
 -| Tooling | `reflect tooling` | `grok-4.7-xhigh-fast` | `references/tooling-reviewer.md` |
 -| Divergent | `reflect judgment, divergent, synthesizer` | `claude-opus-5-5-xhigh` | `references/divergent-reviewer.md` |
-+| Judgment | `reflect judgment, divergent, synthesizer` | `opus high` | `references/judgment-reviewer.md` |
-+| Tooling | `reflect tooling` | `haiku high` | `references/tooling-reviewer.md` |
-+| Divergent | `reflect judgment, divergent, synthesizer` | `opus high` | `references/divergent-reviewer.md` |
++| Judgment | `reflect judgment, divergent, synthesizer` | `opus xhigh` | `references/judgment-reviewer.md` |
++| Tooling | `reflect tooling` | `sonnet xhigh` | `references/tooling-reviewer.md` |
++| Divergent | `reflect judgment, divergent, synthesizer` | `opus xhigh` | `references/divergent-reviewer.md` |
 @@ -34 +38 @@ [A]
 -Pass each template verbatim, substituting the transcript path or digest where marked. Reviewers return findings in the `Task` response body.
 +Pass each template verbatim, substituting the transcript path or digest where marked. Reviewers return findings in the `Agent` response body.
-@@ -38 +42 @@ [B]
+@@ -38 +42 @@ [A]
 -One `Task` call, `subagent_type: generalPurpose`, `model` from the `reflect judgment, divergent, synthesizer` line (default `claude-opus-5-5-xhigh`), agent mode (`readonly: false`). It spot-verifies citations through MCP, and readonly strips MCPs. Pass `references/synthesizer.md` verbatim, with each reviewer's full output inlined where marked. It returns an Accepted / Rejected / Backlog list.
-+One `Agent` call, `subagent_type: "onyo-reader"` (same fallback as the reviewers), `model` and `effort` from the `reflect judgment, divergent, synthesizer` line (default `opus high`). It spot-verifies citations through MCP, which read-only agents keep. Pass `references/synthesizer.md` verbatim, with each reviewer's full output inlined where marked. It returns an Accepted / Rejected / Backlog list.
++One `Agent` call, `subagent_type: "onyo-reader"` (same fallback as the reviewers), `model` and `effort` from the `reflect judgment, divergent, synthesizer` line (default `opus xhigh`). It spot-verifies citations through MCP, which read-only agents keep. Pass `references/synthesizer.md` verbatim, with each reviewer's full output inlined where marked. It returns an Accepted / Rejected / Backlog list.
 @@ -53,3 +57,3 @@ [A]
 -- Substantive existing-skill edit (a new section, a new pattern table, more than ~10 lines): hand to Cursor's built-in `create-skill` skill and run its draft / test / iterate loop.
 -- `tune description: <skill path>` (the skill exists but didn't trigger when it should have): hand to `create-skill` and run its description-optimization loop.

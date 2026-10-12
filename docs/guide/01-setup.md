@@ -1,6 +1,6 @@
 # Set up ostack
 
-In this page you install the plugin, see what it turns on, and run your first task. Setup is two commands. Picking other models is optional.
+In this page you install the plugin, pick which models ostack uses, and run your first task. Setup is one command plus a short conversation.
 
 ## Install the plugin
 
@@ -13,20 +13,13 @@ ostack installs from its own plugin marketplace. In Claude Code, run:
 
 Run `/plugin` to confirm the plugin loaded. Plugin skills are namespaced, so `/onyo-mode` is also `/ostack:onyo-mode`. The bare name works when no other skill shares it. This guide uses bare names. The [README](../../README.md#install) also covers local checkouts, Cursor, and skills.sh.
 
-## onyo-mode is on by default
+## In a Claude project
 
-The plugin ships a `UserPromptSubmit` hook, [`hooks/onyo-mode.sh`](../../hooks/onyo-mode.sh). On every message it tells Claude to follow `/onyo-mode`, so you never have to type it. In a Claude project it adds the [`onyo-projects`](../../skills/onyo-projects/SKILL.md) skill, and the project chat's coordinator gets only that skill, not onyo-mode. The coordinator hands each ask to a planning thread, which routes it into research and work threads, and the threads report back to the project chat. A second hook, on `PreToolUse`, holds the coordinator to that. It refuses to start a thread whose brief doesn't open with `onyo-projects: planning thread` or `onyo-projects: unit thread`, and tells the coordinator how to retry. A third hook, on `SessionStart`, prints the session's part of `onyo-projects` in full when a project session starts, resumes, or compacts, so a fresh or compacted coordinator still has its rules. A fourth, on `Stop`, blocks the end of a coordinator turn once when that turn received a thread's report and the coordinator never posted it in the project chat. No project setup is needed.
+In a Claude project, ostack's hook, [`hooks/onyo-mode.sh`](../../hooks/onyo-mode.sh), adds the [`onyo-projects`](../../skills/onyo-projects/SKILL.md) skill, and the project chat's coordinator gets only that skill, not onyo-mode. The coordinator hands each ask to a planning thread, which routes it into research and work threads, and the threads report back to the project chat. A second hook, on `PreToolUse`, holds the coordinator to that. It refuses to start a thread whose brief doesn't open with `onyo-projects: planning thread` or `onyo-projects: unit thread`, and tells the coordinator how to retry. A third hook, on `SessionStart`, prints the session's part of `onyo-projects` in full when a project session starts, resumes, or compacts, so a fresh or compacted coordinator still has its rules. A fourth, on `Stop`, blocks the end of a coordinator turn once when that turn received a thread's report and the coordinator never posted it in the project chat. No project setup is needed.
 
-To opt out, write a line of just `onyo-mode off`:
+## Pick your models
 
-- In a project's `CLAUDE.md` or `CLAUDE.local.md`, or a Claude project's instructions, it turns onyo-mode off for that project.
-- As a message, it turns onyo-mode off for the rest of the session. A message of just `onyo-mode on` turns it back on.
-
-`"disableAllHooks": true` in your settings turns off every hook, this one included.
-
-## Pick other models, if you want
-
-The defaults need no setup. To change them, run:
+Run:
 
 ```text
 /setup-ostack
@@ -34,7 +27,7 @@ The defaults need no setup. To change them, run:
 
 [`/setup-ostack`](../../skills/setup-ostack/SKILL.md) detects the models you have access to and asks three questions: an effort budget, which models to use, and whether to keep the resulting role mapping (code delegates, judgment, the review panels) or change some roles. It asks every time, with multiple-choice questions, and writes nothing until you answer. It writes `~/.claude/rules/ostack-models.md`, a small rule file Claude Code loads into every session and every ostack skill reads. In a Claude project it writes the same rule into the project instructions instead, since cloud threads never see `~/.claude/rules/`. Run it in the project chat, which can edit the project instructions. Run in a thread, it hands the setup back to the project chat.
 
-The defaults run at `high` reasoning, the same as the `medium` budget. `unlimited` and `large` lift the reasoning to `max` and `xhigh`. `small` lowers it to `medium` and spends fewer tokens.
+The defaults run at `xhigh` reasoning, the same as the `large` budget. `unlimited` lifts each model to its highest tier, up to `max`. `medium` and `small` lower the reasoning and spend fewer tokens.
 
 You only override what you care about. A role with no line in the rule keeps the skill's default. To restore a default, delete that role's line. A rerun of `/setup-ostack` keeps any role whose model differs from the default. When a default changes, a rule written before the change still pins the old default, so delete those role lines, or delete the file, then run `/setup-ostack` again.
 
@@ -57,18 +50,18 @@ ostack spends extra tokens on subagents and review panels. That's the price of t
 - Rerun `/setup-ostack` and pick a smaller effort budget or cheaper models. A strong model in the main chat with cheaper, faster models in the code roles is a good split.
 - Set a role to `inherit` so it runs on the session's own model.
 - Shorten a panel list. Each entry runs one subagent.
-- Send `onyo-mode off` in a session that doesn't need the rigor. A small, obvious edit doesn't.
+- Save `/onyo-mode` for work that needs rigor. A small, obvious edit doesn't.
 
 ## Run your first task
 
 Pick something real but small, and describe it the way you'd describe it to a colleague:
 
 ```text
-add a --json flag to this command. text output stays byte-identical. verify both.
+/onyo-mode add a --json flag to this command. text output stays byte-identical. verify both.
 ```
 
-The hook runs it through `/onyo-mode`. Watch the todo list. Its first items are the matched playbook's steps copied in, the Feature playbook for this prompt. If `/onyo-mode` skips a step, the step stays in the list with `skip: <reason>`, so you can see what it chose not to do.
+Watch the todo list. Its first items are the matched playbook's steps copied in, the Feature playbook for this prompt. If `/onyo-mode` skips a step, the step stays in the list with `skip: <reason>`, so you can see what it chose not to do.
 
-From here you can type normal follow-ups. onyo-mode stays on for each of them.
+From here you can type normal follow-ups. `/onyo-mode` attaches the skill to one message, and it fades as the chat moves on.
 
 Next: [Route work through `/onyo-mode`](./02-onyo-mode.md).
