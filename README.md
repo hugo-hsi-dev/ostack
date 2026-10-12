@@ -262,7 +262,9 @@ help:              /onyo-help which skill should i use to review this branch?
 
 ## the `onyo-agent` and Comment Sicko subagents
 
-ostack also ships a subagent that runs my style end to end. spawn it from a parent agent via [`subagent_type: "onyo-agent"`](./agents/onyo-agent.md) (`ostack:onyo-agent` in a plugin install). it reads `onyo-mode` in full, including its inline principles index, before doing any work. substituting `general-purpose` skips that read and drifts.
+[`/onyo-mode`](./skills/onyo-mode/SKILL.md) runs in the chat that receives it. that chat owns the playbook, the todo list, and every subagent spawn.
+
+ostack also ships [`subagent_type: "onyo-agent"`](./agents/onyo-agent.md) (`ostack:onyo-agent` in a plugin install) as the wrapper for delegates spawned during a run. it reads `onyo-mode` in full, including its inline principles index, before doing any work. substituting `general-purpose` skips that read and drifts. do not spawn `onyo-agent` to run the playbook itself.
 
 [`/onyo-mode`](./skills/onyo-mode/SKILL.md) and [`subagent_type: "onyo-agent"`](./agents/onyo-agent.md) route through the same wrapper.
 
