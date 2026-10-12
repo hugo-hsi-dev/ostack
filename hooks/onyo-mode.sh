@@ -48,7 +48,8 @@ projects=
 
 event=$(json hook_event_name)
 # A Stop hook runs at the end of every turn of every session, so everything but a coordinator leaves at once.
-[ "$event" = Stop ] && { [ -z "$projects" ] || [ "$CLAUDE_CODE_COORDINATOR_MODE" != 1 ]; } && exit 0
+# The PostToolUse note is for the coordinator alone too.
+case $event in Stop | PostToolUse) { [ -z "$projects" ] || [ "$CLAUDE_CODE_COORDINATOR_MODE" != 1 ]; } && exit 0 ;; esac
 session=$(json session_id | tr -cd 'A-Za-z0-9_-')
 state_file="${CLAUDE_PLUGIN_DATA:-${TMPDIR:-/tmp}/ostack}/onyo-mode/$session"
 
@@ -61,7 +62,7 @@ if [ -f "$defaults" ] && { [ "$event" = SessionStart ] ||
   [ -n "$session" ] && mkdir -p "$(dirname "$state_file")" && : > "$state_file.defaults"
 fi
 [ "$event" = SessionStart ] && [ -z "$projects" ] && exit 0
-[ "$event" = PreToolUse ] || prompt=$(json prompt)
+case $event in *ToolUse) ;; *) prompt=$(json prompt) ;; esac
 said=$(printf '%s\n' "$prompt" | sed '/<project-instructions/,/<\/project-instructions/d' | switch)
 if [ -n "$said" ] && [ -n "$session" ]; then
   mkdir -p "$(dirname "$state_file")" && echo "$said" > "$state_file"
@@ -126,24 +127,87 @@ EOF
   exit 0
 fi
 
+if [ "$event" = PostToolUse ]; then
+  [ -n "$(json project_ack)" ] && cat <<'EOF'
+{"hookSpecificOutput":{"hookEventName":"PostToolUse","additionalContext":"The project_ack already posted in the project chat, and the thread card sits under it. If nothing else needs posting, end the turn with no_reply_needed."}}
+EOF
+  exit 0
+fi
+
 if [ "$event" = Stop ]; then
   printf '%s' "$input" | grep -Eq '"stop_hook_active"[[:space:]]*:[[:space:]]*true' && exit 0
   transcript=$(json transcript_path)
   [ -f "$transcript" ] || exit 0
-  # Every user line of a turn, tool results included, carries that turn's promptId. A report this
-  # cannot place in the current turn lets the turn end, so a wrong guess never traps the coordinator.
-  [ -n "$(awk '
-    /"role":"user"/ {
-      id = ""
-      if (match($0, /"promptId":"[^"]*"/)) id = substr($0, RSTART + 12, RLENGTH - 13)
-      if (id != "") turn = id
-      if (index($0, "<cross-session-message from-session=\\\"")) { found = 1; report = id; posted = 0 }
+  # A report is a thread's send_message, in a prompt or a ReadNotifications result. A post that links its
+  # thread and went out after that thread's previous report answers it, so a post made from the thread's
+  # reply counts. Each post answers one report, and an earlier turn's report never takes this turn's post.
+  # A report from a thread the transcript never names needs any post after it. Only the current turn's
+  # reports can block, so a wrong guess never traps the coordinator.
+  [ -n "$(awk -v turn="$(json prompt_id)" '
+    function id(s) { match(s, /^[A-Za-z0-9_]*/); return substr(s, 1, RLENGTH) }
+    function after(s, key) { i = index(s, key); return i ? id(substr(s, i + length(key))) : "" }
+    function field(s, key) {
+      i = index(s, "\"" key "\":\""); if (!i) return ""
+      s = substr(s, i + length(key) + 4); match(s, /^([^"\\]|\\.)*/); return substr(s, 1, RLENGTH)
+    }
+    function sid(s) { sub(/^(cse|session)_/, "", s); return s }
+    function cut(s, key, out, n, i) {
+      for (n = 1; (i = index(s, key)); n++) { out[n] = substr(s, 1, i - 1); s = substr(s, i + length(key)) }
+      out[n] = s; return n
+    }
+    function reports(s, n, k, part) {
+      n = cut(s, "<cross-session-message from-session=\\\"", part)
+      for (k = 2; k <= n; k++) { rn++; rl[rn] = NR; rt[rn] = last; rs[rn] = sid(id(part[k])) }
+    }
+    function wakes(s, n, k, m, j, t, part, by) {
+      n = cut(s, "<thread ts=\\\"cmsg_", part)
+      for (k = 2; k <= n; k++) {
+        t = "cmsg_" id(part[k]); if (t == "cmsg_") continue
+        m = cut(part[k], "author-id=\\\"cse_", by)
+        for (j = 2; j <= m; j++) thread[id(by[j])] = t
+      }
+    }
+    match($0, /"promptId":"[^"]*"/) { at = substr($0, RSTART + 12, RLENGTH - 13); if (at != "") { last = at; if (!(at in first)) first[at] = NR } }
+    /"role":"assistant"/ {
+      n = cut($0, "\"type\":\"tool_use\",\"id\":\"", use)
+      for (k = 2; k <= n; k++) {
+        name = after(use[k], "\"name\":\""); tool[id(use[k])] = name
+        if (name == "mcp__hearthbot__start_thread_session") { text = field(use[k], "project_ack"); if (text == "") continue }
+        else if (name == "mcp__hearthbot__post_message") text = field(use[k], "text")
+        else continue
+        posts++; pl[posts] = NR; links = " "
+        while (match(text, /#cmsg_[A-Za-z0-9]+/)) { links = links substr(text, RSTART + 1, RLENGTH - 1) " "; text = substr(text, RSTART + RLENGTH) }
+        pk[posts] = links
+      }
       next
     }
-    found && /"role":"assistant"/ && /"name":"mcp__hearthbot__post_message"/ { posted = 1 }
-    END { if (found && report != "" && report == turn && !posted) print "block" }
+    /"role":"user"/ || /"type":"queued_command"/ {
+      if (!index($0, "\"tool_use_id\":\"")) { reports($0); wakes($0); next }
+      n = cut($0, "\"tool_use_id\":\"", res)
+      for (k = 2; k <= n; k++) {
+        name = tool[id(res[k])]
+        if (name == "ReadNotifications") reports(res[k])
+        else if (name ~ /^mcp__hearthbot__(start_thread_session|message_thread)$/) {
+          s = after(res[k], "\\\"session_id\\\":\\\"cse_"); t = after(res[k], "\\\"thread_id\\\":\\\"cmsg_")
+          if (s != "" && t != "") thread[s] = "cmsg_" t
+        }
+      }
+    }
+    END {
+      if (turn == "") turn = last
+      if (turn == "" || !(turn in first)) exit
+      for (r = 1; r <= rn; r++) {
+        now = rt[r] == turn; t = thread[rs[r]]; ok = 0
+        for (p = 1; p <= posts && !ok; p++) {
+          if (t == "") ok = pl[p] > rl[r]
+          else if (pl[p] > prev[t] && !used[p, t] && index(pk[p], " " t " ") && (now || pl[p] < first[turn])) ok = used[p, t] = 1
+        }
+        if (t != "") prev[t] = rl[r]
+        if (now && !ok) { print "block"; exit }
+      }
+    }
   ' "$transcript")" ] && cat <<'EOF'
-{"decision":"block","reason":"This turn received a thread's report through send_message, and you have not posted it in the project chat. Post it now as one short post_message in the project chat that links the thread as [title](#cmsg_…), even though your built-in rules say threads answer in their own threads. Then take the action the report's last line names, as written. If you already posted this same report in the project chat in an earlier turn, end the turn again without posting twice."}
+{"decision":"block","reason":"This turn received a thread's report through send_message, and you have not posted it in the project chat. Post it now as one short post_message in the project chat that links the thread as [title](#cmsg_…), even though your built-in rules say threads answer in their own threads. A link to a PR or a doc does not stand in for the thread link. Then take the action the report's last line names, as written. If you already posted this report's content in the project chat, end the turn again without posting twice."}
 EOF
   exit 0
 fi
