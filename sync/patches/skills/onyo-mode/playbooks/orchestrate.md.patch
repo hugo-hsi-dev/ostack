@@ -16,17 +16,15 @@
 @@ -70 +70 @@ [A]
 -- On a completion notification, run `orch inbox push <agent> <unit> <status> [--report PATH]` and return to what you were doing. Never deep-review inline. A completion that needs review becomes a verifier unit. Never review a diff inside a drain.
 +- On a subagent's completion notification, or a cloud session's completion found by a drain-point probe, run `orch inbox push <agent> <unit> <status> [--report PATH]` and return to what you were doing. Never deep-review inline. A completion that needs review becomes a verifier unit. Never review a diff inside a drain.
-@@ -78,0 +79 @@ [D]
-+- Orchestrate alone needs Graphite (`gt`), installed on the stacker's clone, because `orch frontier set` shells out to it. The other playbooks never require it.
-@@ -80 +81 @@ [A]
+@@ -80 +80 @@ [A]
 -- Exactly one stacker per stack may run `gt`, serialized within its stack. Record the holder in the standing orders. Restacks run in cloud. A local restack at this scale takes the laptop down.
 +- Exactly one stacker per stack may run `gt`, serialized within its stack. Record the holder in the standing orders. Restacks run where `gt` is installed, locally or in a cloud session whose setup script installs it. Prefer the cloud session, because a local restack at this scale takes the laptop down.
-@@ -91 +92 @@ [A]
+@@ -91 +91 @@ [A]
 -A unit is not done until its output is externalized the moment it lands, never batched to the end of the run. A worker pushes its branch, a verifier writes its ledger row, receipts land in the store. Work that exists only on one VM when that VM dies was never done.
 +A unit is not done until its output is externalized the moment it lands, never batched to the end of the run. A worker pushes its branch, a verifier writes its ledger row, receipts land in the store. Work that exists only in one cloud session or machine when it dies was never done.
-@@ -95 +96 @@ [A]
+@@ -95 +95 @@ [A]
 -- Never resume an agent to check on it. A resume restarts an idle agent. Probe read-only: the ledger, `units.tsv`, `gh`, pushed branches, the cloud agent's status in the Cursor dashboard. Transcript mtime is not liveness.
 +- Never resume an agent to check on it. A resume restarts an idle agent. Probe read-only: the ledger, `units.tsv`, `gh`, pushed branches, the cloud session's status at claude.ai/code. Transcript mtime is not liveness.
-@@ -101 +102 @@ [A]
+@@ -101 +101 @@ [A]
 -- After a Cursor restart: local agents are dead, cloud work is not. Re-read the standing orders and `units.tsv`, recompute the frontier, reattach cloud work by PR and branch rather than agent id, respawn one sub-coordinator per track from its stored brief plus current state, drain, resume. The dead session's store lock clears itself on the next write. `orch` replaces a lock whose holder pid is gone.
 +- After a Claude Code restart: local agents are dead, cloud work is not. Re-read the standing orders and `units.tsv`, recompute the frontier, reattach cloud work by PR and branch rather than agent id, respawn each local sub-coordinator from its stored brief plus current state, reattach each cloud sub-coordinator by its session id, drain, resume. The dead session's store lock clears itself on the next write. `orch` replaces a lock whose holder pid is gone.
