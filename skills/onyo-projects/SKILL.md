@@ -14,7 +14,9 @@ The user works only in the project chat. Every progress note, result, question, 
 
 ## Coordinator
 
-Your default for a work ask is one thread per ask. Here that one thread is the ask's planning thread, never a thread that does the work. Acks, follow-ups to a running thread, greetings, and thanks keep your usual rules. Keep onyo-mode, its playbooks, and its skills out of this session. The planning thread reads them.
+You route and speak, and keep no plan state. Every work ask gets one thread, the ask's planning thread, however simple the ask looks. Never send an ask straight to a thread that does the work. The planning thread's routing decides whether the ask is one unit. Acks, follow-ups to a running thread, greetings, and thanks keep your usual rules. Keep onyo-mode, its playbooks, and its skills out of this session. The planning thread reads them.
+
+A question about how to change, fix, or harden the project's own tooling or code is a work ask, so it gets a planning thread. This replaces your built-in rule that "A question about the project itself that memory or context already answers" gets "a short `post_message` with the answer, on the spot." Keep that rule only for status questions, such as which PRs are open. To say how an ask is going, read its plan file, `/mnt/project-files/<ask>/PLAN.md`, and answer from it, not from memory.
 
 Every brief begins with a role line, exactly `onyo-projects: planning thread` or `onyo-projects: unit thread`. ostack's hook refuses a `start_thread_session` call whose brief has neither, and its message says how to retry.
 
@@ -23,7 +25,7 @@ Each message a thread sends you ends with your next action. Take it as written.
 For each new work ask:
 
 1. **Start a planning thread.** Call `start_thread_session` on the user's message, with the `project_ack` and `ack` as the receipt and the user's message in `context_message_ids`. The brief's first line is `onyo-projects: planning thread`. The rest says the thread is this ask's planning thread and follows the Planning thread section of the onyo-projects skill.
-2. **Post the plan.** When the planning thread sends its plan, post it in a few lines that name the playbook, the units, and the skills, and say which units start now and which wait on research.
+2. **Post the plan.** When the planning thread sends its plan, post it in a few lines that name the playbook, the units, and the skills, say which units start now and which wait on research, and link the plan file.
 3. **Start one thread per ready unit.** Use the brief the plan gives for each unit, unchanged. Set `project_post_id` to the plan post so the thread cards stack under it, and pass the user's message in `context_message_ids`.
 4. **Relay results to the planner.** Forward each unit's result to the planning thread with `message_thread`. It checks the work, decides the next units, and sends their briefs. Start those as in step 3. A change to the plan gets a project-chat post that says how.
 5. **Surface everything in the project chat.** Turn each report a thread sends you with `send_message` into one short `post_message` that links the thread as `[title](#cmsg_…)`. That covers progress milestones, results with links, questions and decisions (options on short lines, your pick marked), and permission needs. Post from these reports, not from thread replies, so nothing posts twice. Forward the user's answer with `message_thread`, the user's message in `context_message_ids`, to the thread that asked. A follow-up that changes the ask goes to the planning thread.
@@ -44,6 +46,8 @@ When the user asks to set up ostack or to change its models or budget, run the s
 
 Your brief names you as an ask's planning thread. You plan and check the work, and you never do a unit yourself.
 
+The ask's plan lives in `/mnt/project-files/<ask>/PLAN.md`, where `<ask>` is a short folder name for the ask. You own it. It names the playbook and skills and lists every unit with what it writes, when it starts, and its status. If you start without your earlier context, read it first and continue from it.
+
 1. **Route.** Match the ask to a playbook in the Playbooks section of onyo-mode's SKILL.md and read that playbook. List the Non-negotiables triggers and principles the ask hits and the skills they name (**how**, **why**, **architect**, **interrogate**, **blast-radius**, and so on). The plan names the playbook and every skill it routes to.
 2. **Split into units.** A unit is one thread's work that ends in a state you can check: a research question with a cited answer, or one change on its own branch and PR. Split per **principle-sequence-verifiable-units**. No two units write the same file or branch, per **principle-separate-before-serializing-shared-state**. Research units (Investigation playbook, **how**, **why**, **blast-radius**) run first when the work depends on what they find. An ask that is one unit gets one unit thread.
 3. **Write each ready unit's brief.** Include:
@@ -56,8 +60,8 @@ Your brief names you as an ask's planning thread. You plan and check the work, a
    The brief's first line is `onyo-projects: unit thread`. Don't ask for a thread `model` or `effort`. The coordinator sets those only when the user asks.
 
    A unit thread can fill the owner role that the Autopilot-full and Autopilot-stack playbooks name, or a sub-coordinator in Orchestrate.
-4. **Send the plan.** `send_message` the coordinator the playbook, the skills, every unit, which start now and which wait, and each ready unit's brief. End it with the coordinator's exact action: post this summary, then start these threads with these briefs, `project_post_id` set to that post.
-5. **Own each result.** When the coordinator relays a unit's result, read the report and its PR or diff yourself, per onyo-mode's Subagents section. Decide the next units from what it shows and send their briefs, ending with the same exact action. When every unit is done, send the overall result with every link, ending with the action to post it.
+4. **Write the plan file, then send the plan.** Write `PLAN.md` first. Then `send_message` the coordinator the plan file's path, the playbook, the skills, every unit, which start now and which wait, and each ready unit's brief. End it with the coordinator's exact action: post this summary, then start these threads with these briefs, `project_post_id` set to that post.
+5. **Own each result.** When the coordinator relays a unit's result, read the report and its PR or diff yourself, per onyo-mode's Subagents section. Update that unit's status in `PLAN.md`, decide the next units from what it shows, add them to `PLAN.md`, and send their briefs, ending with the same exact action. When every unit is done, send the overall result with every link, ending with the action to post it.
 
 The Unit thread rules for reporting, asking, and permission prompts apply to you too.
 
