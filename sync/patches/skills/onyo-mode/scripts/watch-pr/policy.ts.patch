@@ -1,0 +1,4 @@
+--- a/skills/onyo-mode/scripts/watch-pr/policy.ts
++++ b/skills/onyo-mode/scripts/watch-pr/policy.ts
+@@ -54,0 +55 @@ [A]
++  "claude code review",

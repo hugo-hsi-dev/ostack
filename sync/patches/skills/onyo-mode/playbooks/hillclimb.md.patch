@@ -1,0 +1,5 @@
+--- a/skills/onyo-mode/playbooks/hillclimb.md
++++ b/skills/onyo-mode/playbooks/hillclimb.md
+@@ -12 +12 @@ [B]
+-   - Hand the change to a subagent using your configured hillclimb model (default `grok-4.7-xhigh-fast`) with a tight scope. Supervise and review the diff rather than typing it (the **guard-the-context-window** principle skill). When several independent hypotheses are live, fan them to parallel subagents, each in its own worktree (the **separate-before-serializing-shared-state** principle skill).
++   - Hand the change to a subagent using your configured hillclimb model (default `opus high`) with a tight scope. Supervise and review the diff rather than typing it (the **guard-the-context-window** principle skill). When several independent hypotheses are live, fan them to parallel subagents, each in its own worktree (the **separate-before-serializing-shared-state** principle skill).

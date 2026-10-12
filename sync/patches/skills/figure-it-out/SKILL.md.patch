@@ -1,0 +1,8 @@
+--- a/skills/figure-it-out/SKILL.md
++++ b/skills/figure-it-out/SKILL.md
+@@ -9,0 +10,2 @@ [A]
++A bold ostack skill name below means read `${CLAUDE_SKILL_DIR}/../<name>/SKILL.md` in full and follow it. A **<name>** principle skill sits at `${CLAUDE_SKILL_DIR}/../principle-<name>/SKILL.md`. If `${CLAUDE_SKILL_DIR}` appears literally, it is the directory that holds this file.
++
+@@ -12 +14 @@ [A]
+-Open a todolist whose first item is to read the Principles section of the **onyo-mode** skill. Then add the phases below as todos.
++Open a todolist whose first item is to read the Principles section of the **onyo-mode** skill (`${CLAUDE_SKILL_DIR}/../onyo-mode/SKILL.md`). Then add the phases below as todos.
