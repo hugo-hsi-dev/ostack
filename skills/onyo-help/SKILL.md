@@ -23,7 +23,7 @@ Infer the need from the message and the conversation. A named situation, such as
 
 Check the state that changes the answer, and mention it only when it does:
 
-- No `~/.claude/rules/ostack-models.md`, and no ostack model block in the project instructions, means `/setup-ostack` hasn't run for this user, so every role uses its default model and effort.
+- No `~/.claude/rules/ostack-models.md` means `/setup-ostack` hasn't run for this user, so every role uses its default model and effort.
 - No `verify-*` skill or other app harness in the project means agents have no scripted way to drive the app. Mention `/create-verification-skill` when the question is about proving a change works.
 
 When the model rule is missing and it matters, ask whether the user wants to pick a model for each role and a reasoning budget now. It matters when the user is new, the question is about setup or cost, or the answer depends on which models run. Ask at most once per chat. If the need is also unclear, ask both questions together. Offer two choices:
@@ -34,7 +34,7 @@ When the model rule is missing and it matters, ask whether the user wants to pic
 ## Get set up
 
 1. Install from the repository per the [README](../../README.md#install). In Claude Code that is `/plugin marketplace add hugo-hsi-dev/ostack`, then `/plugin install ostack@ostack`. Plugin skills are namespaced, so `/onyo-mode` also shows as `/ostack:onyo-mode`.
-2. Run [`/setup-ostack`](../setup-ostack/SKILL.md). It asks for a reasoning budget, maps a model to each role, and writes a rule. The rule applies to new sessions. In a Claude project, run it in the project chat, and the plugin's hook adds the [`onyo-projects`](../onyo-projects/SKILL.md) skill for the coordinator and threads.
+2. Run [`/setup-ostack`](../setup-ostack/SKILL.md). It asks for a reasoning budget, maps a model to each role, and writes a rule. The rule applies to new sessions.
 3. Start a real task with `/onyo-mode`, a goal, and a check that can pass or fail.
 
 Installing changes nothing until the user invokes a skill. Only `/setup-ostack` loads from the user's words. The [README](../../README.md) and [guide page 1](../../docs/guide/01-setup.md) have the details. Offer to word their first prompt with them, per [`references/prompting.md`](references/prompting.md).
@@ -47,10 +47,10 @@ ostack targets Claude Code. Its skills use the Agent Skills format, so other too
 
 `/onyo-mode` matches the task to a playbook, copies the playbook's steps into the todo list, and runs the other skills as the steps need them. A step it skips stays in the list as `skip: <reason>`. A good prompt states the goal and how to tell it's done. It doesn't list skills, because a hand-written sequence tends to drop or reorder steps the playbook would keep. Read [`references/prompting.md`](references/prompting.md) before you help word one. [Guide page 2](../../docs/guide/02-onyo-mode.md) has examples.
 
-In place of a Custom Mode, ostack's `UserPromptSubmit` hook (`hooks/onyo-mode.sh`) tells Claude on every message to follow `/onyo-mode`. In a Claude project, the hook gives the project chat's coordinator only the `onyo-projects` skill, without onyo-mode. The coordinator hands each ask to a planning thread, which routes it into research and work threads, and the threads report back to the project chat. The same script runs as a `PreToolUse` hook that refuses a coordinator's thread start whose brief lacks an `onyo-projects: planning thread` or `onyo-projects: unit thread` line. A `Stop` hook blocks the end of a coordinator turn once when the turn received a thread's report and the coordinator never posted it in the project chat. A line of just `onyo-mode off` opts out:
+In place of a Custom Mode, ostack's `UserPromptSubmit` hook (`hooks/onyo-mode.sh`) tells Claude on every message to follow `/onyo-mode`. A line of just `onyo-mode off` opts out:
 
 - In a message, it turns the mode off for the rest of the session. A message of just `onyo-mode on` turns it back on.
-- In a project's `CLAUDE.md` or `CLAUDE.local.md`, or a Claude project's instructions, it turns the mode off for the project.
+- In a project's `CLAUDE.md` or `CLAUDE.local.md`, it turns the mode off for the project.
 - `"disableAllHooks": true` in settings turns off every hook, this one included. Where hooks don't run, such as other harnesses, start each new task with `/onyo-mode`.
 
 Link [Claude Code's skills docs](https://code.claude.com/docs/en/skills) and [hooks docs](https://code.claude.com/docs/en/hooks) when this comes up. Mid-chat, "new task" makes the mode match a fresh playbook. `/onyo-mode` already uses `onyo-agent` for the subagents its playbook steps spawn. An `onyo-agent` takes one playbook step, not a whole task, because a subagent cannot spawn the subagents a playbook fans out to. Run a whole task with `/onyo-mode` in the main thread.
@@ -128,9 +128,9 @@ Principles are one-rule skills that `/onyo-mode` reads and cites in its replies.
 
 | Symptom | Fix |
 |---|---|
-| The mode stopped applying | Look for an `onyo-mode off` line in the session, `CLAUDE.md`, `CLAUDE.local.md`, or the project instructions, and for `disableAllHooks` in settings. A message of just `onyo-mode on` turns it back on for the session. |
+| The mode stopped applying | Look for an `onyo-mode off` line in the session, `CLAUDE.md`, or `CLAUDE.local.md`, and for `disableAllHooks` in settings. A message of just `onyo-mode on` turns it back on for the session. |
 | A question got treated as the next step of the last task | Say "new task", or say the turn doesn't need the mode. |
-| A new model choice had no effect | The rule from `/setup-ostack` applies to new sessions. Start one. Cloud sessions, routines, and Projects threads don't read `~/.claude/rules/`. In a project, run `/setup-ostack` in the project chat so it writes the rule into the project instructions. |
+| A new model choice had no effect | The rule from `/setup-ostack` applies to new sessions. Start one. Cloud sessions and routines don't read `~/.claude/rules/`. |
 | Runs cost more than expected | See the cost paragraph under Get set up. |
 | A skill didn't load on its own | Only `/setup-ostack` loads from the user's words. The others load when the user types them or when `/onyo-mode` runs them, and it doesn't run every skill. |
 | Parallel agents overwrote each other | Give each agent its own worktree (`isolation: "worktree"`), or run them as cloud sessions, which each get their own machine. |

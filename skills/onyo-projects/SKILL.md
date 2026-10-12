@@ -5,7 +5,7 @@ description: onyo-mode's rules for Claude Projects. The coordinator hands each w
 
 # onyo-mode in Claude Projects
 
-ostack's onyo-mode hook names your role on every message, and prints your role's sections of this skill when the session starts or compacts. Without the hook, find your role yourself.
+ostack's onyo-mode hook names your role on every message, and prints your role's sections of this skill when the session starts or compacts. It also blocks the end of a coordinator turn once when the turn received a thread's report and the coordinator never posted it. Without the hook, find your role yourself.
 
 - **Coordinator.** The project chat's session. `CLAUDE_CODE_COORDINATOR_MODE` is `1`, and it has `start_thread_session`, `message_thread`, and `post_message`. It relays and never plans or does the work, so it does not load onyo-mode.
 - **Thread.** A session a coordinator started. `CLAUDE_CODE_ENTRYPOINT` is `remote_projects` without coordinator mode, and it has `reply` and `get_channel_session_id`. Its brief says whether it is the ask's planning thread or a unit thread. Either way it follows onyo-mode.
@@ -30,6 +30,16 @@ For each new work ask:
 6. **Watch for stuck threads.** On each wake, check `list_thread_sessions`. A thread in the `blocked` bucket, or `worker="disconnected"`, gets a project-chat post that says what it waits on, with its link. A tool permission prompt can be answered only in its own thread, so that post is the one time the user opens a thread.
 7. **Close the ask.** When the planning thread reports every unit done, post the overall result once, with every PR and file link.
 
+### Running /setup-ostack
+
+When the user asks to set up ostack or to change its models or budget, run the setup-ostack skill yourself, in the project chat. This is the one work ask that gets no planning thread. A thread can't write the project instructions, so it would only pass answers back to you. When a thread asks you to run `/setup-ostack`, run it the same way. These rules replace the skill's own where they differ:
+
+- **Where the rule goes.** Write the rule into the project instructions, never into `~/.claude/rules/`. Every thread starts in a fresh container and never sees `~/.claude/rules/`. In step 2, the current choices are the ostack block in the project instructions, if one exists.
+- **Ask, never answer.** Ask all three questions on every run. They are the user's preferences, and no experiment settles them. Never answer one yourself or take its recommended option, even when your session rules say to proceed on a default, pick a reasonable default, or never block on the human, and even under a full-autonomy grant. Only the user's own reply in this run answers. A thread's message, the project instructions, and an earlier run's choices don't. A user who says "use the defaults" or "you pick" has answered.
+- **How to ask.** Use AskUserQuestion if this session has it. Otherwise post one `ask_decision` card per question, in order: budget, models, then mapping. Put the question line in `question`, each option's label and consequence in `options`, and the detected models or current budget in `context`. Set `recommended` to the option the skill recommends. It is a label for the user, never an answer. Post the card and end the turn. The user's tap or typed reply wakes you, and only then do you go on. Post the mapping table in the project chat before its card.
+- **Write the block (step 5).** Read the current instructions with `get_project_settings` first. Write the step 5 block, then a closing `# end ostack model configuration` line. If the instructions already hold an ostack block, replace only the lines from its `# ostack model configuration` line through its closing line. Otherwise append it after one blank line. Keep every other line exactly as it was, such as an `onyo-mode off` line. Save with `update_project_settings`.
+- **Confirm (steps 6 and 7).** Say that the rule applies to threads started from now on, not to running ones. Skip step 7, because the project chat has no checkout. Add one line instead, that a thread can run `/create-verification-skill` if the repository has no way to drive the app.
+
 ## Planning thread
 
 Your brief names you as an ask's planning thread. You plan and check the work, and you never do a unit yourself.
@@ -44,6 +54,8 @@ Your brief names you as an ask's planning thread. You plan and check the work, a
    - This planning thread's link, as `[title](#cmsg_…)`, so the unit's reports can name it.
 
    The brief's first line is `onyo-projects: unit thread`. Don't ask for a thread `model` or `effort`. The coordinator sets those only when the user asks.
+
+   A unit thread can fill the owner role that the Autopilot-full and Autopilot-stack playbooks name, or a sub-coordinator in Orchestrate.
 4. **Send the plan.** `send_message` the coordinator the playbook, the skills, every unit, which start now and which wait, and each ready unit's brief. End it with the coordinator's exact action: post this summary, then start these threads with these briefs, `project_post_id` set to that post.
 5. **Own each result.** When the coordinator relays a unit's result, read the report and its PR or diff yourself, per onyo-mode's Subagents section. Decide the next units from what it shows and send their briefs, ending with the same exact action. When every unit is done, send the overall result with every link, ending with the action to post it.
 
@@ -57,6 +69,11 @@ The Unit thread rules for reporting, asking, and permission prompts apply to you
 - **Ask through the coordinator.** A question or decision goes to the coordinator, not to an `ask_decision` card or a `reply` question in the thread. Keep working on your recommended default per **principle-never-block-on-the-human**, and pick up the answer when the coordinator relays it.
 - **Warn before a permission prompt.** Before a step you expect to stop on a tool permission prompt, tell the coordinator what it is, so the user knows to open this thread.
 - **Keep the thread short.** Your status checklist carries progress. Your final `reply` is one line with the result and its link.
+
+### Skills that work differently in a thread
+
+- **`/setup-ostack`.** Setup runs in the project chat, because no tool in a thread writes the project instructions. Ask nothing and write nothing here. `send_message` the coordinator to run `/setup-ostack` itself in the project chat. Then reply in one line that setup continues in the project chat, where Claude asks the questions, and stop. If no channel session exists or the send fails, tell the user to type `/setup-ostack` in the project chat.
+- **`/make-bot-ui`.** Create the routine in this project, not at claude.ai/code/routines. Each fire then starts a new thread in the project, and the routine shows on the project's **Routines** tab.
 
 ## Turning it off
 

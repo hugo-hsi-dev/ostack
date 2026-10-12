@@ -107,6 +107,19 @@ defaults, mapped to Claude Code. These replace them:
 [ostack's defaults](./docs/guide/ostack-defaults.md) in the guide explains each one and how to
 change it.
 
+## ostack in Claude Projects
+
+In a Claude project, ostack's hook adds the [`onyo-projects`](./skills/onyo-projects/SKILL.md)
+skill. The project chat hands each ask to a planning thread, which splits it into units that other
+threads run, and every thread reports back to the project chat. Run `/setup-ostack` in the project
+chat, not in a thread, so it writes the model rule into the project instructions.
+
+The guide's [overnight page](./docs/guide/07-overnight.md#run-many-projects-in-parallel) comes from
+pstack and says to start prompts to a project's coordinator with `/onyo-mode`. In a Claude project,
+don't. The project chat doesn't load onyo-mode, and every thread follows it already.
+[ostack in a Claude project](./docs/guide/ostack-projects.md) in the guide explains the layer and
+its hooks.
+
 Every file that comes from pstack is generated from upstream plus a port patch. [sync/README.md](./sync/README.md)
 explains how to change one and how to sync to a new pstack version.
 
@@ -120,8 +133,6 @@ two steps:
 
 1. run [`/setup-ostack`](./skills/setup-ostack/SKILL.md), pick a reasoning budget, and choose which models you want.
 2. use [`/onyo-mode`](./skills/onyo-mode/SKILL.md) whenever you're doing anything that requires rigor.
-
-in a claude project, ostack's hook also adds [`onyo-projects`](./skills/onyo-projects/SKILL.md).
 
 new here? the [ostack guide](./docs/guide/README.md) walks you through a first real task, from setup and prompting through verification and overnight runs. stuck, or unsure which skill fits? ask [`/onyo-help`](./skills/onyo-help/SKILL.md).
 
@@ -186,7 +197,7 @@ when invoked it:
 
 the full rules and playbooks live in [`skills/onyo-mode/SKILL.md`](./skills/onyo-mode/SKILL.md).
 
-ostack's [hook](./hooks/onyo-mode.sh) keeps [`/onyo-mode`](./skills/onyo-mode/SKILL.md) on. on every message it tells claude to follow the skill, unless a line of just `onyo-mode off` in a message, a `CLAUDE.md`, a `CLAUDE.local.md`, or a claude project's instructions opts out. in a claude project it adds [`onyo-projects`](./skills/onyo-projects/SKILL.md), and the project chat gets only that skill, not onyo-mode. the project chat hands each ask to a planning thread, which routes it into research and work threads, and the threads report back to the project chat. the hook also blocks the project chat from starting a thread whose brief doesn't open with `onyo-projects: planning thread` or `onyo-projects: unit thread`, so it can't skip the planning thread. it also blocks the end of a project chat turn once when that turn received a thread's report and the chat never posted it. when a project session starts, resumes, or compacts, the hook prints that session's part of `onyo-projects` in full, so a fresh or compacted project chat still has its rules. `"disableAllHooks": true` in your settings turns off every hook, this one included.
+ostack's [hook](./hooks/onyo-mode.sh) keeps [`/onyo-mode`](./skills/onyo-mode/SKILL.md) on. on every message it tells claude to follow the skill, unless a line of just `onyo-mode off` in a message, a `CLAUDE.md`, or a `CLAUDE.local.md` opts out. `"disableAllHooks": true` in your settings turns off every hook, this one included.
 
 [`/onyo-mode`](./skills/onyo-mode/SKILL.md) works extremely well with claude code's `/loop` command. you can make claude work for many hours without sacrificing rigor.
 
@@ -351,7 +362,7 @@ claude code already has a great plan mode which works great with ostack. but per
 
 type [`/automate-me`](./skills/automate-me/SKILL.md). it mines your recent transcripts, drafts a `<your-name>-mode` skill from how you've actually worked, and routes through ostack underneath. you keep ostack as the base and end up with your own routing skill alongside `onyo-mode`.
 
-models are configurable too. type [`/setup-ostack`](./skills/setup-ostack/SKILL.md). it detects the models you have access to and writes a small always-loaded rule at `~/.claude/rules/ostack-models.md` (or into the project instructions, in a Claude project) mapping each role (code, judgment, the review panels) to a model and an effort. every skill reads it and falls back to sensible defaults when the rule is absent, so you override only what you want.
+models are configurable too. type [`/setup-ostack`](./skills/setup-ostack/SKILL.md). it detects the models you have access to and writes a small always-loaded rule at `~/.claude/rules/ostack-models.md` mapping each role (code, judgment, the review panels) to a model and an effort. every skill reads it and falls back to sensible defaults when the rule is absent, so you override only what you want.
 
 when a default changes, a rule written before the change still pins the old default. delete those role lines, or delete the file, then run `/setup-ostack` again. a rerun keeps any role whose model differs from the default.
 
