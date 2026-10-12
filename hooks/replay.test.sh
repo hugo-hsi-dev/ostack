@@ -7,6 +7,7 @@ tmp=$(mktemp -d)
 trap 'rm -rf "$tmp"' EXIT
 mkdir -p "$tmp/repo"
 fails=0
+seen=
 
 # Cases the hook gets wrong today. A change that fixes one deletes it here.
 gaps='report-posted-earlier-from-reply quoted-marker-in-tool-output unit-start-no-project-post-id unit-start-brief-rewritten'
@@ -37,10 +38,12 @@ outcome() {
 tab=$(printf '\t')
 {
   read -r _
-  while IFS=$tab read -r name kind transcript input should _; do
+  while IFS=$tab read -r name kind transcript input should _ || [ -n "$name" ]; do
     seen="$seen $name"
+    need=$transcript
+    [ "$kind" = Stop ] || need=$input
     for f in "$transcript" "$input"; do
-      [ "$f" = - ] || [ -f "$fixtures/$f" ] || { echo "FAIL $name has no fixture $f"; fails=$((fails + 1)); continue 2; }
+      [ "$f" = - ] && [ "$f" != "$need" ] || [ -f "$fixtures/$f" ] || { echo "FAIL $name has no fixture $f"; fails=$((fails + 1)); continue 2; }
     done
     out=$(event "$name" "$kind" "$transcript" "$input" |
       env -i PATH="$PATH" CLAUDE_PLUGIN_ROOT="$root" CLAUDE_PLUGIN_DATA="$tmp/data" \
@@ -50,7 +53,7 @@ tab=$(printf '\t')
     if [ "$got" = "$should" ] && [ -z "$gap" ]; then echo "ok   $name"
     elif [ "$got" = "$should" ]; then
       echo "FAIL $name"; echo "     the hook gets this right now. Remove it from gaps in hooks/replay.test.sh."; fails=$((fails + 1))
-    elif [ -n "$gap" ]; then echo "gap  $name (should $should, got $got)"
+    elif [ -n "$gap" ] && case $got in allow | block | deny) true ;; *) false ;; esac; then echo "gap  $name (should $should, got $got)"
     else echo "FAIL $name"; echo "     should $should, got $got"; fails=$((fails + 1))
     fi
   done

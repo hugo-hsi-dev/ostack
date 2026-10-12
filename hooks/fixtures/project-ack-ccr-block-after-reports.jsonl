@@ -1,11 +1,11 @@
-{"type":"user","promptId":"prompt-00","isMeta":true,"message":{"role":"user","content":"<system-reminder>[notification pending: placeholder, see fixtures.py]</system-reminder>"}}
+{"type":"user","promptId":"prompt-00","isMeta":true,"message":{"role":"user","content":"<system-reminder>[notification pending: placeholder]</system-reminder>"}}
 {"type":"assistant","message":{"role":"assistant","content":[{"type":"tool_use","id":"toolu_A000","name":"ReadNotifications","input":{}}]}}
 {"type":"user","promptId":"prompt-00","message":{"role":"user","content":[{"type":"tool_result","tool_use_id":"toolu_A000","content":"<cross-session-message from-session=\"session_B001\">\n    [report body elided]\n    **Your action:** post the text above as it stands, attaching or linking /mnt/project-files/ostack-parity-audit/SUMMARY.md. No new threads to start. If the user asks for the fixes, send that message to this planning thread.\n</cross-session-message>"}]}}
 {"type":"assistant","message":{"role":"assistant","content":[{"type":"tool_use","id":"toolu_C002","name":"mcp__hearthbot__post_message","input":{"attached_outputs":[{"kind":"file","ref":"/mnt/project-files/ostack-parity-audit/SUMMARY.md"}],"text":"[p-stack parity check](#cmsg_D003)"}}]}}
 {"type":"user","promptId":"prompt-00","message":{"role":"user","content":[{"type":"tool_result","tool_use_id":"toolu_C002","content":"{\"thread_id\":\"cmsg_E004\",\"message_id\":\"cmsg_E004\",\"bound_thread\":false,\"attached_outputs_attached\":1}"}]}}
 {"type":"attachment","attachment":{"type":"queued_command","prompt":"<wake reason=\"thread-activity\"><thread ts=\"cmsg_D003\"><message trigger=\"true\" from=\"agent\" author-id=\"cse_B001\">[thread text]</message></wake>"}}
 {"type":"assistant","message":{"role":"assistant","content":[{"type":"text","text":"[assistant text elided]"}]}}
-{"type":"user","promptId":"prompt-01","isMeta":true,"message":{"role":"user","content":"<system-reminder>[notification pending: placeholder, see fixtures.py]</system-reminder>"}}
+{"type":"user","promptId":"prompt-01","isMeta":true,"message":{"role":"user","content":"<system-reminder>[notification pending: placeholder]</system-reminder>"}}
 {"type":"assistant","message":{"role":"assistant","content":[{"type":"tool_use","id":"toolu_F005","name":"mcp__hearthbot__no_reply_needed","input":{"reason":"duplicate"}}]}}
 {"type":"user","promptId":"prompt-01","message":{"role":"user","content":[{"type":"tool_result","tool_use_id":"toolu_F005","content":"Acknowledged — no reply sent."}]}}
 {"type":"user","promptId":"prompt-02","message":{"role":"user","content":"<wake reason=\"mention\"><message trigger=\"true\" from=\"human\">[user text]</message></wake>"}}
