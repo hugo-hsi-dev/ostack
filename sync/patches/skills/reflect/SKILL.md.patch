@@ -1,0 +1,45 @@
+--- a/skills/reflect/SKILL.md
++++ b/skills/reflect/SKILL.md
+@@ -11,0 +12,2 @@ [A]
++A **<name>** principle skill below sits at `${CLAUDE_SKILL_DIR}/../principle-<name>/SKILL.md`. Read it in full. If `${CLAUDE_SKILL_DIR}` appears literally, it is the directory that holds this file.
++
+@@ -14 +16,3 @@ [A]
+-Before fanning out, find this conversation's transcript in the `agent-transcripts/` directory the system prompt names. Do not glob across `~/.cursor/projects/*/`. That crosses workspace boundaries and reads private chats from unrelated projects.
++Before fanning out, find this conversation's transcript. The active project's transcript directory is `~/.claude/projects/<slug>/` for the current working directory, where `<slug>` is the absolute working directory with every character that is not a letter or digit turned into `-`. Use that path, called `<transcripts>` below. Do not glob across `~/.claude/projects/*/`. That crosses workspace boundaries and reads private chats from unrelated projects.
++
++The current session's transcript is `<transcripts>/${CLAUDE_SESSION_ID}.jsonl`. If it is missing, list candidates:
+@@ -17 +21 @@ [A]
+-ls -t <agent-transcripts>/*.jsonl <agent-transcripts>/*/*.jsonl <agent-transcripts>/*/subagents/*.jsonl 2>/dev/null | head -10
++ls -t <transcripts>/*.jsonl <transcripts>/*/subagents/*.jsonl 2>/dev/null | head -10
+@@ -20 +24 @@ [A]
+-That covers the legacy flat (`<id>.jsonl`), current nested (`<id>/<id>.jsonl`), and subagent (`<parent>/subagents/<child>.jsonl`) layouts. For each candidate, read the first JSONL line. Take the file whose `message.content[0].text` contains the conversation's opening user prompt. If none matches, pass a tight digest of the session instead.
++That covers the session (`<session-id>.jsonl`) and subagent (`<session-id>/subagents/<child>.jsonl`) layouts. For each candidate, read the first `"type":"user"` JSONL line. Take the file whose message content contains the conversation's opening user prompt. If none matches, pass a tight digest of the session instead.
+@@ -24 +28 @@ [A]
+-One message, three `Task` calls, `subagent_type: generalPurpose`, agent mode (`readonly: false`). Reviewers need MCP access to look up the tickets, chat threads, and observability traces the transcript references, and readonly strips MCPs.
++One message, three `Agent` calls, `subagent_type: "onyo-reader"`. If `onyo-reader` is not installed, use `"general-purpose"` and put "Read-only. Do not edit, write, or commit files." in the brief. Reviewers need MCP access to look up the tickets, chat threads, and observability traces the transcript references, and read-only agents keep MCP.
+@@ -26 +30 @@ [A]
+-Each reviewer and the synthesizer name a role line in the `ostack-models.mdc` rule and a default. Set `model` to that line's value, or to the default if the rule or the line is missing. Leave `model` unset when the value is `auto` or `inherit-parent`. If the Task tool rejects a slug, use the default and say so. If it rejects the default, use the closest valid slug of the same family from its error message.
++Each reviewer and the synthesizer name a role line in the `~/.claude/rules/ostack-models.md` rule and a default. Pass that line's model and effort as the Agent tool's `model` and `effort`, or the default's when the rule or the line is missing. Omit both when the value is `inherit`. If the Agent tool rejects a model, use the default and say so. If it rejects the default, use the closest valid model from its error message.
+@@ -28 +32 @@ [A]
+-| Lens | Role line | Default `model` | Prompt template |
++| Lens | Role line | Default | Prompt template |
+@@ -30,3 +34,3 @@ [B]
+-| Judgment | `reflect judgment, divergent, synthesizer` | `claude-opus-5-5-xhigh` | `references/judgment-reviewer.md` |
+-| Tooling | `reflect tooling` | `grok-4.7-xhigh-fast` | `references/tooling-reviewer.md` |
+-| Divergent | `reflect judgment, divergent, synthesizer` | `claude-opus-5-5-xhigh` | `references/divergent-reviewer.md` |
++| Judgment | `reflect judgment, divergent, synthesizer` | `opus high` | `references/judgment-reviewer.md` |
++| Tooling | `reflect tooling` | `haiku high` | `references/tooling-reviewer.md` |
++| Divergent | `reflect judgment, divergent, synthesizer` | `opus high` | `references/divergent-reviewer.md` |
+@@ -34 +38 @@ [A]
+-Pass each template verbatim, substituting the transcript path or digest where marked. Reviewers return findings in the `Task` response body.
++Pass each template verbatim, substituting the transcript path or digest where marked. Reviewers return findings in the `Agent` response body.
+@@ -38 +42 @@ [B]
+-One `Task` call, `subagent_type: generalPurpose`, `model` from the `reflect judgment, divergent, synthesizer` line (default `claude-opus-5-5-xhigh`), agent mode (`readonly: false`). It spot-verifies citations through MCP, and readonly strips MCPs. Pass `references/synthesizer.md` verbatim, with each reviewer's full output inlined where marked. It returns an Accepted / Rejected / Backlog list.
++One `Agent` call, `subagent_type: "onyo-reader"` (same fallback as the reviewers), `model` and `effort` from the `reflect judgment, divergent, synthesizer` line (default `opus high`). It spot-verifies citations through MCP, which read-only agents keep. Pass `references/synthesizer.md` verbatim, with each reviewer's full output inlined where marked. It returns an Accepted / Rejected / Backlog list.
+@@ -53,3 +57,3 @@ [A]
+-- Substantive existing-skill edit (a new section, a new pattern table, more than ~10 lines): hand to Cursor's built-in `create-skill` skill and run its draft / test / iterate loop.
+-- `tune description: <skill path>` (the skill exists but didn't trigger when it should have): hand to `create-skill` and run its description-optimization loop.
+-- `new skill via create-skill: <kebab-name>`: hand creation to `create-skill`. Do not invent the shape ad hoc.
++- Substantive existing-skill edit (a new section, a new pattern table, more than ~10 lines): hand to the `skill-creator` skill (Anthropic's skill-authoring plugin, `/plugin install skill-creator@claude-plugins-official`) and run its draft / eval / iterate loop.
++- `tune description: <skill path>` (the skill exists but didn't trigger when it should have): hand to `skill-creator` and run its description-tuning loop.
++- `new skill via skill-creator: <kebab-name>`: hand creation to `skill-creator`. Do not invent the shape ad hoc.

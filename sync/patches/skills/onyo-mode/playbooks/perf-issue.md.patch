@@ -1,0 +1,5 @@
+--- a/skills/onyo-mode/playbooks/perf-issue.md
++++ b/skills/onyo-mode/playbooks/perf-issue.md
+@@ -17 +17 @@ [B]
+-3. Plan the fix from the trace. If it crosses a function boundary, `architect` first. Delegate implementation to a subagent using your configured perf-issue model (default `grok-4.7-xhigh-fast`). Review the diff. Capture a post-fix trace.
++3. Plan the fix from the trace. If it crosses a function boundary, `architect` first. Delegate implementation to a subagent using your configured perf-issue model (default `opus high`). Review the diff. Capture a post-fix trace.

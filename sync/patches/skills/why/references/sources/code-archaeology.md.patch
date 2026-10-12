@@ -1,0 +1,5 @@
+--- a/skills/why/references/sources/code-archaeology.md
++++ b/skills/why/references/sources/code-archaeology.md
+@@ -6 +6 @@ [A]
+-- PR descriptions, review comments, and discussion threads (via `gh`)
++- PR descriptions, review comments, and discussion threads (via `gh`, or the GitHub MCP tools `mcp__github__*` where `gh` is absent)

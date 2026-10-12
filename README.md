@@ -84,6 +84,9 @@ schedule or trigger, or from you typing in a Project's threads:
 | Cursor's built-in babysit | Claude Code's PR Auto-fix. The Babysit playbook still owns PR-status requests under `/onyo-mode` |
 | Origin forge CLI | `gh`, or the GitHub MCP tools in cloud sessions |
 
+Every file that comes from pstack is generated from upstream plus a port patch. [sync/README.md](./sync/README.md)
+explains how to change one and how to sync to a new pstack version.
+
 ---
 
 *Everything below comes from pstack's README with the names swapped. "i" is poteto.*
