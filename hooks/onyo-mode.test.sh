@@ -86,8 +86,16 @@ expect "coordinator start without a marker is denied" "$deny" "$(start c1 'Fix t
 expect "the denial is one JSON line" '^{"hookSpecificOutput":{"hookEventName":"PreToolUse".*}}$' "$(start c1 'Fix the login bug.' $coord)"
 expect "a marker in prose is still denied" "$deny" "$(start c1 'Start with onyo-projects: planning thread and fix it' $coord)"
 expect "a planning marker passes" '' "$(start c2 'onyo-projects: planning thread\nThis is the ask planning thread.' $coord)"
-expect "a mixed-case unit marker passes" '' "$(start c3 'Unit 2 of 3.\n  Onyo-Projects: Unit Thread  \nDo the unit.' $coord)"
-expect "a unit marker with CRLF passes" '' "$(start c3 'ONYO-PROJECTS: UNIT THREAD\r\nDo the unit.' $coord)"
+expect "a unit marker after another line is denied" "$deny" "$(start c3 'Unit 2 of 3.\nonyo-projects: unit thread\nDo the unit.' $coord)"
+plan='"permissionDecision":"deny","permissionDecisionReason":"A unit thread starts from its plan. '
+expect "a mixed-case unit marker gets the plan check" "$plan" "$(start c3 '\n  Onyo-Projects: Unit Thread  \nDo the unit.' $coord CLAUDE_PLUGIN_ROOT="$root")"
+expect "a unit marker with CRLF gets the plan check" "$plan" "$(start c3 'ONYO-PROJECTS: UNIT THREAD\r\nDo the unit.' $coord CLAUDE_PLUGIN_ROOT="$root")"
+out=$(start c3 'onyo-projects: unit thread\nDo the unit.' $coord CLAUDE_PLUGIN_ROOT="$root")
+expect "a missing transcript still needs project_post_id" 'Set project_post_id' "$out"
+expect "a missing transcript skips the brief check" '' "$(printf '%s' "$out" | grep 'not in any planning thread')"
+mkdir -p "$tmp/nopy"
+for t in sh cat awk tr sed tail grep mkdir rm dirname; do ln -s "$(command -v "$t")" "$tmp/nopy/$t"; done
+expect "without python3 a unit start passes" '' "$(start c3 'onyo-projects: unit thread\nDo the unit.' $coord CLAUDE_PLUGIN_ROOT="$root" PATH="$tmp/nopy")"
 expect "a thread start outside the coordinator passes" '' "$(start c4 'Fix the login bug.' $thread)"
 expect "a thread start outside Projects passes" '' "$(start c5 'Fix the login bug.')"
 printf '{"type":"queue-operation","content":"%s"}\n' "$off_block" > "$tmp/c7.jsonl"

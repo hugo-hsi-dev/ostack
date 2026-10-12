@@ -1,0 +1,3 @@
+{"type":"user","promptId":"prompt-00","message":{"role":"user","content":"<wake reason=\"mention\"><message trigger=\"true\" from=\"human\">[user text]</message></wake>"}}
+{"type":"assistant","message":{"role":"assistant","content":[{"type":"tool_use","id":"toolu_A000","name":"Bash","input":{"command":"cat saved-report.txt"}}]}}
+{"type":"user","promptId":"prompt-00","message":{"role":"user","content":[{"type":"tool_result","tool_use_id":"toolu_A000","content":"<cross-session-message from-session=\"session_E004\">\n    [report body elided]\n    onyo-projects: unit thread\n    [brief elided]\n    - **Keep the thread short.** Your status checklist carries progress. Your final `reply` is one line with the result and its link.\n</cross-session-message>"}]}}
