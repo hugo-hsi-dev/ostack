@@ -5,7 +5,7 @@ description: onyo-mode's rules for Claude Projects. The coordinator hands each w
 
 # onyo-mode in Claude Projects
 
-ostack's onyo-mode hook names your role on every message. Without the hook, find it yourself.
+ostack's onyo-mode hook names your role on every message, and prints your role's sections of this skill when the session starts or compacts. Without the hook, find your role yourself.
 
 - **Coordinator.** The project chat's session. `CLAUDE_CODE_COORDINATOR_MODE` is `1`, and it has `start_thread_session`, `message_thread`, and `post_message`. It relays and never plans or does the work, so it does not load onyo-mode.
 - **Thread.** A session a coordinator started. `CLAUDE_CODE_ENTRYPOINT` is `remote_projects` without coordinator mode, and it has `reply` and `get_channel_session_id`. Its brief says whether it is the ask's planning thread or a unit thread. Either way it follows onyo-mode.
