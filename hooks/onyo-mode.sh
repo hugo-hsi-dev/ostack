@@ -119,8 +119,13 @@ fi
 
 if [ "$event" = PreToolUse ]; then
   [ -n "$coordinator" ] || exit 0
-  json instructions | tr '[:upper:]' '[:lower:]' | sed -E 's/^[[:space:]]+//; s/[[:space:]]+$//' |
-    grep -Fxq -e 'onyo-projects: planning thread' -e 'onyo-projects: unit thread' && exit 0
+  case $(json instructions | awk 'NF { gsub(/^[[:space:]]+|[[:space:]]+$/, ""); print tolower($0); exit }') in
+    'onyo-projects: planning thread') exit 0 ;;
+    'onyo-projects: unit thread')
+      # The plan check decodes JSON and HTML, so it needs python3. Without it the start passes.
+      command -v python3 > /dev/null && printf '%s' "$input" | python3 -I "$root/hooks/unit-start.py"
+      exit 0 ;;
+  esac
   cat <<'EOF'
 {"hookSpecificOutput":{"hookEventName":"PreToolUse","permissionDecision":"deny","permissionDecisionReason":"Every new work ask starts as its planning thread. Call start_thread_session again on the same message with the same project_ack and ack, and the user's message in context_message_ids. Begin instructions with the line `onyo-projects: planning thread`, then say the thread is this ask's planning thread and follows the Planning thread section of the onyo-projects skill. A unit thread's brief comes from the planning thread's plan and already begins with `onyo-projects: unit thread`; start it as written."}}
 EOF
