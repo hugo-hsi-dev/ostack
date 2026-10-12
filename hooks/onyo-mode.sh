@@ -47,12 +47,21 @@ projects=
 { [ "$CLAUDE_CODE_ENTRYPOINT" = remote_projects ] || [ "$CLAUDE_CODE_PROJECTS_SESSION" = 1 ]; } && projects=1
 
 event=$(json hook_event_name)
-[ "$event" = SessionStart ] && [ -z "$projects" ] && exit 0
 # A Stop hook runs at the end of every turn of every session, so everything but a coordinator leaves at once.
 [ "$event" = Stop ] && { [ -z "$projects" ] || [ "$CLAUDE_CODE_COORDINATOR_MODE" != 1 ]; } && exit 0
-[ "$event" = PreToolUse ] || prompt=$(json prompt)
 session=$(json session_id | tr -cd 'A-Za-z0-9_-')
 state_file="${CLAUDE_PLUGIN_DATA:-${TMPDIR:-/tmp}/ostack}/onyo-mode/$session"
+
+# The defaults print whatever onyo-mode says, because the routed skills read them with onyo-mode off too.
+defaults="$root/hooks/ostack-defaults.md"
+if [ -f "$defaults" ] && { [ "$event" = SessionStart ] ||
+  { [ "$event" = UserPromptSubmit ] && [ -n "$session" ] && [ ! -f "$state_file.defaults" ]; }; }; then
+  cat "$defaults"
+  echo
+  [ -n "$session" ] && mkdir -p "$(dirname "$state_file")" && : > "$state_file.defaults"
+fi
+[ "$event" = SessionStart ] && [ -z "$projects" ] && exit 0
+[ "$event" = PreToolUse ] || prompt=$(json prompt)
 said=$(printf '%s\n' "$prompt" | sed '/<project-instructions/,/<\/project-instructions/d' | switch)
 if [ -n "$said" ] && [ -n "$session" ]; then
   mkdir -p "$(dirname "$state_file")" && echo "$said" > "$state_file"

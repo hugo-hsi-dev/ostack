@@ -34,6 +34,9 @@ expect() { # name, pattern ('' = no output), actual
   if [ -n "$ok" ]; then echo "ok   $1"; else echo "FAIL $1"; printf '     got: %s\n' "$3"; fails=$((fails + 1)); fi
 }
 
+# Prints the lines that are not the shipped defaults.
+others() { grep -vxF -f "$root/hooks/ostack-defaults.md" | grep .; }
+
 mkdir -p "$tmp/repo"
 on='^onyo-mode is on'
 head='<session-context>\n<project-instructions nonce=\"x\" untrusted=\"true\">\nProject instructions:\n    Merge PRs when green.\n'
@@ -105,11 +108,11 @@ expect "a thread session start prints the Unit thread section" '^## Unit thread'
 expect "a thread session start prints the report rule" 'Get its ID once with `get_channel_session_id`' "$out"
 expect "a thread session start skips the Coordinator section" '' "$(printf '%s' "$out" | grep '^## Coordinator')"
 cp "$tmp/b1.jsonl" "$tmp/b3.jsonl"
-expect "a session start outside Projects prints nothing" '' "$(begin b3 startup)"
+expect "a session start outside Projects prints only the defaults" '' "$(begin b3 startup | others)"
 printf '{"type":"queue-operation","content":"%s"}\n' "$off_block" > "$tmp/b4.jsonl"
-expect "a session start in a project turned off prints nothing" '' "$(begin b4 compact $coord)"
+expect "a session start in a project turned off prints only the defaults" '' "$(begin b4 compact $coord | others)"
 
-expect "a session start without a transcript waits" '' "$(begin b5 startup $coord)"
+expect "a session start without a transcript waits" '' "$(begin b5 startup $coord | others)"
 expect "the first prompt then prints the rules" "$relay" "$(run b5 "$head$tail" $coord CLAUDE_PLUGIN_ROOT="$root")"
 expect "later prompts do not print them again" '' "$(run b5 'next' $coord CLAUDE_PLUGIN_ROOT="$root" | grep "$relay")"
 begin b6 startup $coord > /dev/null
@@ -177,5 +180,32 @@ expect "a project turned off is not held to the rule" '' "$(stop k6 false $coord
 fx k7 wake1 read quoted noreply
 expect "a report quoted in an assistant call is not a report" '' "$(stop k7 false $coord)"
 expect "a missing transcript lets the turn end" '' "$(stop k8 false $coord)"
+
+out=$(begin d1 startup)
+expect "a session start prints the shipped defaults" '^feature: sonnet high$' "$out"
+expect "the defaults carry the budget" '^# budget: medium (high)$' "$out"
+expect "the defaults put fan-out workers on haiku" '^swarm workers: haiku high$' "$out"
+expect "the defaults say the user's rule wins" "^# Per role, the user's own rule wins" "$out"
+out=$(run d1 'fix it' CLAUDE_PLUGIN_ROOT="$root")
+expect "a prompt after a session start keeps onyo-mode on" "$on" "$out"
+expect "a prompt after a session start does not print the defaults again" '' "$(printf '%s' "$out" | grep '^feature:')"
+expect "a compaction prints the defaults again" '^feature: sonnet high$' "$(begin d1 compact)"
+out=$(run d2 'fix it' CLAUDE_PLUGIN_ROOT="$root")
+expect "a first prompt with no session start prints the defaults" '^refactoring: opus high$' "$out"
+expect "a first prompt with no session start still turns onyo-mode on" "$on" "$out"
+expect "a second prompt does not print them" '' "$(run d2 'next' CLAUDE_PLUGIN_ROOT="$root" | grep '^refactoring:')"
+echo 'onyo-mode off' > "$tmp/repo/CLAUDE.local.md"
+out=$(run d3 'fix it' CLAUDE_PLUGIN_ROOT="$root")
+expect "onyo-mode off keeps the defaults" '^how explorer: haiku high$' "$out"
+expect "onyo-mode off prints nothing else" '' "$(printf '%s\n' "$out" | others)"
+rm "$tmp/repo/CLAUDE.local.md"
+expect "a thread start prints no defaults" '' "$(start d4 'Fix it.' $coord CLAUDE_PLUGIN_ROOT="$root" | grep '^feature:')"
+expect "a turn end prints no defaults" '' "$(stop k1 false $coord CLAUDE_PLUGIN_ROOT="$root" | grep '^feature:')"
+
+labels() { sed 's/:.*//' | tr ',' '\n' | sed 's/^ *//' | sort; }
+expect "the defaults name every role setup-ostack writes" '' "$(
+  awk '/^# ostack model configuration/ { on = 1 } on && /^```/ { exit } on' "$root/skills/setup-ostack/SKILL.md" |
+    grep -v '^#' | labels > "$tmp/setup-roles"
+  grep -v '^#' "$root/hooks/ostack-defaults.md" | labels | diff - "$tmp/setup-roles")"
 
 [ "$fails" = 0 ] && echo "all passed" || { echo "$fails failed"; exit 1; }

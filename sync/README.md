@@ -13,11 +13,12 @@ The patches have no context lines, so each change is its own hunk. Each hunk hea
 | Marker | Meaning |
 | --- | --- |
 | `[A]` | Harness port: a Cursor word, tool, or path mapped to its Claude Code equivalent. |
-| `[B]` | One of the user's defaults: a model, an effort, a budget, onyo-mode always on, or setup being optional. |
 | `[C]` | Claude Projects workflow written into pstack text. |
 | `[D]` | ostack's own change that is neither a port nor a default. |
 
-A hunk that mixes codes carries all of them, for example `[BC]`. To find the hunks for one code, run `grep -rn '^@@ .*\[[A-Z]*B' sync/patches`.
+A hunk that mixes codes carries all of them, for example `[CD]`. To find the hunks for one code, run `grep -rn '^@@ .*\[[A-Z]*C' sync/patches`. The README's fork section, above the line that starts pstack's README, is part of the port and carries `[A]`.
+
+ostack's own defaults, such as its models and efforts, onyo-mode being on for every task, and setup being optional, never go in a patch. They live in [`hooks/ostack-defaults.md`](../hooks/ostack-defaults.md), the hook, and the README's fork section, so pstack's text keeps pstack's defaults. `check` rejects a `[B]` marker, the code these hunks used to carry.
 
 ## Change a generated file
 

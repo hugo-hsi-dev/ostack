@@ -24,8 +24,8 @@ their Claude Code equivalents. [Claude Code port](#claude-code-port) lists each 
 
 Claude Code prefixes plugin skills with the plugin name, so `/onyo-mode` becomes
 `/ostack:onyo-mode`. The bare name works when no other skill shares it. For a local checkout, run
-`/plugin marketplace add .` from the repository root. Nothing else needs setting up. Run
-`/setup-ostack` only to change the default models or effort budget.
+`/plugin marketplace add .` from the repository root. Nothing else needs setting up.
+[ostack's defaults](#ostacks-defaults) say what the plugin turns on.
 
 ### Cursor
 
@@ -71,7 +71,7 @@ schedule or trigger, or from you typing in a Project's threads:
 | pstack in Cursor | ostack in Claude Code |
 | --- | --- |
 | `Task` tool, `subagent_type: generalPurpose`, `readonly: true` | Agent tool, `general-purpose`, and ostack's read-only `onyo-reader` agent |
-| Model slugs such as `claude-opus-5-5-xhigh` and `grok-4.7-xhigh-fast` | A model and an effort per role, defaulting to `opus high` for judgment and most code, `sonnet high` for feature code, and `haiku high` for fan-out exploration |
+| Model slugs such as `claude-opus-5-5-xhigh` and `grok-4.7-xhigh-fast` | A model and an effort per role, such as `opus xhigh` and `sonnet xhigh`. [ostack's defaults](#ostacks-defaults) replace these values |
 | `~/.cursor/rules/ostack-models.mdc` | `~/.claude/rules/ostack-models.md`, written by `/setup-ostack` |
 | Custom Mode for `/onyo-mode` | A `UserPromptSubmit` hook that keeps onyo-mode on unless `onyo-mode off` opts out |
 | `AskQuestion` | `AskUserQuestion` |
@@ -84,6 +84,29 @@ schedule or trigger, or from you typing in a Project's threads:
 | Cursor's built-in babysit | Claude Code's PR Auto-fix. The Babysit playbook still owns PR-status requests under `/onyo-mode` |
 | Origin forge CLI | `gh`, or the GitHub MCP tools in cloud sessions |
 
+## ostack's defaults
+
+ostack sets its own defaults on top of pstack. pstack's text below and the skills keep pstack's
+defaults, mapped to Claude Code. These replace them:
+
+- onyo-mode is on for every task. ostack's hook tells Claude to follow `/onyo-mode` on every
+  message, so you don't type it. A line of just `onyo-mode off` in a project's `CLAUDE.md` or
+  `CLAUDE.local.md`, or in a Claude project's instructions, turns it off for that project. The same
+  line as a message turns it off for the rest of the session, and `onyo-mode on` turns it back on.
+- Models and effort come from [`hooks/ostack-defaults.md`](./hooks/ostack-defaults.md), which the
+  hook prints into every session. Feature code runs on `sonnet`. Refactoring, bug fixes, perf,
+  hillclimb, the hardest changes, prose, and judgment run on `opus`. The `how`, `why`, and `reflect`
+  explorers and the swarm workers run on `haiku`. Every role runs at `high` effort, the `medium`
+  budget.
+- Setup is optional. Run `/setup-ostack` only to change the models or the budget. Its rule wins over
+  the shipped defaults for every role it sets.
+- Skills load on their own when your request matches their description. Only `/arena`,
+  `/correct`, `/ketchup`, `/recall`, `/swarm`, and `/unslop` wait for you to type them. Where
+  pstack's text says another skill runs only when you type it, that doesn't hold here.
+
+[ostack's defaults](./docs/guide/ostack-defaults.md) in the guide explains each one and how to
+change it.
+
 Every file that comes from pstack is generated from upstream plus a port patch. [sync/README.md](./sync/README.md)
 explains how to change one and how to sync to a new pstack version.
 
@@ -93,19 +116,20 @@ explains how to change one and how to sync to a new pstack version.
 
 ## get started
 
-install the plugin. that's the setup. its hook turns [`/onyo-mode`](./skills/onyo-mode/SKILL.md) on for every task, in every session, and in a claude project it adds [`onyo-projects`](./skills/onyo-projects/SKILL.md) too.
+two steps:
 
-to opt a project out, put a line of just `onyo-mode off` in its `CLAUDE.md`, its `CLAUDE.local.md`, or a claude project's instructions. a message of just `onyo-mode off` turns it off for that session, and `onyo-mode on` turns it back on.
+1. run [`/setup-ostack`](./skills/setup-ostack/SKILL.md), pick a reasoning budget, and choose which models you want.
+2. use [`/onyo-mode`](./skills/onyo-mode/SKILL.md) whenever you're doing anything that requires rigor.
 
-to change the models or the effort budget, run [`/setup-ostack`](./skills/setup-ostack/SKILL.md).
+in a claude project, ostack's hook also adds [`onyo-projects`](./skills/onyo-projects/SKILL.md).
 
 new here? the [ostack guide](./docs/guide/README.md) walks you through a first real task, from setup and prompting through verification and overnight runs. stuck, or unsure which skill fits? ask [`/onyo-help`](./skills/onyo-help/SKILL.md).
 
-that's it. the other skills are situational; the mode skill uses them for you as needed. out of the box the mode splits work by model strength: feature code goes to the `sonnet` model alias; refactoring, bug fixes, perf, hillclimb, the hardest changes, prose, and judgment go to the `opus` alias; and read-heavy fan-outs (swarm workers, explorers, investigators) go to the `haiku` alias, all at high effort, the `medium` budget. the default panel is `opus` / `sonnet`. [`/setup-ostack`](./skills/setup-ostack/SKILL.md) changes any of it.
+that's it. the other skills are situational; the mode skill uses them for you as needed. out of the box the mode splits work by model strength: code delegates (feature, refactoring, bug fix, perf, hillclimb) go to sonnet, while the hardest changes, prose, and judgment go to opus. the default panel is opus / sonnet. [`/setup-ostack`](./skills/setup-ostack/SKILL.md) changes any of it.
 
 ## usage
 
-[`/onyo-mode`](./skills/onyo-mode/SKILL.md) runs on every task, through ostack's hook. it reads your request, picks from a set of playbooks, and runs the other skills as the steps need them.
+use [`/onyo-mode`](./skills/onyo-mode/SKILL.md) at the start of a task. it reads your request, picks from a set of playbooks, and runs the other skills as the steps need them.
 
 ### just use [`/onyo-mode`](./skills/onyo-mode/SKILL.md)
 
@@ -184,7 +208,7 @@ ostack's [hook](./hooks/onyo-mode.sh) keeps [`/onyo-mode`](./skills/onyo-mode/SK
 | skill | use it when |
 |---|---|
 | [`/onyo-mode`](./skills/onyo-mode/SKILL.md) | default entry point for any non-trivial task. |
-| [`/onyo-help`](./skills/onyo-help/SKILL.md) | you're new to ostack, or unsure which skill, playbook, or principle fits. finds out what you're trying to do, answers that part, and hands you a prompt to type. |
+| [`/onyo-help`](./skills/onyo-help/SKILL.md) | you're new to ostack, or unsure which skill, playbook, or principle fits. finds out what you're trying to do, answers that part, and hands you a prompt to type. runs only when you type `/onyo-help`. |
 | [`/how`](./skills/how/SKILL.md) | you want a walkthrough of how a subsystem works. |
 | [`/why`](./skills/why/SKILL.md) | you want to know why something was built this way. discovers available MCPs at run time and queries each evidence category in parallel (source control, issue tracker, long-form docs, real-time chat, infra observability, error tracking, analytics warehouse). |
 | [`/recall`](./skills/recall/SKILL.md) | you're starting or resuming work and want your recent context on a topic rebuilt from your own chat history and the shared record, handed back as a tight current-state brief. |
