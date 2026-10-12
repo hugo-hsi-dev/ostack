@@ -4,8 +4,8 @@ Copyright (c) 2026 Hugo Hsi
 ostack is a modified copy of pstack by Lauren Tan (poteto, https://x.com/poteto).
 
   Upstream:  https://github.com/cursor/plugins/tree/main/pstack
-  Commit:    11713c683fe4add4fd403ea880580abbc9e0875f (2026-10-11)
-  Version:   pstack 0.15.17
+  Commit:    1b6d44ff26d4e242f4e8f68c391e6d2f7ca16def (2026-10-12)
+  Version:   pstack 0.15.20
   License:   MIT, Copyright (c) 2026 Lauren Tan (kept in LICENSE)
 
 Changes from pstack:
