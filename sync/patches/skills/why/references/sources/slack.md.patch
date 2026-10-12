@@ -1,0 +1,5 @@
+--- a/skills/why/references/sources/slack.md
++++ b/skills/why/references/sources/slack.md
+@@ -5 +5 @@ [A]
+-Slack MCP tools vary. Check which Slack MCP is available and inspect its tool schema first. It may require `mcp_auth`. If authentication fails, stop and report the gap.
++Slack MCP tools vary. Check which Slack MCP is available and inspect its tool schema first. If its tools are missing or return an auth error, the user must authenticate the server with `/mcp`. Report the gap and stop.

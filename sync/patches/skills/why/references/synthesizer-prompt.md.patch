@@ -1,0 +1,5 @@
+--- a/skills/why/references/synthesizer-prompt.md
++++ b/skills/why/references/synthesizer-prompt.md
+@@ -101 +101 @@ [A]
+-- **Source control history**: {file paths}, {number of commits reviewed}, PRs #{numbers}, and code comments searched. Or "Not searched. This should not happen because git and `gh` are always expected."
++- **Source control history**: {file paths}, {number of commits reviewed}, PRs #{numbers}, and code comments searched. Or "Not searched. This should not happen because git and `gh` or the GitHub MCP tools (`mcp__github__*`) are always expected."

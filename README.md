@@ -84,6 +84,9 @@ schedule or trigger, or from you typing in a Project's threads:
 | Cursor's built-in babysit | Claude Code's PR Auto-fix. The Babysit playbook still owns PR-status requests under `/onyo-mode` |
 | Origin forge CLI | `gh`, or the GitHub MCP tools in cloud sessions |
 
+Every file that comes from pstack is generated from upstream plus a port patch. [sync/README.md](./sync/README.md)
+explains how to change one and how to sync to a new pstack version.
+
 ---
 
 *Everything below comes from pstack's README with the names swapped. "i" is poteto.*
@@ -262,7 +265,9 @@ help:              /onyo-help which skill should i use to review this branch?
 
 ## the `onyo-agent` and Comment Sicko subagents
 
-ostack also ships a subagent that runs my style end to end. spawn it from a parent agent via [`subagent_type: "onyo-agent"`](./agents/onyo-agent.md) (`ostack:onyo-agent` in a plugin install). it reads `onyo-mode` in full, including its inline principles index, before doing any work. substituting `general-purpose` skips that read and drifts.
+[`/onyo-mode`](./skills/onyo-mode/SKILL.md) runs in the chat that receives it. that chat owns the playbook, the todo list, and every subagent spawn.
+
+ostack also ships [`subagent_type: "onyo-agent"`](./agents/onyo-agent.md) (`ostack:onyo-agent` in a plugin install) as the wrapper for delegates spawned during a run. it reads `onyo-mode` in full, including its inline principles index, before doing any work. substituting `general-purpose` skips that read and drifts. do not spawn `onyo-agent` to run the playbook itself.
 
 [`/onyo-mode`](./skills/onyo-mode/SKILL.md) and [`subagent_type: "onyo-agent"`](./agents/onyo-agent.md) route through the same wrapper.
 

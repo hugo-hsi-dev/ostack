@@ -1,0 +1,8 @@
+--- a/automations/benny/skills/triage-issue-reports/references/routing.example.md
++++ b/automations/benny/skills/triage-issue-reports/references/routing.example.md
+@@ -3 +3 @@ [A]
+-Copy this file outside `.cursor/automations/benny/`, for example to `.cursor/benny/routing.md`, and replace every placeholder. Point `routing.map_path` at the copy. Pack refreshes must not overwrite it.
++Copy this file outside `.claude/automations/benny/`, for example to `.claude/benny/routing.md`, and replace every placeholder. Point `routing.map_path` at the copy. Pack refreshes must not overwrite it.
+@@ -61 +61 @@ [A]
+-- A reroute tells the reporter where to go. The automation never cross-posts.
++- A reroute tells the reporter where to go. The routine never cross-posts.

@@ -1,0 +1,5 @@
+--- a/skills/onyo-mode/scripts/bun.lock
++++ b/skills/onyo-mode/scripts/bun.lock
+@@ -6 +6 @@ [A]
+-      "name": "@cursor-skill/onyo-mode-tools",
++      "name": "@ostack/onyo-mode-tools",

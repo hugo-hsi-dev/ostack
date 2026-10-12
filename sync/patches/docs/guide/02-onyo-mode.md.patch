@@ -1,0 +1,8 @@
+--- a/docs/guide/02-onyo-mode.md
++++ b/docs/guide/02-onyo-mode.md
+@@ -85 +85 @@ [A]
+-Short works because the playbook holds the structure, and a Custom Mode keeps `/onyo-mode` in context on every turn. [Set up ostack](./01-setup.md#run-your-first-task) shows how to start one. Your words carry the intent, and the skill carries the rigor.
++Short works because the playbook holds the structure, and ostack's hook keeps `/onyo-mode` in context on every turn. [Set up ostack](./01-setup.md#onyo-mode-is-on-by-default) shows how it works and how to opt out. Your words carry the intent, and the skill carries the rigor.
+@@ -99 +99 @@ [A]
+-If you run several agents against one repository on one computer, they will fight over the working tree, the ports, and the build output. The cleanest isolation is a [cloud subagent](https://cursor.com/docs/subagents#cloud-subagents). Each one gets its own VM and branch, so it can install dependencies, run your app, and record video of the result without touching your machine. Type `/in-cloud` before the task, or ask the parent chat to hand work to cloud subagents.
++If you run several agents against one repository on one computer, they will fight over the working tree, the ports, and the build output. The cleanest isolation is a Claude Code cloud session. Each one gets its own machine and branch, so it can install dependencies, run your app, and record video of the result when the app's control skill can record, all without touching your machine. Start one with `claude --cloud "<task>"` from a terminal, or ask the parent chat to hand work to cloud sessions. Check on them in the session list at claude.ai/code.
