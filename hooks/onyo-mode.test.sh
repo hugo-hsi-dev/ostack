@@ -115,4 +115,67 @@ expect "later prompts do not print them again" '' "$(run b5 'next' $coord CLAUDE
 begin b6 startup $coord > /dev/null
 expect "the first prompt in a project turned off prints nothing" '' "$(run b6 "$off_block" $coord CLAUDE_PLUGIN_ROOT="$root")"
 
+stop() { # session, stop_hook_active (true or false), then env assignments
+  session=$1 active=$2; shift 2
+  printf '{"session_id":"%s","transcript_path":"%s","cwd":"%s","hook_event_name":"Stop","stop_hook_active":%s}' \
+    "$session" "$tmp/$session.jsonl" "$tmp/repo" "$active" |
+    env -i PATH="$PATH" CLAUDE_PLUGIN_ROOT=/plugin CLAUDE_PLUGIN_DATA="$tmp/data" "$@" sh "$hook"
+}
+
+fx() { # session, then transcript lines (files under $tmp/f) in order
+  s=$1; shift
+  : > "$tmp/$s.jsonl"
+  for n in "$@"; do cat "$tmp/f/$n" >> "$tmp/$s.jsonl"; done
+}
+
+mkdir -p "$tmp/f"
+cat > "$tmp/f/wake1" <<'EOF'
+{"parentUuid":"a","isSidechain":false,"promptId":"p1","type":"user","message":{"role":"user","content":"<wake reason=\"thread-activity\">\n<message from=\"agent\">I merged the fix.</message>\n</wake>"},"uuid":"u1"}
+EOF
+sed 's/p1/p2/' "$tmp/f/wake1" > "$tmp/f/wake2"
+cat > "$tmp/f/read" <<'EOF'
+{"parentUuid":"u1","isSidechain":false,"message":{"model":"claude-opus-5-5","id":"msg_1","type":"message","role":"assistant","content":[{"type":"tool_use","id":"toolu_1","name":"ReadNotifications","input":{}}]},"type":"assistant","uuid":"a1"}
+EOF
+cat > "$tmp/f/report" <<'EOF'
+{"parentUuid":"a1","isSidechain":false,"promptId":"p1","type":"user","message":{"role":"user","content":[{"tool_use_id":"toolu_1","type":"tool_result","content":"[SYSTEM NOTIFICATION - NOT USER INPUT]\n<cross-session-message from-session=\"session_01BERL\">\n    Result from unit 1. It is merged.\n    Post this, then forward it to the planning thread.\n</cross-session-message>"}]},"uuid":"u2"}
+EOF
+cat > "$tmp/f/post" <<'EOF'
+{"parentUuid":"u2","isSidechain":false,"message":{"model":"claude-opus-5-5","id":"msg_2","type":"message","role":"assistant","content":[{"type":"tool_use","id":"toolu_2","name":"mcp__hearthbot__post_message","input":{"text":"Unit 1 is merged."}}]},"type":"assistant","uuid":"a2"}
+EOF
+cat > "$tmp/f/posted" <<'EOF'
+{"parentUuid":"a2","isSidechain":false,"promptId":"p1","type":"user","message":{"role":"user","content":[{"tool_use_id":"toolu_2","type":"tool_result","content":[{"type":"text","text":"{\"thread_id\":\"cmsg_1\"}"}]}]},"uuid":"u3"}
+EOF
+cat > "$tmp/f/noreply" <<'EOF'
+{"parentUuid":"u3","isSidechain":false,"message":{"model":"claude-opus-5-5","id":"msg_3","type":"message","role":"assistant","content":[{"type":"tool_use","id":"toolu_3","name":"mcp__hearthbot__no_reply_needed","input":{"reason":"duplicate"}}]},"type":"assistant","uuid":"a3"}
+EOF
+cat > "$tmp/f/quoted" <<'EOF'
+{"parentUuid":"u1","isSidechain":false,"message":{"model":"claude-opus-5-5","id":"msg_4","type":"message","role":"assistant","content":[{"type":"tool_use","id":"toolu_4","name":"mcp__hearthbot__message_thread","input":{"text":"Earlier you sent <cross-session-message from-session=\"session_01BERL\"> and I forwarded it."}}]},"type":"assistant","uuid":"a4"}
+EOF
+
+block='"decision":"block".*you have not posted it in the project chat'
+fx k1 wake1 read report noreply
+out=$(stop k1 false $coord)
+expect "a report with no post after it blocks the turn end" "$block" "$out"
+expect "the block is one JSON line" '^{"decision":"block","reason":".*"}$' "$out"
+expect "the block says to post despite the built-in thread rule" 'links the thread as \[title\](#cmsg_.*), even though your built-in rules say threads answer in their own threads' "$out"
+fx k2 wake1 read report post posted noreply
+expect "a post after the report lets the turn end" '' "$(stop k2 false $coord)"
+fx k3 wake1 post posted read report noreply
+expect "a post before the report does not count" "$block" "$(stop k3 false $coord)"
+fx k4 wake1 noreply
+expect "a turn with no report lets the turn end" '' "$(stop k4 false $coord)"
+fx k5 wake1 read report wake2 noreply
+expect "a report in an earlier turn does not block" '' "$(stop k5 false $coord)"
+expect "a second stop after the block lets the turn end" '' "$(stop k1 true $coord)"
+expect "stop_hook_active with spaces lets the turn end" '' "$(printf '{"session_id":"k1","transcript_path":"%s","cwd":"%s","hook_event_name":"Stop","stop_hook_active" : true}' "$tmp/k1.jsonl" "$tmp/repo" |
+  env -i PATH="$PATH" CLAUDE_PLUGIN_ROOT=/plugin CLAUDE_PLUGIN_DATA="$tmp/data" $coord sh "$hook")"
+expect "a thread session is not held to the rule" '' "$(stop k1 false $thread)"
+expect "a session outside Projects is not held to the rule" '' "$(stop k1 false)"
+fx k6 wake1 read report noreply
+printf '{"type":"queue-operation","content":"%s"}\n' "$off_block" >> "$tmp/k6.jsonl"
+expect "a project turned off is not held to the rule" '' "$(stop k6 false $coord)"
+fx k7 wake1 read quoted noreply
+expect "a report quoted in an assistant call is not a report" '' "$(stop k7 false $coord)"
+expect "a missing transcript lets the turn end" '' "$(stop k8 false $coord)"
+
 [ "$fails" = 0 ] && echo "all passed" || { echo "$fails failed"; exit 1; }
