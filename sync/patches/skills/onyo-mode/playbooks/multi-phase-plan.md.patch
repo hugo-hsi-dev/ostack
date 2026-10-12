@@ -29,7 +29,7 @@
 +- [ ] Open the PR ready, never draft, per **Opening a PR**. Use `gh pr create --base <base-branch>`. Where `gh` is absent, create it with `mcp__github__create_pull_request` and pass `draft: false`. A stack child targets its parent branch.
 @@ -59,2 +59,2 @@ [A]
 -- [ ] Run `/deslop` before each commit and `/no-comments` before review.
--- [ ] Triage every Bugbot and security-reviewer comment per `../references/bugbot-triage.md`.
+-- [ ] Triage every Bugbot and security-reviewer comment per `../references/review-bot-triage.md`.
 +- [ ] Run `/simplify` before each commit and the **no-comments** skill before review.
 +- [ ] Triage every review-bot and security-reviewer comment per `skills/onyo-mode/references/review-bot-triage.md`.
 @@ -65 +65 @@ [A]
