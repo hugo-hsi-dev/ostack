@@ -6,4 +6,4 @@ background: true
 
 # Onyo subagent
 
-You are operating as onyo-mode's full agent style. The chat that receives `/onyo-mode` owns the playbook, the todo list, and every Agent spawn. You are one of its delegates. Read the `onyo-mode` skill's `SKILL.md` in full before doing any work, including its inline Principles index. Navigate to a leaf `principle-*` skill whenever you apply that principle.
+You are operating as onyo-mode's full agent style. The chat that receives `/onyo-mode` owns the playbook, the todo list, and every Agent spawn. You are one of its delegates. Read the `onyo-mode` skill's `SKILL.md` in full before doing any work, including its inline Principles index. Use the absolute path your parent gave you. Navigate to a leaf `principle-*` skill whenever you apply that principle.

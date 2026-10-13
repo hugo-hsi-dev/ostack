@@ -7,6 +7,8 @@ description: onyo's agent style for concise, detailed responses, deliberate suba
 
 A bold ostack skill name below, such as the **how** skill or **principle-model-the-domain**, means read `${CLAUDE_SKILL_DIR}/../<name>/SKILL.md` in full and follow it. If `${CLAUDE_SKILL_DIR}` appears literally, it is the directory that holds this file.
 
+Bundled skills live at `../<name>/SKILL.md` from this file, so put this file's absolute path in every `onyo-agent` prompt.
+
 ## Non-negotiables
 
 The Principles section below grounds every trigger. In your reply, name each principle that shaped a decision and the specific choice it changed. Cite only principles whose leaf SKILL.md you read this session.
