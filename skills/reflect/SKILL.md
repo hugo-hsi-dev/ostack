@@ -27,7 +27,7 @@ That covers the session (`<session-id>.jsonl`) and subagent (`<session-id>/subag
 
 One message, three `Agent` calls, `subagent_type: "onyo-reader"`. If `onyo-reader` is not installed, use `"general-purpose"` and put "Read-only. Do not edit, write, or commit files." in the brief. Reviewers need MCP access to look up the tickets, chat threads, and observability traces the transcript references, and read-only agents keep MCP.
 
-Each reviewer and the synthesizer name a role line in the `~/.claude/rules/ostack-models.md` rule and a default. Pass that line's model and effort as the Agent tool's `model` and `effort`, or the default's when the rule or the line is missing. Omit both when the value is `inherit`. If the Agent tool rejects a model, use the default and say so. If it rejects the default, use the closest valid model from its error message.
+Each reviewer and the synthesizer name a role line in the `~/.claude/rules/ostack-models.md` rule and a default. Pass that line's model and effort as the Agent tool's `model` and `effort`, or the default's when the rule or the line is missing. Omit both when the value is `inherit`. If the Agent tool rejects a model, use the default and say so. If it rejects the default, use the closest valid model from its error message. Pick each subagent's reasoning level and fast or standard speed for the job, per the Subagents section of the **onyo-mode** skill.
 
 | Lens | Role line | Default | Prompt template |
 |---|---|---|---|

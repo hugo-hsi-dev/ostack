@@ -1,6 +1,6 @@
 --- a/skills/onyo-mode/scripts/worktree-audit.sh
 +++ b/skills/onyo-mode/scripts/worktree-audit.sh
-@@ -55,3 +55,7 @@ [A]
+@@ -64,3 +64,7 @@ [A]
 -# Transcripts dir: ~/.cursor/projects/<slugified-repo-path>/agent-transcripts.
 -slug=$(printf '%s' "$main_wt" | sed 's#^/##; s#/#-#g')
 -transcripts="$HOME/.cursor/projects/$slug/agent-transcripts"
@@ -11,7 +11,7 @@
 +slugify() { printf '%s' "$1" | sed 's#[^A-Za-z0-9]#-#g'; }
 +projects="$HOME/.claude/projects"
 +main_transcripts="$projects/$(slugify "$main_wt")"
-@@ -97,3 +101,10 @@ [A]
+@@ -106,3 +110,10 @@ [A]
 -	if [ -d "$transcripts" ]; then
 -		f=$(rg -l -e "${wt}/" -e "${wt}\"" "$transcripts" 2>/dev/null \
 -			| xargs stat -f '%m %N' 2>/dev/null | sort -rn | head -1)
@@ -25,7 +25,7 @@
 +			| while IFS= read -r t; do
 +				stat -c '%Y %n' "$t" 2>/dev/null || stat -f '%m %N' "$t" 2>/dev/null
 +			done | sort -rn | head -1)
-@@ -101 +112,2 @@ [A]
+@@ -110 +121,2 @@ [A]
 -			last=$(date -r "$last_ts" '+%Y-%m-%d' 2>/dev/null); fi
 +			last=$(date -d "@$last_ts" '+%Y-%m-%d' 2>/dev/null \
 +				|| date -r "$last_ts" '+%Y-%m-%d' 2>/dev/null); fi
