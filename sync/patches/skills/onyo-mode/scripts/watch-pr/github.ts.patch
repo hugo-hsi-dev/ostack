@@ -1,6 +1,6 @@
 --- a/skills/onyo-mode/scripts/watch-pr/github.ts
 +++ b/skills/onyo-mode/scripts/watch-pr/github.ts
-@@ -330,0 +331,7 @@ [A]
+@@ -326,0 +327,7 @@ [A]
 +    commitOid:
 +      object.originalCommit === undefined || object.originalCommit === null
 +        ? null
@@ -8,7 +8,7 @@
 +            record(object.originalCommit, "review comment.originalCommit").oid,
 +            "review comment.originalCommit.oid"
 +          ),
-@@ -346 +353,16 @@ [A]
+@@ -342 +349,16 @@ [A]
 -      ].some((token) => body.includes(token)))
 +      ].some((token) => body.includes(token))) ||
 +    isClaudeCodeReview(comment)
@@ -26,7 +26,7 @@
 +      "why this was flagged",
 +      "claude code review",
 +    ].some((token) => body.includes(token))
-@@ -357,0 +380,4 @@ [A]
+@@ -353,0 +376,4 @@ [A]
 +  // Claude Code Review carries no run marker. Each review runs at one head
 +  // commit, so the commit the comment was first posted on keys the pass.
 +  if (comment.commitOid !== null && isClaudeCodeReview(comment))

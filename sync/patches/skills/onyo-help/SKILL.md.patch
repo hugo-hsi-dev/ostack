@@ -33,32 +33,32 @@
 @@ -56 +56 @@ [A]
 -Link [Cursor's skills docs](https://cursor.com/docs/skills) when this comes up. Mid-chat, "new task" makes the mode match a fresh playbook. `/onyo-mode` already uses `onyo-agent` for the subagents its playbook steps spawn. To get the same style from a subagent of your own, spawn it with `subagent_type: "onyo-agent"`.
 +Link [Claude Code's skills docs](https://code.claude.com/docs/en/skills) and [hooks docs](https://code.claude.com/docs/en/hooks) when this comes up. Mid-chat, "new task" makes the mode match a fresh playbook. `/onyo-mode` already uses `onyo-agent` for the subagents its playbook steps spawn. To get the same style from a subagent of your own, spawn it with `subagent_type: "onyo-agent"`.
-@@ -73 +73 @@ [A]
+@@ -75 +75 @@ [A]
 -| Run parallel checks over slices, or race workers, as cloud agents | [`/swarm`](../swarm/SKILL.md) |
 +| Run parallel checks over slices, or race workers, as cloud sessions | [`/swarm`](../swarm/SKILL.md) |
-@@ -86 +86 @@ [A]
+@@ -88 +88 @@ [A]
 -| Pick a model for each role and a reasoning budget | [`/setup-ostack`](../setup-ostack/SKILL.md) |
 +| Pick a model for each role and an effort budget | [`/setup-ostack`](../setup-ostack/SKILL.md) |
-@@ -90 +90 @@ [A]
+@@ -92 +92 @@ [A]
 -| Build a page whose buttons wake a Grok Bot over a webhook | [`/make-bot-ui`](../make-bot-ui/SKILL.md) |
 +| Build a page whose buttons wake a Claude Code routine over its API trigger | [`/make-bot-ui`](../make-bot-ui/SKILL.md) |
-@@ -106,2 +106,2 @@ [A]
+@@ -108,2 +108,2 @@ [A]
 -- `/deslop`, `control-cli`, and `control-ui` ship in the `cursor-team-kit` plugin.
 -- `/loop` and `/create-skill` are Cursor built-ins.
 +- `/simplify`, `/run`, `/code-review`, `/security-review`, and `/loop` are Claude Code built-ins. onyo-mode uses `/simplify` before commit and `/run` to drive an app.
 +- `skill-creator` is Anthropic's skill-authoring plugin. Install it with `/plugin install skill-creator@claude-plugins-official`.
-@@ -121 +121 @@ [A]
+@@ -123 +123 @@ [A]
 -Without `/onyo-mode`, a phrase such as "babysit this pr" can start Cursor's own skill for the same job instead. The Playbooks section of [`onyo-mode`](../onyo-mode/SKILL.md) lists every playbook and when it applies. [Guide page 6](../../docs/guide/06-verify-and-ship.md) covers opening, babysitting, and landing a PR.
 +Without `/onyo-mode`, a phrase such as "babysit this pr" does not route to the Babysit playbook. Claude Code's PR Auto-fix (`/autofix-pr`) covers similar ground. The Playbooks section of [`onyo-mode`](../onyo-mode/SKILL.md) lists every playbook and when it applies. [Guide page 6](../../docs/guide/06-verify-and-ship.md) covers opening, babysitting, and landing a PR.
-@@ -123 +123 @@ [A]
+@@ -125 +125 @@ [A]
 -ostack has no planning skill. Cursor's Plan Mode works alongside it. For work that spans phases or stacked PRs, asking `/onyo-mode` for a plan runs the [Multi-phase plan playbook](../onyo-mode/playbooks/multi-phase-plan.md), which writes the plan and doesn't implement it. For a design question, the Prototype playbook or `/architect` settles it in code first.
 +ostack has no planning skill. Claude Code's plan mode (Shift+Tab) works alongside it. For work that spans phases or stacked PRs, asking `/onyo-mode` for a plan runs the [Multi-phase plan playbook](../onyo-mode/playbooks/multi-phase-plan.md), which writes the plan and doesn't implement it. For a design question, the Prototype playbook or `/architect` settles it in code first.
-@@ -131 +131 @@ [A]
+@@ -133 +133 @@ [A]
 -| The mode stopped applying after a few turns | It was started with Enter. Start it as a Custom Mode, or start each task with `/onyo-mode`. |
 +| The mode stopped applying | Look for an `onyo-mode off` line in the session, `CLAUDE.md`, or `CLAUDE.local.md`, and for `disableAllHooks` in settings. A message of just `onyo-mode on` turns it back on for the session. |
-@@ -133 +133 @@ [A]
+@@ -135 +135 @@ [A]
 -| A new model choice had no effect | The rule from `/setup-ostack` applies to new chats. Start one. |
 +| A new model choice had no effect | The rule from `/setup-ostack` applies to new sessions. Start one. Cloud sessions and routines don't read `~/.claude/rules/`. |
-@@ -136 +136 @@ [A]
+@@ -138 +138 @@ [A]
 -| Parallel agents overwrote each other | Give each agent its own worktree, or run them as cloud agents, which each get their own machine. |
 +| Parallel agents overwrote each other | Give each agent its own worktree (`isolation: "worktree"`), or run them as cloud sessions, which each get their own machine. |

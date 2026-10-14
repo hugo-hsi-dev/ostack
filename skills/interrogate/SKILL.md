@@ -34,7 +34,7 @@ Each reviewer gets `subagent_type: "onyo-reader"` (or `"general-purpose"` with "
 
 If the Agent tool rejects a configured entry, run that reviewer on its family's table default and say so. Each model alias (`fable`, `opus`, `sonnet`, `haiku`) is its own family. With no family match, use Reviewer A's default. If it rejects a table default, spawn with the other table default, and open a separate PR to update the default table. Do not block the review on the model issue. Never treat an `inherit` entry as a rejected model or apply either fallback to it.
 
-Read `references/reviewer-prompt.md` and fill in the same template for every reviewer with the stated intent, the diff or file contents, the rubric from `references/rubric.md`, and the code-quality lens from `references/code-quality-review.md`.
+Read `references/reviewer-prompt.md` and fill in the same template for every reviewer with the stated intent, the diff or file contents, the rubric from `references/rubric.md`, and the code-quality lens from `references/code-quality-review.md`. Pick each subagent's reasoning level and fast or standard speed for the job, per the Subagents section of the **onyo-mode** skill.
 
 ## Step 4, Synthesize
 

@@ -7,7 +7,7 @@ description: "Use for 'why does X work this way', 'why we picked Y', design rati
 
 Investigate the motivation and intent behind code. The companion `how` skill answers what the code does and how it works. `why` answers what forces led to its shape.
 
-Each spawn below names a role line in the `~/.claude/rules/ostack-models.md` rule and a default. Pass that line's model and effort as the Agent tool's `model` and `effort`, or the default's when the rule or the line is missing. Omit both when the value is `inherit`. If the Agent tool rejects a model, use the default and say so. If it rejects the default, use the closest valid model from its error message.
+Each spawn below names a role line in the `~/.claude/rules/ostack-models.md` rule and a default. Pass that line's model and effort as the Agent tool's `model` and `effort`, or the default's when the rule or the line is missing. Omit both when the value is `inherit`. If the Agent tool rejects a model, use the default and say so. If it rejects the default, use the closest valid model from its error message. Pick each subagent's reasoning level and fast or standard speed for the job, per the Subagents section of the **onyo-mode** skill.
 
 Every spawn is `subagent_type: "onyo-reader"`. If `onyo-reader` is not installed, use `"general-purpose"` and put "Read-only. Do not edit, write, or commit files." in the brief. Read-only agents keep MCP access, which the MCP-backed investigators and the synthesizer's citation spot-checks need. Investigators still shouldn't write anything.
 
