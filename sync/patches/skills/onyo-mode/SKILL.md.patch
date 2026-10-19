@@ -1,8 +1,5 @@
 --- a/skills/onyo-mode/SKILL.md
 +++ b/skills/onyo-mode/SKILL.md
-@@ -2 +2 @@ [A]
--name: Onyo Mode
-+name: onyo-mode
 @@ -4,2 +3,0 @@ [A]
 -icon: crown
 -color: yellow

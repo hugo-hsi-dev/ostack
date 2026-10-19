@@ -1,5 +1,5 @@
 --- a/skills/ketchup/SKILL.md
 +++ b/skills/ketchup/SKILL.md
-@@ -33 +33 @@ [A]
+@@ -37 +37 @@ [A]
 -A visual is a picture: a screenshot, a video, a Mermaid diagram, a chart or diagram from `/visualize`, or a generated image. A Markdown table is not a visual, even with before and after columns.
 +A visual is a picture: a screenshot, a video, a Mermaid diagram, a chart or diagram from `/visualize`, or an SVG image. A Markdown table is not a visual, even with before and after columns.

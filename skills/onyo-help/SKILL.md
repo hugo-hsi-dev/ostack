@@ -25,6 +25,7 @@ Check the state that changes the answer, and mention it only when it does:
 
 - No `~/.claude/rules/ostack-models.md` means `/setup-ostack` hasn't run for this user, so every role uses its default model and effort.
 - No `verify-*` skill or other app harness in the project means agents have no scripted way to drive the app. Mention `/create-verification-skill` when the question is about proving a change works.
+- No formal verification skill in the project means no property is checked past what tests reach. Mention `/create-formal-verification-skill` when the question is about a race, an invariant, or another case tests rarely hit. When one exists and the code it covers changed after the commit it records as last in sync, mention `/maintain-formal-verification-skill` if the question touches that code.
 
 When the model rule is missing and it matters, ask whether the user wants to pick a model for each role and a reasoning budget now. It matters when the user is new, the question is about setup or cost, or the answer depends on which models run. Ask at most once per chat. If the need is also unclear, ask both questions together. Offer two choices:
 
@@ -34,7 +35,7 @@ When the model rule is missing and it matters, ask whether the user wants to pic
 ## Get set up
 
 1. Install from the repository per the [README](../../README.md#install). In Claude Code that is `/plugin marketplace add hugo-hsi-dev/ostack`, then `/plugin install ostack@ostack`. Plugin skills are namespaced, so `/onyo-mode` also shows as `/ostack:onyo-mode`.
-2. Run [`/setup-ostack`](../setup-ostack/SKILL.md). It asks for a reasoning budget, maps a model to each role, and writes a rule. The rule applies to new sessions.
+2. Run [`/setup-ostack`](../setup-ostack/SKILL.md). It asks for a reasoning budget, maps a model to each role, and writes a rule. The rule applies to new sessions. Then it offers once each to generate a verification skill and a formal verification skill for the project, unless the project already has one.
 3. Start a real task with `/onyo-mode`, a goal, and a check that can pass or fail.
 
 Installing changes nothing until the user invokes a skill. Only `/setup-ostack` loads from the user's words. The [README](../../README.md) and [guide page 1](../../docs/guide/01-setup.md) have the details. Offer to word their first prompt with them, per [`references/prompting.md`](references/prompting.md).
@@ -42,6 +43,7 @@ Installing changes nothing until the user invokes a skill. Only `/setup-ostack` 
 If cost is the worry, say where the tokens go and how to spend fewer. ostack spends extra tokens on subagents and review panels. Rerun `/setup-ostack` and pick a smaller budget or cheaper models. A role set to `inherit` runs on the session's model and effort, which saves tokens when the session runs on a cheaper model or a lower effort. A shorter panel list runs fewer subagents, one for each entry. Save `/onyo-mode` for work that needs rigor.
 
 ostack targets Claude Code. Its skills use the Agent Skills format, so other tools can read them. But most workflow skills, including `/onyo-mode`, `/how`, `/why`, and `/teach`, spawn Claude Code subagents through the Agent tool with a model and effort per role, and hooks and `/loop` are Claude Code features, so those parts may not work elsewhere.
+
 
 ## Start a task with `/onyo-mode`
 
@@ -68,7 +70,7 @@ The default answer is `/onyo-mode`, which runs most of the others when its steps
 | Know why code is shaped this way, or where a number came from | [`/why`](../why/SKILL.md) |
 | Understand a change or subsystem, explained plainly | [`/teach`](../teach/SKILL.md) |
 | Catch up on their own recent work on a topic | [`/recall`](../recall/SKILL.md) |
-| Catch up on what changed in this chat since their last message, in a few plain sentences and small visuals, with enough context to decide each action item | [`/ketchup`](../ketchup/SKILL.md) |
+| Catch up on what changed in this chat since their last message, in plain words and small visuals, with every item waiting on them listed and decidable from the reply alone | [`/ketchup`](../ketchup/SKILL.md) |
 | Know what a small diff could break outside itself | [`/blast-radius`](../blast-radius/SKILL.md) |
 | Settle types and module shape before code that crosses a function boundary | [`/architect`](../architect/SKILL.md) |
 | Get several attempts at one brief, merged into the best one | [`/arena`](../arena/SKILL.md) |
@@ -82,6 +84,8 @@ The default answer is `/onyo-mode`, which runs most of the others when its steps
 | Hear the last reply again in plain words | [`/bro`](../bro/SKILL.md) |
 | Give agents a scripted way to drive the app and prove behavior | [`/create-verification-skill`](../create-verification-skill/SKILL.md) |
 | Bring a verification skill and its feature map back in line with the app | [`/maintain-verification-skill`](../maintain-verification-skill/SKILL.md) |
+| Formally verify a race, invariant, or other property that tests rarely reach | [`/create-formal-verification-skill`](../create-formal-verification-skill/SKILL.md) |
+| Bring a formal verification back in line after the code it covers changed, and learn whether a failure is drift or a bug | [`/maintain-formal-verification-skill`](../maintain-formal-verification-skill/SKILL.md) |
 | Vet a performance number before reporting or acting on it | [`/benchmark-checklist`](../benchmark-checklist/SKILL.md) |
 | Run a large or cross-cutting change, or one to review after stepping away | [`/figure-it-out`](../figure-it-out/SKILL.md) |
 | Keep a decision log during a run, and review it afterward | [`/show-me-your-work`](../show-me-your-work/SKILL.md) |
