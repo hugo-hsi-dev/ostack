@@ -35,6 +35,7 @@ ostack skills use Cursor names. In Claude Code, read this file once per session,
 | A `grok-*`, `gpt-*`, or other non-Claude slug | Omit `model` so the agent runs on the session model, and say so. |
 | `auto` or `inherit-parent` | Omit `model`. |
 | The `ostack-models.mdc` rule | Claude Code does not load it. `setup-ostack` writes `~/.claude/rules/ostack-models.md` instead. Use the skill's default slug and map it with these rows. Never put its role lines in `CLAUDE.md` or `AGENTS.md`. |
+| A role value `<model> <effort>`, such as `opus high` | `model: "opus"` and `effort: "high"`. |
 
 ## Paths
 
@@ -42,7 +43,8 @@ ostack skills use Cursor names. In Claude Code, read this file once per session,
 | --- | --- |
 | `.cursor/skills/`, `~/.cursor/skills/` | `.claude/skills/`, `~/.claude/skills/` |
 | `~/.cursor/plugins/`, `.cursor-plugin/plugin.json` | `~/.claude/plugins/`, `.claude-plugin/plugin.json` |
-| `.cursor/rules/*.mdc`, always-applied rules | `CLAUDE.md`, or `AGENTS.md` when no `CLAUDE.md` exists. Claude Code never reads `.mdc` files. |
+| `.cursor/rules/*.mdc`, always-applied rules | `CLAUDE.md`, or `AGENTS.md` when no `CLAUDE.md` exists. Claude Code never reads `.mdc` files. The model rule is the exception. See Models. |
+| `https://github.com/cursor/plugins/blob/main/ostack/<path>` | `<ostack>/<path>` when that file exists. The plugin ships the skills, `docs/guide/`, and `README.md`. Read the local copy and never fetch it. Give the user the URL when they need a link. |
 | Transcripts in `~/.cursor/projects/<slug>/agent-transcripts/` | `~/.claude/projects/<slug>/<session>.jsonl`. The slug is the workspace path with each `/` and `.` changed to `-`, so `/Users/you/proj` is `-Users-you-proj`. The newest `.jsonl` directly in that folder is the current session. Its `<session>/subagents/` folder holds subagent transcripts. Read only this workspace's folder. |
 
 ## Cursor-only features
