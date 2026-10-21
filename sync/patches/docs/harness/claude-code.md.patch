@@ -3,9 +3,3 @@
 @@ -12 +12 @@ [A]
 -| Run another ostack skill (`/name` or "the **name** skill") | `Read` `<ostack>/skills/<name>/SKILL.md` and follow it. The `Skill` tool refuses most ostack skills. When you tell the user to type it, write `/ostack:<name>`. |
 +| Run another ostack skill (`/name` or "the **name** skill") | `Read` `<ostack>/skills/<name>/SKILL.md` and follow it. The `Skill` tool refuses `arena`, `correct`, `ketchup`, `recall`, `swarm`, and `unslop`, so read those with `Read` too. When you tell the user to type it, write `/ostack:<name>`. |
-@@ -37 +37 @@ [A]
--| The `ostack-models.mdc` rule | Claude Code does not load it. Use the skill's default slug and map it with these rows. `setup-ostack` has nothing to write, so say so and stop. Never put its role lines in `CLAUDE.md` or `AGENTS.md`. |
-+| The `ostack-models.mdc` rule | Claude Code does not load it. `setup-ostack` writes `~/.claude/rules/ostack-models.md` instead. Use the skill's default slug and map it with these rows. Never put its role lines in `CLAUDE.md` or `AGENTS.md`. |
-@@ -50 +50 @@ [A]
--Automations, Bugbot, Cursor cloud agents, and Cursor's pull request tool have no Claude Code equivalent. Say so, skip that step, and continue.
-+Cursor's pull request tool has no Claude Code equivalent. Use `gh`, or the GitHub MCP tools in cloud sessions. Automations, Bugbot, and cloud agents map to the Claude Code features in the README's port table.
