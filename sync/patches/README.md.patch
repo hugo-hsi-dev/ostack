@@ -129,8 +129,8 @@
 +
 +*Everything below comes from pstack's README with the names swapped. "i" is poteto.*
 @@ -7 +132 @@ [A]
--**ostack is my answer.** these are the same skills i use everyday to ship high quality code at Cursor. this turns cursor into a real engineering team. the goal is not to maximize loc, in fact it's the opposite. ostack helps you write less, but higher quality code.
-+**ostack is my answer.** these are the same skills i use everyday to ship high quality code at Cursor. this turns claude code into a real engineering team. the goal is not to maximize loc, in fact it's the opposite. ostack helps you write less, but higher quality code.
+-**ostack is my answer.** these are the same skills i use every day to ship high quality code at Cursor. this turns cursor into a real engineering team. the goal is not to maximize loc, in fact it's the opposite. ostack helps you write less, but higher quality code.
++**ostack is my answer.** these are the same skills i use every day to ship high quality code at Cursor. this turns claude code into a real engineering team. the goal is not to maximize loc, in fact it's the opposite. ostack helps you write less, but higher quality code.
 @@ -11,2 +135,0 @@ [A]
 -**cursor gives you the best of all worlds.** every frontier model has its strengths and weaknesses. use any model with ostack. in fact, many of my skills use multi-model workflows to take advantage of each model's unique strengths.
 -
@@ -149,17 +149,17 @@
 -/plugin install ostack@cursor-plugins
 -```
 -
--claude code prefixes plugin commands and agents, so `/onyo-mode` is `/ostack:onyo-mode`. the [claude code adapter](./docs/harness/claude-code.md) maps every other cursor name.
+-claude code prefixes plugin commands and agents, so `/onyo-mode` is `/ostack:onyo-mode`. the [claude code adapter](./docs/harness/claude-code.md) maps every other cursor name. in claude code, `/ostack:setup-ostack` writes your model choices to `~/.claude/rules/ostack-models.md`, and a step that needs a cursor-only feature, such as bugbot or automations, is skipped with a one-line note.
 -
--claude code installs a generated copy of ostack from [`harness/ostack/`](https://github.com/cursor/plugins/tree/main/harness/ostack) at the repository root. after changing `skills/`, `agents/`, `docs/harness/claude-code.md`, or `plugin.json`, run `node scripts/generate-ostack-harness-trees.mjs` from the repository root and commit the result. ci fails until you do.
+-claude code installs a generated copy of ostack, including this readme and the guide, from [`harness/ostack/`](https://github.com/cursor/plugins/tree/main/harness/ostack) at the repository root. after you change ostack, run `node scripts/generate-ostack-harness-trees.mjs` from the repository root and commit the result. ci fails while the generated copy is out of date.
 @@ -41 +147 @@ [A]
--that's it. the other skills are situational; the mode skill uses them for you as needed. out of the box the mode splits work by model strength: code delegates (feature, refactoring, bug fix, perf, hillclimb) go to grok, while the hardest changes, prose, and judgment go to opus 5.5. the default panel is opus 5.5 / grok. [`/setup-ostack`](./skills/setup-ostack/SKILL.md) changes any of it.
-+that's it. the other skills are situational; the mode skill uses them for you as needed. out of the box the mode splits work by model strength: code delegates (feature, refactoring, bug fix, perf, hillclimb) go to sonnet, while the hardest changes, prose, and judgment go to opus. the default panel is opus / sonnet. [`/setup-ostack`](./skills/setup-ostack/SKILL.md) changes any of it.
+-that's it. the other skills are situational, and the mode skill uses them for you as needed. out of the box the mode splits work by model strength: code delegates (feature, refactoring, bug fix, perf, hillclimb) go to grok, while the hardest changes, prose, and judgment go to opus 5.5. the default panel is opus 5.5 / grok. [`/setup-ostack`](./skills/setup-ostack/SKILL.md) changes any of it.
++that's it. the other skills are situational, and the mode skill uses them for you as needed. out of the box the mode splits work by model strength: code delegates (feature, refactoring, bug fix, perf, hillclimb) go to sonnet, while the hardest changes, prose, and judgment go to opus. the default panel is opus / sonnet. [`/setup-ostack`](./skills/setup-ostack/SKILL.md) changes any of it.
 @@ -81 +187 @@ [A]
 -| [shipping](./skills/onyo-mode/playbooks/shipping.md) | independently verify a green stack, then land the contiguous verified run bottom-up through github by default or origin when available. |
 +| [shipping](./skills/onyo-mode/playbooks/shipping.md) | independently verify a green stack, then land the contiguous verified run bottom-up through github (`gh`, or the GitHub MCP tools in cloud sessions). |
 @@ -104 +210 @@ [A]
--to keep [`/onyo-mode`](./skills/onyo-mode/SKILL.md) on across turns, pick it from the `/` menu and press option+enter (mac) or alt+enter (windows) instead of enter. that makes it a [custom mode](https://cursor.com/docs/skills), which cursor offers in the agents window and the cli. it stays in context every turn, applies itself when a playbook matches or the task needs rigor, and stays out of the way otherwise. plain enter attaches it to one message only. say so to opt out, or exit the mode to turn it off.
+-to keep [`/onyo-mode`](./skills/onyo-mode/SKILL.md) on across turns, pick it from the `/` menu and press option+enter (mac) or alt+enter (windows) instead of enter. that makes it a [custom mode](https://cursor.com/docs/skills#using-a-skill-as-a-custom-mode), which cursor offers in the agents window and the cli. it stays in context every turn until you exit the mode. plain enter attaches it to one message only.
 +ostack's [hook](./hooks/onyo-mode.sh) keeps [`/onyo-mode`](./skills/onyo-mode/SKILL.md) on. on every message it tells claude to follow the skill, unless a line of just `onyo-mode off` in a message, a `CLAUDE.md`, or a `CLAUDE.local.md` opts out. `"disableAllHooks": true` in your settings turns off every hook, this one included.
 @@ -106 +212 @@ [A]
 -[`/onyo-mode`](./skills/onyo-mode/SKILL.md) works extremely well with cursor's `/loop` command. you can make cursor work for many hours without sacrificing rigor.
@@ -167,36 +167,36 @@
 @@ -139 +245 @@ [A]
 -| [`/make-bot-ui`](./skills/make-bot-ui/SKILL.md) | you want a page or dashboard whose buttons wake a Grok Bot over a webhook, including the sender-key handoff and Tailscale. |
 +| [`/make-bot-ui`](./skills/make-bot-ui/SKILL.md) | you want a page or dashboard whose buttons wake a Claude Code routine over its API trigger, including the token handoff and Tailscale. |
-@@ -211 +317 @@ [A]
+@@ -214 +320 @@ [A]
 -ostack also ships [`subagent_type: "onyo-agent"`](./agents/onyo-agent.md) as the wrapper for delegates spawned during a run. it reads `onyo-mode` in full, including its inline principles index, before doing any work. substituting `generalPurpose` skips that read and drifts. do not spawn `onyo-agent` to run the playbook itself.
 +ostack also ships [`subagent_type: "onyo-agent"`](./agents/onyo-agent.md) (`ostack:onyo-agent` in a plugin install) as the wrapper for delegates spawned during a run. it reads `onyo-mode` in full, including its inline principles index, before doing any work. substituting `general-purpose` skips that read and drifts. do not spawn `onyo-agent` to run the playbook itself.
-@@ -215 +321 @@ [A]
+@@ -218 +324 @@ [A]
 -ostack also ships [Comment Sicko](./agents/comment-sicko.md), a read-only comment reviewer available as `subagent_type: "comment-sicko"`. usually invoke it through [`/no-comments`](./skills/no-comments/SKILL.md), not directly.
 +ostack also ships [Comment Sicko](./agents/comment-sicko.md), a read-only comment reviewer available as `subagent_type: "comment-sicko"` (`ostack:comment-sicko` in a plugin install). usually invoke it through [`/no-comments`](./skills/no-comments/SKILL.md), not directly.
-@@ -257,5 +363,3 @@ [A]
+@@ -260,5 +366,3 @@ [A]
 -- `/deslop` and the `deslop` skill ship in the `cursor-team-kit` plugin.
 -- `control-cli` (for CLIs and TUIs) and `control-ui` (for browser, Electron, web) ship in `cursor-team-kit` too.
--- `/create-skill` is a cursor built-in. cursor also ships a built-in `/babysit`; inside `onyo-mode`, the [babysit playbook](./skills/onyo-mode/playbooks/babysit.md) supersedes it for pr-status requests.
+-- `/create-skill` is a cursor built-in. cursor also ships a built-in `/autopilot` that watches a pr. inside `onyo-mode`, pr-status requests go to the [babysit playbook](./skills/onyo-mode/playbooks/babysit.md) instead.
 -
 -install `cursor-team-kit` alongside ostack if you want the full set.
 +- `/simplify` (cleanup before commit) and `/run` (drive the app, CLI, or TUI) are claude code built-ins.
 +- `skill-creator` is anthropic's skill-authoring plugin. install it with `/plugin install skill-creator@claude-plugins-official`.
 +- claude code also ships pr auto-fix (`/autofix-pr`). inside `onyo-mode`, the [babysit playbook](./skills/onyo-mode/playbooks/babysit.md) supersedes it for pr-status requests.
-@@ -265 +369 @@ [A]
+@@ -268 +372 @@ [A]
 -cursor already has a great plan mode which works great with ostack. but personally, i don't believe in planning. the best spec is code. if you do want to make a plan, [`/onyo-mode`](./skills/onyo-mode/SKILL.md) covers it, but it's not a default. 
 +claude code already has a great plan mode which works great with ostack. but personally, i don't believe in planning. the best spec is code. if you do want to make a plan, [`/onyo-mode`](./skills/onyo-mode/SKILL.md) covers it, but it's not a default. 
-@@ -273 +377 @@ [A]
+@@ -276 +380 @@ [A]
 -models are configurable too. type [`/setup-ostack`](./skills/setup-ostack/SKILL.md). it detects the models you have access to and writes a small always-applied rule mapping each role (code, judgment, the review panels) to a model. every skill reads it and falls back to sensible defaults when the rule is absent, so you override only what you want.
 +models are configurable too. type [`/setup-ostack`](./skills/setup-ostack/SKILL.md). it detects the models you have access to and writes a small always-loaded rule at `~/.claude/rules/ostack-models.md` mapping each role (code, judgment, the review panels) to a model and an effort. every skill reads it and falls back to sensible defaults when the rule is absent, so you override only what you want.
-@@ -277 +381 @@ [A]
+@@ -280 +384 @@ [A]
 -## automations
 +## routines
-@@ -279 +383 @@ [A]
+@@ -282 +386 @@ [A]
 -ostack also ships a dormant [benny automation pack](./automations/benny/). benny triages slack issue reports, then reproduces and fixes confirmed bugs with real ui evidence. its files are not registered as slash skills.
 +ostack also ships a dormant [benny routine pack](./automations/benny/). benny triages slack issue reports, then reproduces and fixes confirmed bugs with real ui evidence. its files are not registered as slash skills.
-@@ -281 +385 @@ [A]
+@@ -284 +388 @@ [A]
 -to set it up, point cursor at [`FOR_AGENTS.md`](./automations/benny/FOR_AGENTS.md). setup copies the pack into the target repository at `.cursor/automations/benny/`, enables ostack there for shared skills, and keeps user configuration outside the copied pack. benny runs on cursor automations, so it is cursor-only.
 +to set it up, point claude code at [`FOR_AGENTS.md`](./automations/benny/FOR_AGENTS.md). setup copies the pack into the target repository at `.claude/automations/benny/`, enables ostack there for shared skills, keeps user configuration outside the copied pack, and helps you create the two claude code routines.
-@@ -285 +389 @@ [A]
+@@ -288 +392 @@ [A]
 -MIT
 +MIT. pstack is Copyright (c) 2026 Lauren Tan. ostack's changes are Copyright (c) 2026 Hugo Hsi. See [LICENSE](./LICENSE) and [NOTICE](./NOTICE).
