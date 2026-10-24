@@ -40,3 +40,7 @@ A change that is not a harness port does not belong in a patch. ostack's own def
 The merge carries ostack's changes forward as changes. Text outside a patch hunk is always the new upstream text, so an old pstack sentence can't stay behind unless a person keeps it while resolving a conflict, and that leaves a `[?]` hunk that `check` rejects.
 
 The tool fetches upstream into `~/.cache/ostack-pstack.git`. Set `PSTACK_CACHE` to use another git directory, such as a local clone of `cursor/plugins`.
+
+## Scheduled runs
+
+A scheduled run does the steps above end to end. It bumps to the newest upstream commit, resolves each conflict that doesn't change behavior ostack set on purpose, marks every hunk, and runs `check` and the hook tests. It then opens a ready PR and merges it once CI is green, with no approval step. It notifies the owner after each run. It stops and asks only when a conflict would change behavior ostack set on purpose, or when a hunk can't be classified as a harness port.

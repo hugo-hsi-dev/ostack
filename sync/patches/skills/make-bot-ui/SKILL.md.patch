@@ -1,8 +1,5 @@
 --- a/skills/make-bot-ui/SKILL.md
 +++ b/skills/make-bot-ui/SKILL.md
-@@ -2 +2 @@ [A]
--name: Make Bot UI
-+name: make-bot-ui
 @@ -5,2 +5,2 @@ [A]
 -  Grok Bot over a webhook, when the user must provide a webhook sender key, or
 -  when exposing that UI on Tailscale.

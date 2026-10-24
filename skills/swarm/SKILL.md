@@ -19,12 +19,12 @@ Open a todolist with one entry per phase before launching anything.
 
 1. State the done predicate and the artifact or report the swarm must return.
 2. Choose the shape. Partition into slices, race N workers on identical briefs, or mix both. For a race or mixed shape, declare `first pass`, `rank all`, or `best-of` before spawning.
-4. Pick the worker model and effort from the `swarm workers` line in `~/.claude/rules/ostack-models.md`. If the rule or that line is missing, use `sonnet xhigh`. For `inherit`, omit `model` and `effort` so the workers run on the parent model. If the Agent tool rejects a model, use the default and say so. If it rejects the default, use the closest valid model from its error message. For a model race, name each arm's model up front. Pick each subagent's reasoning level and fast or standard speed for the job, per the Subagents section of the **onyo-mode** skill.
-5. Give each worker its own writable output when it writes. When workers verify or measure commits, each brief names the exact SHAs. A measurement brief also names the method (sample count, what one sample is, order). The worker records both in its result.
+3. Pick the worker model and effort from the `swarm workers` line in `~/.claude/rules/ostack-models.md`. If the rule or that line is missing, use `sonnet xhigh`. For `inherit`, omit `model` and `effort` so the workers run on the parent model. If the Agent tool rejects a model, use the default and say so. If it rejects the default, use the closest valid model from its error message. For a model race, name each arm's model up front. Pick each subagent's reasoning level and fast or standard speed for the job, per the Subagents section of the **onyo-mode** skill.
+4. Give each worker its own writable output when it writes. When workers verify or measure commits, each brief names the exact SHAs. A measurement brief also names the method (sample count, what one sample is, order). The worker records both in its result.
 
 ## Phase B: Fan out
 
-Spawn all N workers in one message with `subagent_type: "general-purpose"`, `isolation: "remote"`, `run_in_background: true`, and the step 4 model and effort, left unset for `inherit`. Each remote worker is a Claude Code cloud session with its own machine. Where the Agent tool does not offer `isolation: "remote"`, start each worker with `claude --cloud "<brief>"` from Bash. Passing a model with `--cloud` is undocumented, so the worker may run on the cloud session's default model. Record the model it ran on in the report. Each such brief names the branch the worker pushes to and tells it to commit its report as a file on that branch and push it. Drop `isolation: "remote"` only when the worker needs access to something on the user's computer, and use `isolation: "worktree"` when it writes.
+Spawn all N workers in one message with `subagent_type: "general-purpose"`, `isolation: "remote"`, `run_in_background: true`, and the step 3 model and effort, left unset for `inherit`. Each remote worker is a Claude Code cloud session with its own machine. Where the Agent tool does not offer `isolation: "remote"`, start each worker with `claude --cloud "<brief>"` from Bash. Passing a model with `--cloud` is undocumented, so the worker may run on the cloud session's default model. Record the model it ran on in the report. Each such brief names the branch the worker pushes to and tells it to commit its report as a file on that branch and push it. Drop `isolation: "remote"` only when the worker needs access to something on the user's computer, and use `isolation: "worktree"` when it writes.
 
 When a worker must start from a non-default pushed branch, name the branch in its brief and have it check that branch out first.
 
@@ -38,4 +38,4 @@ Read the terminal results. A subagent worker returns its result to you. A `claud
 
 ## Phase D: Report
 
-Return one consolidated in-chat report with the table, issue one-liners, gaps or dropouts, and the race rule when used.
+Return one consolidated in-chat report with a result table, issue one-liners, gaps or dropouts, and the race rule when used.

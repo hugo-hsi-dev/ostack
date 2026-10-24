@@ -3,9 +3,13 @@
 @@ -12 +12 @@ [A]
 -| Run another ostack skill (`/name` or "the **name** skill") | `Read` `<ostack>/skills/<name>/SKILL.md` and follow it. The `Skill` tool refuses most ostack skills. When you tell the user to type it, write `/ostack:<name>`. |
 +| Run another ostack skill (`/name` or "the **name** skill") | `Read` `<ostack>/skills/<name>/SKILL.md` and follow it. The `Skill` tool refuses `arena`, `correct`, `ketchup`, `recall`, `swarm`, and `unslop`, so read those with `Read` too. When you tell the user to type it, write `/ostack:<name>`. |
-@@ -37 +37 @@ [A]
--| The `ostack-models.mdc` rule | Claude Code does not load it. Use the skill's default slug and map it with these rows. `setup-ostack` has nothing to write, so say so and stop. Never put its role lines in `CLAUDE.md` or `AGENTS.md`. |
-+| The `ostack-models.mdc` rule | Claude Code does not load it. `setup-ostack` writes `~/.claude/rules/ostack-models.md` instead. Use the skill's default slug and map it with these rows. Never put its role lines in `CLAUDE.md` or `AGENTS.md`. |
-@@ -50 +50 @@ [A]
--Automations, Bugbot, Cursor cloud agents, and Cursor's pull request tool have no Claude Code equivalent. Say so, skip that step, and continue.
+@@ -60,8 +60 @@ [A]
+-Claude Code has no Cursor Automations, Bugbot, Cursor cloud agents, or built-in PR tool. When a step needs one, put one line in your reply, `Skipped in Claude Code: <step>. <reason>.`, then go on to the next step. Do not stop, ask, or retry. When a later step needs what the skipped step made, such as a URL or a key, leave a placeholder and name it in the line.
+-
+-| Cursor | Claude Code |
+-| --- | --- |
+-| Cursor Automations: routines, `update_state` routine calls, `api2.cursor.sh/automations` webhooks, routine wakes, and `SendToUser` secret requests | Skip with the line. |
+-| Bugbot | Bugbot comments on a GitHub PR are ordinary review threads, so triage them with the forge command that the step gives. Skip a step that starts, waits for, or configures Bugbot when the PR has no Bugbot check or comment. |
+-| Cursor cloud agents | `environment: "cloud"` maps to a worktree, as in Subagent fields. Skip a step that needs the cloud agent itself, such as its dashboard status or its own machine. |
+-| A built-in PR tool | Use the forge command that the step gives, such as `gh pr create`. That is not a skip, so write no line. |
 +Cursor's pull request tool has no Claude Code equivalent. Use `gh`, or the GitHub MCP tools in cloud sessions. Automations, Bugbot, and cloud agents map to the Claude Code features in the README's port table.
