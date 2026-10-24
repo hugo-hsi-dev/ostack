@@ -1,6 +1,6 @@
 --- a/skills/onyo-mode/scripts/watch-pr/github.test.ts
 +++ b/skills/onyo-mode/scripts/watch-pr/github.test.ts
-@@ -293,0 +294,91 @@ [A]
+@@ -297,0 +298,91 @@ [A]
 +it("annotates Claude Code Review threads as review-bot threads", () => {
 +  const thread = (id: string, login: string, body: string) => ({
 +    id,
@@ -92,7 +92,7 @@
 +  expect(threads[0]?.firstComment?.commitOid).toBe("aaa111");
 +});
 +
-@@ -302,0 +394 @@ [A]
+@@ -306,0 +398 @@ [A]
 +      commitOid: null,
-@@ -351,0 +444 @@ [A]
+@@ -355,0 +448 @@ [A]
 +        commitOid: null,

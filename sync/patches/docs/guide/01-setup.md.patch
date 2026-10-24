@@ -10,26 +10,26 @@
 @@ -13 +14 @@ [A]
 -Cursor confirms the plugin is installed.
 +Run `/plugin` to confirm the plugin loaded. Plugin skills are namespaced, so `/onyo-mode` is also `/ostack:onyo-mode`. The bare name works when no other skill shares it. This guide uses bare names. The [README](../../README.md#install) also covers local checkouts, Cursor, and skills.sh.
-@@ -23 +24 @@ [A]
+@@ -25 +26 @@ [A]
 -[`/setup-ostack`](../../skills/setup-ostack/SKILL.md) detects the models you have access to, asks for a reasoning budget, shows you each role (code delegates, judgment, the review panels), and asks what you want. Answer the questions. It writes `~/.cursor/rules/ostack-models.mdc`, a small rule every ostack skill reads.
 +[`/setup-ostack`](../../skills/setup-ostack/SKILL.md) detects the models you have access to, asks for a reasoning budget, shows you each role (code delegates, judgment, the review panels), and asks what you want. Answer the questions. It writes `~/.claude/rules/ostack-models.md`, a small rule every ostack skill reads.
-@@ -25 +26 @@ [A]
+@@ -27 +28 @@ [A]
 -The defaults run at `xhigh` reasoning, the same as the `large` budget. `unlimited` lifts each model to its highest tier, up to `max`. Opus goes to `max`. Grok tops out at `xhigh`, so it stays there. `medium` and `small` lower the reasoning and spend fewer tokens.
 +The defaults run at `xhigh` reasoning, the same as the `large` budget. `unlimited` lifts each model to its highest tier, up to `max`. `medium` and `small` lower the reasoning and spend fewer tokens.
-@@ -29 +30 @@ [A]
+@@ -31 +32 @@ [A]
 -You might be wondering what happens if you use Auto. Set a role to `inherit-parent` or `auto` and ostack omits the subagent `model` field, so the subagent inherits your parent chat model. Both values mean the same thing, and neither is a model slug. For a panel role the value is a list, and one subagent runs per entry, so the list length sets the panel size. Setup also configures `swarm workers`, the default model for every `/swarm` worker unless a race names a model for each arm.
 +You might be wondering how to run a role on your main session's model. Set it to `inherit` and ostack omits the subagent's `model` and `effort`, so the subagent inherits them from your session. `inherit` isn't a model alias. For a panel role the value is a list, and one subagent runs per entry, so the list length sets the panel size. Setup also configures `swarm workers`, the default model for every `/swarm` worker unless a race names a model for each arm.
-@@ -35 +36 @@ [A]
+@@ -37 +38 @@ [A]
 -Say yes and it writes `.cursor/skills/verify-<app>/`, a project-local skill that teaches agents to drive your app the way a user does. It proves the skill works once before handing it over. Say no and setup moves on. You can run `/create-verification-skill` yourself any time. [Verify and ship](./06-verify-and-ship.md#create-a-project-verification-skill) covers it in depth.
 +Say yes and it writes `.claude/skills/verify-<app>/`, a project-local skill that teaches agents to drive your app the way a user does. It proves the skill works once before handing it over. Say no and setup moves on. You can run `/create-verification-skill` yourself any time. [Verify and ship](./06-verify-and-ship.md#create-a-project-verification-skill) covers it in depth.
-@@ -39 +40 @@ [A]
+@@ -43 +44 @@ [A]
 -After setup, start a new chat. The model rule applies to new sessions.
 +After setup, start a new session. The model rule applies to new sessions.
-@@ -45,2 +46,2 @@ [A]
+@@ -49,2 +50,2 @@ [A]
 -- Rerun `/setup-ostack` and pick a smaller reasoning budget or cheaper models. A strong model in the main chat with cheaper, faster models in the code roles is a good split.
 -- Set a role to `auto` or `inherit-parent` so it runs on the chat's own model.
 +- Rerun `/setup-ostack` and pick a smaller effort budget or cheaper models. A strong model in the main chat with cheaper, faster models in the code roles is a good split.
 +- Set a role to `inherit` so it runs on the session's own model.
-@@ -60 +61 @@ [A]
--From here you can type normal follow-ups. To keep `/onyo-mode` on for the whole chat, pick it from the `/` menu with Option+Enter (Mac) or Alt+Enter (Windows) instead of Enter. That makes it a [Custom Mode](https://cursor.com/docs/skills), which stays in context on every turn until you exit it. Custom Modes are available in the Agents Window and the CLI. Plain Enter attaches the skill to one message, and it fades as the chat moves on.
+@@ -64 +65 @@ [A]
+-From here you can type normal follow-ups. To keep `/onyo-mode` on for the whole chat, pick it from the `/` menu with Option+Enter (Mac) or Alt+Enter (Windows) instead of Enter. That makes it a [Custom Mode](https://cursor.com/docs/skills#using-a-skill-as-a-custom-mode), which stays in context on every turn until you exit it. Custom Modes are available in the Agents Window and the CLI. Plain Enter attaches the skill to one message, and it fades as the chat moves on.
 +From here you can type normal follow-ups. `/onyo-mode` attaches the skill to one message, and it fades as the chat moves on.

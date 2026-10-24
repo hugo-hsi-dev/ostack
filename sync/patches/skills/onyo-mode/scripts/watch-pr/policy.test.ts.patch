@@ -1,6 +1,6 @@
 --- a/skills/onyo-mode/scripts/watch-pr/policy.test.ts
 +++ b/skills/onyo-mode/scripts/watch-pr/policy.test.ts
-@@ -151,0 +152,16 @@ [A]
+@@ -152,0 +153,16 @@ [A]
 +});
 +
 +it("flags a pending Claude Code Review check as running review automation", async () => {

@@ -1,8 +1,8 @@
 --- a/docs/guide/10-recipes-and-pitfalls.md
 +++ b/docs/guide/10-recipes-and-pitfalls.md
-@@ -144 +144 @@ [A]
--- **Parallel agents in one worktree.** They overwrite each other and the diff becomes archaeology. Run them as cloud agents, or say "own worktree per attempt".
-+- **Parallel agents in one worktree.** They overwrite each other and the diff becomes archaeology. Run them as cloud sessions, or say "own worktree per attempt".
-@@ -150 +150 @@ [A]
+@@ -170 +170 @@ [A]
+-- **Parallel agents in one worktree.** They overwrite each other, and nobody can tell which agent changed what. Run them as cloud agents, or say "own worktree per attempt".
++- **Parallel agents in one worktree.** They overwrite each other, and nobody can tell which agent changed what. Run them as cloud sessions, or say "own worktree per attempt".
+@@ -176 +176 @@ [A]
 -- **Treating `auto` as a model slug.** `auto` and `inherit-parent` mean "omit the model field so the subagent inherits the parent chat model." [Setup](./01-setup.md) covers the roles.
 +- **Treating `inherit` as a model alias.** `inherit` means "omit the `model` and `effort` so the subagent inherits the parent session's." [Setup](./01-setup.md) covers the roles.
