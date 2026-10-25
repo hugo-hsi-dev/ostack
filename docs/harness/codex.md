@@ -6,7 +6,7 @@ Read this mapping before using a skill. A workflow instruction does not grant pe
 
 ## Tools and roles
 
-The following names were observed in this porting session, not promised as universal Codex APIs. Inspect the current exposed schema before calling tools.
+The following native-subagent names were observed in this porting session, not promised as universal Codex APIs or cloud-task controls. Inspect the current exposed schema before calling tools. Orchestrate’s isolated cloud-task path is described separately below.
 
 | Upstream requirement | Codex mapping and limit |
 | --- | --- |
@@ -21,7 +21,7 @@ The following names were observed in this porting session, not promised as unive
 | Todo list | Use an exposed plan tool if available, otherwise maintain the same ordered checklist in the conversation or project artifact. This does not add a planning workflow. |
 | MCP discovery | Inspect the exposed tools and discover authorized sources. No assumed Cursor `mcps/` directory. |
 
-Native subagents share this selected execution environment. They are not durable cloud tasks, do not get their own VM or worktree automatically, and cannot be assumed to survive a parent restart. Codex cloud is a separate product surface. Orchestrate uses ChatGPT Spaces/Pages for its durable project record as described below. That storage does not supply persistent coordinator execution. A playbook requiring cloud isolation or cloud status/wake behavior still needs a verified execution adapter before that step runs; this port supplies no such adapter.
+Native subagents share this selected execution environment. They are not durable cloud tasks, do not get their own VM or worktree automatically, and cannot be assumed to survive a parent restart. Codex cloud is a separate product surface. Orchestrate uses ChatGPT Spaces/Pages for its durable project record as described below. That storage does not supply persistent coordinator execution. Orchestrate uses the coordinating parent’s exposed Codex cloud-task controls where available; this repository supplies no implementation of those controls. Missing placement, status, result or wake capabilities remain gaps, not reasons to substitute native subagents.
 
 ## Models, installation, and configuration
 
@@ -41,9 +41,17 @@ The [Orchestrate playbook](../../skills/poteto-mode/playbooks/orchestrate.md) us
 
 Native headings, checklists, tables and links hold unit IDs, upstream dependency context, branch/PR mappings, exact SHAs, verifier evidence, user gates, status and observed frontier snapshots. The coordinator reconciles these with the actual forge/task state; Pages do not calculate readiness or become live GitHub truth. A changed head invalidates verification. The inbox holds completion pointers. Preserve source reports and tool receipts while reconciling partial or uncertain saves, with tool-required guards and readback. This path adds no mandatory versioning, dependency-ID schema, event identity, or processed-event register. Single-writer ownership is a coordination convention, not a distributed lock. Preserve user edits and existing privacy; never store secrets or raw sensitive logs.
 
-The existing `scripts/orch/` implementation still operates on local files. It is optional legacy/local tooling, not a Pages backend, and is not invoked by this Spaces path. No connector, new planner, worker lifecycle, callback, scheduler, automatic edit-trigger subscription, or autopilot redesign is included. Small-task collapse and all planning/review/acceptance gates remain.
+The existing `scripts/orch/` implementation still operates on local files. It is optional legacy/local tooling, not a Pages backend, and is not invoked by this Spaces path. No connector, new planner, scheduler, automatic edit-trigger subscription, or autopilot redesign is included. The cloud-task lifecycle below adapts the existing worker workflow without implementing infrastructure. Small-task collapse and all planning/review/acceptance gates remain.
 
 Capability documentation checked on 2026-10-25: the active Pages plugin's `write-page` and `maintain-space` skills, `write-page/references/page-content.md`, and `write-page/references/edit-requests.md`, plus exposed `read_page`, `edit_page`, `patch_page`, and `create_page` tool descriptions. The skill package is `skill://plugin_connector_1p_4a72ddeef4c481918f92d8e8df18fb2c`. These document native formatting, read-derived block guards, per-operation receipts and recovery; they do not establish transactional multi-page writes. Consult the coordinator's current skills/tools for exact arguments. No user Page was read or changed to validate this repository port, and live persistence/access remains untested.
+
+## Orchestrate cloud-task lifecycle
+
+The parent assistant creates isolated Codex cloud tasks, retains their returned references, and reads status/results through its active task controls. Workers return their existing report in the final response; they generally have no parent-messaging API. Terminal callbacks from parent-created tasks are observed in the coordinating surface and feed the existing completion inbox. The parent still reads the report and verifies its SHA and evidence. A terminal turn is not proof of acceptance.
+
+User-created or adopted tasks do not have a universally verified wakeup path. Nor does a restart prove that a callback relationship survives. During recovery the parent reads known tasks and reconciles their PR/branch state; reading is not a subscription or a continuation turn. Preserve upstream retry limits, timeboxes and fresh-worker defaults. Continue a returned task only under the existing narrow state-preservation exception and an available continuation control. Watcher wakeups and nested cloud-task controls remain capability gaps where unavailable; no retry scheduler or heartbeat protocol is added.
+
+Evidence boundary on 2026-10-25: the coordinating parent reported observed parent-created terminal callbacks and parent-side result reads. This delegated execution environment receives task instructions and returns final results, but its exposed tool catalog does not include the parent's cloud-task creation/read schemas. Accordingly this port specifies those operations by capability and requires the parent's current tool contract; it does not invent method names, arguments, callback subscriptions or a child-to-parent send tool. This change did not run a new cloud-task lifecycle test.
 
 ## Remaining compatibility gaps
 
