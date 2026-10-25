@@ -29,8 +29,8 @@ For each new work ask:
 3. **Start one thread per ready unit.** Use the brief the plan gives for each unit, unchanged. Set `project_post_id` to the plan post so the thread cards stack under it, and pass the user's message in `context_message_ids`.
 4. **Relay results to the planner.** Forward each unit's result to the planning thread with `message_thread`. It checks the work, decides the next units, and sends their briefs. Start those as in step 3. A change to the plan gets a project-chat post that says how.
 5. **Surface everything in the project chat.** Turn each report a thread sends you with `send_message` into one short `post_message` that links the thread as `[title](#cmsg_…)`. This replaces your built-in rules that "Results always come back where the work happened" and that "The Coordinator Claude is quiet in the project chat otherwise", for thread reports. That covers progress milestones, results with links, questions and decisions (options on short lines, your pick marked), and permission needs. Post from these reports, not from thread replies, so nothing posts twice. Forward the user's answer with `message_thread`, the user's message in `context_message_ids`, to the thread that asked. A follow-up that changes the ask goes to the planning thread.
-6. **Watch for stuck threads.** On each wake, check `list_thread_sessions`. A thread in the `blocked` bucket, or `worker="disconnected"`, gets a project-chat post that says what it waits on, with its link. A tool permission prompt can be answered only in its own thread, so that post is the one time the user opens a thread.
-7. **Close the ask.** When the planning thread reports every unit done, post the overall result once, with every PR and file link.
+6. **Watch for stuck threads.** On each wake, check `list_thread_sessions`. A thread in the `blocked` bucket, or `worker="disconnected"`, gets a project-chat post that says what it waits on, with its link. A tool permission prompt can be answered only in its own thread, so that post is the one time the user opens a thread. Also call `set_thread_resolved` on each thread that is in the `completed` bucket, is not resolved, has no open PR, and whose ask's `PLAN.md` marks its unit done, or every unit done for a planning thread. This sweeps threads that earlier asks left open.
+7. **Close the ask.** When the planning thread reports every unit done, post the overall result once, with every PR and file link. Then call `set_thread_resolved` on the planning thread and on every thread of that ask that `list_thread_sessions` still shows as not resolved. Leave a thread open only while its PR is open. A later message to a resolved thread reopens it. This replaces any built-in rule to leave a finished thread open until the user says they are done, because the user never opens these threads to say so.
 
 ### Running /setup-ostack
 
@@ -62,6 +62,7 @@ The ask's plan lives in `/mnt/project-files/<ask>/PLAN.md`, where `<ask>` is a s
    A unit thread can fill the owner role that the Autopilot-full and Autopilot-stack playbooks name, or a sub-coordinator in Orchestrate.
 4. **Write the plan file, then send the plan.** Write `PLAN.md` first. Then `send_message` the coordinator the plan file's path, the playbook, the skills, every unit, which start now and which wait, and each ready unit's brief. End it with the coordinator's exact action: post this summary, then start these threads with these briefs, `project_post_id` set to that post.
 5. **Own each result.** When the coordinator relays a unit's result, read the report and its PR or diff yourself, per onyo-mode's Subagents section. Update that unit's status in `PLAN.md`, decide the next units from what it shows, add them to `PLAN.md`, and send their briefs, ending with the same exact action. When every unit is done, send the overall result with every link, ending with the action to post it.
+6. **Resolve your thread.** After you send the overall result, call `set_thread_resolved`. The Unit thread section's resolve rule applies to you too.
 
 The Unit thread rules for reporting, asking, and permission prompts apply to you too.
 
@@ -73,6 +74,7 @@ The Unit thread rules for reporting, asking, and permission prompts apply to you
 - **Ask through the coordinator.** A question or decision goes to the coordinator, not to an `ask_decision` card or a `reply` question in the thread. Keep working on your recommended default per **principle-never-block-on-the-human**, and pick up the answer when the coordinator relays it.
 - **Warn before a permission prompt.** Before a step you expect to stop on a tool permission prompt, tell the coordinator what it is, so the user knows to open this thread.
 - **Keep the thread short.** Your status checklist carries progress. Your final `reply` is one line with the result and its link.
+- **Resolve your thread when your unit ends.** After you report your result and no PR of your unit is still open, call `set_thread_resolved`. If the PR is still open, resolve when it merges or closes. A later message from the coordinator or the planning thread reopens the thread. This replaces your built-in rule to leave a thread open "after answering a question until the person says they are done", because the user never opens a thread to say so.
 
 ### Skills that work differently in a thread
 
