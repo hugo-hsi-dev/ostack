@@ -28,7 +28,7 @@ That covers the legacy flat (`<id>.jsonl`), current nested (`<id>/<id>.jsonl`), 
 
 One message, three `spawn_agent` calls, a general native subagent, agent mode (the parent’s authorized tools and permissions). Reviewers need MCP access to look up the tickets, chat threads, and observability traces the transcript references, and must have access to the authorized sources.
 
-Read `reflect tooling` and `reflect judgment, divergent, synthesizer` in the repository’s `.agents/pstack-models.md` explicitly. Use only session-supported models and reasoning settings, per poteto-mode’s Subagents section. Missing roles inherit the parent. Keep the role split and read-only research briefs; inherited permissions do not enforce read-only behavior. If distinct model families are unavailable, report that limitation rather than claiming multi-model evidence.
+Read `reflect tooling` and `reflect judgment, divergent, synthesizer` in the user-level `$CODEX_HOME/pstack-models.md` explicitly. Use only session-supported models and reasoning settings, per poteto-mode’s Subagents section. Missing roles inherit the parent. Keep the role split and read-only research briefs; inherited permissions do not enforce read-only behavior. If distinct model families are unavailable, report that limitation rather than claiming multi-model evidence.
 
 | Lens | Role line | Default `model` | Prompt template |
 |---|---|---|---|

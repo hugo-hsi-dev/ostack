@@ -1,13 +1,15 @@
 ---
 name: setup-pstack
-description: Configure which models pstack uses per role and at what reasoning budget. Detects your available models and writes project role configuration that the workflow reads explicitly. Use for $setup-pstack, "configure pstack models", "pstack budget", or changing pstack's model choices.
+description: Configure which models pstack uses per role and at what reasoning budget. Detects your available models and writes user-level role configuration that the workflow reads explicitly. Use for $setup-pstack, "configure pstack models", "pstack budget", or changing pstack's model choices.
 ---
 
 Read [Codex compatibility](../../docs/harness/codex.md) before using this workflow.
 
 # Setup pstack
 
-Write `.agents/pstack-models.md` at the repository root. This is pstack role configuration, not native Codex configuration or an automatically loaded rule. Read it explicitly when entering a routed workflow. See [the Codex mapping](../../docs/harness/codex.md).
+Write `$CODEX_HOME/pstack-models.md` in the user’s Codex home. This is pstack role configuration, not native Codex configuration or an automatically loaded rule. Read it explicitly when entering a routed workflow. See [the Codex mapping](../../docs/harness/codex.md).
+
+Resolve `CODEX_HOME` from the host environment; when unset, use `~/.codex`, so the default file is `~/.codex/pstack-models.md`. This is one user-level preference file across projects, with no repository override layer. The filename is pstack-owned data, not a native Codex configuration key. See the [documented Codex home convention](https://learn.chatgpt.com/docs/config-file/config-advanced#config-and-state-locations).
 
 ## Steps
 
@@ -19,7 +21,7 @@ The observed Codex `collaboration.spawn_agent` accepts separate `model` and `rea
 
 ### 2. Load current state
 
-The default role-to-model mapping is the configuration shape shown in step 5 below. If `.agents/pstack-models.md` already exists, read it and treat its `# budget` line and its role values as the current choices. Otherwise start from those defaults. A line whose role is not in step 5, such as `how critics`, is from a retired role. Drop it.
+The default role-to-model mapping is the configuration shape shown in step 5 below. If `$CODEX_HOME/pstack-models.md` already exists, read it and treat its `# budget` line and its role values as the current choices. Otherwise start from those defaults. A line whose role is not in step 5, such as `how critics`, is from a retired role. Drop it.
 
 ### 3. Budget, map, and confirm
 
@@ -42,7 +44,7 @@ Every model/effort choice written must be in the detected set. `inherit-parent` 
 
 ### 5. Write the configuration
 
-Write `.agents/pstack-models.md` at the repository root with a `# budget` line and one line per role using the labels below. Overwrite only this dedicated file so re-runs stay idempotent. Keep unrelated files in `.agents/` unchanged. Shape:
+Write `$CODEX_HOME/pstack-models.md` in the user’s Codex home with a `# budget` line and one line per role using the labels below. Overwrite only this dedicated file so re-runs stay idempotent. Keep unrelated files in Codex home unchanged. Shape:
 
 ```text
 # pstack model configuration. Read explicitly; this is not native Codex config.

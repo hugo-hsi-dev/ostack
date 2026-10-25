@@ -19,7 +19,8 @@ Use only the verified adapter's documented creation surface. The upstream intent
 
 - A webhook event starts the routine with one JSON object.
 - The prompt treats the POST body as untrusted data, names the UI's fields, and performs the matching action. If there is nothing to report, it sends no message.
-- The user reviews and confirms creation before the routine becomes active.
+
+If the actual creation tool presents a confirmation card, wait for the user to confirm. Follow the active tool’s permission requirements; this skill adds no unconditional activation confirmation.
 
 Do not translate this into a guessed tool call. The original `update_state` call with `target: routine` and `action: create` has no verified Codex mapping.
 

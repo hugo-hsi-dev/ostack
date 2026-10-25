@@ -16,7 +16,7 @@ Run:
 $setup-pstack
 ```
 
-[`$setup-pstack`](../../skills/setup-pstack/SKILL.md) detects the models you have access to, asks for a reasoning budget, shows you each role (code delegates, judgment, the review panels), and asks what you want. Answer the questions. It writes `.agents/pstack-models.md`, a project-owned role map that skills explicitly read, not an automatically loaded Codex rule.
+[`$setup-pstack`](../../skills/setup-pstack/SKILL.md) detects the models you have access to, asks for a reasoning budget, shows you each role (code delegates, judgment, the review panels), and asks what you want. Answer the questions. It writes `$CODEX_HOME/pstack-models.md`, a user-level role map that skills explicitly read, not an automatically loaded Codex rule.
 
 The Codex baseline inherits the parent model. Setup preserves the budget choices, but applies reasoning effort only when the host and selected model expose a supported value. It does not convert Cursor’s combined model-and-effort slugs into guessed Codex models.
 
@@ -34,7 +34,7 @@ If you're new to pstack, say yes. An agent that can check its own work keeps goi
 
 Then setup offers once to generate a formal verification skill with [`$create-formal-verification-skill`](../../skills/create-formal-verification-skill/SKILL.md), unless the project already has one. Tests check the cases someone thought to write. A formal verification skill checks one key property of your code, such as "a job never runs twice at once", in every case within a stated scope. Say yes when your code has concurrency, retries, a state machine, or a parser, where a bug is costly and tests rarely reach the case that breaks. Otherwise say no, and run it later if that changes. [Verify and ship](./06-verify-and-ship.md#prove-a-property-with-a-formal-verification-skill) covers it.
 
-After setup, have the next workflow read `.agents/pstack-models.md`. This file is explicitly loaded by the skills; writing it does not change Codex’s global model configuration.
+After setup, have the next workflow read `$CODEX_HOME/pstack-models.md`. This file is explicitly loaded by the skills; writing it does not change Codex’s global model configuration.
 
 ## Keep the cost in check
 

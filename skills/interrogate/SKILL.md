@@ -25,7 +25,7 @@ Before spawning reviewers, state the intent in one clear paragraph from the user
 
 ## Step 3, Spawn Reviewers
 
-Launch all reviewers in a single message with the exposed native subagent tool, one per entry on the `interrogate reviewers` line in `.agents/pstack-models.md`, labeled Reviewer A, B, and so on to match the entry count. If the rule or that line is missing, use the table defaults.
+Launch all reviewers in a single message with the exposed native subagent tool, one per entry on the `interrogate reviewers` line in `$CODEX_HOME/pstack-models.md`, labeled Reviewer A, B, and so on to match the entry count. If the rule or that line is missing, use the table defaults.
 
 | Subagent | Default model |
 |----------|---------------|

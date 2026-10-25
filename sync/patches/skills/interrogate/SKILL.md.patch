@@ -7,7 +7,7 @@
 +Read [Codex compatibility](../../docs/harness/codex.md) before using this workflow.
 @@ -27 +28 @@ [A]
 -Launch all reviewers in a single message with the Task tool, one per entry on the `interrogate reviewers` line in `~/.cursor/rules/pstack-models.mdc`, labeled Reviewer A, B, and so on to match the entry count. If the rule or that line is missing, use the table defaults.
-+Launch all reviewers in a single message with the exposed native subagent tool, one per entry on the `interrogate reviewers` line in `.agents/pstack-models.md`, labeled Reviewer A, B, and so on to match the entry count. If the rule or that line is missing, use the table defaults.
++Launch all reviewers in a single message with the exposed native subagent tool, one per entry on the `interrogate reviewers` line in `$CODEX_HOME/pstack-models.md`, labeled Reviewer A, B, and so on to match the entry count. If the rule or that line is missing, use the table defaults.
 @@ -31,2 +32,2 @@ [A]
 -| Reviewer A | `claude-opus-5-5-xhigh` |
 -| Reviewer B | `grok-4.7-xhigh-fast` |

@@ -281,7 +281,7 @@ Codex Plan Mode can work alongside pstack where the host provides it. This port 
 
 type [`$automate-me`](./skills/automate-me/SKILL.md). it mines your recent transcripts, drafts a `<your-name>-mode` skill from how you've actually worked, and routes through pstack underneath. you keep pstack as the base and end up with your own routing skill alongside `poteto-mode`.
 
-models are configurable too. [`$setup-pstack`](./skills/setup-pstack/SKILL.md) checks supported choices and writes `.agents/pstack-models.md`, a project-owned role map that skills explicitly read. It is not an always-loaded Codex configuration file.
+models are configurable too. [`$setup-pstack`](./skills/setup-pstack/SKILL.md) checks supported choices and writes `$CODEX_HOME/pstack-models.md`, a user-level role map that skills explicitly read. It is not an always-loaded Codex configuration file.
 
 when a default changes, a rule written before the change still pins the old default. delete those role lines, or delete the file, then run `$setup-pstack` again. a rerun keeps any role whose model differs from the default.
 
