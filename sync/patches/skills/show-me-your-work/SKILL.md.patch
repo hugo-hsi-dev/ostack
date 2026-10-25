@@ -1,17 +1,14 @@
 --- a/skills/show-me-your-work/SKILL.md
 +++ b/skills/show-me-your-work/SKILL.md
-@@ -9,0 +10,2 @@ [A]
-+A bold ostack skill name below means read `${CLAUDE_SKILL_DIR}/../<name>/SKILL.md` in full and follow it. A **<name>** principle skill sits at `${CLAUDE_SKILL_DIR}/../principle-<name>/SKILL.md`. If `${CLAUDE_SKILL_DIR}` appears literally, it is the directory that holds this file.
+@@ -4 +3,0 @@ [A]
+-disable-model-invocation: true
+@@ -6,0 +6,2 @@ [A]
++Read [Codex compatibility](../../docs/harness/codex.md) before using this workflow.
 +
-@@ -14 +16 @@ [A]
--Copy `references/decision-log-template.tsv` (the header row) to start a clean log. Columns:
-+Copy `${CLAUDE_SKILL_DIR}/references/decision-log-template.tsv` (the header row) to start a clean log. Columns:
-@@ -37 +39 @@ [A]
--Use the helper `scripts/log.sh <logfile> <phase> <decision> <why> <evidence> <result>`. It stamps `ts`, writes the header on first use, strips stray tabs/newlines, and prefixes any cell starting with `=`, `+`, `-`, or `@` with a single quote. A bare `printf` appending a row works too, but mind those same bytes if cells come from generated or user-supplied text.
-+Use the helper `${CLAUDE_SKILL_DIR}/scripts/log.sh <logfile> <phase> <decision> <why> <evidence> <result>`. It stamps `ts`, writes the header on first use, strips stray tabs/newlines, and prefixes any cell starting with `=`, `+`, `-`, or `@` with a single quote. A bare `printf` appending a row works too, but mind those same bytes if cells come from generated or user-supplied text.
-@@ -41 +43 @@ [A]
--A run is one agent conversation, including its later turns and any summary of it. A pickup, a replacement agent, or a new chat starts a new run. When a run adds to a log that already has rows, its first row has phase `start`, and so does its first row after another run's `start` row. So a run that comes back to a log in a later turn first reads the log's last rows to see whether another run wrote since. A `start` row names the `ts` range of the rows before it that this run did not write, and its evidence names this run, such as its agent id. Use phase `start` for nothing else.
-+A run is one agent conversation, including its later turns and any summary of it. A pickup, a replacement agent, or a new chat starts a new run. When a run adds to a log that already has rows, its first row has phase `start`, and so does its first row after another run's `start` row. So a run that comes back to a log in a later turn first reads the log's last rows to see whether another run wrote since. A `start` row names the `ts` range of the rows before it that this run did not write, and its evidence names this run, such as its session id (`${CLAUDE_SESSION_ID}`). If `${CLAUDE_SESSION_ID}` appears literally, use the name of the transcript file that the audit step below finds. Use phase `start` for nothing else.
-@@ -56 +58 @@ [A]
+@@ -7,0 +9,3 @@ [A]
++
++**Transcript compatibility.** Use only a transcript/export explicitly exposed for the active project. The directory names and JSONL examples below describe the upstream format, not a guaranteed Codex layout. Inspect the actual format first. If unavailable, report the evidence gap; do not infer transcript evidence from an agent summary.
++
+@@ -57 +61 @@ [A]
 -At the end of the run, before handing back, check the log told the truth. Read this run's transcript under the active workspace's `agent-transcripts/` directory (the system prompt names the path). Don't glob across `~/.cursor/projects/*/`. That reads unrelated private chats. Walk this run's rows against what actually happened. Each stretch of them begins at one of this run's `start` rows, or at the first row if this run created the log, and ends at the next `start` row of another run:
-+At the end of the run, before handing back, check the log told the truth. Read this run's transcript, `~/.claude/projects/<slug>/${CLAUDE_SESSION_ID}.jsonl`, where `<slug>` is the absolute working directory with every character that is not a letter or digit turned into `-`. If `${CLAUDE_SESSION_ID}` appears literally, take the newest `.jsonl` in that directory whose first `"type":"user"` line matches this conversation's opening prompt, as the **reflect** skill does. Don't glob across `~/.claude/projects/*/`. That reads unrelated private chats. Walk this run's rows against what actually happened. Each stretch of them begins at one of this run's `start` rows, or at the first row if this run created the log, and ends at the next `start` row of another run:
++At the end of the run, before handing back, check the log told the truth. Read this run's transcript under the active workspace's `agent-transcripts/` directory (the system prompt names the path). Don't search unrelated session directories. That reads unrelated private chats. Walk this run's rows against what actually happened. Each stretch of them begins at one of this run's `start` rows, or at the first row if this run created the log, and ends at the next `start` row of another run:

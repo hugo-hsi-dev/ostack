@@ -1,5 +1,0 @@
---- a/skills/onyo-mode/scripts/package.json
-+++ b/skills/onyo-mode/scripts/package.json
-@@ -2 +2 @@ [A]
--  "name": "@cursor-skill/onyo-mode-tools",
-+  "name": "@ostack/onyo-mode-tools",

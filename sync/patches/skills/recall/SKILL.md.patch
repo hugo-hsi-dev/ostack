@@ -1,11 +1,10 @@
 --- a/skills/recall/SKILL.md
 +++ b/skills/recall/SKILL.md
-@@ -10,0 +11,2 @@ [A]
-+A bold ostack skill name below means read `${CLAUDE_SKILL_DIR}/../<name>/SKILL.md` in full and follow it. If `${CLAUDE_SKILL_DIR}` appears literally, it is the directory that holds this file.
+@@ -4 +3,0 @@ [A]
+-disable-model-invocation: true
+@@ -5,0 +5,2 @@ [A]
 +
-@@ -15 +17 @@ [A]
++Read [Codex compatibility](../../docs/harness/codex.md) before using this workflow.
+@@ -15 +16 @@ [A]
 -Transcripts live at `~/.cursor/projects/<slug>/agent-transcripts/<uuid>/<uuid>.jsonl`, where `<slug>` is the workspace path with the leading slash dropped and each "/" turned into "-" (so `/Users/you/proj` becomes `Users-you-proj`). Every line is one chat message.
-+Transcripts live at `~/.claude/projects/<slug>/<session-id>.jsonl`, where `<slug>` is the absolute working directory with every character that is not a letter or digit turned into `-` (so `/Users/you/proj` becomes `-Users-you-proj`). Subagent transcripts sit under `<session-id>/subagents/`. Every line is one JSON record, mostly chat messages. The current session's id is `${CLAUDE_SESSION_ID}`. If it appears literally, the current session is the newest `.jsonl` in that directory whose first `"type":"user"` line matches this conversation's opening prompt.
-@@ -21 +23 @@ [A]
--5. Verify against live state. Take the PRs, branches, and tickets that the mining and the sweep surfaced and check them with `git` and `gh`. When the answer hinges on what an agent actually did (the tools it ran, files it read, errors it hit), read the full transcript, not just a trimmed local copy.
-+5. Verify against live state. Take the PRs, branches, and tickets that the mining and the sweep surfaced and check them with `git` and `gh`, or the session's GitHub MCP tools (`mcp__github__*`) where `gh` is absent. When the answer hinges on what an agent actually did (the tools it ran, files it read, errors it hit), read the full transcript, not just a trimmed local copy.
++Use only an explicitly identified transcript or export for the active project. Codex does not promise the upstream Cursor transcript path or one-message-per-line schema. Inspect the supplied format before parsing it. If no authorized transcript source is exposed, report the history gap and use the provided state capsule and shared record; do not search unrelated sessions.

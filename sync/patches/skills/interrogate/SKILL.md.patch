@@ -1,16 +1,20 @@
 --- a/skills/interrogate/SKILL.md
 +++ b/skills/interrogate/SKILL.md
-@@ -26 +26 @@ [A]
--Launch all reviewers in a single message with the Task tool, one per entry on the `interrogate reviewers` line in `~/.cursor/rules/ostack-models.mdc`, labeled Reviewer A, B, and so on to match the entry count. If the rule or that line is missing, use the table defaults.
-+Launch all reviewers in a single message with the Agent tool, one per entry on the `interrogate reviewers` line in `~/.claude/rules/ostack-models.md`, labeled Reviewer A, B, and so on to match the entry count. If the rule or that line is missing, use the table defaults.
-@@ -30,2 +30,2 @@ [A]
+@@ -4 +3,0 @@ [A]
+-disable-model-invocation: true
+@@ -5,0 +5,2 @@ [A]
++
++Read [Codex compatibility](../../docs/harness/codex.md) before using this workflow.
+@@ -27 +28 @@ [A]
+-Launch all reviewers in a single message with the Task tool, one per entry on the `interrogate reviewers` line in `~/.cursor/rules/pstack-models.mdc`, labeled Reviewer A, B, and so on to match the entry count. If the rule or that line is missing, use the table defaults.
++Launch all reviewers in a single message with the exposed native subagent tool, one per entry on the `interrogate reviewers` line in `.agents/pstack-models.md`, labeled Reviewer A, B, and so on to match the entry count. If the rule or that line is missing, use the table defaults.
+@@ -31,2 +32,2 @@ [A]
 -| Reviewer A | `claude-opus-5-5-xhigh` |
 -| Reviewer B | `grok-4.7-xhigh-fast` |
-+| Reviewer A | `opus xhigh` |
-+| Reviewer B | `sonnet xhigh` |
-@@ -33 +33 @@ [A]
++| Reviewer A | `inherit-parent` |
++| Reviewer B | `inherit-parent` |
+@@ -34,3 +35 @@ [A]
 -Each reviewer gets `subagent_type: generalPurpose`, `readonly: true`, and `model` set to its configured entry, or its table default when there is no configured line. Omit `model` for an `auto` or `inherit-parent` entry, so that reviewer runs on the parent model.
-+Each reviewer gets `subagent_type: "onyo-reader"` (or `"general-purpose"` with "Read-only. Do not edit, write, or commit files." in the brief when `onyo-reader` is not installed), and `model` and `effort` set to its configured entry, or its table default when there is no configured line. Omit both for an `inherit` entry, so that reviewer runs on the parent model.
-@@ -35 +35 @@ [A]
+-
 -If the Task tool rejects a configured entry, run that reviewer on its family's table default and say so. Families go by prefix: `claude-*`, and `grok-*` with `cursor-grok-*` and `composer-*`. A refused `composer-*` entry runs on Reviewer B's default. With no family match, use Reviewer A's default. If it rejects a table default, spawn with the closest equivalent from the valid slugs in its error message (prefer the same family and reasoning tier), and open a separate PR to update the default table. Do not block the review on the slug issue. Never treat an alias entry as a rejected slug or apply either fallback to it.
-+If the Agent tool rejects a configured entry, run that reviewer on its family's table default and say so. Each model alias (`fable`, `opus`, `sonnet`, `haiku`) is its own family. With no family match, use Reviewer A's default. If it rejects a table default, spawn with the other table default, and open a separate PR to update the default table. Do not block the review on the model issue. Never treat an `inherit` entry as a rejected model or apply either fallback to it.
++Give each reviewer a read-only brief. Resolve its configured entry through poteto-mode’s Subagents section. Use only supported models and reasoning settings; omit overrides for `auto` or `inherit-parent`. If an entry is rejected, report it and use the supported parent model without claiming family diversity. Independent reviews on one model do not satisfy the upstream multi-family signal.

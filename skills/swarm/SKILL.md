@@ -1,8 +1,9 @@
 ---
 name: swarm
 description: "Fan out N parallel workers, drain them, and return one report. Use for /swarm, 'swarm this', or parallel coverage, races, gauntlets, and exploration."
-disable-model-invocation: true
 ---
+
+Read [Codex compatibility](../../docs/harness/codex.md) before using this workflow.
 
 # Swarm
 
@@ -19,14 +20,14 @@ Open a todolist with one entry per phase before launching anything.
 
 1. State the done predicate and the artifact or report the swarm must return.
 2. Choose the shape. Partition into slices, race N workers on identical briefs, or mix both. For a race or mixed shape, declare `first pass`, `rank all`, or `best-of` before spawning.
-3. Pick the worker model and effort from the `swarm workers` line in `~/.claude/rules/ostack-models.md`. If the rule or that line is missing, use `sonnet xhigh`. For `inherit`, omit `model` and `effort` so the workers run on the parent model. If the Agent tool rejects a model, use the default and say so. If it rejects the default, use the closest valid model from its error message. For a model race, name each arm's model up front. Pick each subagent's reasoning level and fast or standard speed for the job, per the Subagents section of the **onyo-mode** skill.
+3. Pick the worker model from `swarm workers` in the repository’s `.agents/pstack-models.md`, defaulting to `inherit-parent`. Resolve models and effort through poteto-mode’s Subagents section. For a model race, name each supported model up front. Report missing model diversity instead of substituting fictional slugs.
 4. Give each worker its own writable output when it writes. When workers verify or measure commits, each brief names the exact SHAs. A measurement brief also names the method (sample count, what one sample is, order). The worker records both in its result.
 
 ## Phase B: Fan out
 
-Spawn all N workers in one message with `subagent_type: "general-purpose"`, `isolation: "remote"`, `run_in_background: true`, and the step 3 model and effort, left unset for `inherit`. Each remote worker is a Claude Code cloud session with its own machine. Where the Agent tool does not offer `isolation: "remote"`, start each worker with `claude --cloud "<brief>"` from Bash. Passing a model with `--cloud` is undocumented, so the worker may run on the cloud session's default model. Record the model it ran on in the report. Each such brief names the branch the worker pushes to and tells it to commit its report as a file on that branch and push it. Drop `isolation: "remote"` only when the worker needs access to something on the user's computer, and use `isolation: "worktree"` when it writes.
+Spawn the N independent workers through the exposed native subagent tool, up to the session’s concurrency limit. Native subagents share the selected environment; they are not durable cloud tasks and do not receive separate VMs automatically. The upstream default of isolated cloud workers has no verified equivalent here. If a lane requires an isolated cloud VM, report it blocked until an authorized cloud execution adapter exists. Do not silently run such a lane in a shared checkout.
 
-When a worker must start from a non-default pushed branch, name the branch in its brief and have it check that branch out first.
+For native workers, prepare separate worktrees for writers and name the exact checkout and base SHA in each brief. Do not pass Cursor’s `environment` or `cloud_base_branch` parameters.
 
 Every brief stands alone. Include the goal, scope, exact slice or race arm, how to verify, and what to report. Reports use `PASS`, `ISSUES`, or `BLOCKED` with evidence. A worker that can prove a defect reports `ISSUES` and lists every issue it can prove, not only the first.
 
@@ -34,7 +35,7 @@ If a worker drops out, proceed with N-1 and note it.
 
 ## Phase C: Aggregate
 
-Read the terminal results. A subagent worker returns its result to you. A `claude --cloud` worker pushes its report file to the branch its brief names. Poll with a Bash loop that runs `git fetch origin <branch> && git show origin/<branch>:<path>` until both succeed, started with `run_in_background: true` so its exit wakes you. The branch can exist before the report file lands, so the loop waits for the file itself. Drop a result that does not record the SHAs and method its brief names, and respawn that worker once. After a second miss, record a gap. A gap does not count as a pass. For coverage, every required slice needs a result. For a race, apply the selection rule declared up front. Use first pass, rank all, or best-of. Do not paste raw worker dumps.
+Read the terminal results. Drop a result that does not record the SHAs and method its brief names, and respawn that worker once. After a second miss, record a gap. A gap does not count as a pass. For coverage, every required slice needs a result. For a race, apply the selection rule declared up front. Use first pass, rank all, or best-of. Do not paste raw worker dumps.
 
 ## Phase D: Report
 

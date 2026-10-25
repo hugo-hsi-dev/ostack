@@ -1,0 +1,9 @@
+--- a/skills/poteto-mode/playbooks/eval.md
++++ b/skills/poteto-mode/playbooks/eval.md
+@@ -1,0 +2,3 @@ [A]
++
++**Transcript compatibility.** Use only a transcript/export explicitly exposed for the active project. The directory names and JSONL examples below describe the upstream format, not a guaranteed Codex layout. Inspect the actual format first. If unavailable, report the evidence gap; do not infer transcript evidence from an agent summary.
++
+@@ -22 +25 @@ [A]
+-6. **Verify the chain from transcripts, not self-report.** Read each candidate's local transcript under the active workspace's `agent-transcripts/` directory (the system prompt names this path). Do not glob across `~/.cursor/projects/*/`. That crosses workspace boundaries and reads private chats from unrelated projects. Look at which files each candidate actually opened. Grade chain-following from the files it really read plus the shape of the code, never from the candidate's own claims.
++6. **Verify the chain from transcripts, not self-report.** Read each candidate's local transcript under the active workspace's `agent-transcripts/` directory (the system prompt names this path). Do not search unrelated session directories. That crosses workspace boundaries and reads private chats from unrelated projects. Look at which files each candidate actually opened. Grade chain-following from the files it really read plus the shape of the code, never from the candidate's own claims.

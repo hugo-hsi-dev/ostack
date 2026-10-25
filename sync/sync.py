@@ -14,12 +14,7 @@ ROOT = Path(__file__).resolve().parent.parent
 PIN = ROOT / "sync" / "PIN"
 PATCHES = ROOT / "sync" / "patches"
 CACHE = Path(os.environ.get("PSTACK_CACHE", Path.home() / ".cache" / "ostack-pstack.git"))
-RENAMES = {
-    "plugin.json": ".claude-plugin/plugin.json",
-    "automations/benny/templates/triage-automation-prompt.md": "automations/benny/templates/triage-routine-prompt.md",
-    "automations/benny/templates/reproduce-automation-prompt.md": "automations/benny/templates/reproduce-routine-prompt.md",
-}
-KEEP_FLAG = {"arena", "correct", "ketchup", "recall", "swarm", "unslop"}
+RENAMES = {".cursor-plugin/plugin.json": "docs/upstream/cursor-plugin.json", "plugin.json": "docs/upstream/plugin.json", "docs/harness/claude-code.md": "docs/upstream/claude-code.md"}
 CODES = re.compile(r"\[(A|\?)\]")
 HEADER = re.compile(r"^@@ -(\d+)(?:,(\d+))? \+\d+(?:,\d+)? @@ ?(.*)$")
 NO_EOL = "\\ No newline at end of file\n"
@@ -53,8 +48,7 @@ def fetch(sha):
 
 
 def map_names(s):
-    s = s.replace("poteto", "onyo").replace("Poteto", "Onyo").replace("bugbot-triage.md", "review-bot-triage.md")
-    return re.sub(r"\bpstack", "ostack", s)
+    return s
 
 
 def upstream(sha):
@@ -68,16 +62,6 @@ def upstream(sha):
     return files
 
 
-def strip_flag(dest, text):
-    m = re.match(r"skills/([^/]+)/SKILL\.md$", dest)
-    if not m or m.group(1) in KEEP_FLAG:
-        return text
-    front = re.match(r"---\n.*?\n---\n", text, re.S)
-    if not front:
-        return text
-    return front.group(0).replace("disable-model-invocation: true\n", "") + text[front.end():]
-
-
 def is_binary(data):
     return b"\0" in data
 
@@ -86,7 +70,7 @@ def build(sha, dest, src):
     data = git("cat-file", "blob", f"{sha}:{src}", cwd=CACHE).stdout
     if is_binary(data):
         return data
-    return strip_flag(dest, map_names(data.decode())).encode()
+    return data
 
 
 def lines(text):
@@ -108,7 +92,7 @@ def read_patch(dest):
             code = CODES.fullmatch(h.group(3))
             if not code:
                 sys.exit(f"{p}: hunk marker must be [A], got {raw!r}. A patch holds harness-port hunks only. "
-                         "A default belongs in hooks/ostack-defaults.md and Claude Projects text in skills/onyo-projects/.")
+                         "Only Codex harness adaptations belong in port patches.")
             start, n = int(h.group(1)), 1 if h.group(2) is None else int(h.group(2))
             hunks.append(Hunk(start - 1 if n else start, n, [], [], code.group(1)))
         elif raw == NO_EOL:

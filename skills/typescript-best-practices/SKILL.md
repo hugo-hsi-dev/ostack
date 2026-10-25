@@ -4,11 +4,11 @@ description: TypeScript best practices. Use when reading or editing any .ts or .
 paths: ["**/*.ts", "**/*.tsx"]
 ---
 
+Read [Codex compatibility](../../docs/harness/codex.md) before using this workflow.
+
 # TypeScript best practices
 
 Apply the **type-system-discipline** principle skill first.
-
-A **<name>** principle skill sits at `${CLAUDE_SKILL_DIR}/../principle-<name>/SKILL.md`. Read it in full. If `${CLAUDE_SKILL_DIR}` appears literally, it is the directory that holds this file.
 
 | Rule | Summary |
 |------|---------|

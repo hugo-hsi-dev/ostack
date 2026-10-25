@@ -3,6 +3,8 @@ name: sharpen
 description: "Make a task deeper, not bigger, then rewrite the prompt. Use for /sharpen."
 ---
 
+Read [Codex compatibility](../../docs/harness/codex.md) before using this workflow.
+
 I want a deeper version of this task, not a bigger one. Before rewriting it, do four things:
 
 1. Say what a top professional in this field would do here that I'm not asking for.

@@ -1,8 +1,9 @@
 ---
 name: ketchup
 description: "Catch the user up on what changed in this chat since their last message, in plain words and small visuals. List every item waiting on them with what they need to decide it from the reply alone. Use for /ketchup."
-disable-model-invocation: true
 ---
+
+Read [Codex compatibility](../../docs/harness/codex.md) before using this workflow.
 
 # Ketchup
 
@@ -34,7 +35,7 @@ For a call between options, give every option the work weighed, each with what i
 
 ## Visuals
 
-A visual is a picture: a screenshot, a video, a Mermaid diagram, a chart or diagram from `/visualize`, or an SVG image. A Markdown table is not a visual, even with before and after columns.
+A visual is a picture: a screenshot, a video, a Mermaid diagram, a chart or diagram from `/visualize`, or a generated image. A Markdown table is not a visual, even with before and after columns.
 
 When something is easier to grasp as a picture than as sentences, draw it: how a design or system works, a PR stack or dependency chain with each PR's state, a before and after of a fix, or options side by side. Never draw a status list, a list of action items, or boxes with nothing connecting them. Never give a fact twice, in text or across visuals.
 

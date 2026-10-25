@@ -1,17 +1,8 @@
 schema_version: 1
 
-routines:
+automations:
   triage_name: "benny-triage"
   reproduce_name: "benny-reproduce"
-
-# Routines have no Slack trigger. "schedule" scans the source channel each run.
-# "api" reads the report coordinates from the routine-fire-payload text.
-scan:
-  type: "schedule"
-  schedule: "hourly"
-  lookback_hours: 24
-  triage_max_reports_per_run: 5
-  reproduce_max_reports_per_run: 1
 
 slack:
   source_channel_id: "SOURCE_CHANNEL_ID"
@@ -19,10 +10,9 @@ slack:
   triage_identity_user_id: "TRIAGE_IDENTITY_USER_ID"
   read_action: "configured-slack-read-action"
   thread_post_action: "configured-slack-thread-post-action"
-  reaction_action: "configured-slack-reaction-action"
   file_download_action: "configured-slack-file-download-action"
   operations_edit_action: "configured-slack-edit-action"
-  prefer_connector_tools: true
+  prefer_connector_actions: true
   optional_bot_token_env: "BENNY_SLACK_BOT_TOKEN"
   allow_source_root_posts: false
   allow_worker_slack_writes: false
@@ -49,14 +39,14 @@ tracker:
   require_compensation_action: true
 
 routing:
-  map_path: ".claude/benny/routing.md"
+  map_path: ".benny/routing.md"
   owner_pings_default: false
   allow_feature_owner_ping: false
   allow_confirmed_regression_author_ping: false
 
 control:
   skill_name: "control-target-app"
-  feature_map_path: ".claude/benny/feature-map.md"
+  feature_map_path: ".benny/feature-map.md"
   environment: "safe-test-environment-placeholder"
   artifact_directory: "/tmp/benny-artifacts"
   artifact_retention_hours: 24
@@ -87,11 +77,8 @@ budgets:
   fix_minutes: 90
   operations_follow_up_minutes: 45
 
-# The routine form sets each run's model, so pick `triage` and `reproduce` there.
-# `code` and `media_review` go to subagents as the Agent tool's `model`.
-# Write "<model> <effort>", such as "opus xhigh", to pass an `effort` too.
 models:
-  triage: "choose-an-available-model"
-  reproduce: "choose-an-available-model"
-  code: "choose-an-available-model"
-  media_review: "choose-an-available-model"
+  triage: "choose-an-available-public-model-slug"
+  reproduce: "choose-an-available-public-model-slug"
+  code: "choose-an-available-public-model-slug"
+  media_review: "choose-an-available-public-model-slug"

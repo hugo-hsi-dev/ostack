@@ -3,11 +3,13 @@ name: how
 description: "Use for \"how does X work\", code walkthroughs before changing something, and placement / ownership / layering questions (\"where should this live\", \"which package owns this\", \"is this the right layer\"). Explains subsystem architecture, runtime flow, onboarding mental models. Use why for motivation."
 ---
 
+Read [Codex compatibility](../../docs/harness/codex.md) before using this workflow.
+
 # How
 
 Explore the codebase to answer "how does X work?" questions. Produce architectural explanations at the level of a senior engineer onboarding onto a subsystem, enough to build a working mental model, not so much that it reads like annotated source code.
 
-Every spawn is a subagent with `subagent_type: "onyo-reader"`. If `onyo-reader` is not installed, use `"general-purpose"` and put "Read-only. Do not edit, write, or commit files." in the brief. Explorers use the `how explorer` line in the `~/.claude/rules/ostack-models.md` rule (default `sonnet xhigh`), and every explainer uses the `how explainer` line (default `opus xhigh`). Pass that line's model and effort as the Agent tool's `model` and `effort`, or the default's if the rule or the line is missing. Omit both when the value is `inherit`. If the Agent tool rejects a model, use the default and say so. If it rejects the default, use the closest valid model from its error message. Pick each subagent's reasoning level and fast or standard speed for the job, per the Subagents section of the **onyo-mode** skill.
+Read `how explorer` and `how explainer` in the repository’s `.agents/pstack-models.md` explicitly. Use only session-supported models and reasoning settings, per poteto-mode’s Subagents section. Missing roles inherit the parent. Keep the role split and read-only research briefs; inherited permissions do not enforce read-only behavior. If distinct model families are unavailable, report that limitation rather than claiming multi-model evidence.
 
 ## 1. Assess complexity
 

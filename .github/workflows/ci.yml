@@ -2,21 +2,36 @@ name: ci
 
 on:
   push:
-    branches: [main]
+    branches: [main, 'codex/**']
   pull_request:
 
 jobs:
-  sync:
+  baseline:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: pstack-origin files match upstream plus sync/patches
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Upstream plus reviewed patches
         run: python3 sync/sync.py check
-  hooks:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: onyo-mode hook test
-        run: sh hooks/onyo-mode.test.sh
-      - name: coordinator turn replay test
-        run: sh hooks/replay.test.sh
+      - name: Codex metadata and compatibility boundaries
+        run: python3 sync/validate_codex.py
+      - name: Shell syntax
+        run: bash -n skills/poteto-mode/scripts/worktree-audit.sh
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: '1.3.14'
+      - name: Install pinned workflow test dependencies
+        working-directory: skills/poteto-mode/scripts
+        run: bun install --frozen-lockfile
+      - name: Workflow tests and types
+        working-directory: skills/poteto-mode/scripts
+        run: |
+          bun run test
+          bun run typecheck
+      - name: Statechart tests (TLC-dependent cases skip without TLC)
+        run: node --test skills/statechart/scripts/test/statechart.test.mjs

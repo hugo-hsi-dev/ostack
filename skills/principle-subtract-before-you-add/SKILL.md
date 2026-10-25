@@ -3,6 +3,8 @@ name: principle-subtract-before-you-add
 description: "Apply when sequencing an addition, refactor, or rewrite. Remove dead code, redundant validators, and stub references first, then build on the simpler base."
 ---
 
+Read [Codex compatibility](../../docs/harness/codex.md) before using this workflow.
+
 # Subtract Before You Add
 
 When evolving a system, remove complexity first, then build. Default to subtraction.

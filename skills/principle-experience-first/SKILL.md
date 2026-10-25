@@ -3,6 +3,8 @@ name: principle-experience-first
 description: "Apply when product, UX, or feature-scope tradeoffs come up. Choose user delight over implementation convenience; ship fewer polished features over more rough ones."
 ---
 
+Read [Codex compatibility](../../docs/harness/codex.md) before using this workflow.
+
 # Experience First
 
 When implementation convenience conflicts with user delight, choose delight.

@@ -1,0 +1,8 @@
+--- a/skills/poteto-mode/scripts/worktree-audit.sh
++++ b/skills/poteto-mode/scripts/worktree-audit.sh
+@@ -72,3 +72,2 @@ [A]
+-# Transcripts dir: ~/.cursor/projects/<slugified-repo-path>/agent-transcripts.
+-slug=$(printf '%s' "$main_wt" | sed 's#^/##; s#/#-#g')
+-transcripts="$HOME/.cursor/projects/$slug/agent-transcripts"
++# Optional, explicitly scoped transcript export. Codex has no assumed Cursor layout.
++transcripts="${PSTACK_TRANSCRIPTS_DIR:-}"

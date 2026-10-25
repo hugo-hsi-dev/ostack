@@ -1,0 +1,13 @@
+--- a/skills/poteto-mode/playbooks/autopilot-full.md
++++ b/skills/poteto-mode/playbooks/autopilot-full.md
+@@ -1,0 +2,7 @@ [A]
++
++**Wake compatibility.** Upstream `/loop` denotes event wakeups or a timed heartbeat. No equivalent command is verified in this Codex surface. Use an actually exposed, authorized wake facility with those semantics, or report the unattended step blocked. A native subagent completion notification alone does not provide periodic or restart-persistent execution.
++
++**Codex execution gap.** This playbook retains upstream requirements for isolated cloud workers, persistent coordination, and independent live verification. Native Codex subagents are session-scoped and share the selected environment; they do not supply durable cloud tasks or one VM per lane. Before executing a cloud-dependent step, verify an authorized adapter provides its required isolation, persistence, status, and wake behavior. Without it, report that step blocked and preserve its gates. Do not replace this workflow with a different coordinator architecture.
++
++**External skill dependency.** `cursor-team-kit` is an upstream plugin, not a bundled Codex capability. Use its named skills only if actually installed and compatible. Otherwise report the missing dependency and perform the stated review or runtime proof with available tools; a missing proof remains a gap, never a passed gate.
++
+@@ -8 +15 @@ [A]
+-2. **Spawn one owner per PR, and keep its work where a replacement can find it.** Resolve the forge once for the program. GitHub CLI (`gh`) is the default. If `command -v origin` succeeds and Origin can resolve the repository, use `origin pr` for every PR operation. Otherwise stay on `gh` and record the fallback. Never require Graphite (`gt`). Each owner is a Cursor cloud agent that builds, opens its PR per `playbooks/opening-a-pr.md`, proves the change on the real artifact, babysits to green per `playbooks/babysit.md`, and merges once steps 4 and 5 clear it.
++2. **Spawn one owner per PR, and keep its work where a replacement can find it.** Resolve the forge once for the program. GitHub CLI (`gh`) is the default. If `command -v origin` succeeds and Origin can resolve the repository, use `origin pr` for every PR operation. Otherwise stay on `gh` and record the fallback. Never require Graphite (`gt`). Each owner is an isolated durable cloud worker (requires the adapter above) that builds, opens its PR per `playbooks/opening-a-pr.md`, proves the change on the real artifact, babysits to green per `playbooks/babysit.md`, and merges once steps 4 and 5 clear it.

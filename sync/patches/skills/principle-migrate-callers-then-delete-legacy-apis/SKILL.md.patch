@@ -1,0 +1,7 @@
+--- a/skills/principle-migrate-callers-then-delete-legacy-apis/SKILL.md
++++ b/skills/principle-migrate-callers-then-delete-legacy-apis/SKILL.md
+@@ -4 +3,0 @@ [A]
+-disable-model-invocation: true
+@@ -5,0 +5,2 @@ [A]
++
++Read [Codex compatibility](../../docs/harness/codex.md) before using this workflow.

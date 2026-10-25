@@ -1,5 +1,7 @@
 --- a/skills/technical-writing/SKILL.md
 +++ b/skills/technical-writing/SKILL.md
-@@ -8,0 +9,2 @@ [A]
+@@ -4 +3,0 @@ [A]
+-disable-model-invocation: true
+@@ -5,0 +5,2 @@ [A]
 +
-+A bold ostack skill name below means read `${CLAUDE_SKILL_DIR}/../<name>/SKILL.md` in full and follow it. If `${CLAUDE_SKILL_DIR}` appears literally, it is the directory that holds this file.
++Read [Codex compatibility](../../docs/harness/codex.md) before using this workflow.

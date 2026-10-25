@@ -1,39 +1,11 @@
 --- a/automations/benny/templates/configuration.example.yaml
 +++ b/automations/benny/templates/configuration.example.yaml
-@@ -3 +3 @@ [A]
--automations:
-+routines:
-@@ -5,0 +6,9 @@ [A]
-+
-+# Routines have no Slack trigger. "schedule" scans the source channel each run.
-+# "api" reads the report coordinates from the routine-fire-payload text.
-+scan:
-+  type: "schedule"
-+  schedule: "hourly"
-+  lookback_hours: 24
-+  triage_max_reports_per_run: 5
-+  reproduce_max_reports_per_run: 1
-@@ -12,0 +22 @@ [A]
-+  reaction_action: "configured-slack-reaction-action"
-@@ -15 +25 @@ [A]
+@@ -15 +15 @@ [A]
 -  prefer_cursor_actions: true
-+  prefer_connector_tools: true
-@@ -42 +52 @@ [A]
++  prefer_connector_actions: true
+@@ -42 +42 @@ [A]
 -  map_path: ".cursor/benny/routing.md"
-+  map_path: ".claude/benny/routing.md"
-@@ -49 +59 @@ [A]
++  map_path: ".benny/routing.md"
+@@ -49 +49 @@ [A]
 -  feature_map_path: ".cursor/benny/feature-map.md"
-+  feature_map_path: ".claude/benny/feature-map.md"
-@@ -79,0 +90,3 @@ [A]
-+# The routine form sets each run's model, so pick `triage` and `reproduce` there.
-+# `code` and `media_review` go to subagents as the Agent tool's `model`.
-+# Write "<model> <effort>", such as "opus xhigh", to pass an `effort` too.
-@@ -81,4 +94,4 @@ [A]
--  triage: "choose-an-available-public-model-slug"
--  reproduce: "choose-an-available-public-model-slug"
--  code: "choose-an-available-public-model-slug"
--  media_review: "choose-an-available-public-model-slug"
-+  triage: "choose-an-available-model"
-+  reproduce: "choose-an-available-model"
-+  code: "choose-an-available-model"
-+  media_review: "choose-an-available-model"
++  feature_map_path: ".benny/feature-map.md"

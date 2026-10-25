@@ -1,0 +1,8 @@
+--- a/automations/benny/templates/triage-automation-prompt.md
++++ b/automations/benny/templates/triage-automation-prompt.md
+@@ -3 +3 @@ [A]
+-> Source material for the copied setup workflow. Paraphrase this intent into a built-in `automate` draft after `automate` confirms that the copied pack is committed in the repository where the automation will run.
++> Source material for the copied setup workflow. Prepare a reviewed draft only after verifying that the copied pack is committed in the target repository. This template is dormant: the Codex port has no verified adapter for the upstream Cursor `/automate` editor handoff or event runtime. Do not activate it until the setup compatibility, approval, and thread-safety gates pass.
+@@ -5 +5 @@ [A]
+-Read and follow `.cursor/automations/benny/skills/triage-issue-reports/SKILL.md` for this run.
++Read and follow `automations/benny/skills/triage-issue-reports/SKILL.md` for this run.

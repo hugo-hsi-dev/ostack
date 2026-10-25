@@ -3,6 +3,8 @@ name: interrogate
 description: "Use for \"interrogate\", \"adversarial review\", \"multi-model review\", \"challenge this\", \"stress test this code\", \"find blind spots\", or \"tear this apart\". Multiple LLM reviewers challenge changes from independent angles."
 ---
 
+Read [Codex compatibility](../../docs/harness/codex.md) before using this workflow.
+
 # Interrogate
 
 Spawn one reviewer per configured model to adversarially review code changes. The adversarial signal comes from model diversity, not assigned personas. The deliverable is a synthesized verdict. Do NOT auto-apply changes.
@@ -23,18 +25,16 @@ Before spawning reviewers, state the intent in one clear paragraph from the user
 
 ## Step 3, Spawn Reviewers
 
-Launch all reviewers in a single message with the Agent tool, one per entry on the `interrogate reviewers` line in `~/.claude/rules/ostack-models.md`, labeled Reviewer A, B, and so on to match the entry count. If the rule or that line is missing, use the table defaults.
+Launch all reviewers in a single message with the exposed native subagent tool, one per entry on the `interrogate reviewers` line in `.agents/pstack-models.md`, labeled Reviewer A, B, and so on to match the entry count. If the rule or that line is missing, use the table defaults.
 
 | Subagent | Default model |
 |----------|---------------|
-| Reviewer A | `opus xhigh` |
-| Reviewer B | `sonnet xhigh` |
+| Reviewer A | `inherit-parent` |
+| Reviewer B | `inherit-parent` |
 
-Each reviewer gets `subagent_type: "onyo-reader"` (or `"general-purpose"` with "Read-only. Do not edit, write, or commit files." in the brief when `onyo-reader` is not installed), and `model` and `effort` set to its configured entry, or its table default when there is no configured line. Omit both for an `inherit` entry, so that reviewer runs on the parent model.
+Give each reviewer a read-only brief. Resolve its configured entry through poteto-mode’s Subagents section. Use only supported models and reasoning settings; omit overrides for `auto` or `inherit-parent`. If an entry is rejected, report it and use the supported parent model without claiming family diversity. Independent reviews on one model do not satisfy the upstream multi-family signal.
 
-If the Agent tool rejects a configured entry, run that reviewer on its family's table default and say so. Each model alias (`fable`, `opus`, `sonnet`, `haiku`) is its own family. With no family match, use Reviewer A's default. If it rejects a table default, spawn with the other table default, and open a separate PR to update the default table. Do not block the review on the model issue. Never treat an `inherit` entry as a rejected model or apply either fallback to it.
-
-Read `references/reviewer-prompt.md` and fill in the same template for every reviewer with the stated intent, the diff or file contents, the rubric from `references/rubric.md`, and the code-quality lens from `references/code-quality-review.md`. Pick each subagent's reasoning level and fast or standard speed for the job, per the Subagents section of the **onyo-mode** skill.
+Read `references/reviewer-prompt.md` and fill in the same template for every reviewer with the stated intent, the diff or file contents, the rubric from `references/rubric.md`, and the code-quality lens from `references/code-quality-review.md`. Pick each subagent's reasoning level and fast or standard speed for the job, per the Subagents section of the **poteto-mode** skill.
 
 ## Step 4, Synthesize
 

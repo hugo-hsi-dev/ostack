@@ -1,0 +1,5 @@
+--- a/skills/poteto-mode/playbooks/autopilot-stack.md
++++ b/skills/poteto-mode/playbooks/autopilot-stack.md
+@@ -1,0 +2,2 @@ [A]
++
++**Codex execution gap.** This playbook retains upstream requirements for isolated cloud workers, persistent coordination, and independent live verification. Native Codex subagents are session-scoped and share the selected environment; they do not supply durable cloud tasks or one VM per lane. Before executing a cloud-dependent step, verify an authorized adapter provides its required isolation, persistence, status, and wake behavior. Without it, report that step blocked and preserve its gates. Do not replace this workflow with a different coordinator architecture.

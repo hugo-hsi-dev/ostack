@@ -1,7 +1,7 @@
 --- a/skills/principle-type-system-discipline/SKILL.md
 +++ b/skills/principle-type-system-discipline/SKILL.md
-@@ -11,2 +11,2 @@ [A]
--- **External data is untyped until parsed.** RPC payloads, JSON, IPC messages, CLI args, config files, environment variables, database rows. Have a parse function at every boundary that turns unstructured input into the typed model. The **boundary-discipline** principle skill says where to put validation.
--- **Derive types from authoritative schemas.** When a protocol buffer, OpenAPI spec, GraphQL schema, database migration, design-token file, or another file owns a shape, derive from it instead of hand-rolling a parallel type. See the **encode-lessons-in-structure** principle skill.
-+- **External data is untyped until parsed.** RPC payloads, JSON, IPC messages, CLI args, config files, environment variables, database rows. Have a parse function at every boundary that turns unstructured input into the typed model. The [boundary-discipline](../principle-boundary-discipline/SKILL.md) principle skill says where to put validation.
-+- **Derive types from authoritative schemas.** When a protocol buffer, OpenAPI spec, GraphQL schema, database migration, design-token file, or another file owns a shape, derive from it instead of hand-rolling a parallel type. See the [encode-lessons-in-structure](../principle-encode-lessons-in-structure/SKILL.md) principle skill.
+@@ -4 +3,0 @@ [A]
+-disable-model-invocation: true
+@@ -5,0 +5,2 @@ [A]
++
++Read [Codex compatibility](../../docs/harness/codex.md) before using this workflow.

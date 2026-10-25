@@ -3,6 +3,8 @@ name: statechart
 description: "Draw how any system moves between states, such as a product flow, a protocol, or a service, as a Mermaid statechart from a TLA+ model. Each bug is a numbered path with blue borders to a state that breaks a rule. Use for /statechart, to show a bug as a path through states, or to turn an agreed chart into a TLA+ skeleton."
 ---
 
+Read [Codex compatibility](../../docs/harness/codex.md) before using this workflow.
+
 # Statechart
 
 The chart shows how a system moves between states, in the words of the person who reads it. The scripts call that person the reader, as in `readerActions` and reader steps. The reader decides whether the behavior is right. The reader can be a PM who reads a product flow, an engineer who reads a protocol or a service, or a reviewer who reads a design. Label each state with what the reader can observe or cares about, such as "Paying" in an app or "Lease held, write pending" in a lock service. Label each step with the event that moves the system, such as "tap Pay" in an app, "the request reads the count" in a service, or "the lease expires" in a lock service. Keep variable and action names out of labels.

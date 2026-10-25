@@ -1,5 +1,7 @@
 --- a/skills/blast-radius/SKILL.md
 +++ b/skills/blast-radius/SKILL.md
-@@ -10,0 +11,2 @@ [A]
+@@ -4 +3,0 @@ [A]
+-disable-model-invocation: true
+@@ -5,0 +5,2 @@ [A]
 +
-+To run `how`, `why`, `arena`, or `unslop`, read `${CLAUDE_SKILL_DIR}/../<name>/SKILL.md` in full and follow it. If `${CLAUDE_SKILL_DIR}` appears literally, it is the directory that holds this file.
++Read [Codex compatibility](../../docs/harness/codex.md) before using this workflow.

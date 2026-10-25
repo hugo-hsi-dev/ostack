@@ -1,12 +1,11 @@
 ---
 name: arena
 description: "Spawn N parallel candidates at the same task, pick a base, graft the strongest parts of the losers into it. Use for /arena, 'arena this', 'throw it in the arena', or when one attempt at a non-trivial artifact would lock in the wrong shape."
-disable-model-invocation: true
 ---
 
-# Arena
+Read [Codex compatibility](../../docs/harness/codex.md) before using this workflow.
 
-A **<name>** principle skill below sits at `${CLAUDE_SKILL_DIR}/../principle-<name>/SKILL.md`. Read it in full. If `${CLAUDE_SKILL_DIR}` appears literally, it is the directory that holds this file.
+# Arena
 
 Open a todolist with one entry per phase (Frame, Fan out, Cross-judge, Pick, Graft, Verify) before launching anything.
 
@@ -16,18 +15,18 @@ Every candidate gets the same prompt, so the prompt is the contract.
 
 1. State the artifact each candidate is producing.
 2. Derive the rubric, 3-6 concrete gradeable criteria for what success looks like on *this* task. It is the picker's tool in Phase D. Candidates only see the task.
-3. Pick the runners. Use the `arena runners` line in `~/.claude/rules/ostack-models.md`. Pass each entry's model and effort as the Agent tool's `model` and `effort`. If the rule or that line is missing, default to one each on `opus xhigh` and `sonnet xhigh`. An `inherit` entry in this line or the cross-judge line means the parent model, so omit `model` and `effort` for it. If the Agent tool rejects a configured entry, run that seat on its family's default and say so. Each model alias (`fable`, `opus`, `sonnet`, `haiku`) is its own family. With no family match, use `opus xhigh`. If it rejects a default, use the other default and say so. Spawn more runners when the arena covers multiple design directions. Use the same model N times when the work is generation-bound rather than judgment-sensitive. Pick each subagent's reasoning level and fast or standard speed for the job, per the Subagents section of the **onyo-mode** skill.
+3. Pick the runners from `arena runners` in the repository’s `.agents/pstack-models.md`. With no line, keep two runners using `inherit-parent`. Resolve only supported model and effort choices per poteto-mode’s Subagents section. Preserve one runner per entry, including aliases. Report unavailable family diversity; multiple calls to one model are independent runs, not a multi-family comparison. Spawn more runners when the arena covers multiple design directions. Use the same model N times when the work is generation-bound rather than judgment-sensitive.
 4. Give each candidate its own output location (a git worktree where possible, otherwise `/tmp/arena-<slug>/candidate-<n>/`), per the **separate-before-serializing-shared-state** principle skill.
 
 ## Phase B: Fan out
 
-Spawn all N subagents in one message with `subagent_type: "general-purpose"`, `isolation: "worktree"`, and `run_in_background: true`, each with the task, the path to the shared grounding, its own output path, and instructions to produce the artifact and a short rationale naming the alternatives it considered and what it rejected.
+Spawn all N subagents in one message with native asynchronous spawning, each with the task, the path to the shared grounding, its own output path, and instructions to produce the artifact and a short rationale naming the alternatives it considered and what it rejected.
 
 If a candidate produces no output, proceed with N-1 and note the dropout.
 
 ## Phase C: Cross-judge
 
-After all Phase B candidates complete, choose one model from the `arena cross-judge pool` line in `~/.claude/rules/ostack-models.md`. If the rule or that line is missing, choose from `opus xhigh` and `sonnet xhigh`. Prefer a different model family from the parent's. Spawn one read-only judge subagent (`subagent_type: "onyo-reader"`, or `"general-purpose"` with "Read-only. Do not edit, write, or commit files." in the brief) on that model. It sees the rubric and the candidates by path label, scores each criterion, and recommends a base with rationale. It runs in parallel with your reading in Phase D. Don't spawn it while candidates are still writing.
+After all Phase B candidates complete, choose one model from the `arena cross-judge pool` line in `.agents/pstack-models.md`. If the rule or that line is missing, use `inherit-parent` and report the missing model-family diversity. Prefer a different model family from the parent's. Spawn one readonly judge subagent on that model. It sees the rubric and the candidates by path label, scores each criterion, and recommends a base with rationale. It runs in parallel with your reading in Phase D. Don't spawn it while candidates are still writing.
 
 ## Phase D: Pick a base
 

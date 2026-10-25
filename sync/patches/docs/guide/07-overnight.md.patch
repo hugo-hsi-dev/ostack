@@ -1,26 +1,53 @@
 --- a/docs/guide/07-overnight.md
 +++ b/docs/guide/07-overnight.md
-@@ -3 +3 @@ [A]
--This is the payoff for everything before it. An agent you can trust to verify its own work is an agent you can leave alone with a hard task. What makes that safe isn't hope. It's a checkable finish condition, an isolated worktree or cloud agent, and a decision log you audit in the morning.
-+This is the payoff for everything before it. An agent you can trust to verify its own work is an agent you can leave alone with a hard task. What makes that safe isn't hope. It's a checkable finish condition, an isolated worktree or cloud session, and a decision log you audit in the morning.
+@@ -23 +23 @@ [A]
+-/poteto-mode im going to bed. migrate every caller to the new parser in a fresh worktree off <base>.
++$poteto-mode im going to bed. migrate every caller to the new parser in a fresh worktree off <base>.
 @@ -26 +26 @@ [A]
 -/loop until done. if you're truly stuck after a few hours, stop and write up why.
-+then run /loop until done. if you're truly stuck after a few hours, stop and write up why.
++keep working until done within the active session. if you're truly stuck after a few hours, stop and write up why.
 @@ -35 +35 @@ [A]
--- `/loop` is Cursor's built-in wake mechanism, not a ostack skill. The [Autonomous run playbook](../../skills/onyo-mode/playbooks/autonomous-run.md) uses it to re-check the finish condition on events or a heartbeat.
-+- "then run /loop" asks the agent to start `/loop`, Claude Code's built-in wake mechanism, not a ostack skill. A slash command runs only at the start of a message, so mid-message it goes in prose like this. The [Autonomous run playbook](../../skills/onyo-mode/playbooks/autonomous-run.md) uses it to re-check the finish condition on events or a heartbeat.
+-- `/loop` is Cursor's built-in wake mechanism, not a pstack skill. The [Autonomous run playbook](../../skills/poteto-mode/playbooks/autonomous-run.md) uses it to re-check the finish condition on events or a heartbeat.
++- Cursor’s `/loop` has no verified drop-in mapping in this port. The [Autonomous run playbook](../../skills/poteto-mode/playbooks/autonomous-run.md) retains its finish check and wake requirement. Do not promise scheduled wake-ups or post-session execution without a verified host mechanism.
+@@ -38 +38 @@ [A]
+-Because you'll review this work after stepping away, `/poteto-mode` routes it through [`/figure-it-out`](../../skills/figure-it-out/SKILL.md), which designs the run's phases before any code and wires in the decision log.
++Because you'll review this work after stepping away, `$poteto-mode` routes it through [`$figure-it-out`](../../skills/figure-it-out/SKILL.md), which designs the run's phases before any code and wires in the decision log.
 @@ -40 +40 @@ [A]
--To stop a run on purpose, tell the agent to pause, or that you're about to go offline or restart Cursor. The [Pause safely playbook](../../skills/onyo-mode/playbooks/pause-safely.md) finishes or backs out of the current step, commits a work-in-progress checkpoint, and writes a resume note. A fresh chat picks the work up from that note through the Session pickup playbook. Saying "keep going" never triggers a pause.
-+To stop a run on purpose, tell the agent to pause, or that you're about to go offline or restart Claude Code. The [Pause safely playbook](../../skills/onyo-mode/playbooks/pause-safely.md) finishes or backs out of the current step, commits a work-in-progress checkpoint, and writes a resume note. A fresh chat picks the work up from that note through the Session pickup playbook. Saying "keep going" never triggers a pause.
+-To stop a run on purpose, tell the agent to pause, or that you're about to go offline or restart Cursor. The [Pause safely playbook](../../skills/poteto-mode/playbooks/pause-safely.md) finishes or backs out of the current step, commits a work-in-progress checkpoint, and writes a resume note. A fresh chat picks the work up from that note through the Session pickup playbook. Saying "keep going" never triggers a pause.
++To stop a run on purpose, tell the agent to pause, or that you're about to go offline or restart Codex. The [Pause safely playbook](../../skills/poteto-mode/playbooks/pause-safely.md) finishes or backs out of the current step, commits a work-in-progress checkpoint, and writes a resume note. A fresh chat picks the work up from that note through the Session pickup playbook. Saying "keep going" never triggers a pause.
+@@ -60 +60 @@ [A]
+-[`/show-me-your-work`](../../skills/show-me-your-work/SKILL.md) is what makes the run reviewable. Each row records the time, phase, decision, reason, an evidence pointer, and the result, in a TSV at `decisions.tsv` (or `.audit/<task-slug>.tsv` when several runs share a directory). It stays local by default. Commit it when the work is ambitious enough that a reviewer needs the trail to trust the result.
++[`$show-me-your-work`](../../skills/show-me-your-work/SKILL.md) is what makes the run reviewable. Each row records the time, phase, decision, reason, an evidence pointer, and the result, in a TSV at `decisions.tsv` (or `.audit/<task-slug>.tsv` when several runs share a directory). It stays local by default. Commit it when the work is ambitious enough that a reviewer needs the trail to trust the result.
+@@ -65 +65 @@ [A]
+-/show-me-your-work catch me up on what you did last night
++$show-me-your-work catch me up on what you did last night
+@@ -68 +68 @@ [A]
+-Before the skill hands back its summary, it spawns a reviewer on a different model family to read the trail and the transcript, and the reply ends with an Attention section listing what deserves your scrutiny. Read that section first, then the log rows it points at. You're auditing decisions, not re-reading the whole night.
++Before the skill hands back its summary, it requests a reviewer on a different model family (or explicitly reports that diversity is unavailable) to read the trail and the transcript, and the reply ends with an Attention section listing what deserves your scrutiny. Read that section first, then the log rows it points at. You're auditing decisions, not re-reading the whole night.
+@@ -70 +70 @@ [A]
+-For a quick status instead of an audit, run [`/ketchup`](../../skills/ketchup/SKILL.md) in the chat that ran the work. It reads only, and tells you in plain words what changed since your last message, with the screenshots and small diagrams the work produced. Then it lists each call waiting on you, such as a merge, an approval, or a choice between options, with its pick, the evidence, and the risk, so you can decide from the reply alone.
++For a quick status instead of an audit, run [`$ketchup`](../../skills/ketchup/SKILL.md) in the chat that ran the work. It reads only, and tells you in plain words what changed since your last message, with the screenshots and small diagrams the work produced. Then it lists each call waiting on you, such as a merge, an approval, or a choice between options, with its pick, the evidence, and the risk, so you can decide from the reply alone.
+@@ -79 +79 @@ [A]
+-/poteto-mode full autopilot on this queue. each item is independent. i want them merged by morning.
++$poteto-mode full autopilot on this queue. each item is independent. i want them merged by morning.
+@@ -85 +85 @@ [A]
+-/poteto-mode autopilot these five changes but stack them, don't ship. i'll land the stack in the morning.
++$poteto-mode autopilot these five changes but stack them, don't ship. i'll land the stack in the morning.
+@@ -91 +91 @@ [A]
+-/poteto-mode orchestrate the store migration. own it until every package is converted and merged. i'll check in twice a day.
++$poteto-mode orchestrate the store migration. own it until every package is converted and merged. i'll check in twice a day.
 @@ -96 +96 @@ [A]
--A [Cursor Project](https://cursor.com/blog/projects) gives one coordinator agent a persistent thread. The coordinator doesn't write code. It directs subagents, which run in the cloud by default, so the work continues when your laptop is closed. That's the shape the Orchestrate playbook expects. Start your prompts to the coordinator with `/onyo-mode`, and the subagents it spawns follow the playbooks.
-+A Claude Project gives one coordinator a persistent conversation. The coordinator doesn't write code. It directs threads that run as parallel cloud sessions, so the work continues when your laptop is closed. That's the shape the Orchestrate playbook expects. Start your prompts to the coordinator with `/onyo-mode`, and the threads it spawns follow the playbooks.
-@@ -101 +101 @@ [A]
--- Drag related chats into the Project, finished ones included. They become context for every agent in it.
-+- Put shared context in the Project's instructions and memory. Every thread in it reads them.
+-A [Cursor Project](https://cursor.com/blog/projects) gives one coordinator agent a persistent thread. The coordinator doesn't write code. It directs subagents, which run in the cloud by default, so the work continues when your laptop is closed. That's the shape the Orchestrate playbook expects. Start your prompts to the coordinator with `/poteto-mode`, and the subagents it spawns follow the playbooks.
++The upstream [Cursor Project](https://cursor.com/blog/projects) supplies the persistent coordinator thread and cloud-worker lifecycle that Orchestrate expects. No equivalent lifecycle is verified in this Codex baseline. Native subagents are not durable cloud tasks. Keep the coordinator, worker, verifier, and approval responsibilities intact, but report the persistence gap before launching a program that must outlive the session.
+@@ -98 +98 @@ [A]
+-A few habits help:
++The upstream project workflow keeps these requirements; its UI actions below have no verified Codex mapping:
+@@ -108 +108 @@ [A]
+-/poteto-mode refactor this repo so its architecture is more agent friendly. use /correct and /architect on past commits and review comments to find the mistakes agents make most here. use /recall for context from past chats. answer open questions with prototypes instead of asking me. come back with a plan backed by real data. once i approve it, run it with autopilot-stack or autopilot-full, and ask me which.
++$poteto-mode refactor this repo so its architecture is more agent friendly. use $correct and $architect on past commits and review comments to find the mistakes agents make most here. use $recall for context from past chats. answer open questions with prototypes instead of asking me. come back with a plan backed by real data. once i approve it, run it with autopilot-stack or autopilot-full, and ask me which.
 @@ -113 +113 @@ [A]
 -Every loop above still waits for you to start it. A scheduled or event-driven automation removes that step. Software maintenance splits into stages that suit this well: triage a report, reproduce it, fix it, verify the fix. Two rules keep such a line trustworthy:
-+Every loop above still waits for you to start it. A scheduled or event-driven routine removes that step. Software maintenance splits into stages that suit this well: triage a report, reproduce it, fix it, verify the fix. Two rules keep such a line trustworthy:
-@@ -118 +118 @@ [A]
--ostack ships this as a dormant [automation pack](../../automations/benny/README.md) for Slack issue reports. One automation triages each report. The other reproduces confirmed bugs and may prepare a small draft fix. Point an agent at its [`FOR_AGENTS.md`](../../automations/benny/FOR_AGENTS.md) and name the target repository to set it up.
-+ostack ships this as a dormant [routine pack](../../automations/benny/README.md) for Slack issue reports. One routine triages each report. The other reproduces confirmed bugs and may prepare a small draft fix. Point an agent at its [`FOR_AGENTS.md`](../../automations/benny/FOR_AGENTS.md) and name the target repository to set it up.
++Every loop above still waits for you to start it. A scheduled or event-driven automation can remove that step only after a supported adapter is verified; this baseline does not install one. Software maintenance splits into stages that suit this well: triage a report, reproduce it, fix it, verify the fix. Two rules keep such a line trustworthy:
+@@ -120 +120 @@ [A]
+-**Pitfall:** a duration is not a finish condition. "work on this for 4 hours" gives the agent nothing to check, and you'll wake up to four hours of motion instead of a result. Give `/loop` a predicate that can pass or fail.
++**Pitfall:** a duration is not a finish condition. "work on this for 4 hours" gives the agent nothing to check, and you'll wake up to four hours of motion instead of a result. Give the autonomous run a predicate that can pass or fail.

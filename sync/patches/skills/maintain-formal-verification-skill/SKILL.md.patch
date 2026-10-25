@@ -1,0 +1,7 @@
+--- a/skills/maintain-formal-verification-skill/SKILL.md
++++ b/skills/maintain-formal-verification-skill/SKILL.md
+@@ -4 +3,0 @@ [A]
+-disable-model-invocation: true
+@@ -5,0 +5,2 @@ [A]
++
++Read [Codex compatibility](../../docs/harness/codex.md) before using this workflow.

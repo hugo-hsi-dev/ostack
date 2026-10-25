@@ -1,5 +1,0 @@
-{"type":"user","promptId":"prompt-00","message":{"role":"user","content":"<wake reason=\"mention\"><message trigger=\"true\" from=\"human\">[user text]</message></wake>"}}
-{"type":"assistant","message":{"role":"assistant","content":[{"type":"tool_use","id":"toolu_A000","name":"Bash","input":{"command":"python3 timeline.py pages/session_X"}}]}}
-{"type":"user","promptId":"prompt-00","message":{"role":"user","content":[{"type":"tool_result","tool_use_id":"toolu_A000","content":"15:17:36 NOTIFY-QUEUED mcp_send_message '<cross-session-message from-session=\"session_B001\"> The following was sent by another Claude Code session'"}]}}
-{"type":"assistant","message":{"role":"assistant","content":[{"type":"tool_use","id":"toolu_C002","name":"mcp__hearthbot__no_reply_needed","input":{"reason":"nothing_to_add"}}]}}
-{"type":"user","promptId":"prompt-00","message":{"role":"user","content":[{"type":"tool_result","tool_use_id":"toolu_C002","content":"Acknowledged — no reply sent."}]}}

@@ -1,67 +1,60 @@
-# Set up ostack
+# Set up pstack
 
-In this page you install the plugin, pick which models ostack uses, and run your first task. Setup is one command plus a short conversation.
+In this page you install the skills, pick supported models, and run your first task.
 
-## Install the plugin
+## Install the skills
 
-ostack installs from its own plugin marketplace. In Claude Code, run:
+Follow the [Codex installation steps](../../README.md#install-for-codex) to link this checkout’s skills into `.agents/skills` or `~/.agents/skills`. Keep the complete checkout so relative references remain available. Restart Codex if skills do not appear, then use `/skills` or type `$poteto-mode`.
 
-```text
-/plugin marketplace add hugo-hsi-dev/ostack
-/plugin install ostack@ostack
-```
-
-Run `/plugin` to confirm the plugin loaded. Plugin skills are namespaced, so `/onyo-mode` is also `/ostack:onyo-mode`. The bare name works when no other skill shares it. This guide uses bare names. The [README](../../README.md#install) also covers local checkouts, Cursor, and skills.sh.
-
-In Claude Code, run `/plugin marketplace add cursor/plugins`, then `/plugin install ostack@cursor-plugins`. Claude Code prefixes plugin commands, so each command in this guide takes a `ostack:` prefix there, such as `/ostack:setup-ostack`, which writes its model rule to `~/.claude/rules/ostack-models.md`. The [Claude Code adapter](../harness/claude-code.md) covers the other differences.
+Read [the Codex compatibility map](../harness/codex.md) for model, subagent, cloud, and integration limits.
 
 ## Pick your models
 
 Run:
 
 ```text
-/setup-ostack
+$setup-pstack
 ```
 
-[`/setup-ostack`](../../skills/setup-ostack/SKILL.md) detects the models you have access to, asks for a reasoning budget, shows you each role (code delegates, judgment, the review panels), and asks what you want. Answer the questions. It writes `~/.claude/rules/ostack-models.md`, a small rule every ostack skill reads.
+[`$setup-pstack`](../../skills/setup-pstack/SKILL.md) detects the models you have access to, asks for a reasoning budget, shows you each role (code delegates, judgment, the review panels), and asks what you want. Answer the questions. It writes `.agents/pstack-models.md`, a project-owned role map that skills explicitly read, not an automatically loaded Codex rule.
 
-The defaults run at `xhigh` reasoning, the same as the `large` budget. `unlimited` lifts each model to its highest tier, up to `max`. `medium` and `small` lower the reasoning and spend fewer tokens.
+The Codex baseline inherits the parent model. Setup preserves the budget choices, but applies reasoning effort only when the host and selected model expose a supported value. It does not convert Cursor’s combined model-and-effort slugs into guessed Codex models.
 
-You only override what you care about. A role with no line in the rule keeps the skill's default. To restore a default, delete that role's line. A rerun of `/setup-ostack` keeps any role whose model differs from the default. When a default changes, a rule written before the change still pins the old default, so delete those role lines, or delete the file, then run `/setup-ostack` again.
+You only override what you care about. A role with no line in the rule keeps the skill's default. To restore a default, delete that role's line. A rerun of `$setup-pstack` keeps any role whose model differs from the default. When a default changes, a rule written before the change still pins the old default, so delete those role lines, or delete the file, then run `$setup-pstack` again.
 
-You might be wondering how to run a role on your main session's model. Set it to `inherit` and ostack omits the subagent's `model` and `effort`, so the subagent inherits them from your session. `inherit` isn't a model alias. For a panel role the value is a list, and one subagent runs per entry, so the list length sets the panel size. Setup also configures `swarm workers`, the default model for every `/swarm` worker unless a race names a model for each arm.
+Set a role to `inherit-parent` or `auto` to omit a model override. Both are pstack aliases, not Codex model IDs. A panel list still runs one agent per entry. When all entries inherit one model, report that different-model-family review is unavailable. Setup also configures `swarm workers` unless a race names a verified model per arm.
 
 ## Accept the verification offers, or don't
 
-At the end of setup, `/setup-ostack` looks for a way to prove app behavior in your project, either a `verify-*` skill or an existing harness. If it finds neither, it offers once to generate one with [`/create-verification-skill`](../../skills/create-verification-skill/SKILL.md).
+At the end of setup, `$setup-pstack` looks for a way to prove app behavior in your project, either a `verify-*` skill or an existing harness. If it finds neither, it offers once to generate one with [`$create-verification-skill`](../../skills/create-verification-skill/SKILL.md).
 
-Say yes and it writes `.claude/skills/verify-<app>/`, a project-local skill that teaches agents to drive your app the way a user does. It proves the skill works once before handing it over. Say no and setup moves on. You can run `/create-verification-skill` yourself any time. [Verify and ship](./06-verify-and-ship.md#create-a-project-verification-skill) covers it in depth.
+Say yes and it writes `.agents/skills/verify-<app>/`, a project-local skill that teaches agents to drive your app the way a user does. It proves the skill works once before handing it over. Say no and setup moves on. You can run `$create-verification-skill` yourself any time. [Verify and ship](./06-verify-and-ship.md#create-a-project-verification-skill) covers it in depth.
 
-If you're new to ostack, say yes. An agent that can check its own work keeps going until the check passes. An agent that can't hands every result back to you to check by hand. Of everything in this guide, the verification skill pays off the most.
+If you're new to pstack, say yes. An agent that can check its own work keeps going until the check passes. An agent that can't hands every result back to you to check by hand. Of everything in this guide, the verification skill pays off the most.
 
-Then setup offers once to generate a formal verification skill with [`/create-formal-verification-skill`](../../skills/create-formal-verification-skill/SKILL.md), unless the project already has one. Tests check the cases someone thought to write. A formal verification skill checks one key property of your code, such as "a job never runs twice at once", in every case within a stated scope. Say yes when your code has concurrency, retries, a state machine, or a parser, where a bug is costly and tests rarely reach the case that breaks. Otherwise say no, and run it later if that changes. [Verify and ship](./06-verify-and-ship.md#prove-a-property-with-a-formal-verification-skill) covers it.
+Then setup offers once to generate a formal verification skill with [`$create-formal-verification-skill`](../../skills/create-formal-verification-skill/SKILL.md), unless the project already has one. Tests check the cases someone thought to write. A formal verification skill checks one key property of your code, such as "a job never runs twice at once", in every case within a stated scope. Say yes when your code has concurrency, retries, a state machine, or a parser, where a bug is costly and tests rarely reach the case that breaks. Otherwise say no, and run it later if that changes. [Verify and ship](./06-verify-and-ship.md#prove-a-property-with-a-formal-verification-skill) covers it.
 
-After setup, start a new session. The model rule applies to new sessions.
+After setup, have the next workflow read `.agents/pstack-models.md`. This file is explicitly loaded by the skills; writing it does not change Codex’s global model configuration.
 
 ## Keep the cost in check
 
-ostack spends extra tokens on subagents and review panels. That's the price of the rigor. To spend fewer:
+pstack spends extra tokens on subagents and review panels. That's the price of the rigor. To spend fewer:
 
-- Rerun `/setup-ostack` and pick a smaller effort budget or cheaper models. A strong model in the main chat with cheaper, faster models in the code roles is a good split.
-- Set a role to `inherit` so it runs on the session's own model.
+- Rerun `$setup-pstack` and pick a smaller reasoning budget or cheaper models. A strong model in the main chat with cheaper, faster models in the code roles is a good split.
+- Set a role to `auto` or `inherit-parent` so it runs on the chat's own model.
 - Shorten a panel list. Each entry runs one subagent.
-- Save `/onyo-mode` for work that needs rigor. A small, obvious edit doesn't.
+- Save `$poteto-mode` for work that needs rigor. A small, obvious edit doesn't.
 
 ## Run your first task
 
 Pick something real but small, and describe it the way you'd describe it to a colleague:
 
 ```text
-/onyo-mode add a --json flag to this command. text output stays byte-identical. verify both.
+$poteto-mode add a --json flag to this command. text output stays byte-identical. verify both.
 ```
 
-Watch the todo list. Its first items are the matched playbook's steps copied in, the Feature playbook for this prompt. If `/onyo-mode` skips a step, the step stays in the list with `skip: <reason>`, so you can see what it chose not to do.
+Watch the todo list. Its first items are the matched playbook's steps copied in, the Feature playbook for this prompt. If `$poteto-mode` skips a step, the step stays in the list with `skip: <reason>`, so you can see what it chose not to do.
 
-From here you can type normal follow-ups. `/onyo-mode` attaches the skill to one message, and it fades as the chat moves on.
+From here you can type normal follow-ups. Invoke `$poteto-mode` for each new task. Cursor’s persistent Custom Mode UI has no verified equivalent in this port; do not assume a skill remains loaded after a new chat or compaction.
 
-Next: [Route work through `/onyo-mode`](./02-onyo-mode.md).
+Next: [Route work through `$poteto-mode`](./02-poteto-mode.md).

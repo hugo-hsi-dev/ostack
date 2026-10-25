@@ -1,0 +1,2 @@
+# Patch deletion lines preserve upstream whitespace verbatim.
+sync/patches/** whitespace=-blank-at-eol

@@ -1,0 +1,5 @@
+--- a/skills/poteto-mode/playbooks/visual-parity.md
++++ b/skills/poteto-mode/playbooks/visual-parity.md
+@@ -1,0 +2,2 @@ [A]
++
++**Wake compatibility.** Upstream `/loop` denotes event wakeups or a timed heartbeat. No equivalent command is verified in this Codex surface. Use an actually exposed, authorized wake facility with those semantics, or report the unattended step blocked. A native subagent completion notification alone does not provide periodic or restart-persistent execution.
