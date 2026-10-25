@@ -10,6 +10,8 @@ A Claude project has one project chat and many threads. ostack gives each sessio
 - **Planning thread.** One per ask. It follows onyo-mode, picks the playbook, splits the ask into units, writes each unit's brief, and checks each result.
 - **Unit thread.** One per unit. It follows onyo-mode, does its one unit, and reports to the coordinator.
 
+When a unit ends, its thread resolves itself. When the whole ask is done, the planning thread resolves itself, and the coordinator resolves any thread of that ask still open. A thread stays open while its PR is open. A message to a resolved thread reopens it. Resolving hides a thread from the project's thread list. It doesn't stop the thread's session.
+
 The rules for each role are in [`onyo-projects`](../../skills/onyo-projects/SKILL.md).
 
 ## The hook holds each role to its rules
