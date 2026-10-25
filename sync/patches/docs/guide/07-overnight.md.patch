@@ -33,21 +33,29 @@
 @@ -85 +85 @@ [A]
 -/poteto-mode autopilot these five changes but stack them, don't ship. i'll land the stack in the morning.
 +$poteto-mode autopilot these five changes but stack them, don't ship. i'll land the stack in the morning.
-@@ -91 +91 @@ [A]
+@@ -91,18 +91 @@ [A]
 -/poteto-mode orchestrate the store migration. own it until every package is converted and merged. i'll check in twice a day.
-+$poteto-mode orchestrate the store migration. own it until every package is converted and merged. i'll check in twice a day.
-@@ -96 +96 @@ [A]
+-```
+-
+-## Run many projects in parallel
+-
 -A [Cursor Project](https://cursor.com/blog/projects) gives one coordinator agent a persistent thread. The coordinator doesn't write code. It directs subagents, which run in the cloud by default, so the work continues when your laptop is closed. That's the shape the Orchestrate playbook expects. Start your prompts to the coordinator with `/poteto-mode`, and the subagents it spawns follow the playbooks.
-+The upstream [Cursor Project](https://cursor.com/blog/projects) supplies the persistent coordinator thread and cloud-worker lifecycle that Orchestrate expects. No equivalent lifecycle is verified in this Codex baseline. Native subagents are not durable cloud tasks. Keep the coordinator, worker, verifier, and approval responsibilities intact, but report the persistence gap before launching a program that must outlive the session.
-@@ -98 +98 @@ [A]
+-
 -A few habits help:
-+The upstream project workflow keeps these requirements; its UI actions below have no verified Codex mapping:
-@@ -108 +108 @@ [A]
+-
+-- Give each body of work its own Project, such as a feature, a migration, a perf push, or a tech-debt cleanup. Several can run side by side.
+-- Drag related chats into the Project, finished ones included. They become context for every agent in it.
+-- Give each PR a verification swarm before it merges, and let Autopilot-stack or Autopilot-full carry the queue.
+-- Ask the coordinator for a plan backed by data, and have it answer open questions with prototypes before it asks you.
+-
+-One prompt can carry a whole Project, from research through execution:
+-
+-```text
 -/poteto-mode refactor this repo so its architecture is more agent friendly. use /correct and /architect on past commits and review comments to find the mistakes agents make most here. use /recall for context from past chats. answer open questions with prototypes instead of asking me. come back with a plan backed by real data. once i approve it, run it with autopilot-stack or autopilot-full, and ask me which.
-+$poteto-mode refactor this repo so its architecture is more agent friendly. use $correct and $architect on past commits and review comments to find the mistakes agents make most here. use $recall for context from past chats. answer open questions with prototypes instead of asking me. come back with a plan backed by real data. once i approve it, run it with autopilot-stack or autopilot-full, and ask me which.
-@@ -113 +113 @@ [A]
++$poteto-mode orchestrate the store migration. own it until every package is converted and merged. i'll check in twice a day.
+@@ -113 +96 @@ [A]
 -Every loop above still waits for you to start it. A scheduled or event-driven automation removes that step. Software maintenance splits into stages that suit this well: triage a report, reproduce it, fix it, verify the fix. Two rules keep such a line trustworthy:
 +Every loop above still waits for you to start it. A scheduled or event-driven automation can remove that step only after a supported adapter is verified; this baseline does not install one. Software maintenance splits into stages that suit this well: triage a report, reproduce it, fix it, verify the fix. Two rules keep such a line trustworthy:
-@@ -120 +120 @@ [A]
+@@ -120 +103 @@ [A]
 -**Pitfall:** a duration is not a finish condition. "work on this for 4 hours" gives the agent nothing to check, and you'll wake up to four hours of motion instead of a result. Give `/loop` a predicate that can pass or fail.
 +**Pitfall:** a duration is not a finish condition. "work on this for 4 hours" gives the agent nothing to check, and you'll wake up to four hours of motion instead of a result. Give the autonomous run a predicate that can pass or fail.

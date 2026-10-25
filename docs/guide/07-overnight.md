@@ -91,23 +91,6 @@ $poteto-mode autopilot these five changes but stack them, don't ship. i'll land 
 $poteto-mode orchestrate the store migration. own it until every package is converted and merged. i'll check in twice a day.
 ```
 
-## Run many projects in parallel
-
-The upstream [Cursor Project](https://cursor.com/blog/projects) supplies the persistent coordinator thread and cloud-worker lifecycle that Orchestrate expects. No equivalent lifecycle is verified in this Codex baseline. Native subagents are not durable cloud tasks. Keep the coordinator, worker, verifier, and approval responsibilities intact, but report the persistence gap before launching a program that must outlive the session.
-
-The upstream project workflow keeps these requirements; its UI actions below have no verified Codex mapping:
-
-- Give each body of work its own Project, such as a feature, a migration, a perf push, or a tech-debt cleanup. Several can run side by side.
-- Drag related chats into the Project, finished ones included. They become context for every agent in it.
-- Give each PR a verification swarm before it merges, and let Autopilot-stack or Autopilot-full carry the queue.
-- Ask the coordinator for a plan backed by data, and have it answer open questions with prototypes before it asks you.
-
-One prompt can carry a whole Project, from research through execution:
-
-```text
-$poteto-mode refactor this repo so its architecture is more agent friendly. use $correct and $architect on past commits and review comments to find the mistakes agents make most here. use $recall for context from past chats. answer open questions with prototypes instead of asking me. come back with a plan backed by real data. once i approve it, run it with autopilot-stack or autopilot-full, and ask me which.
-```
-
 ## Let loops start themselves
 
 Every loop above still waits for you to start it. A scheduled or event-driven automation can remove that step only after a supported adapter is verified; this baseline does not install one. Software maintenance splits into stages that suit this well: triage a report, reproduce it, fix it, verify the fix. Two rules keep such a line trustworthy:
