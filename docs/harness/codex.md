@@ -21,7 +21,7 @@ The following names were observed in this porting session, not promised as unive
 | Todo list | Use an exposed plan tool if available, otherwise maintain the same ordered checklist in the conversation or project artifact. This does not add a planning workflow. |
 | MCP discovery | Inspect the exposed tools and discover authorized sources. No assumed Cursor `mcps/` directory. |
 
-Native subagents share this selected execution environment. They are not durable cloud tasks, do not get their own VM or worktree automatically, and cannot be assumed to survive a parent restart. Codex cloud is a separate product surface. A playbook requiring cloud isolation, persistent coordination, or cloud status/wake behavior needs a verified adapter before that step runs. The project playbooks retain those requirements; this port supplies no adapter.
+Native subagents share this selected execution environment. They are not durable cloud tasks, do not get their own VM or worktree automatically, and cannot be assumed to survive a parent restart. Codex cloud is a separate product surface. Orchestrate uses ChatGPT Spaces/Pages for its durable project record as described below. That storage does not supply persistent coordinator execution. A playbook requiring cloud isolation or cloud status/wake behavior still needs a verified execution adapter before that step runs; this port supplies no such adapter.
 
 ## Models, installation, and configuration
 
@@ -34,6 +34,16 @@ Custom agent definitions are provided in `.codex/agents/*.toml`. They require a 
 `$setup-pstack` preserves the 17 role keys, budget/confirmation sequence, and panel counts. It writes repository-root `.agents/pstack-models.md`, which workflows read explicitly. This is a pstack data file, not native Codex config or an always-applied rule. Native configuration uses `.codex/config.toml` or `~/.codex/config.toml`; this port does not modify either.
 
 Model IDs and reasoning effort are separate. Use only exposed supported choices. In this session, `model` and `reasoning_effort` overrides require `fork_turns: "none"`; full-history forks inherit. The pstack aliases `auto` and `inherit-parent` mean omit overrides, not model IDs. There is no verified exact substitute for upstream Grok/Claude families or suffix-based speed settings. Defaults therefore inherit. Panel seats remain independent, but same-model reviews do not satisfy cross-family diversity. Report that semantic limitation explicitly.
+
+## Orchestrate records in Spaces
+
+The [Orchestrate playbook](../../skills/poteto-mode/playbooks/orchestrate.md) uses Hsit/dot as the planning/routing coordinator and one authoritative project Page/index as its durable record. This names the coordinator role, not a private dot API. Current records are read before dispatch and reconciliation; scope changes, decisions and verified reports are saved through guarded updates. Workers receive self-contained briefs and return source-linked reports without needing Pages or shared filesystem access.
+
+Native headings, checklists, tables and links hold task IDs, dependencies, scope versions, task/thread/branch/PR mappings, exact SHAs, verifier evidence, user gates, status and observed frontier snapshots. The coordinator reconciles these with the actual forge/task state; Pages do not calculate readiness or become live GitHub truth. A changed head invalidates verification. Stable source receipts remain pending until corresponding updates are verified, with deduplication and readback across partial or uncertain saves. Single-writer ownership is a coordination convention, not a distributed lock. Preserve user edits and existing privacy; never store secrets or raw sensitive logs.
+
+The existing `scripts/orch/` implementation still operates on local files. It is optional legacy/local tooling, not a Pages backend, and is not invoked by this Spaces path. No connector, new planner, worker lifecycle, callback, scheduler, automatic edit-trigger subscription, or autopilot redesign is included. Small-task collapse and all planning/review/acceptance gates remain.
+
+Capability documentation checked on 2026-10-25: the active Pages plugin's `write-page` and `maintain-space` skills, `write-page/references/page-content.md`, and `write-page/references/edit-requests.md`, plus exposed `read_page`, `edit_page`, `patch_page`, and `create_page` tool descriptions. The skill package is `skill://plugin_connector_1p_4a72ddeef4c481918f92d8e8df18fb2c`. These document native formatting, read-derived block guards, per-operation receipts and recovery; they do not establish transactional multi-page writes. Consult the coordinator's current skills/tools for exact arguments. No user Page was read or changed to validate this repository port, and live persistence/access remains untested.
 
 ## Remaining compatibility gaps
 

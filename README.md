@@ -34,7 +34,7 @@ done
 
 For personal installation, use `~/.agents/skills` instead. Keep the checkout available: skill references, scripts, docs, and agent prompts resolve inside it. Restart Codex if newly installed skills do not appear. Invoke a skill with `$poteto-mode`, or use `/skills` to select it. Older slash-style labels in upstream reference material mean skill names, not Codex slash commands.
 
-Read [the Codex compatibility map](./docs/harness/codex.md) before running workflows. The files in `docs/upstream/` preserve upstream harness metadata and history; they are not Codex installation manifests. This checkout does not install Claude hooks or change project orchestration.
+Read [the Codex compatibility map](./docs/harness/codex.md) before running workflows. The files in `docs/upstream/` preserve upstream harness metadata and history; they are not Codex installation manifests. This checkout does not install Claude hooks. Orchestrate uses a Spaces project Page for its durable record; execution lifecycle and scheduling remain separate capabilities.
 
 ## get started
 

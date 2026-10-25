@@ -33,6 +33,9 @@
 @@ -85 +85 @@ [A]
 -/poteto-mode autopilot these five changes but stack them, don't ship. i'll land the stack in the morning.
 +$poteto-mode autopilot these five changes but stack them, don't ship. i'll land the stack in the morning.
+@@ -88 +88 @@ [A]
+-[Orchestrate](../../skills/poteto-mode/playbooks/orchestrate.md) is for a program that outlives any single agent: multi-day, many stacked PRs, fleets of subagents under one standing coordinator chat. The coordinator authors briefs, collects what its subagents finish, keeps the lowest unmerged PR green, and never writes code itself. It's deliberately heavy machinery. If one agent could finish the work in a session, the playbook itself routes you back to the overnight contract above:
++[Orchestrate](../../skills/poteto-mode/playbooks/orchestrate.md) is for a program that outlives any single agent: multi-day, many stacked PRs, fleets of subagents under one standing coordinator chat. Hsit/dot is the planning/routing coordinator. It reads and maintains one authoritative project Page/index in ChatGPT Spaces, authors self-contained worker briefs, reconciles source-linked reports against current forge state, and keeps the lowest unmerged PR green. The Page holds dependencies, exact SHAs, evidence, and pending decisions; a completion report is not verified done. It does not run workers or provide scheduled wakeups. The coordinator never writes code itself. It's deliberately heavy machinery. If one agent could finish the work in a session, the playbook itself routes you back to the overnight contract above:
 @@ -91,18 +91 @@ [A]
 -/poteto-mode orchestrate the store migration. own it until every package is converted and merged. i'll check in twice a day.
 -```
