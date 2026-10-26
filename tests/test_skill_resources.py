@@ -59,6 +59,13 @@ class SkillResources(unittest.TestCase):
                 self.assertIn("`onyo-mode` package from this same plugin", bootstrap)
                 self.assertIn("`references/codex.md` resource", bootstrap)
 
+    def test_no_instruction_sends_readers_to_deleted_root_agent_files(self):
+        stale = (r"(?<![./A-Za-z0-9_-])agents/(?:\*\.md|(?:onyo-agent|comment-sicko)\.md)|"
+                 r"(?:bodies|prompts|instructions)\s+(?:live\s+)?under\s+`agents/")
+        for path in self.skills.rglob("*.md"):
+            with self.subTest(source=path.relative_to(self.skills)):
+                self.assertNotRegex(path.read_text(), stale)
+
 
 if __name__ == "__main__":
     unittest.main()
