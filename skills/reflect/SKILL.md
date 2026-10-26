@@ -1,28 +1,25 @@
 ---
 name: reflect
-description: Spawn three parallel review subagents over the active transcript, surface learnings, and route each to a concrete edit on an existing skill. Use when the user says reflect.
+description: Spawn three parallel review subagents over the current or explicitly selected conversation, surface learnings, and route each to a concrete edit on an existing skill. Use when the user says reflect.
 ---
 
 Read [Codex compatibility](../../docs/harness/codex.md) before using this workflow.
 
 # Reflect
 
-**Transcript compatibility.** Use only a transcript/export explicitly exposed for the active project. The directory names and JSONL examples below describe the upstream format, not a guaranteed Codex layout. Inspect the actual format first. If unavailable, report the evidence gap; do not infer transcript evidence from an agent summary.
+Mine the current or explicitly selected single conversation for durable learnings, then route them into skill edits.
 
+Invoke only when the user says "reflect" or "/reflect", including when a parent explicitly asks a specific thread to run Reflect on the user's behalf. This applies in local and cloud threads; it is not background multi-chat mining. Skip when the conversation is trivial, off-topic, or already covered by an existing skill the parent followed correctly. One-offs are not learnings.
 
-Mine the current conversation for durable learnings, then route them into skill edits.
+## 1. Gather evidence for the selected conversation
 
-Invoke when the user says "reflect" or "/reflect". Skip when the conversation is trivial, off-topic, or already covered by an existing skill the parent followed correctly. One-offs are not learnings.
+Before fanning out, use the available conversation evidence or a supported read/export for that single thread. When its ID is known, read it directly rather than discovering other conversations. Do not crawl the filesystem, assume private session paths or JSONL layouts, or match opening prompts across transcript files.
 
-## 1. Locate the active transcript
+Use only capabilities exposed in the current environment. A local host may expose `mcp__codex_app__read_thread` with `threadId` and optional `hostId`, `cursor`, `turnLimit`, `includeOutputs`, and `maxOutputCharsPerItem`; use the active tool schema. Its summaries and optional outputs are not a guaranteed lossless transcript. Describe the returned evidence accurately, including summary, pagination, omitted-output, or truncation limits. Do not assume this local tool or the parent's cloud-thread controls exist in a cloud worker. A parent may supply returned messages or excerpts for the selected thread in the worker's brief; the worker must not depend on unavailable parent access.
 
-Before fanning out, find this conversation's transcript in the `agent-transcripts/` directory the system prompt names. Do not search unrelated session directories. That crosses workspace boundaries and reads private chats from unrelated projects.
+If a transcript is unavailable, pass a tight digest of the selected session from the evidence actually available, as upstream permits. Label it as a digest, not a transcript. Identify missing history or evidence limits; never reconstruct deleted or missing messages as facts. If no usable evidence for the selected conversation is available, report that gap.
 
-```bash
-ls -t <agent-transcripts>/*.jsonl <agent-transcripts>/*/*.jsonl <agent-transcripts>/*/subagents/*.jsonl 2>/dev/null | head -10
-```
-
-That covers the legacy flat (`<id>.jsonl`), current nested (`<id>/<id>.jsonl`), and subagent (`<parent>/subagents/<child>.jsonl`) layouts. For each candidate, read the first JSONL line. Take the file whose `message.content[0].text` contains the conversation's opening user prompt. If none matches, pass a tight digest of the session instead.
+Give all three reviewers the same scoped evidence and its limitations, inlined in their briefs or through an explicitly supplied export each can access. Do not assume a parent-local path is accessible to a worker. Preserve available turn identifiers or short quotes for citations; do not invent transcript turns from a summary.
 
 ## 2. Spawn three reviewers in parallel
 
@@ -36,7 +33,7 @@ Read `reflect tooling` and `reflect judgment, divergent, synthesizer` in the use
 | Tooling | `reflect tooling` | `inherit-parent` | `references/tooling-reviewer.md` |
 | Divergent | `reflect judgment, divergent, synthesizer` | `inherit-parent` | `references/divergent-reviewer.md` |
 
-Pass each template verbatim, substituting the transcript path or digest where marked. The spawn response identifies the agent. Collect each reviewer’s terminal result through the exposed completion/wait mechanism before synthesis.
+Pass each template verbatim, substituting the same selected-conversation evidence or accessible export path and its limitations where marked. The spawn response identifies the agent. Collect each reviewer’s terminal result through the exposed completion/wait mechanism before synthesis.
 
 ## 3. Synthesize
 

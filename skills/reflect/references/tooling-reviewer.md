@@ -16,7 +16,7 @@ Examples of the pattern:
 - User describes a flaky test the agent could have queried via an observability MCP. Routing: the debugging skill should mention the observability MCP.
 - User links a chat thread the agent could have fetched via a chat MCP. Routing: the relevant skill should mention the chat MCP.
 
-Read the active transcript at <ABSOLUTE_PATH> (or use the digest below if no path is given).
+Use the selected-conversation evidence below, or read its explicitly supplied export at <ACCESSIBLE_EXPORT_PATH> if provided. Respect the stated evidence limits: a digest or summary is not a full transcript, and missing history is not evidence of absence.
 
 Scan for:
 - Tool invocations and command flags the agent had to discover
@@ -45,4 +45,4 @@ Skip trivial things (typos, retries) and anything already obvious from the skill
 
 Return as a numbered list. No exposition.
 
-<DIGEST IF FILE PATH UNAVAILABLE>
+<SELECTED_CONVERSATION_EVIDENCE_OR_DIGEST_AND_LIMITATIONS>
