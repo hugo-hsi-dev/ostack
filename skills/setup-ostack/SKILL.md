@@ -32,9 +32,9 @@ The default role-to-model mapping is the configuration shape shown in step 5 bel
 - `medium — high reasoning`
 - `small — medium reasoning`
 
-**(b) Apply it.** Build the working table from the defaults below, and on a re-run keep any role changed by model family, list, or alias. The budget labels `unlimited`, `large`, `medium`, and `small` target `max`, `xhigh`, `high`, and `medium` respectively. Model ID and reasoning effort are separate values, written as `<model-id> <effort>` for each real model. Use the selected model's highest confirmed effort at or below the target; if none is confirmed, mark that role as needing a choice. Do not edit model-name suffixes or invent a `-fast` model. `inherit-parent` and `auto` do not change.
+**(b) Apply it.** Build the working table from the defaults below, and on a re-run keep any role changed by model ID, panel list, or alias. Reapply only the selected budget’s effort, keeping the chosen model ID. The budget labels `unlimited`, `large`, `medium`, and `small` target `max`, `xhigh`, `high`, and `medium` respectively. Model ID and reasoning effort are separate values, written as `<model-id> <effort>` for each real model. Use the selected model's highest confirmed effort at or below the target; if none is confirmed, mark that role as needing a choice. Do not edit model-name suffixes or invent a `-fast` model. `inherit-parent` and `auto` do not change.
 
-The baseline uses inheritance rather than pretending Cursor's Grok and Claude defaults have exact Codex equivalents. Preserve every role and panel slot. Offer distinct available models for diverse panels, but explicitly report when cross-family diversity cannot be met. Two inherited slots remain two independent agents; they are not evidence of model diversity.
+The selected default mapping replaces upstream Opus 5.5 roles with `gpt-6.1-sol` and Grok 4.7 roles with `gpt-6.1-terra`, preserving the 15 retained roles and every panel slot. These IDs were verified in the selecting host; still check their availability and supported efforts in this session. An unavailable default stays visible as needing a choice; never silently replace it or write an unsupported ID. `inherit-parent` and `auto` remain opt-in alternatives. Distinct Sol/Terra variants do not by themselves establish the upstream cross-family diversity; report that limitation when relevant.
 
 **(c) Show the roles and confirm.** Show every role with its model, marking any model/effort choice not in the detected set as needing a choice. Also list each line step 2 dropped. Ask whether to accept as-is or change specific roles, offering the detected model/effort choices plus `inherit-parent` and `auto` (both mean: this role runs on the parent chat model, without overriding the session selection) as the options. Prefer `request_user_input` when it is exposed and allowed in the current mode; otherwise ask in plain text. For panel roles (arena runners, architect runners, interrogate reviewers) the value is a list, and one subagent runs per entry, alias entries included, so the list length sets the count. `arena cross-judge pool` is also a list, but Arena selects one value from it whose model family differs from the parent's when possible. `swarm workers` is the default model for every worker unless a race or comparison assigns another model per arm.
 
@@ -44,29 +44,29 @@ Every model/effort choice written must be in the detected set. `inherit-parent` 
 
 ### 5. Write the configuration
 
-Write `$CODEX_HOME/pstack-models.md` in the user’s Codex home with a `# budget` line and one line per role using the labels below. Overwrite only this dedicated file so re-runs stay idempotent. Keep unrelated files in Codex home unchanged. Shape:
+Write `$CODEX_HOME/pstack-models.md` in the user’s Codex home with a `# budget` line and one line per role using the labels below. Overwrite only this dedicated file so re-runs stay idempotent. Keep unrelated files in Codex home unchanged. The template names the default models without fixing their effort. Replace `<budget-effort>` for each real entry with that model’s confirmed effort selected from the budget in step 3; replace the budget placeholders too. Never write placeholders to the configuration. Preserve an existing user-selected model, panel list, or alias. Shape:
 
 ```text
 # ostack model configuration. Read explicitly; this is not native Codex config.
-# Delete a line to use inherit-parent. A real choice is <model-id> <effort>.
+# Delete a line to use that role’s default. A real choice is <model-id> <effort>.
 # inherit-parent and auto omit native model and effort overrides.
 # Alias entries in a panel list still count toward its fan-out.
-# budget: large (xhigh target for explicitly configured models)
-feature, refactoring: inherit-parent
-bug-fix: inherit-parent
-perf-issue: inherit-parent
-hillclimb: inherit-parent
-judgment and prose: inherit-parent
-hardest tasks: inherit-parent
-how explorer: inherit-parent
-how explainer: inherit-parent
-why investigators: inherit-parent
-why synthesizer: inherit-parent
-arena runners: inherit-parent, inherit-parent
-arena cross-judge pool: inherit-parent, inherit-parent
-swarm workers: inherit-parent
-architect runners: inherit-parent, inherit-parent
-interrogate reviewers: inherit-parent, inherit-parent
+# budget: <chosen-budget> (<target-effort> target for explicitly configured models)
+feature, refactoring: gpt-6.1-terra <budget-effort>
+bug-fix: gpt-6.1-terra <budget-effort>
+perf-issue: gpt-6.1-terra <budget-effort>
+hillclimb: gpt-6.1-terra <budget-effort>
+judgment and prose: gpt-6.1-sol <budget-effort>
+hardest tasks: gpt-6.1-sol <budget-effort>
+how explorer: gpt-6.1-terra <budget-effort>
+how explainer: gpt-6.1-sol <budget-effort>
+why investigators: gpt-6.1-terra <budget-effort>
+why synthesizer: gpt-6.1-sol <budget-effort>
+arena runners: gpt-6.1-sol <budget-effort>, gpt-6.1-terra <budget-effort>
+arena cross-judge pool: gpt-6.1-sol <budget-effort>, gpt-6.1-terra <budget-effort>
+swarm workers: gpt-6.1-terra <budget-effort>
+architect runners: gpt-6.1-sol <budget-effort>, gpt-6.1-terra <budget-effort>
+interrogate reviewers: gpt-6.1-sol <budget-effort>, gpt-6.1-terra <budget-effort>
 ```
 
 ### 6. Confirm

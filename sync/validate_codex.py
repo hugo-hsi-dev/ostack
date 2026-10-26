@@ -13,6 +13,32 @@ sha = sync.PIN.read_text().strip()
 files = sync.upstream(sha)
 errors = [f"omitted content remains: {p}" for p in sync.omitted_content()]
 errors += [f"obsolete branding content remains: {p}" for p in sync.obsolete_brand_content()]
+
+
+def setup_defaults(text):
+    block = next(block for block in re.findall(r'```[^\n]*\n(.*?)```', text, re.S)
+                 if 'feature, refactoring:' in block)
+    return {role: entries.split(', ') for role, entries in
+            re.findall(r'^([a-z][a-z ,/-]*): (.+)$', block, re.M)
+            if role not in {'description', 'alwaysApply'}}
+
+
+setup_path = 'skills/setup-ostack/SKILL.md'
+upstream_defaults = setup_defaults(sync.build(sha, setup_path, files[setup_path].path).decode())
+model_map = {'claude-opus-5-5-xhigh': 'gpt-6.1-sol',
+             'grok-4.7-xhigh-fast': 'gpt-6.1-terra'}
+expected_defaults = {}
+for role, entries in upstream_defaults.items():
+    if role.startswith('reflect ') and 'skills/reflect/' in sync.omitted_paths():
+        continue
+    if any(entry not in model_map for entry in entries):
+        errors.append(f'{setup_path}: review new upstream defaults for {role}')
+        continue
+    expected_defaults[role] = [f'{model_map[entry]} <budget-effort>' for entry in entries]
+if setup_defaults((root / setup_path).read_text()) != expected_defaults:
+    errors.append(f'{setup_path}: defaults must preserve upstream roles and panel counts, '
+                  'map Opus to Sol and Grok to Terra, and leave effort to the budget')
+
 policies = set()
 skills = 0
 for dest, source in files.items():
@@ -65,4 +91,5 @@ for path in [root / dest for dest in files if dest.endswith('.md') and not dest.
 if errors:
     print('\n'.join(errors))
     sys.exit(1)
-print(f'ok: {skills} skills, {len(policies)} explicit-only policies, agent TOML, license, links, and legacy exclusions')
+print(f'ok: {skills} skills, {len(policies)} explicit-only policies, upstream model-role mapping, '
+      'agent TOML, license, links, and legacy exclusions')

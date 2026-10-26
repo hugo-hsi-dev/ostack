@@ -20,7 +20,9 @@ $setup-ostack
 
 [`$setup-ostack`](../../skills/setup-ostack/SKILL.md) detects the models you have access to, asks for a reasoning budget, shows you each role (code delegates, judgment, the review panels), and asks what you want. Answer the questions. It writes `$CODEX_HOME/pstack-models.md`, the legacy filename retained for backward compatibility, a user-level role map that skills explicitly read, not an automatically loaded Codex rule.
 
-The Codex baseline inherits the parent model. Setup preserves the budget choices, but applies reasoning effort only when the host and selected model expose a supported value. It does not convert Cursor’s combined model-and-effort slugs into guessed Codex models.
+The selected Codex defaults use `gpt-6.1-sol` for upstream Opus 5.5 roles and `gpt-6.1-terra` for Grok 4.7 roles. Code delegates, explorers, investigators, and swarm workers use Terra; judgment, hardest tasks, and explanation/synthesis use Sol. Arena, Architect, and Interrogate retain one seat for each model. Setup still checks the current host: unavailable models or efforts are shown as needing a choice, never silently dispatched.
+
+Your budget sets the starting reasoning effort: unlimited targets max, large xhigh, medium high, and small medium. Setup uses the highest confirmed supported effort at or below the target. The retained task-level effort adjustments in onyo-mode are relative to that budget; no model has a separate fixed effort default. Cursor’s combined model-and-effort slugs and speed suffixes are not portable model IDs.
 
 You only override what you care about. A role with no line in the rule keeps the skill's default. To restore a default, delete that role's line. A rerun of `$setup-ostack` keeps any role whose model differs from the default. When a default changes, a rule written before the change still pins the old default, so delete those role lines, or delete the file, then run `$setup-ostack` again.
 

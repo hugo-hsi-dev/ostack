@@ -16,7 +16,7 @@
 +Before spawning investigators, inspect the session’s exposed tools and discover enabled MCP sources through the available tool catalog. Do not assume a filesystem `mcps/` directory exists. Report unavailable sources.
 @@ -49 +50 @@ [A]
 -Spawn one investigator per category that has a matching MCP, all in a single message so they run concurrently, each owning exactly one tool or MCP. Don't ask one agent to cover multiple MCPs. `model`: the `why investigators` line, default `grok-4.7-xhigh-fast`.
-+Spawn one investigator per category that has a matching MCP, all in a single message so they run concurrently, each owning exactly one tool or MCP. Don't ask one agent to cover multiple MCPs. `model`: the `why investigators` line, default `inherit-parent`.
++Spawn one investigator per category that has a matching MCP, all in a single message so they run concurrently, each owning exactly one tool or MCP. Don't ask one agent to cover multiple MCPs. `model`: the `why investigators` line, default `gpt-6.1-terra` (budget-selected effort per onyo-mode’s Subagents section).
 @@ -79 +80 @@ [A]
 -Spawn one synthesizer. `model`: the `why synthesizer` line, default `claude-opus-5-5-xhigh`. It gets:
-+Spawn one synthesizer. `model`: the `why synthesizer` line, default `inherit-parent`. It gets:
++Spawn one synthesizer. `model`: the `why synthesizer` line, default `gpt-6.1-sol` (budget-selected effort per onyo-mode’s Subagents section). It gets:

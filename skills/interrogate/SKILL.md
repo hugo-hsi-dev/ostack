@@ -29,10 +29,10 @@ Launch all reviewers in a single message with the exposed native subagent tool, 
 
 | Subagent | Default model |
 |----------|---------------|
-| Reviewer A | `inherit-parent` |
-| Reviewer B | `inherit-parent` |
+| Reviewer A | `gpt-6.1-sol` |
+| Reviewer B | `gpt-6.1-terra` |
 
-Give each reviewer a read-only brief. Resolve its configured entry through onyo-mode’s Subagents section. Use only supported models and reasoning settings. Keep supported configured selections. For `auto` or `inherit-parent`, omit both model and effort overrides, retain that panel seat, and never treat the alias as a rejected model.
+Give each reviewer a read-only brief. Resolve its configured entry or table default and budget-selected effort through onyo-mode’s Subagents section. Use only supported models and reasoning settings. Keep supported configured selections. For `auto` or `inherit-parent`, omit both model and effort overrides, retain that panel seat, and never treat the alias as a rejected model.
 
 For reviewer rejection recovery, distinguish an effort-adjustment rejection from an unavailable configured choice. If only the effort adjustment was rejected, use the original confirmed model/effort choice. If the configured choice itself is unavailable, prefer a confirmed supported equivalent from the same family near the intended reasoning tier. Establish availability and family equivalence from the exposed schema, an available entitlement listing, or an informative rejection response; do not invent model IDs, a catalog, family relationships, or probe loops. If no supported recovery choice is known, inherit by omitting both overrides and keep the review running.
 
