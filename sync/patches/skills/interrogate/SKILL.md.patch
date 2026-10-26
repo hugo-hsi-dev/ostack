@@ -13,8 +13,11 @@
 -| Reviewer B | `grok-4.7-xhigh-fast` |
 +| Reviewer A | `inherit-parent` |
 +| Reviewer B | `inherit-parent` |
-@@ -34,3 +35 @@ [A]
+@@ -34 +35 @@ [A]
 -Each reviewer gets `subagent_type: generalPurpose`, `readonly: true`, and `model` set to its configured entry, or its table default when there is no configured line. Omit `model` for an `auto` or `inherit-parent` entry, so that reviewer runs on the parent model.
--
++Give each reviewer a read-only brief. Resolve its configured entry through poteto-mode’s Subagents section. Use only supported models and reasoning settings. Keep supported configured selections. For `auto` or `inherit-parent`, omit both model and effort overrides, retain that panel seat, and never treat the alias as a rejected model.
+@@ -36 +37,3 @@ [A]
 -If the Task tool rejects a configured entry, run that reviewer on its family's table default and say so. Families go by prefix: `claude-*`, and `grok-*` with `cursor-grok-*` and `composer-*`. A refused `composer-*` entry runs on Reviewer B's default. With no family match, use Reviewer A's default. If it rejects a table default, spawn with the closest equivalent from the valid slugs in its error message (prefer the same family and reasoning tier), and open a separate PR to update the default table. Do not block the review on the slug issue. Never treat an alias entry as a rejected slug or apply either fallback to it.
-+Give each reviewer a read-only brief. Resolve its configured entry through poteto-mode’s Subagents section. Use only supported models and reasoning settings; omit overrides for `auto` or `inherit-parent`. If an entry is rejected, report it and use the supported parent model without claiming family diversity. Independent reviews on one model do not satisfy the upstream multi-family signal.
++For reviewer rejection recovery, distinguish an effort-adjustment rejection from an unavailable configured choice. If only the effort adjustment was rejected, use the original confirmed model/effort choice. If the configured choice itself is unavailable, prefer a confirmed supported equivalent from the same family near the intended reasoning tier. Establish availability and family equivalence from the exposed schema, an available entitlement listing, or an informative rejection response; do not invent model IDs, a catalog, family relationships, or probe loops. If no supported recovery choice is known, inherit by omitting both overrides and keep the review running.
++
++Report the actual reviewer selections and any substitutions, including the rejection and any lost model-family diversity. If the inherited model identity is not exposed, say so rather than inventing it. Independent reviews on one model do not satisfy the upstream multi-family signal.

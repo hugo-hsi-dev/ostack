@@ -32,7 +32,11 @@ Launch all reviewers in a single message with the exposed native subagent tool, 
 | Reviewer A | `inherit-parent` |
 | Reviewer B | `inherit-parent` |
 
-Give each reviewer a read-only brief. Resolve its configured entry through poteto-mode’s Subagents section. Use only supported models and reasoning settings; omit overrides for `auto` or `inherit-parent`. If an entry is rejected, report it and use the supported parent model without claiming family diversity. Independent reviews on one model do not satisfy the upstream multi-family signal.
+Give each reviewer a read-only brief. Resolve its configured entry through poteto-mode’s Subagents section. Use only supported models and reasoning settings. Keep supported configured selections. For `auto` or `inherit-parent`, omit both model and effort overrides, retain that panel seat, and never treat the alias as a rejected model.
+
+For reviewer rejection recovery, distinguish an effort-adjustment rejection from an unavailable configured choice. If only the effort adjustment was rejected, use the original confirmed model/effort choice. If the configured choice itself is unavailable, prefer a confirmed supported equivalent from the same family near the intended reasoning tier. Establish availability and family equivalence from the exposed schema, an available entitlement listing, or an informative rejection response; do not invent model IDs, a catalog, family relationships, or probe loops. If no supported recovery choice is known, inherit by omitting both overrides and keep the review running.
+
+Report the actual reviewer selections and any substitutions, including the rejection and any lost model-family diversity. If the inherited model identity is not exposed, say so rather than inventing it. Independent reviews on one model do not satisfy the upstream multi-family signal.
 
 Read `references/reviewer-prompt.md` and fill in the same template for every reviewer with the stated intent, the diff or file contents, the rubric from `references/rubric.md`, and the code-quality lens from `references/code-quality-review.md`. Pick each subagent's reasoning level and fast or standard speed for the job, per the Subagents section of the **poteto-mode** skill.
 
