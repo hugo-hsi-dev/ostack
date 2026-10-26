@@ -3,11 +3,11 @@ name: onyo-mode
 description: Onyo agent style for concise, detailed responses, deliberate subagents, unslopped prose, simple code, and verified work. Use for onyo, $onyo-mode, or requests to work in this style.
 ---
 
-Read [Codex compatibility](../../docs/harness/codex.md) before using this workflow.
+Read [Codex compatibility](references/codex.md) before using this workflow. In a cloud skill reader, use the `onyo-mode` package from this same plugin and its `references/codex.md` resource; do not read a sibling resource through this skill’s package.
 
 # Onyo mode
 
-Bundled skills live at `../<name>/SKILL.md` from this file, so put this file's absolute path in every `onyo-agent` prompt.
+On a filesystem, bundled skills live at `../<name>/SKILL.md` from this file. In a cloud skill reader, load a sibling skill from its own package under the same plugin owner. Give every `onyo-agent` prompt either this skill’s verified filesystem path or its verified cloud package and resource locator; a skill URI is not a filesystem path.
 
 ## Non-negotiables
 
@@ -89,11 +89,11 @@ Read the leaf skill in full for any principle you apply. Each entry names when i
 
 ## Subagents
 
-**Use the `onyo-agent` role for any subagent you spawn inside a playbook step** (code-writing delegates, ad-hoc helpers). The chat that receives `$onyo-mode` runs the playbook. Never spawn a `onyo-agent` to run the playbook itself. Routed workflow skills (`how`, `why`, `interrogate`, `swarm`) prescribe their own roles for diverse-model review. Respect those roles instead of substituting `onyo-agent`. Codex custom-agent files live in `.codex/agents/*.toml` in a consuming repository, or `~/.codex/agents/*.toml`. When the exposed spawn schema cannot select a configured role, read `agents/onyo-agent.md` and include its instructions and this skill's absolute path in the delegate's brief. A task name alone is not proof that a custom agent definition loaded.
+**Use the `onyo-agent` role for any subagent you spawn inside a playbook step** (code-writing delegates, ad-hoc helpers). The chat that receives `$onyo-mode` runs the playbook. Never spawn a `onyo-agent` to run the playbook itself. Routed workflow skills (`how`, `why`, `interrogate`, `swarm`) prescribe their own roles for diverse-model review. Respect those roles instead of substituting `onyo-agent`. Codex custom-agent files live in `.codex/agents/*.toml` in a consuming repository, or `~/.codex/agents/*.toml`. When the exposed spawn schema cannot select a configured role, read `references/onyo-agent.md` from this skill and include its instructions plus this skill’s verified filesystem path or cloud package/resource locator in the delegate’s brief. A task name alone is not proof that a custom agent definition loaded.
 
 For Orchestrate’s isolated Codex cloud tasks, follow the parent-side launch/result controls in [Orchestrate](playbooks/orchestrate.md#launch-and-collect-codex-cloud-work). The native-subagent tool names below are not cloud-task APIs. The same fresh-agent rule below applies.
 
-**Defaults for every native subagent spawn.** Use the session's exposed native subagent tools. In the observed Codex surface this is `collaboration.spawn_agent` with `task_name` and `message`; agents run asynchronously and return results to their parent. Pass file pointers rather than inlining bulk context. Do not pass Cursor-only `subagent_type`, `run_in_background`, `readonly`, or `environment` fields. A read-only role receives explicit no-edit instructions; this does not create a separate read-only sandbox. Native agents inherit parent permissions. See [the Codex mapping](../../docs/harness/codex.md).
+**Defaults for every native subagent spawn.** Use the session's exposed native subagent tools. In the observed Codex surface this is `collaboration.spawn_agent` with `task_name` and `message`; agents run asynchronously and return results to their parent. Pass file pointers rather than inlining bulk context. Do not pass Cursor-only `subagent_type`, `run_in_background`, `readonly`, or `environment` fields. A read-only role receives explicit no-edit instructions; this does not create a separate read-only sandbox. Native agents inherit parent permissions. See [the Codex mapping](references/codex.md).
 
 Read user-level `$CODEX_HOME/pstack-models.md` explicitly before routing roles. `$setup-ostack` writes this plain configuration file; Codex does not load it as an always-applied rule. Per-role lines override routed skills' model choices (`how`, `why`, `arena`, `swarm`, `architect`, `interrogate`). Missing roles use the selected defaults in setup-ostack step 5: `gpt-6.1-terra` for upstream Grok roles, `gpt-6.1-sol` for upstream Opus roles, and one of each in the retained two-seat panels. Resolve the configuration’s budget before effort; without a recorded budget, `medium` supplies the high starting target. A saved or explicitly chosen budget takes precedence, including `large`/xhigh and `unlimited`/max. Confirm model/effort availability in the current host before dispatch and report unsupported choices rather than guessing. Aliases are opt-in overrides, not the default mapping. `inherit-parent` and `auto` omit both model and reasoning-effort overrides and are never passed as model IDs. Keep panel entries and fan-out counts even when every entry inherits, and disclose the lost model-family diversity. Each code playbook reads its line (`feature, refactoring`, `bug-fix`, `perf-issue`, or `hillclimb`); the hardest changes read `hardest tasks`; prose and judgment read `judgment and prose`.
 

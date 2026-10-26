@@ -3,7 +3,7 @@ name: principle-encode-lessons-in-structure
 description: "Apply when you catch yourself writing the same instruction a second time, or notice a recurring correction. Encode the rule as a lint, metadata flag, runtime check, or script instead of more text."
 ---
 
-Read [Codex compatibility](../../docs/harness/codex.md) before using this workflow.
+Read [Codex compatibility](../onyo-mode/references/codex.md) before using this workflow. In a cloud skill reader, use the `onyo-mode` package from this same plugin and its `references/codex.md` resource; do not read a sibling resource through this skill’s package.
 
 # Encode Lessons in Structure
 

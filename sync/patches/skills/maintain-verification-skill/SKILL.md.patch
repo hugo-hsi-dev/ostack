@@ -4,7 +4,7 @@
 -disable-model-invocation: true
 @@ -5,0 +5,2 @@ [A]
 +
-+Read [Codex compatibility](../../docs/harness/codex.md) before using this workflow.
++Read [Codex compatibility](../onyo-mode/references/codex.md) before using this workflow. In a cloud skill reader, use the `onyo-mode` package from this same plugin and its `references/codex.md` resource; do not read a sibling resource through this skill’s package.
 @@ -25 +26 @@ [A]
 -0. **Locate the target.** Find the verification skill to maintain: the project-local skill whose body has launch/drive sections and a feature map (usually `.cursor/skills/verify-*/`). Several candidates → ask which one; none → stop and point at `/create-verification-skill` instead of inventing a target.
 +0. **Locate the target.** Find the verification skill to maintain: the project-local skill whose body has launch/drive sections and a feature map (usually `.agents/skills/verify-*/`). Several candidates → ask which one; none → stop and point at `/create-verification-skill` instead of inventing a target.

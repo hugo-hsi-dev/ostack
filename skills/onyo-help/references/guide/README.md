@@ -1,6 +1,6 @@
 # The ostack guide
 
-This guide preserves ostack’s workflows for Codex. Read [the compatibility map](../harness/codex.md) before relying on model diversity, durable cloud tasks, or unattended runs.
+This guide preserves ostack’s workflows for Codex. Read [the compatibility map](../../../onyo-mode/references/codex.md) before relying on model diversity, durable cloud tasks, or unattended runs.
 
 ostack works best when you stop micromanaging the agent. You describe what you want and how you'll know it's done. `$onyo-mode` picks the playbook, runs the other skills as the steps need them, and shows you the evidence. This guide teaches that habit with realistic prompts.
 
@@ -19,7 +19,7 @@ Here's what you'll learn:
 
 Read the pages in order the first time. After that, each page stands alone.
 
-When you're stuck, or can't tell which skill fits, type [`$onyo-help`](../../skills/onyo-help/SKILL.md) with your question:
+When you're stuck, or can't tell which skill fits, type [`$onyo-help`](../../SKILL.md) with your question:
 
 ```text
 $onyo-help which skill should i use to review this branch?

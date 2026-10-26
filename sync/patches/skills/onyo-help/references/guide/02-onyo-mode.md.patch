@@ -1,5 +1,5 @@
---- a/docs/guide/02-onyo-mode.md
-+++ b/docs/guide/02-onyo-mode.md
+--- a/skills/onyo-help/references/guide/02-onyo-mode.md
++++ b/skills/onyo-help/references/guide/02-onyo-mode.md
 @@ -1 +1 @@ [P]
 -# Route work through `/poteto-mode`
 +# Route work through `$onyo-mode`
@@ -12,9 +12,9 @@
 @@ -11 +11 @@ [P]
 -    A[Your prompt] --> B[poteto-mode]
 +    A[Your prompt] --> B[onyo-mode]
-@@ -28 +28 @@ [P]
+@@ -28 +28 @@ [A]
 -The diagram shows the common routes. There are also playbooks for hillclimbing a metric, diagnosing runtime symptoms and captured traces, prototypes, visual parity, authoring and evaluating skills, autonomous runs, opening a PR, babysitting a PR or stack to merge-ready, shipping a verified stack, running a PR queue or a stack on autopilot, orchestrating project-scale programs, session pickup, pausing safely, multi-phase plans, and worktree cleanup. The [playbook directory](../../skills/poteto-mode/playbooks/) has the full set.
-+The diagram shows the common routes. There are also playbooks for hillclimbing a metric, diagnosing runtime symptoms and captured traces, prototypes, visual parity, authoring and evaluating skills, autonomous runs, opening a PR, babysitting a PR or stack to merge-ready, shipping a verified stack, running a PR queue or a stack on autopilot, orchestrating project-scale programs, session pickup, pausing safely, multi-phase plans, and worktree cleanup. The [playbook directory](../../skills/onyo-mode/playbooks/) has the full set.
++The diagram shows the common routes. There are also playbooks for hillclimbing a metric, diagnosing runtime symptoms and captured traces, prototypes, visual parity, authoring and evaluating skills, autonomous runs, opening a PR, babysitting a PR or stack to merge-ready, shipping a verified stack, running a PR queue or a stack on autopilot, orchestrating project-scale programs, session pickup, pausing safely, multi-phase plans, and worktree cleanup. The [playbook directory](../../../onyo-mode/SKILL.md#playbooks) has the full set.
 @@ -35 +35 @@ [P]
 -/poteto-mode users get two notifications after a retry. repro first, then fix and verify.
 +$onyo-mode users get two notifications after a retry. repro first, then fix and verify.
@@ -54,24 +54,24 @@
 @@ -112 +103 @@ [P]
 -/poteto-mode new task. branch off <base> in a fresh worktree, then port the parser change there.
 +$onyo-mode new task. branch off <base> in a fresh worktree, then port the parser change there.
-@@ -115 +106 @@ [P]
+@@ -115 +106 @@ [A]
 -Each task in its own branch and worktree means no agent stomps another's files. Worktrees cost disk and machine resources, so a laptop runs only a handful at once. The [Opening a PR playbook](../../skills/poteto-mode/playbooks/opening-a-pr.md) already works from a worktree for code changes, so mostly you only say this when a specific base or location matters.
-+Each task in its own branch and worktree means no agent stomps another's files. Worktrees cost disk and machine resources, so a laptop runs only a handful at once. The [Opening a PR playbook](../../skills/onyo-mode/playbooks/opening-a-pr.md) already works from a worktree for code changes, so mostly you only say this when a specific base or location matters.
++Each task in its own branch and worktree means no agent stomps another's files. Worktrees cost disk and machine resources, so a laptop runs only a handful at once. The [Opening a PR playbook](../../../onyo-mode/playbooks/opening-a-pr.md) already works from a worktree for code changes, so mostly you only say this when a specific base or location matters.
 @@ -120 +111 @@ [P]
 -/poteto-mode what's eating my disk? prune the worktrees that are safe to prune.
 +$onyo-mode what's eating my disk? prune the worktrees that are safe to prune.
-@@ -123 +114 @@ [P]
+@@ -123 +114 @@ [A]
 -The [Worktree cleanup playbook](../../skills/poteto-mode/playbooks/worktree-cleanup.md) classifies every worktree by merge state, uncommitted work, and which chats still touch it. It deletes only what that evidence clears and pauses for your call on anything holding uncommitted work.
-+The [Worktree cleanup playbook](../../skills/onyo-mode/playbooks/worktree-cleanup.md) classifies every worktree by merge state, uncommitted work, and which chats still touch it. It deletes only what that evidence clears and pauses for your call on anything holding uncommitted work.
++The [Worktree cleanup playbook](../../../onyo-mode/playbooks/worktree-cleanup.md) classifies every worktree by merge state, uncommitted work, and which chats still touch it. It deletes only what that evidence clears and pauses for your call on anything holding uncommitted work.
 @@ -130 +121 @@ [P]
 -/poteto-mode im stepping away. keep going until the migration check reports zero old callers. log your decisions.
 +$onyo-mode im stepping away. keep going until the migration check reports zero old callers. log your decisions.
 @@ -133 +124 @@ [A]
 -Work you'll review later routes through [`/figure-it-out`](../../skills/figure-it-out/SKILL.md), which designs the run's phases and keeps a [`/show-me-your-work`](../../skills/show-me-your-work/SKILL.md) decision log. [Run work while you sleep](./07-overnight.md) covers the full overnight contract.
-+Work you'll review later routes through [`$figure-it-out`](../../skills/figure-it-out/SKILL.md), which designs the run's phases and keeps a [`$show-me-your-work`](../../skills/show-me-your-work/SKILL.md) decision log. [Run work while you sleep](./07-overnight.md) covers the full overnight contract.
++Work you'll review later routes through [`$figure-it-out`](../../../figure-it-out/SKILL.md), which designs the run's phases and keeps a [`$show-me-your-work`](../../../show-me-your-work/SKILL.md) decision log. [Run work while you sleep](./07-overnight.md) covers the full overnight contract.
 @@ -135 +126 @@ [A]
 -**Pitfall:** don't enumerate skills in your prompt ("use /how, then /architect, then /arena..."). The playbook already sequences them, and a hand-written sequence usually reorders or drops steps the playbook would have kept. Name a skill only when you want to override a specific choice.
 +**Pitfall:** don't enumerate skills in your prompt ("use $how, then $architect, then $arena..."). The playbook already sequences them, and a hand-written sequence usually reorders or drops steps the playbook would have kept. Name a skill only when you want to override a specific choice.
-@@ -137 +128 @@ [P]
+@@ -137 +128 @@ [A]
 -Read [`poteto-mode`](../../skills/poteto-mode/SKILL.md) itself for the full routing rules.
-+Read [`onyo-mode`](../../skills/onyo-mode/SKILL.md) itself for the full routing rules.
++Read [`onyo-mode`](../../../onyo-mode/SKILL.md) itself for the full routing rules.

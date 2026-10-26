@@ -1,6 +1,6 @@
 # ostack
 
-This first-stage Codex port starts from Lauren Tan’s pstack at upstream commit `99b609a72323b70204eab407c622f436e858e112` (version `0.15.32`). See [NOTICE](./NOTICE) and [the Codex compatibility map](./docs/harness/codex.md). The retained workflows remain pstack’s; [the versioned product selection](./sync/omissions.json) records the approved omitted skills and automation pack. Model diversity, durable cloud orchestration, and external integrations require verified host support; this is not a runtime-complete port.
+This first-stage Codex port starts from Lauren Tan’s pstack at upstream commit `99b609a72323b70204eab407c622f436e858e112` (version `0.15.32`). See [NOTICE](./NOTICE) and [the Codex compatibility map](./skills/onyo-mode/references/codex.md). The retained workflows remain pstack’s; [the versioned product selection](./sync/omissions.json) records the approved omitted skills and automation pack. Model diversity, durable cloud orchestration, and external integrations require verified host support; this is not a runtime-complete port.
 
 ostack adapts the workflows developed by Lauren Tan ([poteto](https://x.com/poteto)) in pstack. The goal is to write less, higher-quality code, with deliberate parallel work and evidence that the result works.
 
@@ -20,7 +20,7 @@ Use this repository’s `codex` branch as the **ostack** marketplace source; `ma
 
 The repository-root catalog is `.agents/plugins/marketplace.json`. Its `ostack` entry points to `./`, where `.codex-plugin/plugin.json` declares the skills. The app manages the installed copy, keeping the skills, references, scripts, docs, and agent prompts together. See the [official marketplace documentation](https://developers.openai.com/plugins/build/plugins#marketplace-metadata).
 
-Read [the Codex compatibility map](./docs/harness/codex.md) before running workflows. The package keeps sibling files together so skill links and scripts resolve. The agent Markdown prompts are supporting resources; plugin installation is not evidence that the host registered custom-agent definitions. Where role selection is unavailable, the coordinator includes the supplied prompt in the delegate's brief. The files in `docs/upstream/` are historical metadata, not installation manifests. This plugin installs no Claude hooks. Orchestrate's Spaces records and cloud execution remain separately verified capabilities.
+Read [the Codex compatibility map](./skills/onyo-mode/references/codex.md) before running workflows. The package keeps sibling files together so skill links and scripts resolve. The agent Markdown prompts are supporting resources; plugin installation is not evidence that the host registered custom-agent definitions. Where role selection is unavailable, the coordinator includes the supplied prompt in the delegate's brief. The files in `docs/upstream/` are historical metadata, not installation manifests. This plugin installs no Claude hooks. Orchestrate's Spaces records and cloud execution remain separately verified capabilities.
 
 ## get started
 
@@ -29,7 +29,7 @@ two steps:
 1. run [`$setup-ostack`](./skills/setup-ostack/SKILL.md), pick a reasoning budget, and choose which models you want.
 2. use [`$onyo-mode`](./skills/onyo-mode/SKILL.md) whenever you're doing anything that requires rigor.
 
-new here? the [ostack guide](./docs/guide/README.md) walks you through a first real task, from setup and prompting through verification and overnight runs. stuck, or unsure which skill fits? ask [`$onyo-help`](./skills/onyo-help/SKILL.md).
+new here? the [ostack guide](./skills/onyo-help/references/guide/README.md) walks you through a first real task, from setup and prompting through verification and overnight runs. stuck, or unsure which skill fits? ask [`$onyo-help`](./skills/onyo-help/SKILL.md).
 
 that's it. the other skills are situational, and the mode skill uses them as needed. Defaults map upstream Opus 5.5 roles to `gpt-6.1-sol` and Grok 4.7 roles to `gpt-6.1-terra`, preserving the original role split and panel sizes. [`$setup-ostack`](./skills/setup-ostack/SKILL.md) checks current-host availability and uses your budget to select reasoning effort. Without a saved budget, the starting choice is medium/high; a saved or later-selected larger budget takes precedence. `inherit-parent` and `auto` remain opt-in choices; distinct Sol/Terra variants alone do not establish cross-family diversity.
 
@@ -88,7 +88,7 @@ morning.
 
 when invoked it:
 
-1. matches your task to a [playbook](./skills/onyo-mode/playbooks/) and opens a todo list whose first items are its steps, copied in verbatim.
+1. matches your task to a [playbook](./skills/onyo-mode/playbooks) and opens a todo list whose first items are its steps, copied in verbatim.
 2. routes to the other skills as the steps fire.
 3. writes unslopped replies framed for the consumer and the maintainer.
 
@@ -193,11 +193,11 @@ help:              $onyo-help which skill should i use to review this branch?
 
 [`$onyo-mode`](./skills/onyo-mode/SKILL.md) runs in the chat that receives it. that chat owns the playbook, the todo list, and every subagent spawn.
 
-ostack also ships [`onyo-agent` prompt](./agents/onyo-agent.md) as the wrapper for delegates spawned during a run. it reads `onyo-mode` in full, including its inline principles index, before doing any work. a generic delegate must also receive and read that prompt; a name alone does not register a custom agent. do not spawn `onyo-agent` to run the playbook itself.
+ostack also ships [`onyo-agent` prompt](./skills/onyo-mode/references/onyo-agent.md) as the wrapper for delegates spawned during a run. it reads `onyo-mode` in full, including its inline principles index, before doing any work. a generic delegate must also receive and read that prompt; a name alone does not register a custom agent. do not spawn `onyo-agent` to run the playbook itself.
 
-[`$onyo-mode`](./skills/onyo-mode/SKILL.md) and [`onyo-agent` prompt](./agents/onyo-agent.md) route through the same wrapper.
+[`$onyo-mode`](./skills/onyo-mode/SKILL.md) and [`onyo-agent` prompt](./skills/onyo-mode/references/onyo-agent.md) route through the same wrapper.
 
-ostack also ships [Comment Sicko](./agents/comment-sicko.md), a comment reviewer whose prompt must be loaded by the delegate, with a no-file-edits constraint. usually invoke it through [`$no-comments`](./skills/no-comments/SKILL.md), not directly.
+ostack also ships [Comment Sicko](./skills/no-comments/references/comment-sicko.md), a comment reviewer whose prompt must be loaded by the delegate, with a no-file-edits constraint. usually invoke it through [`$no-comments`](./skills/no-comments/SKILL.md), not directly.
 
 ## principles
 

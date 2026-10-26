@@ -17,6 +17,9 @@ CACHE = Path(os.environ.get("PSTACK_CACHE", Path.home() / ".cache" / "ostack-pst
 RENAMES = {".cursor-plugin/plugin.json": "docs/upstream/cursor-plugin.json", "plugin.json": "docs/upstream/plugin.json", "docs/harness/claude-code.md": "docs/upstream/claude-code.md"}
 BRAND_DIRS = {"skills/poteto-mode/": "skills/onyo-mode/", "skills/poteto-help/": "skills/onyo-help/", "skills/setup-pstack/": "skills/setup-ostack/"}
 BRAND_FILES = {"agents/poteto-agent.md": "agents/onyo-agent.md", "docs/guide/02-poteto-mode.md": "docs/guide/02-onyo-mode.md"}
+RESOURCE_DIRS = {"docs/guide/": "skills/onyo-help/references/guide/"}
+RESOURCE_FILES = {"agents/onyo-agent.md": "skills/onyo-mode/references/onyo-agent.md",
+                  "agents/comment-sicko.md": "skills/no-comments/references/comment-sicko.md"}
 CODES = re.compile(r"\[(A|P|\?)\]")
 HEADER = re.compile(r"^@@ -(\d+)(?:,(\d+))? \+\d+(?:,\d+)? @@ ?(.*)$")
 NO_EOL = "\\ No newline at end of file\n"
@@ -53,7 +56,11 @@ def map_names(s):
     for source, dest in BRAND_DIRS.items():
         if s.startswith(source):
             return dest + s[len(source):]
-    return BRAND_FILES.get(s, s)
+    s = BRAND_FILES.get(s, s)
+    for source, dest in RESOURCE_DIRS.items():
+        if s.startswith(source):
+            return dest + s[len(source):]
+    return RESOURCE_FILES.get(s, s)
 
 
 def obsolete_brand_content():

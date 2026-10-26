@@ -3,7 +3,7 @@ name: principle-migrate-callers-then-delete-legacy-apis
 description: "Apply when introducing a new internal API while old callers still exist. Migrate callers and delete the old API in the same wave instead of preserving compatibility layers."
 ---
 
-Read [Codex compatibility](../../docs/harness/codex.md) before using this workflow.
+Read [Codex compatibility](../onyo-mode/references/codex.md) before using this workflow. In a cloud skill reader, use the `onyo-mode` package from this same plugin and its `references/codex.md` resource; do not read a sibling resource through this skill’s package.
 
 # Migrate Callers Then Delete Legacy APIs
 

@@ -4,7 +4,7 @@
 -disable-model-invocation: true
 @@ -5,0 +5,2 @@ [A]
 +
-+Read [Codex compatibility](../../docs/harness/codex.md) before using this workflow.
++Read [Codex compatibility](../onyo-mode/references/codex.md) before using this workflow. In a cloud skill reader, use the `onyo-mode` package from this same plugin and its `references/codex.md` resource; do not read a sibling resource through this skill’s package.
 @@ -31 +32 @@ [A]
 -Take the runners from the `architect runners` line in the `pstack-models.mdc` rule, in place of the `arena runners` line. If the rule or that line is missing, use `claude-opus-5-5-xhigh` and `grok-4.7-xhigh-fast`. Alias and rejected entries follow the runner rules in the **arena** skill's Phase A.
 +Take the runners from the `architect runners` line in the user-level `$CODEX_HOME/pstack-models.md` data file, in place of the `arena runners` line. If the rule or that line is missing, keep two runners, one on `gpt-6.1-sol` and one on `gpt-6.1-terra`, with budget-selected effort per onyo-mode’s Subagents section and confirmed host availability. Report any missing model-family diversity. Alias and rejected entries follow the runner rules in the **arena** skill's Phase A.

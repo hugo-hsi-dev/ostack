@@ -4,11 +4,11 @@ In this page you install the desktop plugin, pick supported models, and run your
 
 ## Install the desktop plugin
 
-Follow the [desktop plugin installation steps](../../README.md#install-in-the-codex-desktop-app): choose the **ostack** source in Plugins Directory, open **ostack**, and select **Install**. Use this repository’s `codex` branch as the marketplace source.
+In the desktop app, choose the **ostack** source in Plugins Directory, open **ostack**, and select **Install**. Use this repository’s `codex` branch as the marketplace source.
 
 Start a chat with the installed plugin selected and invoke `$onyo-mode`. The plugin keeps the skills and their sibling references, scripts, and docs together.
 
-Read [the Codex compatibility map](../harness/codex.md) for model, subagent, cloud, and integration limits.
+Read [the Codex compatibility map](../../../onyo-mode/references/codex.md) for model, subagent, cloud, and integration limits.
 
 ## Pick your models
 
@@ -18,7 +18,7 @@ Run:
 $setup-ostack
 ```
 
-[`$setup-ostack`](../../skills/setup-ostack/SKILL.md) detects the models you have access to, asks for a reasoning budget, shows you each role (code delegates, judgment, the review panels), and asks what you want. Answer the questions. It writes `$CODEX_HOME/pstack-models.md`, the legacy filename retained for backward compatibility, a user-level role map that skills explicitly read, not an automatically loaded Codex rule.
+[`$setup-ostack`](../../../setup-ostack/SKILL.md) detects the models you have access to, asks for a reasoning budget, shows you each role (code delegates, judgment, the review panels), and asks what you want. Answer the questions. It writes `$CODEX_HOME/pstack-models.md`, the legacy filename retained for backward compatibility, a user-level role map that skills explicitly read, not an automatically loaded Codex rule.
 
 The selected Codex defaults use `gpt-6.1-sol` for upstream Opus 5.5 roles and `gpt-6.1-terra` for Grok 4.7 roles. Code delegates, explorers, investigators, and swarm workers use Terra; judgment, hardest tasks, and explanation/synthesis use Sol. Arena, Architect, and Interrogate retain one seat for each model. Setup still checks the current host: unavailable models or efforts are shown as needing a choice, never silently dispatched.
 
@@ -30,13 +30,13 @@ Set a role to `inherit-parent` or `auto` to omit a model override. Both are osta
 
 ## Accept the verification offers, or don't
 
-At the end of setup, `$setup-ostack` looks for a way to prove app behavior in your project, either a `verify-*` skill or an existing harness. If it finds neither, it offers once to generate one with [`$create-verification-skill`](../../skills/create-verification-skill/SKILL.md).
+At the end of setup, `$setup-ostack` looks for a way to prove app behavior in your project, either a `verify-*` skill or an existing harness. If it finds neither, it offers once to generate one with [`$create-verification-skill`](../../../create-verification-skill/SKILL.md).
 
 Say yes and it writes `.agents/skills/verify-<app>/`, a project-local skill that teaches agents to drive your app the way a user does. It proves the skill works once before handing it over. Say no and setup moves on. You can run `$create-verification-skill` yourself any time. [Verify and ship](./06-verify-and-ship.md#create-a-project-verification-skill) covers it in depth.
 
 If you're new to ostack, say yes. An agent that can check its own work keeps going until the check passes. An agent that can't hands every result back to you to check by hand. Of everything in this guide, the verification skill pays off the most.
 
-Then setup offers once to generate a formal verification skill with [`$create-formal-verification-skill`](../../skills/create-formal-verification-skill/SKILL.md), unless the project already has one. Tests check the cases someone thought to write. A formal verification skill checks one key property of your code, such as "a job never runs twice at once", in every case within a stated scope. Say yes when your code has concurrency, retries, a state machine, or a parser, where a bug is costly and tests rarely reach the case that breaks. Otherwise say no, and run it later if that changes. [Verify and ship](./06-verify-and-ship.md#prove-a-property-with-a-formal-verification-skill) covers it.
+Then setup offers once to generate a formal verification skill with [`$create-formal-verification-skill`](../../../create-formal-verification-skill/SKILL.md), unless the project already has one. Tests check the cases someone thought to write. A formal verification skill checks one key property of your code, such as "a job never runs twice at once", in every case within a stated scope. Say yes when your code has concurrency, retries, a state machine, or a parser, where a bug is costly and tests rarely reach the case that breaks. Otherwise say no, and run it later if that changes. [Verify and ship](./06-verify-and-ship.md#prove-a-property-with-a-formal-verification-skill) covers it.
 
 After setup, have the next workflow read `$CODEX_HOME/pstack-models.md`. This file is explicitly loaded by the skills; writing it does not change Codex’s global model configuration.
 

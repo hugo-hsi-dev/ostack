@@ -3,11 +3,11 @@ name: setup-ostack
 description: Configure which models ostack uses per role and at what reasoning budget. Detects your available models and writes user-level role configuration that the workflow reads explicitly. Use for $setup-ostack, "configure ostack models", "ostack budget", or changing ostack's model choices.
 ---
 
-Read [Codex compatibility](../../docs/harness/codex.md) before using this workflow.
+Read [Codex compatibility](../onyo-mode/references/codex.md) before using this workflow. In a cloud skill reader, use the `onyo-mode` package from this same plugin and its `references/codex.md` resource; do not read a sibling resource through this skill’s package.
 
 # Setup ostack
 
-Write `$CODEX_HOME/pstack-models.md` in the user’s Codex home. `pstack-models.md` is the legacy configuration filename retained for backward compatibility; do not migrate or rename user files for branding. This is ostack role configuration, not native Codex configuration or an automatically loaded rule. Read it explicitly when entering a routed workflow. See [the Codex mapping](../../docs/harness/codex.md).
+Write `$CODEX_HOME/pstack-models.md` in the user’s Codex home. `pstack-models.md` is the legacy configuration filename retained for backward compatibility; do not migrate or rename user files for branding. This is ostack role configuration, not native Codex configuration or an automatically loaded rule. Read it explicitly when entering a routed workflow. See [the Codex mapping](../onyo-mode/references/codex.md).
 
 Resolve `CODEX_HOME` from the host environment; when unset, use `~/.codex`, so the default file is `~/.codex/pstack-models.md`. This is one user-level preference file across projects, with no repository override layer. The filename is ostack-owned data, not a native Codex configuration key. See the [documented Codex home convention](https://learn.chatgpt.com/docs/config-file/config-advanced#config-and-state-locations).
 

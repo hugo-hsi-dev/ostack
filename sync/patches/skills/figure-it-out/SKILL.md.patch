@@ -4,7 +4,7 @@
 -disable-model-invocation: true
 @@ -5,0 +5,2 @@ [A]
 +
-+Read [Codex compatibility](../../docs/harness/codex.md) before using this workflow.
++Read [Codex compatibility](../onyo-mode/references/codex.md) before using this workflow. In a cloud skill reader, use the `onyo-mode` package from this same plugin and its `references/codex.md` resource; do not read a sibling resource through this skill’s package.
 @@ -13 +14 @@ [P]
 -Open a todolist whose first item is to read the Principles section of the **poteto-mode** skill. Then add the phases below as todos.
 +Open a todolist whose first item is to read the Principles section of the **onyo-mode** skill. Then add the phases below as todos.

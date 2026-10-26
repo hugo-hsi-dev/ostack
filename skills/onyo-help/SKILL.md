@@ -3,7 +3,7 @@ name: onyo-help
 description: Guides users through ostack setup, $onyo-mode, and picking the skill, playbook, or principle for a task. Type $onyo-help with a question.
 ---
 
-Read [Codex compatibility](../../docs/harness/codex.md) before using this workflow.
+Read [Codex compatibility](../onyo-mode/references/codex.md) before using this workflow. In a cloud skill reader, use the `onyo-mode` package from this same plugin and its `references/codex.md` resource; do not read a sibling resource through this skill’s package.
 
 # Onyo help
 
@@ -11,7 +11,7 @@ Answer the user's question about ostack, hand them a prompt they can send, and l
 
 A message that asks for work, such as "use ostack to fix this bug", is not a help question. Read [`onyo-mode`](../onyo-mode/SKILL.md), do the work under it, and keep its active playbook through the task. Invoke it explicitly for new tasks.
 
-This file maps questions to the skills and guide pages that hold the answers. Read the destination before quoting it. Link the local port file, or a verified URL for this branch, rather than an upstream page whose harness instructions differ.
+This file maps questions to the skills and guide pages that hold the answers. Read the destination before quoting it. Read packaged files through their owning skill package in a cloud reader or their verified filesystem path locally. Cite that resource or a verified source URL for this branch; a URL alone does not establish installed readability.
 
 ## Find out what they need
 
@@ -36,21 +36,21 @@ When the model rule is missing and it matters, ask whether the user wants to pic
 
 ## Get set up
 
-1. Install the desktop plugin following the [Codex instructions](../../README.md#install-in-the-codex-desktop-app).
+1. Install the desktop plugin following the [Codex instructions](references/guide/01-setup.md#install-the-desktop-plugin).
 2. Run [`$setup-ostack`](../setup-ostack/SKILL.md). It asks for a reasoning budget, maps a model to each role, and writes `$CODEX_HOME/pstack-models.md`, which skills explicitly read. This is not automatic Codex configuration. Then it offers once each to generate a verification skill and a formal verification skill for the project, unless the project already has one.
 3. Start a real task with `$onyo-mode`, a goal, and a check that can pass or fail.
 
-Installing changes nothing until the user invokes a skill. Only `$setup-ostack` loads from the user's words. The [README](../../README.md) and [guide page 1](../../docs/guide/01-setup.md) have the details. Offer to word their first prompt with them, per [`references/prompting.md`](references/prompting.md).
+Installing changes nothing until the user invokes a skill. Only `$setup-ostack` loads from the user's words. [Guide page 1](references/guide/01-setup.md) has the details. Offer to word their first prompt with them, per [`references/prompting.md`](references/prompting.md).
 
 If cost is the worry, say where the tokens go and how to spend fewer. ostack spends extra tokens on subagents and review panels. Rerun `$setup-ostack` and pick a smaller budget or cheaper models. A role set to `auto` or `inherit-parent` runs on the chat's model, which saves tokens when the chat runs on a cheaper model. A shorter panel list runs fewer subagents, one for each entry. Save `$onyo-mode` for work that needs rigor.
 
-This branch adapts ostack to Codex. Read [the compatibility map](../../docs/harness/codex.md) before promising model diversity, custom agent registration, cloud persistence, or automations. Report missing capabilities without weakening the workflow’s gates.
+This branch adapts ostack to Codex. Read [the compatibility map](../onyo-mode/references/codex.md) before promising model diversity, custom agent registration, cloud persistence, or automations. Report missing capabilities without weakening the workflow’s gates.
 
 ## Start a task with `$onyo-mode`
 
-`$onyo-mode` matches the task to a playbook, copies the playbook's steps into the todo list, and runs the other skills as the steps need them. A step it skips stays in the list as `skip: <reason>`. A good prompt states the goal and how to tell it's done. It doesn't list skills, because a hand-written sequence tends to drop or reorder steps the playbook would keep. Read [`references/prompting.md`](references/prompting.md) before you help word one. [Guide page 2](../../docs/guide/02-onyo-mode.md) has examples.
+`$onyo-mode` matches the task to a playbook, copies the playbook's steps into the todo list, and runs the other skills as the steps need them. A step it skips stays in the list as `skip: <reason>`. A good prompt states the goal and how to tell it's done. It doesn't list skills, because a hand-written sequence tends to drop or reorder steps the playbook would keep. Read [`references/prompting.md`](references/prompting.md) before you help word one. [Guide page 2](references/guide/02-onyo-mode.md) has examples.
 
-Invoke `$onyo-mode` for each new task and preserve the active playbook during follow-ups. Cursor’s Custom Mode keybindings have no verified Codex equivalent. Mid-chat, "new task" asks the mode to match a fresh playbook. Delegates must read the [`onyo-agent` prompt](../../agents/onyo-agent.md) and the mode skill; a custom name alone does not load them.
+Invoke `$onyo-mode` for each new task and preserve the active playbook during follow-ups. Cursor’s Custom Mode keybindings have no verified Codex equivalent. Mid-chat, "new task" asks the mode to match a fresh playbook. Delegates must read the [`onyo-agent` prompt](../onyo-mode/references/onyo-agent.md) and the mode skill; a custom name alone does not load them.
 
 ## Pick a skill
 
@@ -112,11 +112,11 @@ Playbooks are step lists inside `$onyo-mode`, not skills, so they have no slash 
 - "full autopilot on this queue" runs Autopilot-full. "stack them, don't ship" runs Autopilot-stack.
 - "run the eval playbook" runs Eval.
 
-The Playbooks section of [`onyo-mode`](../onyo-mode/SKILL.md) lists every playbook and when it applies. [Guide page 6](../../docs/guide/06-verify-and-ship.md) covers opening, babysitting, and landing a PR. Route explicitly to the bundled playbook instead of a host skill with a similar name.
+The Playbooks section of [`onyo-mode`](../onyo-mode/SKILL.md) lists every playbook and when it applies. [Guide page 6](references/guide/06-verify-and-ship.md) covers opening, babysitting, and landing a PR. Route explicitly to the bundled playbook instead of a host skill with a similar name.
 
 ostack has no planning skill. Codex Plan Mode can work alongside it when the host provides it. For work that spans phases or stacked PRs, asking `$onyo-mode` for a plan runs the [Multi-phase plan playbook](../onyo-mode/playbooks/multi-phase-plan.md), which writes the plan and doesn't implement it. For a design question, the Prototype playbook or `$architect` settles it in code first.
 
-Principles are one-rule skills that `$onyo-mode` reads and cites in its replies. The user rarely invokes one. They steer with the names instead, as in "apply prove it works. show me the real output." Typing `/principle-<name>` still loads one on demand. [Guide page 8](../../docs/guide/08-principles.md) lists them.
+Principles are one-rule skills that `$onyo-mode` reads and cites in its replies. The user rarely invokes one. They steer with the names instead, as in "apply prove it works. show me the real output." Typing `/principle-<name>` still loads one on demand. [Guide page 8](references/guide/08-principles.md) lists them.
 
 ## Fix a run that went wrong
 
@@ -128,17 +128,17 @@ Principles are one-rule skills that `$onyo-mode` reads and cites in its replies.
 | Runs cost more than expected | See the cost paragraph under Get set up. |
 | A skill didn't load on its own | Only `$setup-ostack` loads from the user's words. The others load when the user types them or when `$onyo-mode` runs them, and it doesn't run every skill. |
 | Parallel agents overwrote each other | Give each agent its own worktree, and distinct ports; native Codex subagents do not guarantee separate machines. |
-| An overnight run moved but finished nothing | An autonomous run needs a check that can pass or fail, not a duration. See [guide page 7](../../docs/guide/07-overnight.md). |
+| An overnight run moved but finished nothing | An autonomous run needs a check that can pass or fail, not a duration. See [guide page 7](references/guide/07-overnight.md). |
 | The reply claims success from a green build | Ask for the real command, flow, stored value, or profile. That's the prove-it-works principle. |
 
-For a run that drifts, [`references/prompting.md`](references/prompting.md) has one-line steers. [Guide page 10](../../docs/guide/10-recipes-and-pitfalls.md) has more pitfalls and the recipes worth copying.
+For a run that drifts, [`references/prompting.md`](references/prompting.md) has one-line steers. [Guide page 10](references/guide/10-recipes-and-pitfalls.md) has more pitfalls and the recipes worth copying.
 
 ## Make ostack my own
 
 - `$onyo-mode write a skill for <workflow>` runs the authoring playbook. The eval playbook tests a skill change blind.
 - Fix a misbehaving skill in its own PR, not inside the feature work where it went wrong.
 
-[Guide page 9](../../docs/guide/09-make-it-yours.md) covers each of these.
+[Guide page 9](references/guide/09-make-it-yours.md) covers each of these.
 
 ## Reply
 

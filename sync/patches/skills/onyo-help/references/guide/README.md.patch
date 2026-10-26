@@ -1,11 +1,11 @@
---- a/docs/guide/README.md
-+++ b/docs/guide/README.md
+--- a/skills/onyo-help/references/guide/README.md
++++ b/skills/onyo-help/references/guide/README.md
 @@ -1 +1 @@ [P]
 -# The pstack guide
 +# The ostack guide
-@@ -3 +3,3 @@ [P]
+@@ -3 +3,3 @@ [A]
 -pstack works best when you stop micromanaging the agent. You describe what you want and how you'll know it's done. `/poteto-mode` picks the playbook, runs the other skills as the steps need them, and shows you the evidence. This guide teaches that habit with realistic prompts.
-+This guide preserves ostack’s workflows for Codex. Read [the compatibility map](../harness/codex.md) before relying on model diversity, durable cloud tasks, or unattended runs.
++This guide preserves ostack’s workflows for Codex. Read [the compatibility map](../../../onyo-mode/references/codex.md) before relying on model diversity, durable cloud tasks, or unattended runs.
 +
 +ostack works best when you stop micromanaging the agent. You describe what you want and how you'll know it's done. `$onyo-mode` picks the playbook, runs the other skills as the steps need them, and shows you the evidence. This guide teaches that habit with realistic prompts.
 @@ -7,7 +9,7 @@ [P]
@@ -26,9 +26,9 @@
 @@ -15 +17 @@ [P]
 -9. [Make it yours](./09-make-it-yours.md). Your own mode, `/correct` for repeated mistakes, and how to test a skill change.
 +9. [Make it yours](./09-make-it-yours.md). Skill authoring, `$correct` for repeated mistakes, and how to test a skill change.
-@@ -20 +22 @@ [P]
+@@ -20 +22 @@ [A]
 -When you're stuck, or can't tell which skill fits, type [`/poteto-help`](../../skills/poteto-help/SKILL.md) with your question:
-+When you're stuck, or can't tell which skill fits, type [`$onyo-help`](../../skills/onyo-help/SKILL.md) with your question:
++When you're stuck, or can't tell which skill fits, type [`$onyo-help`](../../SKILL.md) with your question:
 @@ -23 +25 @@ [P]
 -/poteto-help which skill should i use to review this branch?
 +$onyo-help which skill should i use to review this branch?

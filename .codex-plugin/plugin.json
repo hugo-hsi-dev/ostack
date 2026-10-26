@@ -1,6 +1,6 @@
 {
   "name": "ostack",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "Deliberate engineering workflows for Codex: understand, plan, delegate, review, and verify real work.",
   "author": {
     "name": "Hugo Hsi"

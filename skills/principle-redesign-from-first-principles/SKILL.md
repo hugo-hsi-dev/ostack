@@ -3,7 +3,7 @@ name: principle-redesign-from-first-principles
 description: "Apply when integrating a new requirement into an existing design."
 ---
 
-Read [Codex compatibility](../../docs/harness/codex.md) before using this workflow.
+Read [Codex compatibility](../onyo-mode/references/codex.md) before using this workflow. In a cloud skill reader, use the `onyo-mode` package from this same plugin and its `references/codex.md` resource; do not read a sibling resource through this skill’s package.
 
 # Redesign From First Principles
 

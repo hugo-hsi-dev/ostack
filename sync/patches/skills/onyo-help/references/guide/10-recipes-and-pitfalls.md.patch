@@ -1,5 +1,5 @@
---- a/docs/guide/10-recipes-and-pitfalls.md
-+++ b/docs/guide/10-recipes-and-pitfalls.md
+--- a/skills/onyo-help/references/guide/10-recipes-and-pitfalls.md
++++ b/skills/onyo-help/references/guide/10-recipes-and-pitfalls.md
 @@ -10 +10 @@ [A]
 -use /how first to understand how this initialization works. then use /why to figure out why it broke recently.
 +use $how first to understand how this initialization works. then use $why to figure out why it broke recently.
@@ -92,6 +92,6 @@
 +- **Correcting the same mistake by hand.** A correction in chat helps one run. `$correct` fixes the repo so no later run repeats it.
 +- **Using `$arena` for coverage.** `$arena` repeats one design or code brief, then picks a base and grafts the best parts. `$swarm` partitions slices or declared race arms and aggregates one report.
 +- **Accepting every review comment.** Bots and humans both file real catches and noise in one list. `$interrogate` sorts findings into act-on and dismissed buckets with reasons, and you can override either way.
-@@ -178 +152 @@ [P]
+@@ -178 +152 @@ [A]
 -- **Writing a `SKILL.md` freehand.** Route it through the [Authoring or modifying a skill playbook](../../skills/poteto-mode/playbooks/authoring-a-skill.md) so validation and review happen.
-+- **Writing a `SKILL.md` freehand.** Route it through the [Authoring or modifying a skill playbook](../../skills/onyo-mode/playbooks/authoring-a-skill.md) so validation and review happen.
++- **Writing a `SKILL.md` freehand.** Route it through the [Authoring or modifying a skill playbook](../../../onyo-mode/playbooks/authoring-a-skill.md) so validation and review happen.

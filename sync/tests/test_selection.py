@@ -41,7 +41,7 @@ class ProductSelection(unittest.TestCase):
         listing = "".join(f"100644 blob unused\tpstack/{p}\n" for p in paths).encode()
         with patch.object(sync, "fetch"), patch.object(sync, "git", return_value=subprocess.CompletedProcess([], 0, listing)):
             files = sync.upstream("pin")
-        expected = ["skills/onyo-mode/SKILL.md", "skills/onyo-help/SKILL.md", "skills/setup-ostack/SKILL.md", "agents/onyo-agent.md", "docs/guide/02-onyo-mode.md", "docs/upstream/cursor-plugin.json"]
+        expected = ["skills/onyo-mode/SKILL.md", "skills/onyo-help/SKILL.md", "skills/setup-ostack/SKILL.md", "skills/onyo-mode/references/onyo-agent.md", "skills/onyo-help/references/guide/02-onyo-mode.md", "docs/upstream/cursor-plugin.json"]
         self.assertEqual(set(files), set(expected))
         for dest, source in zip(expected, paths):
             self.assertEqual(files[dest].path, "pstack/" + source)

@@ -3,7 +3,7 @@
 @@ -4 +3,0 @@ [A]
 -disable-model-invocation: true
 @@ -6,0 +6,2 @@ [A]
-+Read [Codex compatibility](../../docs/harness/codex.md) before using this workflow.
++Read [Codex compatibility](../onyo-mode/references/codex.md) before using this workflow. In a cloud skill reader, use the `onyo-mode` package from this same plugin and its `references/codex.md` resource; do not read a sibling resource through this skill’s package.
 +
 @@ -7,0 +9,3 @@ [A]
 +

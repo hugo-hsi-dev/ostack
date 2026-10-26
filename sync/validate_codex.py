@@ -52,7 +52,7 @@ for dest, source in files.items():
     if dest.startswith('skills/'):
         if front and not re.search(rf'^name: {re.escape(Path(dest).parent.name)}$', front[1], re.M):
             errors.append(f'{dest}: skill name differs from directory')
-        if 'docs/harness/codex.md)' not in text:
+        if 'references/codex.md)' not in text or 'In a cloud skill reader' not in text:
             errors.append(f'{dest}: missing compatibility entry point')
         if front and re.search(r'^(disable-model-invocation|icon|color):', front[1], re.M):
             errors.append(f'{dest}: unported Cursor metadata')
@@ -69,7 +69,8 @@ for path in (root / '.codex/agents').glob('*.toml'):
     data = tomllib.loads(path.read_text())
     if data.get('name') != path.stem:
         errors.append(f'{path}: agent name differs from filename')
-    md = (root / 'agents' / (path.stem + '.md')).read_text()
+    owner = 'onyo-mode' if path.stem == 'onyo-agent' else 'no-comments'
+    md = (root / 'skills' / owner / 'references' / (path.stem + '.md')).read_text()
     body = md.split('---', 2)[2].strip()
     if set(data) != {'name', 'description', 'developer_instructions'} or data['developer_instructions'].strip() != body:
         errors.append(f'{path}: role differs from its Markdown source')
@@ -80,7 +81,7 @@ for folder in ('hooks', 'skills/onyo-projects', '.claude-plugin', '.cursor-plugi
     if path.exists() and any(p.is_file() for p in path.rglob('*')):
         errors.append(f'{folder}: legacy fork content remains')
 # Resolve actual relative Markdown links, leaving fenced examples and archive intact.
-for path in [root / dest for dest in files if dest.endswith('.md') and not dest.startswith('docs/upstream/')] + [root / 'docs/harness/codex.md']:
+for path in [root / dest for dest in files if dest.endswith('.md') and not dest.startswith('docs/upstream/')] + [root / 'skills/onyo-mode/references/codex.md', root / 'docs/harness/codex.md']:
     text = re.sub(r'```.*?```', '', path.read_text(), flags=re.S)
     if re.search(r'\bmissing roles inherit (?:the )?parent\b|'
                  r'\broles inherit the parent model (?:unless|until)\b', text, re.I):

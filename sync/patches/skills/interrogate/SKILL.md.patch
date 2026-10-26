@@ -4,7 +4,7 @@
 -disable-model-invocation: true
 @@ -5,0 +5,2 @@ [A]
 +
-+Read [Codex compatibility](../../docs/harness/codex.md) before using this workflow.
++Read [Codex compatibility](../onyo-mode/references/codex.md) before using this workflow. In a cloud skill reader, use the `onyo-mode` package from this same plugin and its `references/codex.md` resource; do not read a sibling resource through this skill’s package.
 @@ -27 +28 @@ [A]
 -Launch all reviewers in a single message with the Task tool, one per entry on the `interrogate reviewers` line in `~/.cursor/rules/pstack-models.mdc`, labeled Reviewer A, B, and so on to match the entry count. If the rule or that line is missing, use the table defaults.
 +Launch all reviewers in a single message with the exposed native subagent tool, one per entry on the `interrogate reviewers` line in `$CODEX_HOME/pstack-models.md`, labeled Reviewer A, B, and so on to match the entry count. If the rule or that line is missing, use the table defaults.

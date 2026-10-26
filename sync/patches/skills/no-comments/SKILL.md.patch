@@ -4,7 +4,7 @@
 -disable-model-invocation: true
 @@ -5,0 +5,2 @@ [A]
 +
-+Read [Codex compatibility](../../docs/harness/codex.md) before using this workflow.
-@@ -19 +20 @@ [P]
++Read [Codex compatibility](../onyo-mode/references/codex.md) before using this workflow. In a cloud skill reader, use the `onyo-mode` package from this same plugin and its `references/codex.md` resource; do not read a sibling resource through this skill’s package.
+@@ -19 +20 @@ [A]
 -1. Spawn `Task` with `subagent_type: "comment-sicko"`. Pass the scope. Pick each subagent's reasoning level and fast or standard speed for the job, per the Subagents section of the **poteto-mode** skill. Do not restate its rules.
-+1. Spawn `spawn_agent` with the instructions in `agents/comment-sicko.md`. Pass the scope. Pick each subagent's reasoning level and fast or standard speed for the job, per the Subagents section of the **onyo-mode** skill. Do not restate its rules.
++1. Spawn `spawn_agent` with the instructions in `references/comment-sicko.md` from this skill. Pass the scope. Pick each subagent's reasoning level and fast or standard speed for the job, per the Subagents section of the **onyo-mode** skill. Do not restate its rules.
