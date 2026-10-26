@@ -82,6 +82,10 @@ for folder in ('hooks', 'skills/onyo-projects', '.claude-plugin', '.cursor-plugi
 # Resolve actual relative Markdown links, leaving fenced examples and archive intact.
 for path in [root / dest for dest in files if dest.endswith('.md') and not dest.startswith('docs/upstream/')] + [root / 'docs/harness/codex.md']:
     text = re.sub(r'```.*?```', '', path.read_text(), flags=re.S)
+    if re.search(r'\bmissing roles inherit (?:the )?parent\b|'
+                 r'\broles inherit the parent model (?:unless|until)\b', text, re.I):
+        errors.append(f'{path.relative_to(root)}: stale inheritance default; '
+                      'missing roles use the selected Sol/Terra mapping, while saved aliases remain overrides')
     for target in re.findall(r'\]\(([^\s)]+)\)', text):
         if target == 'url' or target.startswith(('#', 'http:', 'https:', 'mailto:')) or '<' in target:
             continue

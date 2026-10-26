@@ -25,18 +25,18 @@ Infer the need from the message and the conversation. A named situation, such as
 
 Check the state that changes the answer, and mention it only when it does:
 
-- No `$CODEX_HOME/pstack-models.md` means `$setup-ostack` hasn't run for this user, so roles inherit the parent model unless a supported choice is confirmed.
+- Without `$CODEX_HOME/pstack-models.md`, use the selected Sol/Terra role defaults from `$setup-ostack`, with the large budget’s starting effort and current-host availability checks. A saved `inherit-parent` or `auto` role value remains an explicit override.
 - No `verify-*` skill or other app harness in the project means agents have no scripted way to drive the app. Mention `$create-verification-skill` when the question is about proving a change works.
 - No formal verification skill in the project means no property is checked past what tests reach. Mention `$create-formal-verification-skill` when the question is about a race, an invariant, or another case tests rarely hit. When one exists and the code it covers changed after the commit it records as last in sync, mention `$maintain-formal-verification-skill` if the question touches that code.
 
 When the model rule is missing and it matters, ask whether the user wants to pick a model for each role and a reasoning budget now. It matters when the user is new, the question is about setup or cost, or the answer depends on which models run. Ask at most once per chat. If the need is also unclear, ask both questions together. Offer two choices:
 
 - Now: give them `$setup-ostack` to type, and answer their question too.
-- Later: answer their question, and add one line saying roles inherit the parent model until they run `$setup-ostack`.
+- Later: answer their question, and add one line saying the selected Sol/Terra role defaults and large starting budget apply, subject to current-host support, until they choose other models or a budget.
 
 ## Get set up
 
-1. Install the skills following the [Codex instructions](../../README.md#install-for-codex).
+1. Install the desktop plugin following the [Codex instructions](../../README.md#install-in-the-codex-desktop-app).
 2. Run [`$setup-ostack`](../setup-ostack/SKILL.md). It asks for a reasoning budget, maps a model to each role, and writes `$CODEX_HOME/pstack-models.md`, which skills explicitly read. This is not automatic Codex configuration. Then it offers once each to generate a verification skill and a formal verification skill for the project, unless the project already has one.
 3. Start a real task with `$onyo-mode`, a goal, and a check that can pass or fail.
 
