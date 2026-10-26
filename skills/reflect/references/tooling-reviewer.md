@@ -16,7 +16,7 @@ Examples of the pattern:
 - User describes a flaky test the agent could have queried via an observability MCP. Routing: the debugging skill should mention the observability MCP.
 - User links a chat thread the agent could have fetched via a chat MCP. Routing: the relevant skill should mention the chat MCP.
 
-Use the selected-conversation evidence below, or read its explicitly supplied export at <ACCESSIBLE_EXPORT_PATH> if provided. Respect the stated evidence limits: a digest or summary is not a full transcript, and missing history is not evidence of absence.
+Use the invoking thread's inherited conversation context as the session transcript for this review.
 
 Scan for:
 - Tool invocations and command flags the agent had to discover
@@ -44,5 +44,3 @@ List each durable learning. For each:
 Skip trivial things (typos, retries) and anything already obvious from the skill the parent followed. Skip implementation details that drift: specific SHAs, current file paths, version numbers, exact byte counts. Convention generalizes. Pinned details don't.
 
 Return as a numbered list. No exposition.
-
-<SELECTED_CONVERSATION_EVIDENCE_OR_DIGEST_AND_LIMITATIONS>

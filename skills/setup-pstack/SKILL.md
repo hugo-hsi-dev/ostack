@@ -19,6 +19,8 @@ Enumerate the model IDs and reasoning efforts accepted by the session's native s
 
 The observed Codex `collaboration.spawn_agent` accepts separate `model` and `reasoning_effort` fields only with `fork_turns: "none"`. A full-history fork inherits the parent model and effort. Other clients may expose a different schema; inspect it before calling.
 
+Reflect uses full-context forks for its reviewers and synthesizer. Keep its two role lines as `inherit-parent` throughout setup; they do not offer model or effort overrides. This exception applies only to Reflect.
+
 ### 2. Load current state
 
 The default role-to-model mapping is the configuration shape shown in step 5 below. If `$CODEX_HOME/pstack-models.md` already exists, read it and treat its `# budget` line and its role values as the current choices. Otherwise start from those defaults. A line whose role is not in step 5, such as `how critics`, is from a retired role. Drop it.
