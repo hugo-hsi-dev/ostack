@@ -65,4 +65,6 @@ The [Eval playbook](../../skills/onyo-mode/playbooks/eval.md) is built around on
 
 Read every output yourself before accepting the verdict. If you disagree with the judge, suspect the rubric before you suspect your judgment.
 
+**Pitfall:** don't edit a skill mid-task because it's misbehaving. Fix it in its own PR and keep the task moving. A skill edit that ships tangled into feature work is invisible to review and impossible to evaluate.
+
 Next: [Recipes and pitfalls](./10-recipes-and-pitfalls.md).

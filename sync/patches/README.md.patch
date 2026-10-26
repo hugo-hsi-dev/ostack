@@ -250,9 +250,9 @@
 -tdd:               /tdd implement
 +interrogate:       $interrogate review this pr.
 +tdd:               $tdd implement
-@@ -203 +192,0 @@ [P]
+@@ -203,6 +193,3 @@ [P]
 -reflect:           /reflect that took too long. capture what we learned so the next run doesn't
-@@ -205,4 +194,3 @@ [P]
+-                   repeat it.
 -correct:           /correct
 -show-me-your-work: /show-me-your-work keep a decision trail i can review when i'm back.
 -automate-me:       /automate-me
@@ -260,43 +260,43 @@
 +correct:           $correct
 +show-me-your-work: $show-me-your-work keep a decision trail i can review when i'm back.
 +help:              $onyo-help which skill should i use to review this branch?
-@@ -213 +201 @@ [P]
+@@ -213 +200 @@ [P]
 -## the `poteto-agent` and Comment Sicko subagents
 +## the `onyo-agent` and Comment Sicko subagents
-@@ -215 +203 @@ [P]
+@@ -215 +202 @@ [P]
 -[`/poteto-mode`](./skills/poteto-mode/SKILL.md) runs in the chat that receives it. that chat owns the playbook, the todo list, and every subagent spawn.
 +[`$onyo-mode`](./skills/onyo-mode/SKILL.md) runs in the chat that receives it. that chat owns the playbook, the todo list, and every subagent spawn.
-@@ -217 +205 @@ [P]
+@@ -217 +204 @@ [P]
 -pstack also ships [`subagent_type: "poteto-agent"`](./agents/poteto-agent.md) as the wrapper for delegates spawned during a run. it reads `poteto-mode` in full, including its inline principles index, before doing any work. substituting `generalPurpose` skips that read and drifts. do not spawn `poteto-agent` to run the playbook itself.
 +ostack also ships [`onyo-agent` prompt](./agents/onyo-agent.md) as the wrapper for delegates spawned during a run. it reads `onyo-mode` in full, including its inline principles index, before doing any work. a generic delegate must also receive and read that prompt; a name alone does not register a custom agent. do not spawn `onyo-agent` to run the playbook itself.
-@@ -219 +207 @@ [P]
+@@ -219 +206 @@ [P]
 -[`/poteto-mode`](./skills/poteto-mode/SKILL.md) and [`subagent_type: "poteto-agent"`](./agents/poteto-agent.md) route through the same wrapper.
 +[`$onyo-mode`](./skills/onyo-mode/SKILL.md) and [`onyo-agent` prompt](./agents/onyo-agent.md) route through the same wrapper.
-@@ -221 +209 @@ [P]
+@@ -221 +208 @@ [P]
 -pstack also ships [Comment Sicko](./agents/comment-sicko.md), a read-only comment reviewer available as `subagent_type: "comment-sicko"`. usually invoke it through [`/no-comments`](./skills/no-comments/SKILL.md), not directly.
 +ostack also ships [Comment Sicko](./agents/comment-sicko.md), a comment reviewer whose prompt must be loaded by the delegate, with a no-file-edits constraint. usually invoke it through [`$no-comments`](./skills/no-comments/SKILL.md), not directly.
-@@ -225 +213 @@ [P]
+@@ -225 +212 @@ [P]
 -twenty-four short skills, one principle each. `poteto-mode` indexes them inline and reads that index at task start. the standalone files are there so other skills can reference a principle by name, and so the index can point at the full rule for each.
 +twenty-four short skills, one principle each. `onyo-mode` indexes them inline and reads that index at task start. the standalone files are there so other skills can reference a principle by name, and so the index can point at the full rule for each.
-@@ -261 +249 @@ [P]
+@@ -261 +248 @@ [P]
 -a few things `poteto-mode` references but doesn't bundle:
 +a few things `onyo-mode` references but doesn't bundle:
-@@ -265 +253 @@ [P]
+@@ -265 +252 @@ [P]
 -- `/create-skill` is a cursor built-in. cursor also ships a built-in `/autopilot` that watches a pr. inside `poteto-mode`, pr-status requests go to the [babysit playbook](./skills/poteto-mode/playbooks/babysit.md) instead.
 +- Cursor’s `create-skill` and `autopilot` are not Codex tool names. Use a skill-creation skill only if the current catalog provides it. Inside `onyo-mode`, PR-status requests still go to the [babysit playbook](./skills/onyo-mode/playbooks/babysit.md).
-@@ -267 +255 @@ [A]
+@@ -267 +254 @@ [A]
 -install `cursor-team-kit` alongside pstack if you want the full set.
 +The `cursor-team-kit` skills are external dependencies, not installed Codex capabilities. Use a verified equivalent driver or perform the documented cleanup directly when possible. If the required live proof cannot run, report the missing dependency and keep the verification gate open.
-@@ -271 +259 @@ [P]
+@@ -271 +258 @@ [P]
 -cursor already has a great plan mode which works great with pstack. but personally, i don't believe in planning. the best spec is code. if you do want to make a plan, [`/poteto-mode`](./skills/poteto-mode/SKILL.md) covers it, but it's not a default. 
 +Codex Plan Mode can work alongside ostack where the host provides it. This port adds no planner. If you want a plan, [`$onyo-mode`](./skills/onyo-mode/SKILL.md) retains the upstream planning playbook and approval gates.
-@@ -275 +263 @@ [P]
+@@ -275 +262 @@ [P]
 -`poteto-mode` is my style. you may not want exactly that.
 +`onyo-mode` is my style. you may not want exactly that.
-@@ -277 +265 @@ [P]
+@@ -277 +264 @@ [P]
 -type [`/automate-me`](./skills/automate-me/SKILL.md). it mines your recent transcripts, drafts a `<your-name>-mode` skill from how you've actually worked, and routes through pstack underneath. you keep pstack as the base and end up with your own routing skill alongside `poteto-mode`.
 +models are configurable too. [`$setup-ostack`](./skills/setup-ostack/SKILL.md) checks supported choices and writes `$CODEX_HOME/pstack-models.md`, a user-level role map that skills explicitly read. The legacy filename is retained for backward compatibility. It is not an always-loaded Codex configuration file.
-@@ -279,9 +267 @@ [P]
+@@ -279,9 +266 @@ [P]
 -models are configurable too. type [`/setup-pstack`](./skills/setup-pstack/SKILL.md). it detects the models you have access to and writes a small always-applied rule mapping each role (code, judgment, the review panels) to a model. every skill reads it and falls back to sensible defaults when the rule is absent, so you override only what you want.
 -
 -when a default changes, a rule written before the change still pins the old default. delete those role lines, or delete the file, then run `/setup-pstack` again. a rerun keeps any role whose model differs from the default.

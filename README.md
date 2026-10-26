@@ -190,7 +190,6 @@ swarm:             $swarm check every package under packages/ against its check.
 interrogate:       $interrogate review this pr.
 tdd:               $tdd implement
 unslop:            can we unslop and tighten the new changes?
-                   repeat it.
 correct:           $correct
 show-me-your-work: $show-me-your-work keep a decision trail i can review when i'm back.
 help:              $onyo-help which skill should i use to review this branch?
