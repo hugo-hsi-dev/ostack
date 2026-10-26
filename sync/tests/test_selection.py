@@ -1,6 +1,9 @@
 """Regression coverage for approved product omissions and retained-file fidelity."""
 import importlib.util
 import json
+import os
+import shutil
+import sys
 import subprocess
 import tempfile
 import unittest
@@ -103,12 +106,57 @@ class ProductSelection(unittest.TestCase):
             sync.cmd_check("pin", {"README.md": sync.Source("pstack/README.md", "100644")})
 
     def test_regeneration_keeps_selection(self):
-        files = {"README.md": sync.Source("pstack/README.md", "100644")}
-        with patch.object(sync, "git", return_value=subprocess.CompletedProcess([], 0, b"")), patch.object(sync, "build", return_value=b"retained\n"):
-            sync.cmd_write("pin", files, type("Args", (), {"force": True})())
-        self.assertEqual((self.root / "README.md").read_bytes(), b"retained\n")
-        self.assertFalse((self.root / "skills/gone").exists())
-        self.assertFalse((self.root / "automations/demo").exists())
+        # Run the real CLI against local Git objects, not a prefiltered file map.
+        source_script = Path(sync.__file__).resolve()
+        policy = json.loads(source_script.with_name("omissions.json").read_text())
+        self.policy.write_text(json.dumps(policy))
+        upstream = self.root / "upstream"
+        upstream.mkdir()
+
+        def run(*args, cwd=self.root, env=None):
+            return subprocess.run(args, cwd=cwd, env=env, capture_output=True, text=True, check=True)
+
+        run("git", "init", "-q", cwd=upstream)
+        retained = {"README.md": "retained\n", "skills/keep/SKILL.md": "keep\n",
+                    "skills/reflect-extra/SKILL.md": "prefix boundary\n"}
+        fixture = dict(retained)
+        for prefix in policy["paths"]:
+            fixture[prefix + "SKILL.md"] = "omitted skill\n"
+            fixture[prefix + "agents/openai.yaml"] = "omitted metadata\n"
+            fixture[prefix + "references/nested.md"] = "omitted reference\n"
+        for name, text in fixture.items():
+            path = upstream / "pstack" / name
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text(text)
+        run("git", "add", ".", cwd=upstream)
+        run("git", "-c", "user.name=Sync fixture", "-c", "user.email=fixture@example.invalid",
+            "-c", "commit.gpgsign=false", "commit", "-qm", "synthetic upstream", cwd=upstream)
+        sha = run("git", "rev-parse", "HEAD", cwd=upstream).stdout.strip()
+        (self.root / "sync/PIN").write_text(sha + "\n")
+        shutil.copy2(source_script, self.root / "sync/sync.py")
+        run("git", "init", "-q")
+        env = dict(os.environ, PSTACK_CACHE=str(upstream))
+
+        def cli(*args):
+            return run(sys.executable, "-B", "sync/sync.py", *args, env=env)
+
+        def assert_selected_tree():
+            for name, text in retained.items():
+                self.assertEqual((self.root / name).read_text(), text)
+            for prefix in policy["paths"]:
+                self.assertFalse((self.root / prefix).exists(), prefix)
+            self.assertEqual((self.root / "sync/PIN").read_text(), sha + "\n")
+
+        cli("write", "--force")
+        assert_selected_tree()
+        cli("check")
+        cli("bump", sha)
+        assert_selected_tree()
+        # A subsequent regeneration must not bring omitted content back either.
+        (self.root / "README.md").unlink()
+        cli("write", "--force")
+        assert_selected_tree()
+        cli("check")
 
 
 if __name__ == "__main__":
