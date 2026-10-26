@@ -8,31 +8,35 @@
 +
 +**External skill dependency.** `cursor-team-kit` is an upstream plugin, not a bundled Codex capability. Use its named skills only if actually installed and compatible. Otherwise report the missing dependency and perform the stated review or runtime proof with available tools; a missing proof remains a gap, never a passed gate.
 +
-@@ -7 +14 @@ [P]
+@@ -4,0 +12,2 @@ [A]
++**Resolve paths before filling the plan.** Resolve symlinks to the installed `onyo-mode` skill directory and use its absolute path for the checker and local playbook reads. Sibling skills are under its parent `skills/` directory. For each trunk read, identify the Git repository containing that skill and its repository-relative path; run `git show` from that repository, not from the project being planned. In this checkout the paths start at `skills/`, not `ostack/skills/`. Verify that the template's `origin/main` ref contains each path before recording the command. A copied installation without accessible trunk history leaves that read blocked; do not substitute a local copy while claiming a trunk read. Fill the path placeholders with the resolved locations, including the control skill's own repository when different.
++
+@@ -7 +16 @@ [P]
 -3. Explore in subagents with `subagent_type: "poteto-agent"` and an explicit model per the Subagents section (the **guard-the-context-window** principle skill). Pick each subagent's reasoning level and fast or standard speed for the job, per the Subagents section. Each returns file pointers, conventions, test commands, and entry points. No inlined dumps.
 +3. Explore in subagents with the instructions in `agents/onyo-agent.md` and an explicit model per the Subagents section (the **guard-the-context-window** principle skill). Pick each subagent's reasoning level and fast or standard speed for the job, per the Subagents section. Each returns file pointers, conventions, test commands, and entry points. No inlined dumps.
-@@ -10 +17 @@ [P]
+@@ -10 +19 @@ [A]
 -6. Run `node pstack/skills/poteto-mode/scripts/check-plan.mjs <plan.md>` and fix every line it prints (the **encode-lessons-in-structure** principle skill).
-+6. Run `node ostack/skills/onyo-mode/scripts/check-plan.mjs <plan.md>` and fix every line it prints (the **encode-lessons-in-structure** principle skill).
-@@ -13 +20 @@ [A]
++6. Run `node "<absolute onyo-mode directory>/scripts/check-plan.mjs" "<absolute plan path>"` and fix every line it prints (the **encode-lessons-in-structure** principle skill).
+@@ -13 +22 @@ [A]
 -**Verification.** Tests alone are not sufficient verification. A PR is verified only when its unit, live, and perf boxes are all checked (the **prove-it-works** principle skill). That sentence is the verification rule. Every verification block opens with it. The live block is mandatory. Ten lanes at the PR head drive the real surface through its control skill, per the **swarm** skill, on the `swarm workers` model (default `grok-4.7-xhigh-fast`). Each lane is one box with a concrete scenario, the screenshot it saves, and its pass predicate. One lane is the **Regression lane against trunk.** It runs the same load-bearing scenario on trunk and head. If trunk does not have the feature, the lane records that fact and gates the behavior the diff adds plus the end state the user waits for instead of inventing a trunk result. The perf gate is dual-sided. Trunk and head must both produce the named metric. If trunk lacks the feature, also isolate the work the diff adds and set an absolute budget for that work plus the end-to-end state the user waits for. Do not claim a ratio between unlike scenarios. The perf block names the metric, the interleaved probe, the trunk baseline measured first, and the rule with the number that fails. A PR that changes an interaction is review-gated. The operator reviews it in chat with screenshots and a video before merge. A PR that changes no interaction writes `**Review gate.** None. <PR id> is not review-gated.` and no boxes under it.
 +**Verification.** Tests alone are not sufficient verification. A PR is verified only when its unit, live, and perf boxes are all checked (the **prove-it-works** principle skill). That sentence is the verification rule. Every verification block opens with it. The live block is mandatory. Ten lanes at the PR head drive the real surface through its control skill, per the **swarm** skill, on the `swarm workers` model (default `inherit-parent`). Each lane is one box with a concrete scenario, the screenshot it saves, and its pass predicate. One lane is the **Regression lane against trunk.** It runs the same load-bearing scenario on trunk and head. If trunk does not have the feature, the lane records that fact and gates the behavior the diff adds plus the end state the user waits for instead of inventing a trunk result. The perf gate is dual-sided. Trunk and head must both produce the named metric. If trunk lacks the feature, also isolate the work the diff adds and set an absolute budget for that work plus the end-to-end state the user waits for. Do not claim a ratio between unlike scenarios. The perf block names the metric, the interleaved probe, the trunk baseline measured first, and the rule with the number that fails. A PR that changes an interaction is review-gated. The operator reviews it in chat with screenshots and a video before merge. A PR that changes no interaction writes `**Review gate.** None. <PR id> is not review-gated.` and no boxes under it.
-@@ -26 +33 @@ [P]
+@@ -26 +35 @@ [A]
 -The program runs `pstack/skills/poteto-mode/playbooks/<execution playbook>.md`. <Who merges, and which PR ids are the operator's items that stop at merge-ready.>
-+The program runs `ostack/skills/onyo-mode/playbooks/<execution playbook>.md`. <Who merges, and which PR ids are the operator's items that stop at merge-ready.>
-@@ -36,2 +43,2 @@ [P]
++The program runs `<absolute onyo-mode directory>/playbooks/<execution playbook>.md`. <Who merges, and which PR ids are the operator's items that stop at merge-ready.>
+@@ -36,5 +45,5 @@ [A]
 -  - [ ] `git show origin/main:pstack/skills/poteto-mode/playbooks/<execution playbook>.md`
 -  - [ ] `git show origin/main:pstack/skills/swarm/SKILL.md`
-+  - [ ] `git show origin/main:ostack/skills/onyo-mode/playbooks/<execution playbook>.md`
-+  - [ ] `git show origin/main:ostack/skills/swarm/SKILL.md`
-@@ -39,2 +46,2 @@ [P]
+-  - [ ] `git show origin/main:<control skill path>`
 -  - [ ] `git show origin/main:pstack/skills/poteto-mode/playbooks/opening-a-pr.md`
 -  - [ ] `git show origin/main:pstack/skills/<each other leaf skill the program uses>`
-+  - [ ] `git show origin/main:ostack/skills/onyo-mode/playbooks/opening-a-pr.md`
-+  - [ ] `git show origin/main:ostack/skills/<each other leaf skill the program uses>`
-@@ -65 +72 @@ [P]
++  - [ ] `(cd "<skill repository>" && git show origin/main:"<repository-relative execution playbook path>")`
++  - [ ] `(cd "<skill repository>" && git show origin/main:"<repository-relative swarm skill path>")`
++  - [ ] `(cd "<control skill repository>" && git show origin/main:"<repository-relative control skill path>")`
++  - [ ] `(cd "<skill repository>" && git show origin/main:"<repository-relative opening-a-pr playbook path>")`
++  - [ ] `(cd "<skill repository>" && git show origin/main:"<repository-relative leaf skill path>")`
+@@ -65 +74 @@ [A]
 -- [ ] A full swarm runs once, at the code-ready head. Another full swarm runs only for new behavior, a redesign, or a large new diff. A rebase, a merge-conflict resolution, or a minor fix gets a single verifier at the new head. Run each full swarm per `pstack/skills/swarm/SKILL.md`. One gates lane. The ten live lanes from the PR's **Verify, live** block. The perf lane from its **Verify, perf** block. Two or more audit lanes, each with its own focus, that read the diff and the receipts and distrust the PR body. The root audits the receipts in the merge-ready report before the verdict.
-+- [ ] A full swarm runs once, at the code-ready head. Another full swarm runs only for new behavior, a redesign, or a large new diff. A rebase, a merge-conflict resolution, or a minor fix gets a single verifier at the new head. Run each full swarm per `ostack/skills/swarm/SKILL.md`. One gates lane. The ten live lanes from the PR's **Verify, live** block. The perf lane from its **Verify, perf** block. Two or more audit lanes, each with its own focus, that read the diff and the receipts and distrust the PR body. The root audits the receipts in the merge-ready report before the verdict.
-@@ -152 +159 @@ [P]
++- [ ] A full swarm runs once, at the code-ready head. Another full swarm runs only for new behavior, a redesign, or a large new diff. A rebase, a merge-conflict resolution, or a minor fix gets a single verifier at the new head. Run each full swarm per `<absolute skills directory>/swarm/SKILL.md`. One gates lane. The ten live lanes from the PR's **Verify, live** block. The perf lane from its **Verify, perf** block. Two or more audit lanes, each with its own focus, that read the diff and the receipts and distrust the PR body. The root audits the receipts in the merge-ready report before the verdict.
+@@ -152 +161 @@ [A]
 -<Docs to read before editing. Which PRs get `pstack/skills/how/SKILL.md` and `pstack/skills/interrogate/SKILL.md`. The trail per `pstack/skills/show-me-your-work/SKILL.md`.>
-+<Docs to read before editing. Which PRs get `ostack/skills/how/SKILL.md` and `ostack/skills/interrogate/SKILL.md`. The trail per `ostack/skills/show-me-your-work/SKILL.md`.>
++<Docs to read before editing. Which PRs get `<absolute skills directory>/how/SKILL.md` and `<absolute skills directory>/interrogate/SKILL.md`. The trail per `<absolute skills directory>/show-me-your-work/SKILL.md`.>
