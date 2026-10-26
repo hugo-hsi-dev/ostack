@@ -11,4 +11,4 @@
 
 **Choosing between the autopilots.** Autopilot-full when the PRs are independent and landing authority is granted. Autopilot-stack when the operator wants review before landing, the work is sequenced or coupled, or merge authority is withheld.
 
-**Reply:** catch the operator up per the **ketchup** skill, with links to the stack root and tip, a one-line verdict per link, and anything parked or excluded with the reason.
+**Reply:** catch the operator up in plain words on what changed since their last message, using existing visual evidence where useful. Reporting itself is read-only. Name work the agent can still do, check current PR/agent state, state unknowns, and list every pending operator decision with its recommendation, evidence, risk, and available link; do not omit older pending decisions or treat work the agent can do as an operator action. Include links to the stack root and tip, a one-line verdict per link, and anything parked or excluded with the reason.

@@ -1,0 +1,12 @@
+--- a/skills/poteto-help/references/recipes.md
++++ b/skills/poteto-help/references/recipes.md
+@@ -8,2 +7,0 @@ [P]
+-- `/in-your-own-words <long or messy ask>`
+-- `/sharpen <the prompt you're about to send>`
+@@ -12 +9,0 @@ [P]
+-- `/recall my work on <topic> from last week, then read <issue>.`
+@@ -47 +43,0 @@ [P]
+-- `/ketchup` catches you up on this chat since your last message and lists every call that waits on you.
+@@ -50,2 +45,0 @@ [P]
+-- `/reflect capture what we learned so the next run doesn't repeat it.` Approve only edits that change a future decision.
+-- `/bro` restates the last reply in plain words.

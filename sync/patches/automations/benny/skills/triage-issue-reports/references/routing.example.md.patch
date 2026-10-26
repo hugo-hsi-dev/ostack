@@ -1,5 +1,0 @@
---- a/automations/benny/skills/triage-issue-reports/references/routing.example.md
-+++ b/automations/benny/skills/triage-issue-reports/references/routing.example.md
-@@ -3 +3 @@ [A]
--Copy this file outside `.cursor/automations/benny/`, for example to `.cursor/benny/routing.md`, and replace every placeholder. Point `routing.map_path` at the copy. Pack refreshes must not overwrite it.
-+Copy this file outside `automations/benny/`, for example to `.benny/routing.md`, and replace every placeholder. Point `routing.map_path` at the copy. Pack refreshes must not overwrite it.

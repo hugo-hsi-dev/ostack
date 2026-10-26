@@ -1,6 +1,6 @@
 # ostack: pstack for Codex
 
-This first-stage Codex port starts from Lauren Tan’s pstack at upstream commit `99b609a72323b70204eab407c622f436e858e112` (version `0.15.32`). See [NOTICE](./NOTICE) and [the Codex compatibility map](./docs/harness/codex.md). The workflows remain pstack’s. Model diversity, durable cloud orchestration, and external integrations require verified host support; this is not a runtime-complete port.
+This first-stage Codex port starts from Lauren Tan’s pstack at upstream commit `99b609a72323b70204eab407c622f436e858e112` (version `0.15.32`). See [NOTICE](./NOTICE) and [the Codex compatibility map](./docs/harness/codex.md). The retained workflows remain pstack’s; [the versioned product selection](./sync/omissions.json) records the approved omitted skills and automation pack. Model diversity, durable cloud orchestration, and external integrations require verified host support; this is not a runtime-complete port.
 
 The introduction below retains the upstream author’s voice and attribution.
 
@@ -131,22 +131,14 @@ $interrogate review this pr.
 |---|---|
 | [`$poteto-mode`](./skills/poteto-mode/SKILL.md) | default entry point for any non-trivial task. |
 | [`$poteto-help`](./skills/poteto-help/SKILL.md) | you're new to pstack, or unsure which skill, playbook, or principle fits. finds out what you're trying to do, answers that part, and hands you a prompt to type. runs only when you type `$poteto-help`. |
-| [`$in-your-own-words`](./skills/in-your-own-words/SKILL.md) | you want the agent to play back your goal and the problem before it starts. runs only when you type `$in-your-own-words`. |
-| [`$sharpen`](./skills/sharpen/SKILL.md) | you want a prompt made deeper, not bigger, before you send it: what a top professional would do that you didn't ask for, the raw material they'd start from, their methods and tools, and an outside check that the result is right. hands back the rewritten prompt and leaves your choices open. doesn't do the task. runs only when you type `$sharpen`. |
 | [`$how`](./skills/how/SKILL.md) | you want a walkthrough of how a subsystem works. |
 | [`$why`](./skills/why/SKILL.md) | you want to know why something was built this way. discovers available MCPs at run time and queries each evidence category in parallel (source control, issue tracker, long-form docs, real-time chat, infra observability, error tracking, analytics warehouse). |
-| [`$recall`](./skills/recall/SKILL.md) | you're starting or resuming work and want your recent context on a topic rebuilt from your own chat history and the shared record, handed back as a tight current-state brief. |
-| [`$ketchup`](./skills/ketchup/SKILL.md) | you want what changed in this chat since your last message, in plain words and small visuals, with every item waiting on you listed and decidable from the reply alone, even when that makes the reply long. |
-| [`$ketchup-video`](./skills/ketchup-video/SKILL.md) | you want the `$ketchup` catch-up as a short silent video of slides, with the calls waiting on you as text under it. |
 | [`$blast-radius`](./skills/blast-radius/SKILL.md) | you have a small-looking change and want to know what else it could break, with the one fact it's safe because of proven by running code, not asserted. |
 | [`$architect`](./skills/architect/SKILL.md) | you're about to write code that crosses a function boundary and want the caller's usage, types, and module shape settled first. |
 | [`$arena`](./skills/arena/SKILL.md) | you want N parallel attempts at the same thing, then to grab the best parts of each. |
 | [`$swarm`](./skills/swarm/SKILL.md) | you want N parallel workers across different slices or races, then one aggregated report. |
 | [`$interrogate`](./skills/interrogate/SKILL.md) | you have a diff and want different models to try to break it, including a strict code-quality lens. |
-| [`$automate-me`](./skills/automate-me/SKILL.md) | you want your own `-mode` skill, drafted from how you've actually worked. |
-| [`$make-bot-ui`](./skills/make-bot-ui/SKILL.md) | you want a page or dashboard whose buttons wake a Grok Bot over a webhook, including the sender-key handoff and Tailscale. |
 | [`$setup-pstack`](./skills/setup-pstack/SKILL.md) | you want to pick which models pstack uses per role. detects your models and writes a config rule. |
-| [`$reflect`](./skills/reflect/SKILL.md) | a long task landed and you want the recipe captured as a skill edit. |
 | [`$correct`](./skills/correct/SKILL.md) | you keep correcting agents for the same mistakes. mines history for mistake classes, fixes each at the highest level that works (architecture, then types, lint, and ci, then tests, with docs last), and keeps a table pairing each rule with what enforces it. |
 | [`$teach`](./skills/teach/SKILL.md) | you want to actually understand a change or subsystem, not just have it summarized. runs how + why and weaves one plain explanation, built up diagram by diagram. |
 | [`$tdd`](./skills/tdd/SKILL.md) | you're fixing a bug and there's a cheap local test path. write the failing test first, then the fix. |
@@ -161,7 +153,6 @@ $interrogate review this pr.
 | [`$maintain-formal-verification-skill`](./skills/maintain-formal-verification-skill/SKILL.md) | code your formal verification covers has changed since it was last checked. updates the model, harness, or properties to match the code, reruns, and says whether each failure is drift in the verification or a bug in the code. |
 | [`$statechart`](./skills/statechart/SKILL.md) | someone who owns the behavior needs to see it, not read a spec. draws what the user sees as a mermaid statechart generated from a tla+ model, marks each state works, still wrong, or fixed by your open pr, and draws each bug tlc finds as a numbered path. also turns an agreed chart into a tla+ skeleton, or audits the code against an existing spec. |
 | [`$unslop`](./skills/unslop/SKILL.md) | you're cleaning up writing. removes AI tells. |
-| [`$bro`](./skills/bro/SKILL.md) | you want the last message restated in plain human language, no jargon. |
 | [`$technical-writing`](./skills/technical-writing/SKILL.md) | layered doc standard (Diátaxis + Google developer style + STE + Global English) for docs, RFCs, readmes, PR descriptions, commit messages. |
 
 </details>
@@ -205,11 +196,9 @@ swarm:             $swarm check every package under packages/ against its check.
 interrogate:       $interrogate review this pr.
 tdd:               $tdd implement
 unslop:            can we unslop and tighten the new changes?
-reflect:           $reflect that took too long. capture what we learned so the next run doesn't
                    repeat it.
 correct:           $correct
 show-me-your-work: $show-me-your-work keep a decision trail i can review when i'm back.
-automate-me:       $automate-me
 help:              $poteto-help which skill should i use to review this branch?
 ```
 
@@ -279,17 +268,9 @@ Codex Plan Mode can work alongside pstack where the host provides it. This port 
 
 `poteto-mode` is my style. you may not want exactly that.
 
-type [`$automate-me`](./skills/automate-me/SKILL.md). it mines your recent transcripts, drafts a `<your-name>-mode` skill from how you've actually worked, and routes through pstack underneath. you keep pstack as the base and end up with your own routing skill alongside `poteto-mode`.
-
 models are configurable too. [`$setup-pstack`](./skills/setup-pstack/SKILL.md) checks supported choices and writes `$CODEX_HOME/pstack-models.md`, a user-level role map that skills explicitly read. It is not an always-loaded Codex configuration file.
 
 when a default changes, a rule written before the change still pins the old default. delete those role lines, or delete the file, then run `$setup-pstack` again. a rerun keeps any role whose model differs from the default.
-
-## automations
-
-pstack also ships a dormant [benny automation pack](./automations/benny/). benny triages slack issue reports, then reproduces and fixes confirmed bugs with real ui evidence. its files are not registered as slash skills.
-
-Benny’s triage and reproduction workflows remain in [`FOR_AGENTS.md`](./automations/benny/FOR_AGENTS.md). Its original Cursor automation setup is a compatibility gap. No Codex webhook or automation deployment is implied; verify an adapter and preserve the approval gates before enabling it.
 
 ## license
 

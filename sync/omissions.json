@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "reason": "User-approved product selection: omit these nine skills and the dormant Benny pack; retain all other upstream content.",
+  "paths": [
+    "skills/automate-me/",
+    "skills/reflect/",
+    "skills/ketchup/",
+    "skills/ketchup-video/",
+    "skills/bro/",
+    "skills/in-your-own-words/",
+    "skills/sharpen/",
+    "skills/recall/",
+    "skills/make-bot-ui/",
+    "automations/benny/"
+  ]
+}

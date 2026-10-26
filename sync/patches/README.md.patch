@@ -1,10 +1,10 @@
 --- a/README.md
 +++ b/README.md
-@@ -1 +1,5 @@ [A]
+@@ -1 +1,5 @@ [P]
 -# pstack
 +# ostack: pstack for Codex
 +
-+This first-stage Codex port starts from Lauren Tan’s pstack at upstream commit `99b609a72323b70204eab407c622f436e858e112` (version `0.15.32`). See [NOTICE](./NOTICE) and [the Codex compatibility map](./docs/harness/codex.md). The workflows remain pstack’s. Model diversity, durable cloud orchestration, and external integrations require verified host support; this is not a runtime-complete port.
++This first-stage Codex port starts from Lauren Tan’s pstack at upstream commit `99b609a72323b70204eab407c622f436e858e112` (version `0.15.32`). See [NOTICE](./NOTICE) and [the Codex compatibility map](./docs/harness/codex.md). The retained workflows remain pstack’s; [the versioned product selection](./sync/omissions.json) records the approved omitted skills and automation pack. Model diversity, durable cloud orchestration, and external integrations require verified host support; this is not a runtime-complete port.
 +
 +The introduction below retains the upstream author’s voice and attribution.
 @@ -5 +9 @@ [A]
@@ -91,7 +91,7 @@
 @@ -119 +124 @@ [A]
 -/interrogate review this pr.
 +$interrogate review this pr.
-@@ -127,34 +132,34 @@ [A]
+@@ -127,34 +132,25 @@ [P]
 -| [`/poteto-mode`](./skills/poteto-mode/SKILL.md) | default entry point for any non-trivial task. |
 -| [`/poteto-help`](./skills/poteto-help/SKILL.md) | you're new to pstack, or unsure which skill, playbook, or principle fits. finds out what you're trying to do, answers that part, and hands you a prompt to type. runs only when you type `/poteto-help`. |
 -| [`/in-your-own-words`](./skills/in-your-own-words/SKILL.md) | you want the agent to play back your goal and the problem before it starts. runs only when you type `/in-your-own-words`. |
@@ -128,22 +128,14 @@
 -| [`/technical-writing`](./skills/technical-writing/SKILL.md) | layered doc standard (Diátaxis + Google developer style + STE + Global English) for docs, RFCs, readmes, PR descriptions, commit messages. |
 +| [`$poteto-mode`](./skills/poteto-mode/SKILL.md) | default entry point for any non-trivial task. |
 +| [`$poteto-help`](./skills/poteto-help/SKILL.md) | you're new to pstack, or unsure which skill, playbook, or principle fits. finds out what you're trying to do, answers that part, and hands you a prompt to type. runs only when you type `$poteto-help`. |
-+| [`$in-your-own-words`](./skills/in-your-own-words/SKILL.md) | you want the agent to play back your goal and the problem before it starts. runs only when you type `$in-your-own-words`. |
-+| [`$sharpen`](./skills/sharpen/SKILL.md) | you want a prompt made deeper, not bigger, before you send it: what a top professional would do that you didn't ask for, the raw material they'd start from, their methods and tools, and an outside check that the result is right. hands back the rewritten prompt and leaves your choices open. doesn't do the task. runs only when you type `$sharpen`. |
 +| [`$how`](./skills/how/SKILL.md) | you want a walkthrough of how a subsystem works. |
 +| [`$why`](./skills/why/SKILL.md) | you want to know why something was built this way. discovers available MCPs at run time and queries each evidence category in parallel (source control, issue tracker, long-form docs, real-time chat, infra observability, error tracking, analytics warehouse). |
-+| [`$recall`](./skills/recall/SKILL.md) | you're starting or resuming work and want your recent context on a topic rebuilt from your own chat history and the shared record, handed back as a tight current-state brief. |
-+| [`$ketchup`](./skills/ketchup/SKILL.md) | you want what changed in this chat since your last message, in plain words and small visuals, with every item waiting on you listed and decidable from the reply alone, even when that makes the reply long. |
-+| [`$ketchup-video`](./skills/ketchup-video/SKILL.md) | you want the `$ketchup` catch-up as a short silent video of slides, with the calls waiting on you as text under it. |
 +| [`$blast-radius`](./skills/blast-radius/SKILL.md) | you have a small-looking change and want to know what else it could break, with the one fact it's safe because of proven by running code, not asserted. |
 +| [`$architect`](./skills/architect/SKILL.md) | you're about to write code that crosses a function boundary and want the caller's usage, types, and module shape settled first. |
 +| [`$arena`](./skills/arena/SKILL.md) | you want N parallel attempts at the same thing, then to grab the best parts of each. |
 +| [`$swarm`](./skills/swarm/SKILL.md) | you want N parallel workers across different slices or races, then one aggregated report. |
 +| [`$interrogate`](./skills/interrogate/SKILL.md) | you have a diff and want different models to try to break it, including a strict code-quality lens. |
-+| [`$automate-me`](./skills/automate-me/SKILL.md) | you want your own `-mode` skill, drafted from how you've actually worked. |
-+| [`$make-bot-ui`](./skills/make-bot-ui/SKILL.md) | you want a page or dashboard whose buttons wake a Grok Bot over a webhook, including the sender-key handoff and Tailscale. |
 +| [`$setup-pstack`](./skills/setup-pstack/SKILL.md) | you want to pick which models pstack uses per role. detects your models and writes a config rule. |
-+| [`$reflect`](./skills/reflect/SKILL.md) | a long task landed and you want the recipe captured as a skill edit. |
 +| [`$correct`](./skills/correct/SKILL.md) | you keep correcting agents for the same mistakes. mines history for mistake classes, fixes each at the highest level that works (architecture, then types, lint, and ci, then tests, with docs last), and keeps a table pairing each rule with what enforces it. |
 +| [`$teach`](./skills/teach/SKILL.md) | you want to actually understand a change or subsystem, not just have it summarized. runs how + why and weaves one plain explanation, built up diagram by diagram. |
 +| [`$tdd`](./skills/tdd/SKILL.md) | you're fixing a bug and there's a cheap local test path. write the failing test first, then the fix. |
@@ -158,96 +150,95 @@
 +| [`$maintain-formal-verification-skill`](./skills/maintain-formal-verification-skill/SKILL.md) | code your formal verification covers has changed since it was last checked. updates the model, harness, or properties to match the code, reruns, and says whether each failure is drift in the verification or a bug in the code. |
 +| [`$statechart`](./skills/statechart/SKILL.md) | someone who owns the behavior needs to see it, not read a spec. draws what the user sees as a mermaid statechart generated from a tla+ model, marks each state works, still wrong, or fixed by your open pr, and draws each bug tlc finds as a numbered path. also turns an agreed chart into a tla+ skeleton, or audits the code against an existing spec. |
 +| [`$unslop`](./skills/unslop/SKILL.md) | you're cleaning up writing. removes AI tells. |
-+| [`$bro`](./skills/bro/SKILL.md) | you want the last message restated in plain human language, no jargon. |
 +| [`$technical-writing`](./skills/technical-writing/SKILL.md) | layered doc standard (Diátaxis + Google developer style + STE + Global English) for docs, RFCs, readmes, PR descriptions, commit messages. |
-@@ -168 +173 @@ [A]
+@@ -168 +164 @@ [A]
 -mostly i type [`/poteto-mode`](./skills/poteto-mode/SKILL.md) at the start of a task and let it route to a playbook. the other skills fire as the steps need them. a few i reach for directly.
 +mostly i type [`$poteto-mode`](./skills/poteto-mode/SKILL.md) at the start of a task and let it route to a playbook. the other skills fire as the steps need them. a few i reach for directly.
-@@ -175 +180 @@ [A]
+@@ -175 +171 @@ [A]
 -bug fix:           /poteto-mode this pr has a subtle bug where the scroll drifts every 750ms even
 +bug fix:           $poteto-mode this pr has a subtle bug where the scroll drifts every 750ms even
-@@ -177 +182 @@ [A]
+@@ -177 +173 @@ [A]
 -perf:              /poteto-mode a big list takes a second or two to load even though we virtualize.
 +perf:              $poteto-mode a big list takes a second or two to load even though we virtualize.
-@@ -179,2 +184,2 @@ [A]
+@@ -179,2 +175,2 @@ [A]
 -feature:           /poteto-mode build a small feature behind a feature flag. verify it really works.
 -prototype:         /poteto-mode build two prototypes of the markdown renderer so we can compare.
 +feature:           $poteto-mode build a small feature behind a feature flag. verify it really works.
 +prototype:         $poteto-mode build two prototypes of the markdown renderer so we can compare.
-@@ -182 +187 @@ [A]
+@@ -182 +178 @@ [A]
 -multi-phase:       /poteto-mode open source these skills as a plugin. nothing internal leaks, work
 +multi-phase:       $poteto-mode open source these skills as a plugin. nothing internal leaks, work
-@@ -184 +189 @@ [A]
+@@ -184 +180 @@ [A]
 -overnight run:     /poteto-mode i'm going to bed. land the stack even if ci flakes. i want
 +overnight run:     $poteto-mode i'm going to bed. land the stack even if ci flakes. i want
-@@ -186,2 +191,2 @@ [A]
+@@ -186,2 +182,2 @@ [A]
 -babysit:           /poteto-mode check on pr 123. anything outstanding?
 -visual parity:     /poteto-mode the row spacing is too tall when this flag is on. the second image
 +babysit:           $poteto-mode check on pr 123. anything outstanding?
 +visual parity:     $poteto-mode the row spacing is too tall when this flag is on. the second image
-@@ -189 +194 @@ [A]
+@@ -189 +185 @@ [A]
 -figure it out:     /poteto-mode i'm stepping away. migrate every caller from the synchronous store
 +figure it out:     $poteto-mode i'm stepping away. migrate every caller from the synchronous store
-@@ -192,3 +197,3 @@ [A]
+@@ -192,3 +188,3 @@ [A]
 -how:               /how do we cancel runs? do we have an n+1 when we look up every run to cancel?
 -why:               /why is this feature flag not on yet?
 -architect:         design this instrumentation to be high signal with no false positives. /architect
 +how:               $how do we cancel runs? do we have an n+1 when we look up every run to cancel?
 +why:               $why is this feature flag not on yet?
 +architect:         design this instrumentation to be high signal with no false positives. $architect
-@@ -196 +201 @@ [A]
+@@ -196 +192 @@ [A]
 -arena:             /arena take my prompt to the arena verbatim. i want to compare their proposals
 +arena:             $arena take my prompt to the arena verbatim. i want to compare their proposals
-@@ -198 +203 @@ [A]
+@@ -198 +194 @@ [A]
 -swarm:             /swarm check every package under packages/ against its check.sh. one worker per
 +swarm:             $swarm check every package under packages/ against its check.sh. one worker per
-@@ -200,2 +205,2 @@ [A]
+@@ -200,2 +196,2 @@ [A]
 -interrogate:       /interrogate review this pr.
 -tdd:               /tdd implement
 +interrogate:       $interrogate review this pr.
 +tdd:               $tdd implement
-@@ -203 +208 @@ [A]
+@@ -203 +198,0 @@ [P]
 -reflect:           /reflect that took too long. capture what we learned so the next run doesn't
-+reflect:           $reflect that took too long. capture what we learned so the next run doesn't
-@@ -205,4 +210,4 @@ [A]
+@@ -205,4 +200,3 @@ [P]
 -correct:           /correct
 -show-me-your-work: /show-me-your-work keep a decision trail i can review when i'm back.
 -automate-me:       /automate-me
 -help:              /poteto-help which skill should i use to review this branch?
 +correct:           $correct
 +show-me-your-work: $show-me-your-work keep a decision trail i can review when i'm back.
-+automate-me:       $automate-me
 +help:              $poteto-help which skill should i use to review this branch?
-@@ -215 +220 @@ [A]
+@@ -215 +209 @@ [A]
 -[`/poteto-mode`](./skills/poteto-mode/SKILL.md) runs in the chat that receives it. that chat owns the playbook, the todo list, and every subagent spawn.
 +[`$poteto-mode`](./skills/poteto-mode/SKILL.md) runs in the chat that receives it. that chat owns the playbook, the todo list, and every subagent spawn.
-@@ -217 +222 @@ [A]
+@@ -217 +211 @@ [A]
 -pstack also ships [`subagent_type: "poteto-agent"`](./agents/poteto-agent.md) as the wrapper for delegates spawned during a run. it reads `poteto-mode` in full, including its inline principles index, before doing any work. substituting `generalPurpose` skips that read and drifts. do not spawn `poteto-agent` to run the playbook itself.
 +pstack also ships [`poteto-agent` prompt](./agents/poteto-agent.md) as the wrapper for delegates spawned during a run. it reads `poteto-mode` in full, including its inline principles index, before doing any work. a generic delegate must also receive and read that prompt; a name alone does not register a custom agent. do not spawn `poteto-agent` to run the playbook itself.
-@@ -219 +224 @@ [A]
+@@ -219 +213 @@ [A]
 -[`/poteto-mode`](./skills/poteto-mode/SKILL.md) and [`subagent_type: "poteto-agent"`](./agents/poteto-agent.md) route through the same wrapper.
 +[`$poteto-mode`](./skills/poteto-mode/SKILL.md) and [`poteto-agent` prompt](./agents/poteto-agent.md) route through the same wrapper.
-@@ -221 +226 @@ [A]
+@@ -221 +215 @@ [A]
 -pstack also ships [Comment Sicko](./agents/comment-sicko.md), a read-only comment reviewer available as `subagent_type: "comment-sicko"`. usually invoke it through [`/no-comments`](./skills/no-comments/SKILL.md), not directly.
 +pstack also ships [Comment Sicko](./agents/comment-sicko.md), a comment reviewer whose prompt must be loaded by the delegate, with a no-file-edits constraint. usually invoke it through [`$no-comments`](./skills/no-comments/SKILL.md), not directly.
-@@ -265 +270 @@ [A]
+@@ -265 +259 @@ [A]
 -- `/create-skill` is a cursor built-in. cursor also ships a built-in `/autopilot` that watches a pr. inside `poteto-mode`, pr-status requests go to the [babysit playbook](./skills/poteto-mode/playbooks/babysit.md) instead.
 +- Cursor’s `create-skill` and `autopilot` are not Codex tool names. Use a skill-creation skill only if the current catalog provides it. Inside `poteto-mode`, PR-status requests still go to the [babysit playbook](./skills/poteto-mode/playbooks/babysit.md).
-@@ -267 +272 @@ [A]
+@@ -267 +261 @@ [A]
 -install `cursor-team-kit` alongside pstack if you want the full set.
 +The `cursor-team-kit` skills are external dependencies, not installed Codex capabilities. Use a verified equivalent driver or perform the documented cleanup directly when possible. If the required live proof cannot run, report the missing dependency and keep the verification gate open.
-@@ -271 +276 @@ [A]
+@@ -271 +265 @@ [A]
 -cursor already has a great plan mode which works great with pstack. but personally, i don't believe in planning. the best spec is code. if you do want to make a plan, [`/poteto-mode`](./skills/poteto-mode/SKILL.md) covers it, but it's not a default. 
 +Codex Plan Mode can work alongside pstack where the host provides it. This port adds no planner. If you want a plan, [`$poteto-mode`](./skills/poteto-mode/SKILL.md) retains the upstream planning playbook and approval gates.
-@@ -277 +282 @@ [A]
+@@ -277 +271 @@ [P]
 -type [`/automate-me`](./skills/automate-me/SKILL.md). it mines your recent transcripts, drafts a `<your-name>-mode` skill from how you've actually worked, and routes through pstack underneath. you keep pstack as the base and end up with your own routing skill alongside `poteto-mode`.
-+type [`$automate-me`](./skills/automate-me/SKILL.md). it mines your recent transcripts, drafts a `<your-name>-mode` skill from how you've actually worked, and routes through pstack underneath. you keep pstack as the base and end up with your own routing skill alongside `poteto-mode`.
-@@ -279 +284 @@ [A]
--models are configurable too. type [`/setup-pstack`](./skills/setup-pstack/SKILL.md). it detects the models you have access to and writes a small always-applied rule mapping each role (code, judgment, the review panels) to a model. every skill reads it and falls back to sensible defaults when the rule is absent, so you override only what you want.
 +models are configurable too. [`$setup-pstack`](./skills/setup-pstack/SKILL.md) checks supported choices and writes `$CODEX_HOME/pstack-models.md`, a user-level role map that skills explicitly read. It is not an always-loaded Codex configuration file.
-@@ -281 +286 @@ [A]
+@@ -279,9 +273 @@ [P]
+-models are configurable too. type [`/setup-pstack`](./skills/setup-pstack/SKILL.md). it detects the models you have access to and writes a small always-applied rule mapping each role (code, judgment, the review panels) to a model. every skill reads it and falls back to sensible defaults when the rule is absent, so you override only what you want.
+-
 -when a default changes, a rule written before the change still pins the old default. delete those role lines, or delete the file, then run `/setup-pstack` again. a rerun keeps any role whose model differs from the default.
-+when a default changes, a rule written before the change still pins the old default. delete those role lines, or delete the file, then run `$setup-pstack` again. a rerun keeps any role whose model differs from the default.
-@@ -287 +292 @@ [A]
+-
+-## automations
+-
+-pstack also ships a dormant [benny automation pack](./automations/benny/). benny triages slack issue reports, then reproduces and fixes confirmed bugs with real ui evidence. its files are not registered as slash skills.
+-
 -to set it up, point cursor at [`FOR_AGENTS.md`](./automations/benny/FOR_AGENTS.md). setup copies the pack into the target repository at `.cursor/automations/benny/`, enables pstack there for shared skills, and keeps user configuration outside the copied pack. benny runs on cursor automations, so it is cursor-only.
-+Benny’s triage and reproduction workflows remain in [`FOR_AGENTS.md`](./automations/benny/FOR_AGENTS.md). Its original Cursor automation setup is a compatibility gap. No Codex webhook or automation deployment is implied; verify an adapter and preserve the approval gates before enabling it.
++when a default changes, a rule written before the change still pins the old default. delete those role lines, or delete the file, then run `$setup-pstack` again. a rerun keeps any role whose model differs from the default.

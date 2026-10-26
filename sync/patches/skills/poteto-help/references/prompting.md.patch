@@ -1,0 +1,5 @@
+--- a/skills/poteto-help/references/prompting.md
++++ b/skills/poteto-help/references/prompting.md
+@@ -22 +22 @@ [P]
+-- In a fresh chat, `/recall` earlier work on the topic. Old chats hold context that the new agent lacks.
++- In a fresh chat, supply the prior handoff and branch when resuming work. Old chats hold context that the new agent may lack.

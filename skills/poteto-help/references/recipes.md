@@ -5,11 +5,8 @@ Swap in the real paths, skills, and done checks. Informal wording works.
 ## Understand
 
 - `/poteto-mode read <thread>. restate the underlying issue in your own words, in plain english.`
-- `/in-your-own-words <long or messy ask>`
-- `/sharpen <the prompt you're about to send>`
 - `/poteto-mode investigate why <symptom>. give me what we know, what data you used, and your best hypotheses. don't change any code yet.`
 - `use /how to understand <subsystem>. then use /why to find out why it broke recently.`
-- `/recall my work on <topic> from last week, then read <issue>.`
 - `/teach me why you implemented it this way and not <other way>. what did you trade off?`
 - `/poteto-mode take over this branch. read the decision log, find what's done, and continue. don't redo finished work.`
 
@@ -44,8 +41,5 @@ Swap in the real paths, skills, and done checks. Informal wording works.
 
 - `/poteto-mode im going to bed. <goal> in a fresh worktree off <base>. done means <checks>. keep a decision log. don't ask me before committing. /loop until done. if you're truly stuck after a few hours, stop and write up why.`
 - `/show-me-your-work catch me up on what you did last night.` Read its Attention section first.
-- `/ketchup` catches you up on this chat since your last message and lists every call that waits on you.
 - `/poteto-mode full autopilot on this queue. each item is independent.`
 - `/poteto-mode autopilot these changes but stack them, don't ship. i'll land the stack.`
-- `/reflect capture what we learned so the next run doesn't repeat it.` Approve only edits that change a future decision.
-- `/bro` restates the last reply in plain words.

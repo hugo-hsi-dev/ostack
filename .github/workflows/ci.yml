@@ -13,6 +13,8 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+      - name: Sync product-selection regression tests
+        run: python3 -m unittest discover -s sync/tests
       - name: Upstream plus reviewed patches
         run: python3 sync/sync.py check
       - name: Codex metadata and compatibility boundaries

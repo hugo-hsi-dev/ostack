@@ -1,5 +1,0 @@
---- a/automations/benny/skills/reproduce-and-fix-issues/SKILL.md
-+++ b/automations/benny/skills/reproduce-and-fix-issues/SKILL.md
-@@ -122 +122 @@ [A]
--Prefer configured Cursor Slack actions. Use `BENNY_SLACK_BOT_TOKEN` only when the user configured it for a narrow missing capability such as editing this one status message. Never expose the token to a worker.
-+Prefer configured, authorized Slack connector actions. Use `BENNY_SLACK_BOT_TOKEN` only when the user configured it for a narrow missing capability such as editing this one status message. Never expose the token to a worker.

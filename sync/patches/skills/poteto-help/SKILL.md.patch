@@ -64,7 +64,7 @@
 @@ -64 +57 @@ [A]
 -The default answer is `/poteto-mode`, which runs most of the others when its steps need them. Name a skill directly when the user wants more or less of something than the playbook gives. Read the skill before you recommend it, and give one example prompt.
 +The default answer is `$poteto-mode`, which runs most of the others when its steps need them. Name a skill directly when the user wants more or less of something than the playbook gives. Read the skill before you recommend it, and give one example prompt.
-@@ -68,34 +61,34 @@ [A]
+@@ -68,34 +61,25 @@ [P]
 -| Do any non-trivial task with rigor | [`/poteto-mode`](../poteto-mode/SKILL.md) |
 -| Check that the agent understood their goal and the problem before it starts | [`/in-your-own-words`](../in-your-own-words/SKILL.md) |
 -| Get a prompt rewritten deeper, not bigger, before sending it: what a top professional would add, their raw material and methods, and an outside check. It returns the prompt and doesn't do the task | [`/sharpen`](../sharpen/SKILL.md) |
@@ -100,14 +100,9 @@
 -| Build a page whose buttons wake a Grok Bot over a webhook | [`/make-bot-ui`](../make-bot-ui/SKILL.md) |
 -| Find their way around pstack | `/poteto-help` |
 +| Do any non-trivial task with rigor | [`$poteto-mode`](../poteto-mode/SKILL.md) |
-+| Check that the agent understood their goal and the problem before it starts | [`$in-your-own-words`](../in-your-own-words/SKILL.md) |
-+| Get a prompt rewritten deeper, not bigger, before sending it: what a top professional would add, their raw material and methods, and an outside check. It returns the prompt and doesn't do the task | [`$sharpen`](../sharpen/SKILL.md) |
 +| Know how code works now, or where new code should live | [`$how`](../how/SKILL.md) |
 +| Know why code is shaped this way, or where a number came from | [`$why`](../why/SKILL.md) |
 +| Understand a change or subsystem, explained plainly | [`$teach`](../teach/SKILL.md) |
-+| Catch up on their own recent work on a topic | [`$recall`](../recall/SKILL.md) |
-+| Catch up on what changed in this chat since their last message, in plain words and small visuals, with every item waiting on them listed and decidable from the reply alone | [`$ketchup`](../ketchup/SKILL.md) |
-+| Catch up like `$ketchup`, in a short silent video of slides, with the waiting calls as text under it | [`$ketchup-video`](../ketchup-video/SKILL.md) |
 +| Know what a small diff could break outside itself | [`$blast-radius`](../blast-radius/SKILL.md) |
 +| Settle types and module shape before code that crosses a function boundary | [`$architect`](../architect/SKILL.md) |
 +| Get several attempts at one brief, merged into the best one | [`$arena`](../arena/SKILL.md) |
@@ -118,7 +113,6 @@
 +| Strip comments before review, using a reviewer that didn't write them | [`$no-comments`](../no-comments/SKILL.md) |
 +| Clean AI tells out of prose | [`$unslop`](../unslop/SKILL.md) |
 +| Write docs, an RFC, a README, a PR description, or a commit message to a standard | [`$technical-writing`](../technical-writing/SKILL.md) |
-+| Hear the last reply again in plain words | [`$bro`](../bro/SKILL.md) |
 +| Give agents a scripted way to drive the app and prove behavior | [`$create-verification-skill`](../create-verification-skill/SKILL.md) |
 +| Bring a verification skill and its feature map back in line with the app | [`$maintain-verification-skill`](../maintain-verification-skill/SKILL.md) |
 +| Formally verify a race, invariant, or other property that tests rarely reach | [`$create-formal-verification-skill`](../create-formal-verification-skill/SKILL.md) |
@@ -128,12 +122,9 @@
 +| Run a large or cross-cutting change, or one to review after stepping away | [`$figure-it-out`](../figure-it-out/SKILL.md) |
 +| Keep a decision log during a run, and review it afterward | [`$show-me-your-work`](../show-me-your-work/SKILL.md) |
 +| Pick a model for each role and a reasoning budget | [`$setup-pstack`](../setup-pstack/SKILL.md) |
-+| Turn their own working habits into a personal mode skill | [`$automate-me`](../automate-me/SKILL.md) |
-+| Turn what a finished task taught into skill edits | [`$reflect`](../reflect/SKILL.md) |
 +| Stop agents from repeating the same mistakes in this repo | [`$correct`](../correct/SKILL.md) |
-+| Build a page whose buttons wake a Grok Bot over a webhook | [`$make-bot-ui`](../make-bot-ui/SKILL.md) |
 +| Find their way around pstack | `$poteto-help` |
-@@ -107,6 +100,6 @@ [A]
+@@ -107,6 +91,6 @@ [P]
 -- `/how` explains what the code does. `/why` explains the reasons. `/teach` runs one or both and explains the result plainly.
 -- `/arena` gives every worker the same brief and merges the best parts. `/swarm` splits work into slices or a race and returns one report.
 -- `/architect` implements right after it settles the design. Add "with checkpoint" to review the design before it writes code.
@@ -144,42 +135,40 @@
 +- `$arena` gives every worker the same brief and merges the best parts. `$swarm` splits work into slices or a race and returns one report.
 +- `$architect` implements right after it settles the design. Add "with checkpoint" to review the design before it writes code.
 +- `$interrogate` reviews the diff. `$blast-radius` looks for breakage outside the diff and proves the one fact that makes the change safe.
-+- `$recall` rebuilds context across recent chats. `$ketchup` covers only this chat since the user's last message. Resuming one specific chat or branch is the Session pickup playbook.
++- Resuming one specific chat or branch is the Session pickup playbook.
 +- `$figure-it-out` designs one rigorous run. The Orchestrate playbook runs a program that spans days and many PRs. The Autonomous run playbook drives one task to a finish condition.
-@@ -117,2 +110,2 @@ [A]
+@@ -117,2 +101,2 @@ [A]
 -- `/loop` and `/create-skill` are Cursor built-ins.
 -- pstack has no `/orchestrate` skill. Orchestrate is a `/poteto-mode` playbook. If the slash menu shows `/orchestrate`, another plugin provides it.
 +- Cursor’s `/loop` and `create-skill` are not Codex commands. Verify a wake mechanism or skill-creation skill before relying on them.
 +- pstack has no `/orchestrate` skill. Orchestrate is a `$poteto-mode` playbook. If the slash menu shows `/orchestrate`, another plugin provides it.
-@@ -122 +115 @@ [A]
+@@ -122 +106 @@ [A]
 -Playbooks are step lists inside `/poteto-mode`, not skills, so they have no slash command. Inside `/poteto-mode`, describing the task picks one, and these phrases name one directly:
 +Playbooks are step lists inside `$poteto-mode`, not skills, so they have no slash command. Inside `$poteto-mode`, describing the task picks one, and these phrases name one directly:
-@@ -131 +124 @@ [A]
+@@ -131 +115 @@ [A]
 -Without `/poteto-mode`, a phrase such as "babysit this pr" can start Cursor's own skill for the same job instead. The Playbooks section of [`poteto-mode`](../poteto-mode/SKILL.md) lists every playbook and when it applies. [Guide page 6](../../docs/guide/06-verify-and-ship.md) covers opening, babysitting, and landing a PR.
 +The Playbooks section of [`poteto-mode`](../poteto-mode/SKILL.md) lists every playbook and when it applies. [Guide page 6](../../docs/guide/06-verify-and-ship.md) covers opening, babysitting, and landing a PR. Route explicitly to the bundled playbook instead of a host skill with a similar name.
-@@ -133 +126 @@ [A]
+@@ -133 +117 @@ [A]
 -pstack has no planning skill. Cursor's Plan Mode works alongside it. For work that spans phases or stacked PRs, asking `/poteto-mode` for a plan runs the [Multi-phase plan playbook](../poteto-mode/playbooks/multi-phase-plan.md), which writes the plan and doesn't implement it. For a design question, the Prototype playbook or `/architect` settles it in code first.
 +pstack has no planning skill. Codex Plan Mode can work alongside it when the host provides it. For work that spans phases or stacked PRs, asking `$poteto-mode` for a plan runs the [Multi-phase plan playbook](../poteto-mode/playbooks/multi-phase-plan.md), which writes the plan and doesn't implement it. For a design question, the Prototype playbook or `$architect` settles it in code first.
-@@ -135 +128 @@ [A]
+@@ -135 +119 @@ [A]
 -Principles are one-rule skills that `/poteto-mode` reads and cites in its replies. The user rarely invokes one. They steer with the names instead, as in "apply prove it works. show me the real output." Typing `/principle-<name>` still loads one on demand. [Guide page 8](../../docs/guide/08-principles.md) lists them.
 +Principles are one-rule skills that `$poteto-mode` reads and cites in its replies. The user rarely invokes one. They steer with the names instead, as in "apply prove it works. show me the real output." Typing `/principle-<name>` still loads one on demand. [Guide page 8](../../docs/guide/08-principles.md) lists them.
-@@ -141 +134 @@ [A]
+@@ -141 +125 @@ [A]
 -| The mode stopped applying after a few turns | It was started with Enter. Start it as a Custom Mode, or start each task with `/poteto-mode`. |
 +| The mode stopped applying after a few turns | Invoke `$poteto-mode` for each task; persistent Custom Mode UI is not mapped in this port. |
-@@ -143 +136 @@ [A]
+@@ -143 +127 @@ [A]
 -| A new model choice had no effect | The rule from `/setup-pstack` applies to new chats. Start one. |
 +| A new model choice had no effect | Have the skill reread `$CODEX_HOME/pstack-models.md` and verify the chosen model is supported by the current host. |
-@@ -145,3 +138,3 @@ [A]
+@@ -145,3 +129,3 @@ [A]
 -| A skill didn't load on its own | Only `/setup-pstack` loads from the user's words. The others load when the user types them or when `/poteto-mode` runs them, and it doesn't run every skill. |
 -| Parallel agents overwrote each other | Give each agent its own worktree, or run them as cloud agents, which each get their own machine. |
 -| An overnight run moved but finished nothing | `/loop` needs a check that can pass or fail, not a duration. See [guide page 7](../../docs/guide/07-overnight.md). |
 +| A skill didn't load on its own | Only `$setup-pstack` loads from the user's words. The others load when the user types them or when `$poteto-mode` runs them, and it doesn't run every skill. |
 +| Parallel agents overwrote each other | Give each agent its own worktree, and distinct ports; native Codex subagents do not guarantee separate machines. |
 +| An overnight run moved but finished nothing | An autonomous run needs a check that can pass or fail, not a duration. See [guide page 7](../../docs/guide/07-overnight.md). |
-@@ -154,3 +147,3 @@ [A]
+@@ -154,3 +138 @@ [P]
 -- [`/automate-me`](../automate-me/SKILL.md) drafts a personal mode skill from the user's own history, to use alongside `/poteto-mode`.
 -- [`/reflect`](../reflect/SKILL.md) after a session turns its lessons into skill edits the user approves.
 -- `/poteto-mode write a skill for <workflow>` runs the authoring playbook. The eval playbook tests a skill change blind.
-+- [`$automate-me`](../automate-me/SKILL.md) drafts a personal mode skill from the user's own history, to use alongside `$poteto-mode`.
-+- [`$reflect`](../reflect/SKILL.md) after a session turns its lessons into skill edits the user approves.
 +- `$poteto-mode write a skill for <workflow>` runs the authoring playbook. The eval playbook tests a skill change blind.

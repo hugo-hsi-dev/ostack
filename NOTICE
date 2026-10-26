@@ -4,8 +4,10 @@ Exact upstream revision: 99b609a72323b70204eab407c622f436e858e112
 Fetched from upstream HEAD on 2026-10-25.
 
 LICENSE preserves the upstream MIT license and copyright verbatim.
-Upstream assets, authorship, names, and dependency identities are retained.
+Retained upstream assets, authorship, names, and dependency identities preserve attribution.
 Codex adaptations are recorded as reviewable [A] patches in sync/patches.
+Approved product omissions are versioned in sync/omissions.json; related
+reference and catalog edits are [P] patches, distinct from harness adaptations.
 The sync tooling is retained from ostack history under sync/LICENSE, including
 Copyright (c) 2026 Hugo Hsi, and adapted to an identity
 baseline with three archival path moves. docs/upstream contains upstream

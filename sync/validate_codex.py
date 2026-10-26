@@ -11,7 +11,7 @@ import sync
 root = sync.ROOT
 sha = sync.PIN.read_text().strip()
 files = sync.upstream(sha)
-errors = []
+errors = [f"omitted content remains: {p}" for p in sync.omitted_content()]
 policies = set()
 skills = 0
 for dest, source in files.items():

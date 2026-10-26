@@ -4,7 +4,7 @@
 Each generated file is build(upstream file) plus its patch in sync/patches/<path>.patch.
 See sync/README.md.
 """
-import argparse, difflib, os, re, subprocess, sys, tempfile
+import argparse, difflib, json, os, re, subprocess, sys, tempfile
 from pathlib import Path
 from typing import NamedTuple
 
@@ -15,7 +15,7 @@ PIN = ROOT / "sync" / "PIN"
 PATCHES = ROOT / "sync" / "patches"
 CACHE = Path(os.environ.get("PSTACK_CACHE", Path.home() / ".cache" / "ostack-pstack.git"))
 RENAMES = {".cursor-plugin/plugin.json": "docs/upstream/cursor-plugin.json", "plugin.json": "docs/upstream/plugin.json", "docs/harness/claude-code.md": "docs/upstream/claude-code.md"}
-CODES = re.compile(r"\[(A|\?)\]")
+CODES = re.compile(r"\[(A|P|\?)\]")
 HEADER = re.compile(r"^@@ -(\d+)(?:,(\d+))? \+\d+(?:,\d+)? @@ ?(.*)$")
 NO_EOL = "\\ No newline at end of file\n"
 
@@ -51,14 +51,34 @@ def map_names(s):
     return s
 
 
+def omitted_paths():
+    policy = json.loads((ROOT / "sync/omissions.json").read_text())
+    if policy.get("version") != 1 or set(policy) != {"version", "reason", "paths"}:
+        sys.exit("unsupported omission policy; expected version 1, reason and paths")
+    paths = policy["paths"]
+    if not isinstance(paths, list) or not paths or not all(isinstance(p, str) for p in paths) or len(paths) != len(set(paths)):
+        sys.exit("omission paths must be a nonempty unique list")
+    for path in paths:
+        if not isinstance(path, str) or not re.fullmatch(r"(?:skills|automations)/[a-z0-9-]+/", path):
+            sys.exit(f"invalid omission directory: {path!r}")
+    return tuple(paths)
+
+
+def omitted_content():
+    return sorted(str(p.relative_to(ROOT)) for prefix in omitted_paths()
+                  for p in (ROOT / prefix).rglob("*") if p.is_file())
+
+
 def upstream(sha):
     fetch(sha)
     out = git("ls-tree", "-r", sha, SRC, cwd=CACHE).stdout.decode()
     files = {}
+    omitted = omitted_paths()
     for line in out.splitlines():
         meta, path = line.split("\t", 1)
         rel = map_names(path[len(SRC):])
-        files[RENAMES.get(rel, rel)] = Source(path, meta.split()[0])
+        if not rel.startswith(omitted):
+            files[RENAMES.get(rel, rel)] = Source(path, meta.split()[0])
     return files
 
 
@@ -91,8 +111,8 @@ def read_patch(dest):
         if h:
             code = CODES.fullmatch(h.group(3))
             if not code:
-                sys.exit(f"{p}: hunk marker must be [A], got {raw!r}. A patch holds harness-port hunks only. "
-                         "Only Codex harness adaptations belong in port patches.")
+                sys.exit(f"{p}: hunk marker must be [A], [P], or [?], got {raw!r}. "
+                         "[A] is a harness adaptation; [P] is approved product selection.")
             start, n = int(h.group(1)), 1 if h.group(2) is None else int(h.group(2))
             hunks.append(Hunk(start - 1 if n else start, n, [], [], code.group(1)))
         elif raw == NO_EOL:
@@ -184,7 +204,7 @@ def orphans(files):
 
 
 def cmd_check(sha, files, args=None):
-    bad = []
+    bad = [f"omitted content remains: {p}" for p in omitted_content()]
     for dest, (data, mode, hunks) in expected(sha, files).items():
         p = ROOT / dest
         if not p.exists():
@@ -195,7 +215,7 @@ def cmd_check(sha, files, args=None):
             bad.append(f"exec bit differs from upstream: {dest}")
         if any(h.code == "?" for h in hunks):
             bad.append(f"unclassified [?] hunk: sync/patches/{dest}.patch")
-    bad += [f"patch for a file upstream lacks: sync/patches/{o}.patch" for o in orphans(files)]
+    bad += [f"patch for an omitted or absent upstream file: sync/patches/{o}.patch" for o in orphans(files)]
     for b in bad:
         print(b)
     if bad:
@@ -215,7 +235,7 @@ def cmd_write(sha, files, args):
 def cmd_refresh(sha, files, args):
     for dest in args.paths or [d for d in files if (ROOT / d).exists() and not is_binary((ROOT / d).read_bytes())]:
         for h in refresh(sha, files, dest, args.code):
-            print(f"sync/patches/{dest}.patch: [?] hunk at line {h.at + 1}, mark it [A]")
+            print(f"sync/patches/{dest}.patch: [?] hunk at line {h.at + 1}, mark it [A] or [P]")
 
 
 def cmd_bump(old, old_files, args):
@@ -271,7 +291,7 @@ def main():
     w.set_defaults(fn=cmd_write)
     r = sub.add_parser("refresh", help="rewrite patches from the edited tree")
     r.add_argument("paths", nargs="*")
-    r.add_argument("--code", default="?", help="marker for new or changed hunks (default ?)")
+    r.add_argument("--code", choices=("A", "P", "?"), default="?", help="marker for new or changed hunks (default ?)")
     r.set_defaults(fn=cmd_refresh)
     b = sub.add_parser("bump", help="move the pin and merge ostack's patches onto the new upstream")
     b.add_argument("sha")

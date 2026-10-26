@@ -1,8 +1,8 @@
 --- a/docs/guide/03-understand.md
 +++ b/docs/guide/03-understand.md
-@@ -5 +5 @@ [A]
+@@ -5 +5 @@ [P]
 -pstack gives you four ways in. `/how` explains what the code does now. `/why` digs up the reasons it's shaped that way. `/teach` blends both into one explanation. `/recall` rebuilds your own recent context on a topic. Each one also makes the agent explain itself in words you can check. That's how you supervise an agent that may know the code better than you do.
-+pstack gives you four ways in. `$how` explains what the code does now. `$why` digs up the reasons it's shaped that way. `$teach` blends both into one explanation. `$recall` rebuilds your own recent context on a topic. Each one also makes the agent explain itself in words you can check. That's how you supervise an agent that may know the code better than you do.
++pstack gives you three ways in. `$how` explains what the code does now. `$why` digs up the reasons it's shaped that way. `$teach` blends both into one explanation. Each one also makes the agent explain itself in words you can check. That's how you supervise an agent that may know the code better than you do.
 @@ -7 +7 @@ [A]
 -![A detective studies a machine blueprint with a magnifying glass while robots fetch case files; the evidence board behind her links clues under /how and /why.](./images/understanding.jpg)
 +![A detective studies a machine blueprint with a magnifying glass while robots fetch case files; the evidence board behind her links clues under $how and $why.](./images/understanding.jpg)
@@ -42,24 +42,24 @@
 @@ -48 +48 @@ [A]
 -/teach me why you implemented it this way and not with a queue. what did you trade off, and why?
 +$teach me why you implemented it this way and not with a queue. what did you trade off, and why?
-@@ -53 +53 @@ [A]
+@@ -52,14 +51,0 @@ [P]
+-
 -## Rebuild your own context with `/recall`
-+## Rebuild your own context with `$recall`
-@@ -56 +56 @@ [A]
+-
+-```text
 -/recall catch me up on the export work from last week
-+$recall catch me up on the export work from last week
-@@ -59 +59 @@ [A]
+-```
+-
 -[`/recall`](../../skills/recall/SKILL.md) mines your own recent chats plus the shared record (issues, prior fixes, errors still firing) and hands back a brief on where things stand and what's next. Your old chats hold context that a fresh agent lacks, so start new work on an old topic by loading it first, then hand over the new input:
-+[`$recall`](../../skills/recall/SKILL.md) mines your own recent chats plus the shared record (issues, prior fixes, errors still firing) and hands back a brief on where things stand and what's next. Your old chats hold context that a fresh agent lacks, so start new work on an old topic by loading it first, then hand over the new input:
-@@ -62 +62 @@ [A]
+-
+-```text
 -/recall my work on the virtualized list from yesterday, then read this bug report.
-+$recall my work on the virtualized list from yesterday, then read this bug report.
-@@ -65 +65 @@ [A]
+-```
+-
 -If you want to resume one specific chat, that's the Session pickup playbook below, not `/recall`.
-+If you want to resume one specific chat, that's the Session pickup playbook below, not `$recall`.
-@@ -72 +72 @@ [A]
+@@ -72 +58 @@ [A]
 -/poteto-mode take over this branch. read the decision log, figure out what's done, and continue from there. don't redo finished work.
 +$poteto-mode take over this branch. read the decision log, figure out what's done, and continue from there. don't redo finished work.
-@@ -77 +77 @@ [A]
+@@ -77 +63 @@ [A]
 -**Pitfall:** don't skip this page's skills because "the agent will read the code anyway." An agent that starts editing without a traced model tends to fix the symptom at the first plausible spot. `/how` first is cheaper than the second bug.
 +**Pitfall:** don't skip this page's skills because "the agent will read the code anyway." An agent that starts editing without a traced model tends to fix the symptom at the first plausible spot. `$how` first is cheaper than the second bug.

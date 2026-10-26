@@ -24,19 +24,18 @@
 @@ -68 +68 @@ [A]
 -Before the skill hands back its summary, it spawns a reviewer on a different model family to read the trail and the transcript, and the reply ends with an Attention section listing what deserves your scrutiny. Read that section first, then the log rows it points at. You're auditing decisions, not re-reading the whole night.
 +Before the skill hands back its summary, it requests a reviewer on a different model family (or explicitly reports that diversity is unavailable) to read the trail and the transcript, and the reply ends with an Attention section listing what deserves your scrutiny. Read that section first, then the log rows it points at. You're auditing decisions, not re-reading the whole night.
-@@ -70 +70 @@ [A]
+@@ -70 +69,0 @@ [P]
 -For a quick status instead of an audit, run [`/ketchup`](../../skills/ketchup/SKILL.md) in the chat that ran the work. It reads only, and tells you in plain words what changed since your last message, with the screenshots and small diagrams the work produced. Then it lists each call waiting on you, such as a merge, an approval, or a choice between options, with its pick, the evidence, and the risk, so you can decide from the reply alone.
-+For a quick status instead of an audit, run [`$ketchup`](../../skills/ketchup/SKILL.md) in the chat that ran the work. It reads only, and tells you in plain words what changed since your last message, with the screenshots and small diagrams the work produced. Then it lists each call waiting on you, such as a merge, an approval, or a choice between options, with its pick, the evidence, and the risk, so you can decide from the reply alone.
-@@ -79 +79 @@ [A]
+@@ -79 +78 @@ [A]
 -/poteto-mode full autopilot on this queue. each item is independent. i want them merged by morning.
 +$poteto-mode full autopilot on this queue. each item is independent. i want them merged by morning.
-@@ -85 +85 @@ [A]
+@@ -85 +84 @@ [A]
 -/poteto-mode autopilot these five changes but stack them, don't ship. i'll land the stack in the morning.
 +$poteto-mode autopilot these five changes but stack them, don't ship. i'll land the stack in the morning.
-@@ -88 +88 @@ [A]
+@@ -88 +87 @@ [A]
 -[Orchestrate](../../skills/poteto-mode/playbooks/orchestrate.md) is for a program that outlives any single agent: multi-day, many stacked PRs, fleets of subagents under one standing coordinator chat. The coordinator authors briefs, collects what its subagents finish, keeps the lowest unmerged PR green, and never writes code itself. It's deliberately heavy machinery. If one agent could finish the work in a session, the playbook itself routes you back to the overnight contract above:
 +[Orchestrate](../../skills/poteto-mode/playbooks/orchestrate.md) is for a program that outlives any single agent: multi-day, many stacked PRs, fleets of subagents under one standing coordinator chat. Hsit/dot is the planning/routing coordinator. It reads and maintains one authoritative project Page/index in ChatGPT Spaces, authors self-contained worker briefs, reconciles source-linked reports against current forge state, and keeps the lowest unmerged PR green. The Page holds dependencies, exact SHAs, evidence, and pending decisions; a completion report is not verified done. It does not run workers or provide scheduled wakeups. The coordinator never writes code itself. It's deliberately heavy machinery. If one agent could finish the work in a session, the playbook itself routes you back to the overnight contract above:
-@@ -91,18 +91 @@ [A]
+@@ -91,18 +90 @@ [A]
 -/poteto-mode orchestrate the store migration. own it until every package is converted and merged. i'll check in twice a day.
 -```
 -
@@ -56,9 +55,11 @@
 -```text
 -/poteto-mode refactor this repo so its architecture is more agent friendly. use /correct and /architect on past commits and review comments to find the mistakes agents make most here. use /recall for context from past chats. answer open questions with prototypes instead of asking me. come back with a plan backed by real data. once i approve it, run it with autopilot-stack or autopilot-full, and ask me which.
 +$poteto-mode orchestrate the store migration. own it until every package is converted and merged. i'll check in twice a day.
-@@ -113 +96 @@ [A]
+@@ -113 +95 @@ [A]
 -Every loop above still waits for you to start it. A scheduled or event-driven automation removes that step. Software maintenance splits into stages that suit this well: triage a report, reproduce it, fix it, verify the fix. Two rules keep such a line trustworthy:
 +Every loop above still waits for you to start it. A scheduled or event-driven automation can remove that step only after a supported adapter is verified; this baseline does not install one. Software maintenance splits into stages that suit this well: triage a report, reproduce it, fix it, verify the fix. Two rules keep such a line trustworthy:
-@@ -120 +103 @@ [A]
+@@ -118,3 +100 @@ [P]
+-pstack ships this as a dormant [automation pack](../../automations/benny/README.md) for Slack issue reports. One automation triages each report. The other reproduces confirmed bugs and may prepare a small draft fix. Point an agent at its [`FOR_AGENTS.md`](../../automations/benny/FOR_AGENTS.md) and name the target repository to set it up.
+-
 -**Pitfall:** a duration is not a finish condition. "work on this for 4 hours" gives the agent nothing to check, and you'll wake up to four hours of motion instead of a result. Give `/loop` a predicate that can pass or fail.
 +**Pitfall:** a duration is not a finish condition. "work on this for 4 hours" gives the agent nothing to check, and you'll wake up to four hours of motion instead of a result. Give the autonomous run a predicate that can pass or fail.
