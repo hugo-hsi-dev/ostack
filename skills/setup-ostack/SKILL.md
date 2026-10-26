@@ -25,7 +25,7 @@ The default role-to-model mapping is the configuration shape shown in step 5 bel
 
 ### 3. Budget, map, and confirm
 
-**(a) Ask for a budget.** Prefer `request_user_input` when it is exposed and allowed in the current mode; otherwise ask in plain text. Offer these four options with these exact labels, and name the current budget when the configuration records one. With no configuration, offer `large` as the upstream starting budget. Inherited models keep the parent effort until a supported explicit choice is confirmed.
+**(a) Ask for a budget.** Prefer `request_user_input` when it is exposed and allowed in the current mode; otherwise ask in plain text. Offer these four options with these exact labels, and name the current budget when the configuration records one. With no recorded budget, offer `medium` (high reasoning) as the starting budget. A saved budget remains the current choice, including `large` or `unlimited`. Inherited models keep the parent effort until a supported explicit choice is confirmed.
 
 - `unlimited — max reasoning`
 - `large — xhigh reasoning`

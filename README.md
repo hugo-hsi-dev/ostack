@@ -31,7 +31,7 @@ two steps:
 
 new here? the [ostack guide](./docs/guide/README.md) walks you through a first real task, from setup and prompting through verification and overnight runs. stuck, or unsure which skill fits? ask [`$onyo-help`](./skills/onyo-help/SKILL.md).
 
-that's it. the other skills are situational, and the mode skill uses them as needed. Defaults map upstream Opus 5.5 roles to `gpt-6.1-sol` and Grok 4.7 roles to `gpt-6.1-terra`, preserving the original role split and panel sizes. [`$setup-ostack`](./skills/setup-ostack/SKILL.md) checks current-host availability and uses your budget to select reasoning effort. `inherit-parent` and `auto` remain opt-in choices; distinct Sol/Terra variants alone do not establish cross-family diversity.
+that's it. the other skills are situational, and the mode skill uses them as needed. Defaults map upstream Opus 5.5 roles to `gpt-6.1-sol` and Grok 4.7 roles to `gpt-6.1-terra`, preserving the original role split and panel sizes. [`$setup-ostack`](./skills/setup-ostack/SKILL.md) checks current-host availability and uses your budget to select reasoning effort. Without a saved budget, the starting choice is medium/high; a saved or later-selected larger budget takes precedence. `inherit-parent` and `auto` remain opt-in choices; distinct Sol/Terra variants alone do not establish cross-family diversity.
 
 ## usage
 

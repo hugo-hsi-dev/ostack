@@ -86,6 +86,12 @@ for path in [root / dest for dest in files if dest.endswith('.md') and not dest.
                  r'\broles inherit the parent model (?:unless|until)\b', text, re.I):
         errors.append(f'{path.relative_to(root)}: stale inheritance default; '
                       'missing roles use the selected Sol/Terra mapping, while saved aliases remain overrides')
+    if re.search(r'\btargeting xhigh by default\b|'
+                 r'\bwithout a recorded budget, `large` supplies\b|'
+                 r'\blarge (?:budget[’\']s starting effort|starting budget)\b|'
+                 r'\bWith no configuration, offer `large`', text, re.I):
+        errors.append(f'{path.relative_to(root)}: stale starting budget; '
+                      'without a saved choice, start at medium/high and retain explicit budget overrides')
     for target in re.findall(r'\]\(([^\s)]+)\)', text):
         if target == 'url' or target.startswith(('#', 'http:', 'https:', 'mailto:')) or '<' in target:
             continue
