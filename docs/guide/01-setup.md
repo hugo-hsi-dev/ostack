@@ -1,10 +1,12 @@
 # Set up ostack
 
-In this page you install the skills, pick supported models, and run your first task.
+In this page you install the desktop plugin, pick supported models, and run your first task.
 
-## Install the skills
+## Install the desktop plugin
 
-Follow the [Codex installation steps](../../README.md#install-for-codex) to link this checkout’s skills into `.agents/skills` or `~/.agents/skills`. Keep the complete checkout so relative references remain available. Restart Codex if skills do not appear, then use `/skills` or type `$onyo-mode`.
+Follow the [desktop plugin installation steps](../../README.md#install-in-the-codex-desktop-app): choose the **ostack** source in Plugins Directory, open **ostack**, and select **Install**. The source must already be available; repository-local discovery is documented, while direct GitHub source registration in the personal desktop UI remains unverified. If the source is missing, resolve that before claiming installation.
+
+Start a chat with the installed plugin selected and invoke `$onyo-mode`. The plugin keeps the skills and their sibling references, scripts, and docs together.
 
 Read [the Codex compatibility map](../harness/codex.md) for model, subagent, cloud, and integration limits.
 

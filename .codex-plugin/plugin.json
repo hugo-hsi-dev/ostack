@@ -1,0 +1,23 @@
+{
+  "name": "ostack",
+  "version": "0.1.0",
+  "description": "Deliberate engineering workflows for Codex: understand, plan, delegate, review, and verify real work.",
+  "author": {
+    "name": "Hugo Hsi"
+  },
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "ostack",
+    "shortDescription": "Rigorous engineering workflows",
+    "longDescription": "Use Onyo mode to route engineering tasks through the retained pstack workflows, with explicit Codex capability limits and evidence before completion.",
+    "developerName": "Hugo Hsi",
+    "category": "Productivity",
+    "logo": "./assets/logo.png",
+    "defaultPrompt": "Use $onyo-mode to investigate this codebase and recommend the smallest verified next step."
+  },
+  "extensions": {
+    "com.openai": {
+      "onboardingSkill": "./skills/setup-ostack/SKILL.md"
+    }
+  }
+}

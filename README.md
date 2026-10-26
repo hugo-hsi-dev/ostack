@@ -10,21 +10,19 @@ Start work with `onyo-mode`. It routes the task, delegates where useful, and kee
 
 fork it. improve it. make it yours. PRs are welcome!
 
-## install for Codex
+## install in the Codex desktop app
 
-Keep this whole checkout together. From the project where you want the skills, run the link installer with this checkout's absolute path:
+The `codex` branch is an **ostack** plugin marketplace; `main` is the Claude version. The marketplace packages the existing skills, references, scripts, docs, and agent prompts together.
 
-```bash
-python3 /absolute/path/to/ostack/scripts/install-skills.py --skills-dir .agents/skills
-```
+1. Open **Plugins Directory** in the desktop app and choose the **ostack** marketplace source.
+2. Open **ostack** and select **Install**.
+3. Start a chat with the installed plugin selected, then run `$setup-ostack` or `$onyo-mode`.
 
-For personal installation, pass `--skills-dir "$HOME/.agents/skills"`. Rerunning is safe: existing links to this checkout are kept, missing skills are linked, and only links targeting this checkout's former `poteto-mode`, `poteto-help`, and `setup-pstack` paths are retired. Broken old links are recognized. A custom file or link at any affected name stops installation before changes; inspect the reported conflict and keep or relocate it yourself. The installer never deletes custom content or regular files.
+**Source availability:** the app can discover this repository's `.agents/plugins/marketplace.json` when a trusted checkout of the `codex` branch is the active project. The entry points to the repository root, and the app manages the installed copy. See the [official repository-marketplace documentation](https://developers.openai.com/plugins/build/plugins#how-local-marketplaces-work).
 
-To also link the provided native agent definitions, add `--agents-dir .codex/agents` (or `--agents-dir "$HOME/.codex/agents"` for personal use). This also retires a managed link to this checkout's old `poteto-agent.toml`. A previously copied or customized definition is preserved and reported as a conflict for manual review, not silently replaced. Without this option, agent definitions are untouched. The legacy `$CODEX_HOME/pstack-models.md` configuration filename is unchanged; the installer does not read or write user preferences.
+Directly adding this GitHub repository as a personal marketplace entirely in the desktop UI has not been verified. If **ostack** is missing from the source picker, source discovery is still blocked; these steps do not claim a completed installation. The plugin has not been submitted to the public directory, and no terminal, Python, or manual skill-link installation is required by this guide.
 
-Keep the checkout available: skill references, scripts, docs, and agent prompts resolve inside it. Restart Codex if newly installed skills do not appear. Invoke a skill with `$onyo-mode`, or use `/skills` to select it. Older slash-style labels in upstream reference material mean skill names, not Codex slash commands.
-
-Read [the Codex compatibility map](./docs/harness/codex.md) before running workflows. The files in `docs/upstream/` preserve upstream harness metadata and history; they are not Codex installation manifests. This checkout does not install Claude hooks. Orchestrate uses a Spaces project Page for its durable record; execution lifecycle and scheduling remain separate capabilities.
+Read [the Codex compatibility map](./docs/harness/codex.md) before running workflows. The package keeps sibling files together so skill links and scripts resolve. The agent Markdown prompts are supporting resources; plugin installation is not evidence that the host registered custom-agent definitions. Where role selection is unavailable, the coordinator includes the supplied prompt in the delegate's brief. The files in `docs/upstream/` are historical metadata, not installation manifests. This plugin installs no Claude hooks. Orchestrate's Spaces records and cloud execution remain separately verified capabilities.
 
 ## get started
 
