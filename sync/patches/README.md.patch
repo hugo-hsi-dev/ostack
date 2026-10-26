@@ -23,60 +23,54 @@
 +## install for Codex
 @@ -15 +15 @@ [P]
 -## install
-+Keep this whole checkout together. From the project where you want these skills, link each skill into Codex’s documented `.agents/skills` location. Replace `/absolute/path/to/ostack` with this checkout’s path. The command stops on a name collision rather than overwriting an existing skill.
-@@ -18 +18,9 @@ [A]
++Keep this whole checkout together. From the project where you want the skills, run the link installer with this checkout's absolute path:
+@@ -18 +18 @@ [P]
 -/add-plugin pstack
-+mkdir -p .agents/skills
-+for skill in /absolute/path/to/ostack/skills/*; do
-+    destination=".agents/skills/$(basename "$skill")"
-+    if [ -e "$destination" ] || [ -L "$destination" ]; then
-+        echo "Skill already exists: $destination" >&2
-+        break
-+    fi
-+    ln -s "$skill" "$destination" || break
-+done
-@@ -21 +29 @@ [P]
++python3 /absolute/path/to/ostack/scripts/install-skills.py --skills-dir .agents/skills
+@@ -21 +21 @@ [P]
 -in claude code:
-+For personal installation, use `~/.agents/skills` instead. Keep the checkout available: skill references, scripts, docs, and agent prompts resolve inside it. Restart Codex if newly installed skills do not appear. Invoke a skill with `$onyo-mode`, or use `/skills` to select it. Older slash-style labels in upstream reference material mean skill names, not Codex slash commands.
-@@ -23,10 +31 @@ [A]
++For personal installation, pass `--skills-dir "$HOME/.agents/skills"`. Rerunning is safe: existing links to this checkout are kept, missing skills are linked, and only links targeting this checkout's former `poteto-mode`, `poteto-help`, and `setup-pstack` paths are retired. Broken old links are recognized. A custom file or link at any affected name stops installation before changes; inspect the reported conflict and keep or relocate it yourself. The installer never deletes custom content or regular files.
+@@ -23,4 +23 @@ [P]
 -```bash
 -/plugin marketplace add cursor/plugins
 -/plugin install pstack@cursor-plugins
 -```
--
++To also link the provided native agent definitions, add `--agents-dir .codex/agents` (or `--agents-dir "$HOME/.codex/agents"` for personal use). This also retires a managed link to this checkout's old `poteto-agent.toml`. A previously copied or customized definition is preserved and reported as a conflict for manual review, not silently replaced. Without this option, agent definitions are untouched. The legacy `$CODEX_HOME/pstack-models.md` configuration filename is unchanged; the installer does not read or write user preferences.
+@@ -28 +25 @@ [P]
 -claude code leaves auto-update off for third-party marketplaces, so pstack stays on the version you installed. to turn it on, run `/plugin`, open the **marketplaces** tab, select `cursor-plugins`, and choose **enable auto-update**. to update once by hand, run `claude plugin update pstack@cursor-plugins`.
--
++Keep the checkout available: skill references, scripts, docs, and agent prompts resolve inside it. Restart Codex if newly installed skills do not appear. Invoke a skill with `$onyo-mode`, or use `/skills` to select it. Older slash-style labels in upstream reference material mean skill names, not Codex slash commands.
+@@ -30,3 +27 @@ [P]
 -claude code prefixes plugin commands and agents, so `/poteto-mode` is `/pstack:poteto-mode`. the [claude code adapter](./docs/harness/claude-code.md) maps every other cursor name. in claude code, `/pstack:setup-pstack` writes your model choices to `~/.claude/rules/pstack-models.md`, and a step that needs a cursor-only feature, such as bugbot or automations, is skipped with a one-line note.
 -
 -claude code installs a generated copy of pstack, including this readme and the guide, from [`harness/pstack/`](https://github.com/cursor/plugins/tree/main/harness/pstack) at the repository root. after you change pstack, run `node scripts/generate-pstack-harness-trees.mjs` from the repository root and commit the result. ci fails while the generated copy is out of date.
 +Read [the Codex compatibility map](./docs/harness/codex.md) before running workflows. The files in `docs/upstream/` preserve upstream harness metadata and history; they are not Codex installation manifests. This checkout does not install Claude hooks. Orchestrate uses a Spaces project Page for its durable record; execution lifecycle and scheduling remain separate capabilities.
-@@ -38,2 +37,2 @@ [P]
+@@ -38,2 +33,2 @@ [P]
 -1. run [`/setup-pstack`](./skills/setup-pstack/SKILL.md), pick a reasoning budget, and choose which models you want.
 -2. use [`/poteto-mode`](./skills/poteto-mode/SKILL.md) whenever you're doing anything that requires rigor.
 +1. run [`$setup-ostack`](./skills/setup-ostack/SKILL.md), pick a reasoning budget, and choose which models you want.
 +2. use [`$onyo-mode`](./skills/onyo-mode/SKILL.md) whenever you're doing anything that requires rigor.
-@@ -41 +40 @@ [P]
+@@ -41 +36 @@ [P]
 -new here? the [pstack guide](./docs/guide/README.md) walks you through a first real task, from setup and prompting through verification and overnight runs. stuck, or unsure which skill fits? ask [`/poteto-help`](./skills/poteto-help/SKILL.md).
 +new here? the [ostack guide](./docs/guide/README.md) walks you through a first real task, from setup and prompting through verification and overnight runs. stuck, or unsure which skill fits? ask [`$onyo-help`](./skills/onyo-help/SKILL.md).
-@@ -43 +42 @@ [P]
+@@ -43 +38 @@ [P]
 -that's it. the other skills are situational, and the mode skill uses them for you as needed. out of the box the mode splits work by model strength: code delegates (feature, refactoring, bug fix, perf, hillclimb) go to grok, while the hardest changes, prose, and judgment go to opus 5.5. the default panel is opus 5.5 / grok. [`/setup-pstack`](./skills/setup-pstack/SKILL.md) changes any of it.
 +that's it. the other skills are situational, and the mode skill uses them as needed. Roles default to `inherit-parent` until you confirm supported model choices with [`$setup-ostack`](./skills/setup-ostack/SKILL.md). The original code-versus-judgment roles and panel sizes remain; the upstream Grok/Opus family split is a compatibility gap, not a verified Codex default.
-@@ -47 +46 @@ [P]
+@@ -47 +42 @@ [P]
 -use [`/poteto-mode`](./skills/poteto-mode/SKILL.md) at the start of a task. it reads your request, picks from a set of playbooks, and runs the other skills as the steps need them.
 +use [`$onyo-mode`](./skills/onyo-mode/SKILL.md) at the start of a task. it reads your request, picks from a set of playbooks, and runs the other skills as the steps need them.
-@@ -49 +48 @@ [P]
+@@ -49 +44 @@ [P]
 -pick `/poteto-mode` from the `/` menu before you type your task, so cursor attaches the skill to the message.
 +Type `$onyo-mode` before the task, or select it with `/skills`, so Codex loads the skill.
-@@ -51 +50 @@ [P]
+@@ -51 +46 @@ [P]
 -### just use [`/poteto-mode`](./skills/poteto-mode/SKILL.md)
 +### just use [`$onyo-mode`](./skills/onyo-mode/SKILL.md)
-@@ -56 +55 @@ [P]
+@@ -56 +51 @@ [P]
 -/poteto-mode this pr has a subtle bug where the scroll drifts every 750ms even when idle. repro
 +$onyo-mode this pr has a subtle bug where the scroll drifts every 750ms even when idle. repro
-@@ -61 +60 @@ [P]
+@@ -61 +56 @@ [P]
 -/poteto-mode i'm going to bed. land the stack even if ci flakes. i want everything merged by
 +$onyo-mode i'm going to bed. land the stack even if ci flakes. i want everything merged by
-@@ -70,23 +69,23 @@ [P]
+@@ -70,23 +65,23 @@ [P]
 -| [investigation](./skills/poteto-mode/playbooks/investigation.md) | a read-only question. how does x work, why was y built this way, are we sure. |
 -| [bug fix](./skills/poteto-mode/playbooks/bug-fix.md) | reproduce a defect, root-cause it, and fix with runtime evidence. |
 -| [perf](./skills/poteto-mode/playbooks/perf-issue.md) | trace a measured slowness and improve it against a baseline. |
@@ -123,28 +117,28 @@
 +| [multi-phase plan](./skills/onyo-mode/playbooks/multi-phase-plan.md) | work that spans phases or stacked PRs. |
 +| [worktree cleanup](./skills/onyo-mode/playbooks/worktree-cleanup.md) | reclaim disk by pruning merged or abandoned worktrees and stale ios simulators, safety-gated. |
 +| [opening a pr](./skills/onyo-mode/playbooks/opening-a-pr.md) | open a ready pr from small ordered commits with a conventional commits title and a briefing-style body. invoked at the end of every other playbook. |
-@@ -100 +99 @@ [P]
+@@ -100 +95 @@ [P]
 -1. matches your task to a [playbook](./skills/poteto-mode/playbooks/) and opens a todo list whose first items are its steps, copied in verbatim.
 +1. matches your task to a [playbook](./skills/onyo-mode/playbooks/) and opens a todo list whose first items are its steps, copied in verbatim.
-@@ -104 +103 @@ [P]
+@@ -104 +99 @@ [P]
 -the full rules and playbooks live in [`skills/poteto-mode/SKILL.md`](./skills/poteto-mode/SKILL.md).
 +the full rules and playbooks live in [`skills/onyo-mode/SKILL.md`](./skills/onyo-mode/SKILL.md).
-@@ -106 +105 @@ [P]
+@@ -106 +101 @@ [P]
 -to keep [`/poteto-mode`](./skills/poteto-mode/SKILL.md) on across turns, pick it from the `/` menu and press option+enter (mac) or alt+enter (windows) instead of enter. that makes it a [custom mode](https://cursor.com/docs/skills#using-a-skill-as-a-custom-mode), which cursor offers in the agents window and the cli. it stays in context every turn until you exit the mode. plain enter attaches it to one message only.
 +Invoke `$onyo-mode` for each new task and carry the active playbook into follow-up turns. There is no verified Codex equivalent of Cursor’s Option+Enter Custom Mode persistence in this port.
-@@ -108 +107 @@ [P]
+@@ -108 +103 @@ [P]
 -[`/poteto-mode`](./skills/poteto-mode/SKILL.md) works extremely well with cursor's `/loop` command. you can make cursor work for many hours without sacrificing rigor.
 +Long runs retain the [Autonomous run playbook](./skills/onyo-mode/playbooks/autonomous-run.md), its finish predicate, gates, and decision trail. Cursor’s `/loop` has no verified drop-in mapping here. Native subagents do not promise wake-ups or survival after the session ends; record the gap before promising unattended execution.
-@@ -112 +111 @@ [P]
+@@ -112 +107 @@ [P]
 -[`/poteto-mode`](./skills/poteto-mode/SKILL.md) runs most of these for you when a step needs them (`how`, `why`, `architect`, `arena`, `swarm`, `interrogate`, `unslop`, `no-comments`, `technical-writing`, `tdd`, and the principles). the table below is for when you want one directly:
 +[`$onyo-mode`](./skills/onyo-mode/SKILL.md) runs most of these for you when a step needs them (`how`, `why`, `architect`, `arena`, `swarm`, `interrogate`, `unslop`, `no-comments`, `technical-writing`, `tdd`, and the principles). the table below is for when you want one directly:
-@@ -115 +114 @@ [A]
+@@ -115 +110 @@ [A]
 -/how do we cancel runs? do we have an n+1 when we look up every run to cancel?
 +$how do we cancel runs? do we have an n+1 when we look up every run to cancel?
-@@ -119 +118 @@ [A]
+@@ -119 +114 @@ [A]
 -/interrogate review this pr.
 +$interrogate review this pr.
-@@ -127,34 +126,25 @@ [P]
+@@ -127,34 +122,25 @@ [P]
 -| [`/poteto-mode`](./skills/poteto-mode/SKILL.md) | default entry point for any non-trivial task. |
 -| [`/poteto-help`](./skills/poteto-help/SKILL.md) | you're new to pstack, or unsure which skill, playbook, or principle fits. finds out what you're trying to do, answers that part, and hands you a prompt to type. runs only when you type `/poteto-help`. |
 -| [`/in-your-own-words`](./skills/in-your-own-words/SKILL.md) | you want the agent to play back your goal and the problem before it starts. runs only when you type `/in-your-own-words`. |
@@ -204,53 +198,53 @@
 +| [`$statechart`](./skills/statechart/SKILL.md) | someone who owns the behavior needs to see it, not read a spec. draws what the user sees as a mermaid statechart generated from a tla+ model, marks each state works, still wrong, or fixed by your open pr, and draws each bug tlc finds as a numbered path. also turns an agreed chart into a tla+ skeleton, or audits the code against an existing spec. |
 +| [`$unslop`](./skills/unslop/SKILL.md) | you're cleaning up writing. removes AI tells. |
 +| [`$technical-writing`](./skills/technical-writing/SKILL.md) | layered doc standard (Diátaxis + Google developer style + STE + Global English) for docs, RFCs, readmes, PR descriptions, commit messages. |
-@@ -168 +158 @@ [P]
+@@ -168 +154 @@ [P]
 -mostly i type [`/poteto-mode`](./skills/poteto-mode/SKILL.md) at the start of a task and let it route to a playbook. the other skills fire as the steps need them. a few i reach for directly.
 +mostly i type [`$onyo-mode`](./skills/onyo-mode/SKILL.md) at the start of a task and let it route to a playbook. the other skills fire as the steps need them. a few i reach for directly.
-@@ -175 +165 @@ [P]
+@@ -175 +161 @@ [P]
 -bug fix:           /poteto-mode this pr has a subtle bug where the scroll drifts every 750ms even
 +bug fix:           $onyo-mode this pr has a subtle bug where the scroll drifts every 750ms even
-@@ -177 +167 @@ [P]
+@@ -177 +163 @@ [P]
 -perf:              /poteto-mode a big list takes a second or two to load even though we virtualize.
 +perf:              $onyo-mode a big list takes a second or two to load even though we virtualize.
-@@ -179,2 +169,2 @@ [P]
+@@ -179,2 +165,2 @@ [P]
 -feature:           /poteto-mode build a small feature behind a feature flag. verify it really works.
 -prototype:         /poteto-mode build two prototypes of the markdown renderer so we can compare.
 +feature:           $onyo-mode build a small feature behind a feature flag. verify it really works.
 +prototype:         $onyo-mode build two prototypes of the markdown renderer so we can compare.
-@@ -182 +172 @@ [P]
+@@ -182 +168 @@ [P]
 -multi-phase:       /poteto-mode open source these skills as a plugin. nothing internal leaks, work
 +multi-phase:       $onyo-mode open source these skills as a plugin. nothing internal leaks, work
-@@ -184 +174 @@ [P]
+@@ -184 +170 @@ [P]
 -overnight run:     /poteto-mode i'm going to bed. land the stack even if ci flakes. i want
 +overnight run:     $onyo-mode i'm going to bed. land the stack even if ci flakes. i want
-@@ -186,2 +176,2 @@ [P]
+@@ -186,2 +172,2 @@ [P]
 -babysit:           /poteto-mode check on pr 123. anything outstanding?
 -visual parity:     /poteto-mode the row spacing is too tall when this flag is on. the second image
 +babysit:           $onyo-mode check on pr 123. anything outstanding?
 +visual parity:     $onyo-mode the row spacing is too tall when this flag is on. the second image
-@@ -189 +179 @@ [P]
+@@ -189 +175 @@ [P]
 -figure it out:     /poteto-mode i'm stepping away. migrate every caller from the synchronous store
 +figure it out:     $onyo-mode i'm stepping away. migrate every caller from the synchronous store
-@@ -192,3 +182,3 @@ [A]
+@@ -192,3 +178,3 @@ [A]
 -how:               /how do we cancel runs? do we have an n+1 when we look up every run to cancel?
 -why:               /why is this feature flag not on yet?
 -architect:         design this instrumentation to be high signal with no false positives. /architect
 +how:               $how do we cancel runs? do we have an n+1 when we look up every run to cancel?
 +why:               $why is this feature flag not on yet?
 +architect:         design this instrumentation to be high signal with no false positives. $architect
-@@ -196 +186 @@ [A]
+@@ -196 +182 @@ [A]
 -arena:             /arena take my prompt to the arena verbatim. i want to compare their proposals
 +arena:             $arena take my prompt to the arena verbatim. i want to compare their proposals
-@@ -198 +188 @@ [A]
+@@ -198 +184 @@ [A]
 -swarm:             /swarm check every package under packages/ against its check.sh. one worker per
 +swarm:             $swarm check every package under packages/ against its check.sh. one worker per
-@@ -200,2 +190,2 @@ [A]
+@@ -200,2 +186,2 @@ [A]
 -interrogate:       /interrogate review this pr.
 -tdd:               /tdd implement
 +interrogate:       $interrogate review this pr.
 +tdd:               $tdd implement
-@@ -203,6 +193,3 @@ [P]
+@@ -203,6 +189,3 @@ [P]
 -reflect:           /reflect that took too long. capture what we learned so the next run doesn't
 -                   repeat it.
 -correct:           /correct
@@ -260,43 +254,43 @@
 +correct:           $correct
 +show-me-your-work: $show-me-your-work keep a decision trail i can review when i'm back.
 +help:              $onyo-help which skill should i use to review this branch?
-@@ -213 +200 @@ [P]
+@@ -213 +196 @@ [P]
 -## the `poteto-agent` and Comment Sicko subagents
 +## the `onyo-agent` and Comment Sicko subagents
-@@ -215 +202 @@ [P]
+@@ -215 +198 @@ [P]
 -[`/poteto-mode`](./skills/poteto-mode/SKILL.md) runs in the chat that receives it. that chat owns the playbook, the todo list, and every subagent spawn.
 +[`$onyo-mode`](./skills/onyo-mode/SKILL.md) runs in the chat that receives it. that chat owns the playbook, the todo list, and every subagent spawn.
-@@ -217 +204 @@ [P]
+@@ -217 +200 @@ [P]
 -pstack also ships [`subagent_type: "poteto-agent"`](./agents/poteto-agent.md) as the wrapper for delegates spawned during a run. it reads `poteto-mode` in full, including its inline principles index, before doing any work. substituting `generalPurpose` skips that read and drifts. do not spawn `poteto-agent` to run the playbook itself.
 +ostack also ships [`onyo-agent` prompt](./agents/onyo-agent.md) as the wrapper for delegates spawned during a run. it reads `onyo-mode` in full, including its inline principles index, before doing any work. a generic delegate must also receive and read that prompt; a name alone does not register a custom agent. do not spawn `onyo-agent` to run the playbook itself.
-@@ -219 +206 @@ [P]
+@@ -219 +202 @@ [P]
 -[`/poteto-mode`](./skills/poteto-mode/SKILL.md) and [`subagent_type: "poteto-agent"`](./agents/poteto-agent.md) route through the same wrapper.
 +[`$onyo-mode`](./skills/onyo-mode/SKILL.md) and [`onyo-agent` prompt](./agents/onyo-agent.md) route through the same wrapper.
-@@ -221 +208 @@ [P]
+@@ -221 +204 @@ [P]
 -pstack also ships [Comment Sicko](./agents/comment-sicko.md), a read-only comment reviewer available as `subagent_type: "comment-sicko"`. usually invoke it through [`/no-comments`](./skills/no-comments/SKILL.md), not directly.
 +ostack also ships [Comment Sicko](./agents/comment-sicko.md), a comment reviewer whose prompt must be loaded by the delegate, with a no-file-edits constraint. usually invoke it through [`$no-comments`](./skills/no-comments/SKILL.md), not directly.
-@@ -225 +212 @@ [P]
+@@ -225 +208 @@ [P]
 -twenty-four short skills, one principle each. `poteto-mode` indexes them inline and reads that index at task start. the standalone files are there so other skills can reference a principle by name, and so the index can point at the full rule for each.
 +twenty-four short skills, one principle each. `onyo-mode` indexes them inline and reads that index at task start. the standalone files are there so other skills can reference a principle by name, and so the index can point at the full rule for each.
-@@ -261 +248 @@ [P]
+@@ -261 +244 @@ [P]
 -a few things `poteto-mode` references but doesn't bundle:
 +a few things `onyo-mode` references but doesn't bundle:
-@@ -265 +252 @@ [P]
+@@ -265 +248 @@ [P]
 -- `/create-skill` is a cursor built-in. cursor also ships a built-in `/autopilot` that watches a pr. inside `poteto-mode`, pr-status requests go to the [babysit playbook](./skills/poteto-mode/playbooks/babysit.md) instead.
 +- Cursor’s `create-skill` and `autopilot` are not Codex tool names. Use a skill-creation skill only if the current catalog provides it. Inside `onyo-mode`, PR-status requests still go to the [babysit playbook](./skills/onyo-mode/playbooks/babysit.md).
-@@ -267 +254 @@ [A]
+@@ -267 +250 @@ [A]
 -install `cursor-team-kit` alongside pstack if you want the full set.
 +The `cursor-team-kit` skills are external dependencies, not installed Codex capabilities. Use a verified equivalent driver or perform the documented cleanup directly when possible. If the required live proof cannot run, report the missing dependency and keep the verification gate open.
-@@ -271 +258 @@ [P]
+@@ -271 +254 @@ [P]
 -cursor already has a great plan mode which works great with pstack. but personally, i don't believe in planning. the best spec is code. if you do want to make a plan, [`/poteto-mode`](./skills/poteto-mode/SKILL.md) covers it, but it's not a default. 
 +Codex Plan Mode can work alongside ostack where the host provides it. This port adds no planner. If you want a plan, [`$onyo-mode`](./skills/onyo-mode/SKILL.md) retains the upstream planning playbook and approval gates.
-@@ -275 +262 @@ [P]
+@@ -275 +258 @@ [P]
 -`poteto-mode` is my style. you may not want exactly that.
 +`onyo-mode` is my style. you may not want exactly that.
-@@ -277 +264 @@ [P]
+@@ -277 +260 @@ [P]
 -type [`/automate-me`](./skills/automate-me/SKILL.md). it mines your recent transcripts, drafts a `<your-name>-mode` skill from how you've actually worked, and routes through pstack underneath. you keep pstack as the base and end up with your own routing skill alongside `poteto-mode`.
 +models are configurable too. [`$setup-ostack`](./skills/setup-ostack/SKILL.md) checks supported choices and writes `$CODEX_HOME/pstack-models.md`, a user-level role map that skills explicitly read. The legacy filename is retained for backward compatibility. It is not an always-loaded Codex configuration file.
-@@ -279,9 +266 @@ [P]
+@@ -279,9 +262 @@ [P]
 -models are configurable too. type [`/setup-pstack`](./skills/setup-pstack/SKILL.md). it detects the models you have access to and writes a small always-applied rule mapping each role (code, judgment, the review panels) to a model. every skill reads it and falls back to sensible defaults when the rule is absent, so you override only what you want.
 -
 -when a default changes, a rule written before the change still pins the old default. delete those role lines, or delete the file, then run `/setup-pstack` again. a rerun keeps any role whose model differs from the default.

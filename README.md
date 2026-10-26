@@ -12,21 +12,17 @@ fork it. improve it. make it yours. PRs are welcome!
 
 ## install for Codex
 
-Keep this whole checkout together. From the project where you want these skills, link each skill into Codex’s documented `.agents/skills` location. Replace `/absolute/path/to/ostack` with this checkout’s path. The command stops on a name collision rather than overwriting an existing skill.
+Keep this whole checkout together. From the project where you want the skills, run the link installer with this checkout's absolute path:
 
 ```bash
-mkdir -p .agents/skills
-for skill in /absolute/path/to/ostack/skills/*; do
-    destination=".agents/skills/$(basename "$skill")"
-    if [ -e "$destination" ] || [ -L "$destination" ]; then
-        echo "Skill already exists: $destination" >&2
-        break
-    fi
-    ln -s "$skill" "$destination" || break
-done
+python3 /absolute/path/to/ostack/scripts/install-skills.py --skills-dir .agents/skills
 ```
 
-For personal installation, use `~/.agents/skills` instead. Keep the checkout available: skill references, scripts, docs, and agent prompts resolve inside it. Restart Codex if newly installed skills do not appear. Invoke a skill with `$onyo-mode`, or use `/skills` to select it. Older slash-style labels in upstream reference material mean skill names, not Codex slash commands.
+For personal installation, pass `--skills-dir "$HOME/.agents/skills"`. Rerunning is safe: existing links to this checkout are kept, missing skills are linked, and only links targeting this checkout's former `poteto-mode`, `poteto-help`, and `setup-pstack` paths are retired. Broken old links are recognized. A custom file or link at any affected name stops installation before changes; inspect the reported conflict and keep or relocate it yourself. The installer never deletes custom content or regular files.
+
+To also link the provided native agent definitions, add `--agents-dir .codex/agents` (or `--agents-dir "$HOME/.codex/agents"` for personal use). This also retires a managed link to this checkout's old `poteto-agent.toml`. A previously copied or customized definition is preserved and reported as a conflict for manual review, not silently replaced. Without this option, agent definitions are untouched. The legacy `$CODEX_HOME/pstack-models.md` configuration filename is unchanged; the installer does not read or write user preferences.
+
+Keep the checkout available: skill references, scripts, docs, and agent prompts resolve inside it. Restart Codex if newly installed skills do not appear. Invoke a skill with `$onyo-mode`, or use `/skills` to select it. Older slash-style labels in upstream reference material mean skill names, not Codex slash commands.
 
 Read [the Codex compatibility map](./docs/harness/codex.md) before running workflows. The files in `docs/upstream/` preserve upstream harness metadata and history; they are not Codex installation manifests. This checkout does not install Claude hooks. Orchestrate uses a Spaces project Page for its durable record; execution lifecycle and scheduling remain separate capabilities.
 
