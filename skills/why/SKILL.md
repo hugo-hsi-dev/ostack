@@ -9,7 +9,7 @@ Read [Codex compatibility](../../docs/harness/codex.md) before using this workfl
 
 Investigate the motivation and intent behind code. The companion `how` skill answers what the code does and how it works. `why` answers what forces led to its shape.
 
-Read `why investigators` and `why synthesizer` in the user-level `$CODEX_HOME/pstack-models.md` explicitly. Use only session-supported models and reasoning settings, per poteto-mode’s Subagents section. Missing roles inherit the parent. Keep the role split and read-only research briefs; inherited permissions do not enforce read-only behavior. If distinct model families are unavailable, report that limitation rather than claiming multi-model evidence.
+Read `why investigators` and `why synthesizer` in the user-level `$CODEX_HOME/pstack-models.md` explicitly. Use only session-supported models and reasoning settings, per onyo-mode’s Subagents section. Missing roles inherit the parent. Keep the role split and read-only research briefs; inherited permissions do not enforce read-only behavior. If distinct model families are unavailable, report that limitation rather than claiming multi-model evidence.
 
 Use native subagents with access to the required authorized MCP sources. Tell investigators not to write anything; verify their output and working tree. Codex permissions inherit from the parent, so there is no Cursor readonly/Ask-mode switch to pass.
 

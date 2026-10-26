@@ -1,8 +1,0 @@
---- a/skills/poteto-mode/playbooks/autopilot-stack.md
-+++ b/skills/poteto-mode/playbooks/autopilot-stack.md
-@@ -1,0 +2,2 @@ [A]
-+
-+**Codex execution gap.** This playbook retains upstream requirements for isolated cloud workers, persistent coordination, and independent live verification. Native Codex subagents are session-scoped and share the selected environment; they do not supply durable cloud tasks or one VM per lane. Before executing a cloud-dependent step, verify an authorized adapter provides its required isolation, persistence, status, and wake behavior. Without it, report that step blocked and preserve its gates. Do not replace this workflow with a different coordinator architecture.
-@@ -12 +14 @@ [P]
--**Reply:** catch the operator up per the **ketchup** skill, with links to the stack root and tip, a one-line verdict per link, and anything parked or excluded with the reason.
-+**Reply:** catch the operator up in plain words on what changed since their last message, using existing visual evidence where useful. Reporting itself is read-only. Name work the agent can still do, check current PR/agent state, state unknowns, and list every pending operator decision with its recommendation, evidence, risk, and available link; do not omit older pending decisions or treat work the agent can do as an operator action. Include links to the stack root and tip, a one-line verdict per link, and anything parked or excluded with the reason.

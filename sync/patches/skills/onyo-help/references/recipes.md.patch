@@ -1,0 +1,57 @@
+--- a/skills/onyo-help/references/recipes.md
++++ b/skills/onyo-help/references/recipes.md
+@@ -7,4 +7,2 @@ [P]
+-- `/poteto-mode read <thread>. restate the underlying issue in your own words, in plain english.`
+-- `/in-your-own-words <long or messy ask>`
+-- `/sharpen <the prompt you're about to send>`
+-- `/poteto-mode investigate why <symptom>. give me what we know, what data you used, and your best hypotheses. don't change any code yet.`
++- `/onyo-mode read <thread>. restate the underlying issue in your own words, in plain english.`
++- `/onyo-mode investigate why <symptom>. give me what we know, what data you used, and your best hypotheses. don't change any code yet.`
+@@ -12 +9,0 @@ [P]
+-- `/recall my work on <topic> from last week, then read <issue>.`
+@@ -14 +11 @@ [P]
+-- `/poteto-mode take over this branch. read the decision log, find what's done, and continue. don't redo finished work.`
++- `/onyo-mode take over this branch. read the decision log, find what's done, and continue. don't redo finished work.`
+@@ -18,6 +15,6 @@ [P]
+-- Bug: `/poteto-mode <symptom>. repro first, then fix and verify.`
+-- Bug in an app: `/poteto-mode repro this with /verify-<app>. if it repros on main, fix it and show me a video as proof.`
+-- Bug with a cheap test: `/poteto-mode repro <bug> first. if there's a cheap test path, /tdd it. then fix and rerun.`
+-- Feature: `/poteto-mode add <behavior>. <current output> stays byte-identical. verify both.`
+-- Refactor: `/poteto-mode move <code> into one module, zero behavior change. record the current output first and prove it's unchanged after.`
+-- Perf: `/poteto-mode <operation> takes <time> on <fixture>. trace it, fix the measured cause, show me before and after.`
++- Bug: `/onyo-mode <symptom>. repro first, then fix and verify.`
++- Bug in an app: `/onyo-mode repro this with /verify-<app>. if it repros on main, fix it and show me a video as proof.`
++- Bug with a cheap test: `/onyo-mode repro <bug> first. if there's a cheap test path, /tdd it. then fix and rerun.`
++- Feature: `/onyo-mode add <behavior>. <current output> stays byte-identical. verify both.`
++- Refactor: `/onyo-mode move <code> into one module, zero behavior change. record the current output first and prove it's unchanged after.`
++- Perf: `/onyo-mode <operation> takes <time> on <fixture>. trace it, fix the measured cause, show me before and after.`
+@@ -27,3 +24,3 @@ [P]
+-- `/poteto-mode prototype a few options for <feature>. take screenshots or videos for me to compare.`
+-- `/poteto-mode we need <feature>. /architect it first, and answer open questions with prototypes. let me review before proceeding.`
+-- `/poteto-mode write a tutorial for how i would use <new package> first. then /teach me why it beats the current one.`
++- `/onyo-mode prototype a few options for <feature>. take screenshots or videos for me to compare.`
++- `/onyo-mode we need <feature>. /architect it first, and answer open questions with prototypes. let me review before proceeding.`
++- `/onyo-mode write a tutorial for how i would use <new package> first. then /teach me why it beats the current one.`
+@@ -31,2 +28,2 @@ [P]
+-- `/poteto-mode turn this design into a plan. small verifiable PRs, each with its own verification steps.`
+-- `/poteto-mode plan the migration of <library> to <target>. small verifiable PRs. the result must match the original exactly, bugs included.`
++- `/onyo-mode turn this design into a plan. small verifiable PRs, each with its own verification steps.`
++- `/onyo-mode plan the migration of <library> to <target>. small verifiable PRs. the result must match the original exactly, bugs included.`
+@@ -39,3 +36,3 @@ [P]
+-- `/poteto-mode open the pr. small ordered commits, evidence in the description.`
+-- `/poteto-mode babysit this pr. get it green.` For status only: `/poteto-mode check on pr <number>. anything outstanding?`
+-- `/poteto-mode land the stack.`
++- `/onyo-mode open the pr. small ordered commits, evidence in the description.`
++- `/onyo-mode babysit this pr. get it green.` For status only: `/onyo-mode check on pr <number>. anything outstanding?`
++- `/onyo-mode land the stack.`
+@@ -45 +42 @@ [P]
+-- `/poteto-mode im going to bed. <goal> in a fresh worktree off <base>. done means <checks>. keep a decision log. don't ask me before committing. /loop until done. if you're truly stuck after a few hours, stop and write up why.`
++- `/onyo-mode im going to bed. <goal> in a fresh worktree off <base>. done means <checks>. keep a decision log. don't ask me before committing. /loop until done. if you're truly stuck after a few hours, stop and write up why.`
+@@ -47,5 +44,2 @@ [P]
+-- `/ketchup` catches you up on this chat since your last message and lists every call that waits on you.
+-- `/poteto-mode full autopilot on this queue. each item is independent.`
+-- `/poteto-mode autopilot these changes but stack them, don't ship. i'll land the stack.`
+-- `/reflect capture what we learned so the next run doesn't repeat it.` Approve only edits that change a future decision.
+-- `/bro` restates the last reply in plain words.
++- `/onyo-mode full autopilot on this queue. each item is independent.`
++- `/onyo-mode autopilot these changes but stack them, don't ship. i'll land the stack.`

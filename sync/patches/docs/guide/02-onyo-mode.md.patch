@@ -1,0 +1,77 @@
+--- a/docs/guide/02-onyo-mode.md
++++ b/docs/guide/02-onyo-mode.md
+@@ -1 +1 @@ [P]
+-# Route work through `/poteto-mode`
++# Route work through `$onyo-mode`
+@@ -3 +3 @@ [P]
+-`/poteto-mode` is the front door. You give it a goal, it matches one of twenty-three playbooks, copies that playbook's steps into the todo list, and calls the other skills as the steps need them. In this page you learn what a good prompt looks like, and how little of one you actually need.
++`$onyo-mode` is the front door. You give it a goal, it matches one of twenty-three playbooks, copies that playbook's steps into the todo list, and calls the other skills as the steps need them. In this page you learn what a good prompt looks like, and how little of one you actually need.
+@@ -5 +5 @@ [P]
+-![A dispatcher pulls a switch lever to route robots on rail handcars toward lit gates, under a /poteto-mode departure board listing BUG FIX, FEATURE, and INVESTIGATION.](./images/router.jpg)
++![A dispatcher pulls a switch lever to route robots on rail handcars toward lit gates, under a $onyo-mode departure board listing BUG FIX, FEATURE, and INVESTIGATION.](./images/router.jpg)
+@@ -11 +11 @@ [P]
+-    A[Your prompt] --> B[poteto-mode]
++    A[Your prompt] --> B[onyo-mode]
+@@ -28 +28 @@ [P]
+-The diagram shows the common routes. There are also playbooks for hillclimbing a metric, diagnosing runtime symptoms and captured traces, prototypes, visual parity, authoring and evaluating skills, autonomous runs, opening a PR, babysitting a PR or stack to merge-ready, shipping a verified stack, running a PR queue or a stack on autopilot, orchestrating project-scale programs, session pickup, pausing safely, multi-phase plans, and worktree cleanup. The [playbook directory](../../skills/poteto-mode/playbooks/) has the full set.
++The diagram shows the common routes. There are also playbooks for hillclimbing a metric, diagnosing runtime symptoms and captured traces, prototypes, visual parity, authoring and evaluating skills, autonomous runs, opening a PR, babysitting a PR or stack to merge-ready, shipping a verified stack, running a PR queue or a stack on autopilot, orchestrating project-scale programs, session pickup, pausing safely, multi-phase plans, and worktree cleanup. The [playbook directory](../../skills/onyo-mode/playbooks/) has the full set.
+@@ -35 +35 @@ [P]
+-/poteto-mode users get two notifications after a retry. repro first, then fix and verify.
++$onyo-mode users get two notifications after a retry. repro first, then fix and verify.
+@@ -53 +53 @@ [P]
+-/poteto-mode the csv export drops its last row since yesterday's deploy. failing job id is 4812. repro first, then fix. done means the 60k-row fixture exports every row. show me the row counts before and after.
++$onyo-mode the csv export drops its last row since yesterday's deploy. failing job id is 4812. repro first, then fix. done means the 60k-row fixture exports every row. show me the row counts before and after.
+@@ -64 +64 @@ [P]
+-/poteto-mode read this thread. restate the underlying issue in your own words, in plain english. don't change any code yet.
++$onyo-mode read this thread. restate the underlying issue in your own words, in plain english. don't change any code yet.
+@@ -67,10 +67 @@ [P]
+-A misreading shows up in the restatement, before any code exists. Correct it there, and it costs you one message instead of one wrong fix. For the restatement alone, with no playbook, run [`/in-your-own-words`](../../skills/in-your-own-words/SKILL.md). It restates what the agent thinks your goals are and what problem you're trying to solve.
+-
+-When you're unsure whether a prompt is aimed right, run [`/sharpen`](../../skills/sharpen/SKILL.md) on it before you send it:
+-
+-```text
+-/sharpen write a migration guide for the v2 config format.
+-```
+-
+-The agent says what a top professional would do that you didn't ask for, the rawest material they would start from, the methods and tools they would use, and what other than you or the agent would show the result is right. Then it rewrites your prompt to ask for exactly that, deeper but not bigger, and leaves your choices open. It doesn't do the task. Read the rewrite, then send it, for example with `/poteto-mode`.
+-
++A misreading shows up in the restatement, before any code exists. Correct it there, and it costs you one message instead of one wrong fix.
+@@ -82 +73 @@ [P]
+-/poteto-mode do it
++$onyo-mode do it
+@@ -93 +84 @@ [P]
+-Short works because the playbook holds the structure, and a Custom Mode keeps `/poteto-mode` in context on every turn. [Set up pstack](./01-setup.md#run-your-first-task) shows how to start one. Your words carry the intent, and the skill carries the rigor.
++Short works because the playbook holds the structure. Invoke `$onyo-mode` for each new task and preserve its active playbook during follow-ups. [Set up ostack](./01-setup.md#run-your-first-task) shows a first task. Your words carry the intent, and the skill carries the rigor.
+@@ -100 +91 @@ [P]
+-/poteto-mode new task. figure out why the cache entry survives logout. don't change any code yet.
++$onyo-mode new task. figure out why the cache entry survives logout. don't change any code yet.
+@@ -103 +94 @@ [P]
+-"new task" tells `/poteto-mode` to re-match rather than continue the prior playbook. "don't change any code yet" pins this one to Investigation. Without those two phrases, a mode mid-Feature tends to treat your question as the next feature step.
++"new task" tells `$onyo-mode` to re-match rather than continue the prior playbook. "don't change any code yet" pins this one to Investigation. Without those two phrases, a mode mid-Feature tends to treat your question as the next feature step.
+@@ -107 +98 @@ [A]
+-If you run several agents against one repository on one computer, they will fight over the working tree, the ports, and the build output. The cleanest isolation is a [cloud subagent](https://cursor.com/docs/subagents#cloud-subagents). Each one gets its own VM and branch, so it can install dependencies, run your app, and record video of the result without touching your machine. Type `/in-cloud` before the task, or ask the parent chat to hand work to cloud subagents.
++If you run several agents against one repository on one computer, they can collide over files, ports, and build output. Codex native subagents are session-scoped and may share the workspace; they are not isolated durable cloud tasks. Give writers distinct worktrees and resource names. Workflows that require independent cloud VMs remain blocked until a verified cloud-task adapter provides that isolation. Cursor’s `/in-cloud` is not a Codex command.
+@@ -112 +103 @@ [P]
+-/poteto-mode new task. branch off <base> in a fresh worktree, then port the parser change there.
++$onyo-mode new task. branch off <base> in a fresh worktree, then port the parser change there.
+@@ -115 +106 @@ [P]
+-Each task in its own branch and worktree means no agent stomps another's files. Worktrees cost disk and machine resources, so a laptop runs only a handful at once. The [Opening a PR playbook](../../skills/poteto-mode/playbooks/opening-a-pr.md) already works from a worktree for code changes, so mostly you only say this when a specific base or location matters.
++Each task in its own branch and worktree means no agent stomps another's files. Worktrees cost disk and machine resources, so a laptop runs only a handful at once. The [Opening a PR playbook](../../skills/onyo-mode/playbooks/opening-a-pr.md) already works from a worktree for code changes, so mostly you only say this when a specific base or location matters.
+@@ -120 +111 @@ [P]
+-/poteto-mode what's eating my disk? prune the worktrees that are safe to prune.
++$onyo-mode what's eating my disk? prune the worktrees that are safe to prune.
+@@ -123 +114 @@ [P]
+-The [Worktree cleanup playbook](../../skills/poteto-mode/playbooks/worktree-cleanup.md) classifies every worktree by merge state, uncommitted work, and which chats still touch it. It deletes only what that evidence clears and pauses for your call on anything holding uncommitted work.
++The [Worktree cleanup playbook](../../skills/onyo-mode/playbooks/worktree-cleanup.md) classifies every worktree by merge state, uncommitted work, and which chats still touch it. It deletes only what that evidence clears and pauses for your call on anything holding uncommitted work.
+@@ -130 +121 @@ [P]
+-/poteto-mode im stepping away. keep going until the migration check reports zero old callers. log your decisions.
++$onyo-mode im stepping away. keep going until the migration check reports zero old callers. log your decisions.
+@@ -133 +124 @@ [A]
+-Work you'll review later routes through [`/figure-it-out`](../../skills/figure-it-out/SKILL.md), which designs the run's phases and keeps a [`/show-me-your-work`](../../skills/show-me-your-work/SKILL.md) decision log. [Run work while you sleep](./07-overnight.md) covers the full overnight contract.
++Work you'll review later routes through [`$figure-it-out`](../../skills/figure-it-out/SKILL.md), which designs the run's phases and keeps a [`$show-me-your-work`](../../skills/show-me-your-work/SKILL.md) decision log. [Run work while you sleep](./07-overnight.md) covers the full overnight contract.
+@@ -135 +126 @@ [A]
+-**Pitfall:** don't enumerate skills in your prompt ("use /how, then /architect, then /arena..."). The playbook already sequences them, and a hand-written sequence usually reorders or drops steps the playbook would have kept. Name a skill only when you want to override a specific choice.
++**Pitfall:** don't enumerate skills in your prompt ("use $how, then $architect, then $arena..."). The playbook already sequences them, and a hand-written sequence usually reorders or drops steps the playbook would have kept. Name a skill only when you want to override a specific choice.
+@@ -137 +128 @@ [P]
+-Read [`poteto-mode`](../../skills/poteto-mode/SKILL.md) itself for the full routing rules.
++Read [`onyo-mode`](../../skills/onyo-mode/SKILL.md) itself for the full routing rules.

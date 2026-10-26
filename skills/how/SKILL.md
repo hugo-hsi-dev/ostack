@@ -9,7 +9,7 @@ Read [Codex compatibility](../../docs/harness/codex.md) before using this workfl
 
 Explore the codebase to answer "how does X work?" questions. Produce architectural explanations at the level of a senior engineer onboarding onto a subsystem, enough to build a working mental model, not so much that it reads like annotated source code.
 
-Read `how explorer` and `how explainer` in the user-level `$CODEX_HOME/pstack-models.md` explicitly. Use only session-supported models and reasoning settings, per poteto-mode’s Subagents section. Missing roles inherit the parent. Keep the role split and read-only research briefs; inherited permissions do not enforce read-only behavior. If distinct model families are unavailable, report that limitation rather than claiming multi-model evidence.
+Read `how explorer` and `how explainer` in the user-level `$CODEX_HOME/pstack-models.md` explicitly. Use only session-supported models and reasoning settings, per onyo-mode’s Subagents section. Missing roles inherit the parent. Keep the role split and read-only research briefs; inherited permissions do not enforce read-only behavior. If distinct model families are unavailable, report that limitation rather than claiming multi-model evidence.
 
 ## 1. Assess complexity
 

@@ -3,9 +3,9 @@
 @@ -10 +10 @@ [A]
 -use /how first to understand how this initialization works. then use /why to figure out why it broke recently.
 +use $how first to understand how this initialization works. then use $why to figure out why it broke recently.
-@@ -18 +18 @@ [A]
+@@ -18 +18 @@ [P]
 -/poteto-mode read this thread. restate the underlying issue in your own words, in plain english. don't change any code yet.
-+$poteto-mode read this thread. restate the underlying issue in your own words, in plain english. don't change any code yet.
++$onyo-mode read this thread. restate the underlying issue in your own words, in plain english. don't change any code yet.
 @@ -21,9 +21 @@ [P]
 -A misreading shows up in the restatement, where it costs one message to correct. Keep your own theory to yourself until the agent has stated its own. `/in-your-own-words` asks for the restatement alone, with no playbook.
 -
@@ -17,12 +17,12 @@
 -
 -The agent names what an expert would do that you didn't ask for, the raw material they'd start from, their methods and tools, and an outside check that the result is right. It hands back your prompt rewritten to ask for that and doesn't do the task. Send the rewrite when it reads right.
 +A misreading shows up in the restatement, where it costs one message to correct. Keep your own theory to yourself until the agent has stated its own.
-@@ -34 +26 @@ [A]
+@@ -34 +26 @@ [P]
 -/poteto-mode prototype a few options for the settings layout. put them behind a switcher and send me screenshots of each.
-+$poteto-mode prototype a few options for the settings layout. put them behind a switcher and send me screenshots of each.
-@@ -42 +34 @@ [A]
++$onyo-mode prototype a few options for the settings layout. put them behind a switcher and send me screenshots of each.
+@@ -42 +34 @@ [P]
 -/poteto-mode turn this design into a plan. small verifiable PRs, each with its own proof.
-+$poteto-mode turn this design into a plan. small verifiable PRs, each with its own proof.
++$onyo-mode turn this design into a plan. small verifiable PRs, each with its own proof.
 @@ -50 +42 @@ [A]
 -ask /arena for a second opinion on this thread and our approach
 +ask $arena for a second opinion on this thread and our approach
@@ -32,12 +32,12 @@
 @@ -66 +58 @@ [A]
 -/interrogate the whole branch, but skeptically. don't change anything yet. no nitpicks unless it's an actual bug or regression in behavior.
 +$interrogate the whole branch, but skeptically. don't change anything yet. no nitpicks unless it's an actual bug or regression in behavior.
-@@ -74 +66 @@ [A]
+@@ -74 +66 @@ [P]
 -/poteto-mode repro the duplicate write first. if there's a cheap test path, /tdd it. then fix and rerun.
-+$poteto-mode repro the duplicate write first. if there's a cheap test path, $tdd it. then fix and rerun.
-@@ -82 +74 @@ [A]
++$onyo-mode repro the duplicate write first. if there's a cheap test path, $tdd it. then fix and rerun.
+@@ -82 +74 @@ [P]
 -/poteto-mode repro this with /verify-<app>. if it repros on main, fix it and show me a video as proof.
-+$poteto-mode repro this with /verify-<app>. if it repros on main, fix it and show me a video as proof.
++$onyo-mode repro this with /verify-<app>. if it repros on main, fix it and show me a video as proof.
 @@ -90 +82 @@ [A]
 -/create-formal-verification-skill the retry queue. a message must never be delivered twice.
 +$create-formal-verification-skill the retry queue. a message must never be delivered twice.
@@ -47,9 +47,9 @@
 @@ -106 +98 @@ [A]
 -/correct agents keep adding new config flags without registering them in the schema
 +$correct agents keep adding new config flags without registering them in the schema
-@@ -114 +106 @@ [A]
+@@ -114 +106 @@ [P]
 -/poteto-help how do i get poteto-mode to stay on every turn?
-+$poteto-help how do i get poteto-mode to stay on every turn?
++$onyo-help how do i get onyo-mode to stay on every turn?
 @@ -140 +132 @@ [A]
 -/unslop that, no emdashes
 +$unslop that, no emdashes
@@ -92,3 +92,6 @@
 +- **Correcting the same mistake by hand.** A correction in chat helps one run. `$correct` fixes the repo so no later run repeats it.
 +- **Using `$arena` for coverage.** `$arena` repeats one design or code brief, then picks a base and grafts the best parts. `$swarm` partitions slices or declared race arms and aggregates one report.
 +- **Accepting every review comment.** Bots and humans both file real catches and noise in one list. `$interrogate` sorts findings into act-on and dismissed buckets with reasons, and you can override either way.
+@@ -178 +152 @@ [P]
+-- **Writing a `SKILL.md` freehand.** Route it through the [Authoring or modifying a skill playbook](../../skills/poteto-mode/playbooks/authoring-a-skill.md) so validation and review happen.
++- **Writing a `SKILL.md` freehand.** Route it through the [Authoring or modifying a skill playbook](../../skills/onyo-mode/playbooks/authoring-a-skill.md) so validation and review happen.

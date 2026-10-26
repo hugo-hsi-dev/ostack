@@ -30,6 +30,33 @@ class ProductSelection(unittest.TestCase):
         with patch.object(sync, "fetch"), patch.object(sync, "git", return_value=subprocess.CompletedProcess([], 0, listing)):
             self.assertEqual(set(sync.upstream("pin")), set(paths[3:]))
 
+    def test_brand_mapping_keeps_upstream_sources(self):
+        paths = ["skills/poteto-mode/SKILL.md", "skills/poteto-help/SKILL.md", "skills/setup-pstack/SKILL.md", "agents/poteto-agent.md", "docs/guide/02-poteto-mode.md", ".cursor-plugin/plugin.json", "skills/reflect/SKILL.md"]
+        policy = json.loads(self.policy.read_text())
+        policy["paths"].append("skills/reflect/")
+        self.policy.write_text(json.dumps(policy))
+        listing = "".join(f"100644 blob unused\tpstack/{p}\n" for p in paths).encode()
+        with patch.object(sync, "fetch"), patch.object(sync, "git", return_value=subprocess.CompletedProcess([], 0, listing)):
+            files = sync.upstream("pin")
+        expected = ["skills/onyo-mode/SKILL.md", "skills/onyo-help/SKILL.md", "skills/setup-ostack/SKILL.md", "agents/onyo-agent.md", "docs/guide/02-onyo-mode.md", "docs/upstream/cursor-plugin.json"]
+        self.assertEqual(set(files), set(expected))
+        for dest, source in zip(expected, paths):
+            self.assertEqual(files[dest].path, "pstack/" + source)
+        self.assertEqual(sync.map_names("skills/poteto-mode-extra/SKILL.md"), "skills/poteto-mode-extra/SKILL.md")
+
+    def test_brand_collision_is_rejected(self):
+        listing = b"100644 blob unused\tpstack/skills/poteto-mode/SKILL.md\n100644 blob unused\tpstack/skills/onyo-mode/SKILL.md\n"
+        with patch.object(sync, "fetch"), patch.object(sync, "git", return_value=subprocess.CompletedProcess([], 0, listing)), self.assertRaises(SystemExit):
+            sync.upstream("pin")
+
+    def test_obsolete_brand_metadata_fails(self):
+        p = self.root / "skills/poteto-mode/agents/openai.yaml"
+        p.parent.mkdir(parents=True)
+        p.write_text("stale")
+        self.assertEqual(sync.obsolete_brand_content(), ["skills/poteto-mode/agents/openai.yaml"])
+        with self.assertRaises(SystemExit):
+            sync.cmd_check("pin", {})
+
     def test_invalid_policy_fails(self):
         for version, paths in [(2, ["skills/gone/"]), (1, ["../skills/gone/"]), (1, ["skills/"]), (1, ["skills/gone/", "skills/gone/"])]:
             with self.subTest(version=version, paths=paths):

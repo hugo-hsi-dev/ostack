@@ -15,6 +15,8 @@ PIN = ROOT / "sync" / "PIN"
 PATCHES = ROOT / "sync" / "patches"
 CACHE = Path(os.environ.get("PSTACK_CACHE", Path.home() / ".cache" / "ostack-pstack.git"))
 RENAMES = {".cursor-plugin/plugin.json": "docs/upstream/cursor-plugin.json", "plugin.json": "docs/upstream/plugin.json", "docs/harness/claude-code.md": "docs/upstream/claude-code.md"}
+BRAND_DIRS = {"skills/poteto-mode/": "skills/onyo-mode/", "skills/poteto-help/": "skills/onyo-help/", "skills/setup-pstack/": "skills/setup-ostack/"}
+BRAND_FILES = {"agents/poteto-agent.md": "agents/onyo-agent.md", "docs/guide/02-poteto-mode.md": "docs/guide/02-onyo-mode.md"}
 CODES = re.compile(r"\[(A|P|\?)\]")
 HEADER = re.compile(r"^@@ -(\d+)(?:,(\d+))? \+\d+(?:,\d+)? @@ ?(.*)$")
 NO_EOL = "\\ No newline at end of file\n"
@@ -48,7 +50,17 @@ def fetch(sha):
 
 
 def map_names(s):
-    return s
+    for source, dest in BRAND_DIRS.items():
+        if s.startswith(source):
+            return dest + s[len(source):]
+    return BRAND_FILES.get(s, s)
+
+
+def obsolete_brand_content():
+    paths = [ROOT / p for p in BRAND_FILES]
+    paths += [ROOT / ".codex/agents/poteto-agent.toml"]
+    paths += [p for prefix in BRAND_DIRS for p in (ROOT / prefix).rglob("*")]
+    return sorted(str(p.relative_to(ROOT)) for p in paths if p.is_file())
 
 
 def omitted_paths():
@@ -76,9 +88,12 @@ def upstream(sha):
     omitted = omitted_paths()
     for line in out.splitlines():
         meta, path = line.split("\t", 1)
-        rel = map_names(path[len(SRC):])
+        rel = path[len(SRC):]
         if not rel.startswith(omitted):
-            files[RENAMES.get(rel, rel)] = Source(path, meta.split()[0])
+            dest = map_names(RENAMES.get(rel, rel))
+            if dest in files:
+                sys.exit(f"upstream paths collide at {dest}")
+            files[dest] = Source(path, meta.split()[0])
     return files
 
 
@@ -112,7 +127,7 @@ def read_patch(dest):
             code = CODES.fullmatch(h.group(3))
             if not code:
                 sys.exit(f"{p}: hunk marker must be [A], [P], or [?], got {raw!r}. "
-                         "[A] is a harness adaptation; [P] is approved product selection.")
+                         "[A] is a harness adaptation; [P] is approved product selection or branding.")
             start, n = int(h.group(1)), 1 if h.group(2) is None else int(h.group(2))
             hunks.append(Hunk(start - 1 if n else start, n, [], [], code.group(1)))
         elif raw == NO_EOL:
@@ -205,6 +220,7 @@ def orphans(files):
 
 def cmd_check(sha, files, args=None):
     bad = [f"omitted content remains: {p}" for p in omitted_content()]
+    bad += [f"obsolete branding content remains: {p}" for p in obsolete_brand_content()]
     for dest, (data, mode, hunks) in expected(sha, files).items():
         p = ROOT / dest
         if not p.exists():

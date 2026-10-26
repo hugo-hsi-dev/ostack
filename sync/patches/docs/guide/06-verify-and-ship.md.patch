@@ -1,8 +1,11 @@
 --- a/docs/guide/06-verify-and-ship.md
 +++ b/docs/guide/06-verify-and-ship.md
-@@ -14 +14 @@ [A]
+@@ -14 +14 @@ [P]
 -/poteto-mode add json output to this command. text output stays byte-identical, the json parses, both run against the sample project. show me the evidence.
-+$poteto-mode add json output to this command. text output stays byte-identical, the json parses, both run against the sample project. show me the evidence.
++$onyo-mode add json output to this command. text output stays byte-identical, the json parses, both run against the sample project. show me the evidence.
+@@ -22 +22 @@ [P]
+-- A UI change walks the changed flow in the running app. When it must match a reference pixel for pixel, the [Visual parity playbook](../../skills/poteto-mode/playbooks/visual-parity.md) diffs screenshots against a frozen baseline instead of judging by eye.
++- A UI change walks the changed flow in the running app. When it must match a reference pixel for pixel, the [Visual parity playbook](../../skills/onyo-mode/playbooks/visual-parity.md) diffs screenshots against a frozen baseline instead of judging by eye.
 @@ -29 +29 @@ [A]
 -For a small diff you don't fully trust, [`/blast-radius`](../../skills/blast-radius/SKILL.md) finds what it could break elsewhere. It finds the one fact that makes the change safe and proves that fact by running code, not by arguing for it.
 +For a small diff you don't fully trust, [`$blast-radius`](../../skills/blast-radius/SKILL.md) finds what it could break elsewhere. It finds the one fact that makes the change safe and proves that fact by running code, not by arguing for it.
@@ -15,9 +18,9 @@
 @@ -39 +39 @@ [A]
 -[`/benchmark-checklist`](../../skills/benchmark-checklist/SKILL.md) asks seven questions and wants evidence from a run for each:
 +[`$benchmark-checklist`](../../skills/benchmark-checklist/SKILL.md) asks seven questions and wants evidence from a run for each:
-@@ -49 +49 @@ [A]
+@@ -49 +49 @@ [P]
 -The verdict comes back as faster, slower, no measurable difference, or inconclusive, with the run count, range, and limiter. It says inconclusive when it can't name the limiter or a side ran untuned. `/poteto-mode` already runs the checklist inside the Perf issue and Hillclimb playbooks, so you type it yourself when you measured something outside them, or when someone else's number looks too good. It's the working form of the [Explain the Number principle](../../skills/principle-explain-the-number/SKILL.md).
-+The verdict comes back as faster, slower, no measurable difference, or inconclusive, with the run count, range, and limiter. It says inconclusive when it can't name the limiter or a side ran untuned. `$poteto-mode` already runs the checklist inside the Perf issue and Hillclimb playbooks, so you type it yourself when you measured something outside them, or when someone else's number looks too good. It's the working form of the [Explain the Number principle](../../skills/principle-explain-the-number/SKILL.md).
++The verdict comes back as faster, slower, no measurable difference, or inconclusive, with the run count, range, and limiter. It says inconclusive when it can't name the limiter or a side ran untuned. `$onyo-mode` already runs the checklist inside the Perf issue and Hillclimb playbooks, so you type it yourself when you measured something outside them, or when someone else's number looks too good. It's the working form of the [Explain the Number principle](../../skills/principle-explain-the-number/SKILL.md).
 @@ -56 +56 @@ [A]
 -/create-verification-skill
 +$create-verification-skill
@@ -27,12 +30,12 @@
 @@ -61 +61 @@ [A]
 -It writes `.cursor/skills/verify-<app>/`, agent-facing instructions with exact Launch, Doctor, Drive, Evidence, and Cleanup sections, a Helpers section for any script it ships, plus a feature map under `features/` that indexes what the app does and what result proves each feature works. The skill ships a [worked feature-map example](../../skills/create-verification-skill/references/feature-map-example/) with a README index and one file per feature using the four required H2s. Before handing it over, the generator proves the skill once end to end: launch, doctor check, drive one feature, capture evidence, clean up, then confirm the evidence survived the cleanup. If that proof fails, don't use the output.
 +It writes `.agents/skills/verify-<app>/`, agent-facing instructions with exact Launch, Doctor, Drive, Evidence, and Cleanup sections, a Helpers section for any script it ships, plus a feature map under `features/` that indexes what the app does and what result proves each feature works. The skill ships a [worked feature-map example](../../skills/create-verification-skill/references/feature-map-example/) with a README index and one file per feature using the four required H2s. Before handing it over, the generator proves the skill once end to end: launch, doctor check, drive one feature, capture evidence, clean up, then confirm the evidence survived the cleanup. If that proof fails, don't use the output.
-@@ -66 +66 @@ [A]
+@@ -66 +66 @@ [P]
 -/poteto-mode build the bulk-archive action. use /verify-<app> to verify your changes and show me a video and screenshots as proof.
-+$poteto-mode build the bulk-archive action. use /verify-<app> to verify your changes and show me a video and screenshots as proof.
-@@ -70 +70 @@ [A]
++$onyo-mode build the bulk-archive action. use /verify-<app> to verify your changes and show me a video and screenshots as proof.
+@@ -70 +70 @@ [P]
 -/poteto-mode repro this with /verify-<app>. if it repros on main, fix it and show me a video as proof.
-+$poteto-mode repro this with /verify-<app>. if it repros on main, fix it and show me a video as proof.
++$onyo-mode repro this with /verify-<app>. if it repros on main, fix it and show me a video as proof.
 @@ -73 +73 @@ [A]
 -Once the verify skill works, a [`/swarm`](../../skills/swarm/SKILL.md) can split a full pass by feature-map entry and aggregate the results. A swarm of verifiers also confirms a perf win over a big enough sample, or fuzzes the app for regressions before a PR ships.
 +Once the verify skill works, a [`$swarm`](../../skills/swarm/SKILL.md) can split a full pass by feature-map entry and aggregate the results. A swarm of verifiers also confirms a perf win over a big enough sample, or fuzzes the app for regressions before a PR ships.
@@ -60,15 +63,24 @@
 @@ -126 +126 @@ [A]
 -[`/statechart`](../../skills/statechart/SKILL.md) draws a Mermaid statechart of what the user sees, generated from a TLA+ model, so the picture and the checked model can't drift apart. The reader's rules ("you never see Synced while you're offline") become invariants. Each bug TLC finds is a numbered path in the reader's words, and each state is marked works, still wrong, or fixed by your open PR. Before the hand-off, the agent reproduces each bug path in the real code, so a modeling error doesn't reach the reader as a bug.
 +[`$statechart`](../../skills/statechart/SKILL.md) draws a Mermaid statechart of what the user sees, generated from a TLA+ model, so the picture and the checked model can't drift apart. The reader's rules ("you never see Synced while you're offline") become invariants. Each bug TLC finds is a numbered path in the reader's words, and each state is marked works, still wrong, or fixed by your open PR. Before the hand-off, the agent reproduces each bug path in the real code, so a modeling error doesn't reach the reader as a bug.
-@@ -135 +135 @@ [A]
+@@ -135 +135 @@ [P]
 -/poteto-mode open the pr. small ordered commits, evidence in the description.
-+$poteto-mode open the pr. small ordered commits, evidence in the description.
-@@ -145 +145 @@ [A]
++$onyo-mode open the pr. small ordered commits, evidence in the description.
+@@ -138 +138 @@ [P]
+-The [Opening a PR playbook](../../skills/poteto-mode/playbooks/opening-a-pr.md) works from a worktree, rebases the work into small ordered commits, cleans the diff, unslops the prose, and returns the PR link. Five narrow PRs beat one fat one, and stacked follow-ups beat a growing branch.
++The [Opening a PR playbook](../../skills/onyo-mode/playbooks/opening-a-pr.md) works from a worktree, rebases the work into small ordered commits, cleans the diff, unslops the prose, and returns the PR link. Five narrow PRs beat one fat one, and stacked follow-ups beat a growing branch.
+@@ -142 +142 @@ [P]
+-An open PR starts collecting blockers immediately. Checks fail, reviewers comment, trunk moves. Hand that churn to the [Babysit playbook](../../skills/poteto-mode/playbooks/babysit.md):
++An open PR starts collecting blockers immediately. Checks fail, reviewers comment, trunk moves. Hand that churn to the [Babysit playbook](../../skills/onyo-mode/playbooks/babysit.md):
+@@ -145 +145 @@ [P]
 -/poteto-mode babysit this pr. get it green.
-+$poteto-mode babysit this pr. get it green.
-@@ -151 +151 @@ [A]
++$onyo-mode babysit this pr. get it green.
+@@ -151 +151 @@ [P]
 -/poteto-mode check on pr 123. anything outstanding?
-+$poteto-mode check on pr 123. anything outstanding?
-@@ -161 +161 @@ [A]
++$onyo-mode check on pr 123. anything outstanding?
+@@ -161 +161 @@ [P]
 -/poteto-mode land the stack.
-+$poteto-mode land the stack.
++$onyo-mode land the stack.
+@@ -164 +164 @@ [P]
+-The [Shipping playbook](../../skills/poteto-mode/playbooks/shipping.md) verifies each PR independently before it arms anything. One fresh agent per PR proves the behavior live, and the agent that judges a change is never the one that wrote it. Then Shipping lands only the contiguous verified run from the bottom, one PR at a time through GitHub by default or Origin when its CLI is available, and reports the first PR that breaks the chain. A verified PR sitting above an unverified one waits, because merging it would pull the gap in underneath.
++The [Shipping playbook](../../skills/onyo-mode/playbooks/shipping.md) verifies each PR independently before it arms anything. One fresh agent per PR proves the behavior live, and the agent that judges a change is never the one that wrote it. Then Shipping lands only the contiguous verified run from the bottom, one PR at a time through GitHub by default or Origin when its CLI is available, and reports the first PR that breaks the chain. A verified PR sitting above an unverified one waits, because merging it would pull the gap in underneath.

@@ -1,5 +1,0 @@
---- a/skills/poteto-mode/playbooks/authoring-a-skill.md
-+++ b/skills/poteto-mode/playbooks/authoring-a-skill.md
-@@ -5 +5 @@ [A]
--1. Use the **create-skill** skill (Cursor's built-in for authoring SKILL.md files).
-+1. Use an installed skill-authoring skill. If none is available, report that tool gap and retain the draft / test / iterate process and the validation steps below.

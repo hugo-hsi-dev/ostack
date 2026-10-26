@@ -12,6 +12,7 @@ root = sync.ROOT
 sha = sync.PIN.read_text().strip()
 files = sync.upstream(sha)
 errors = [f"omitted content remains: {p}" for p in sync.omitted_content()]
+errors += [f"obsolete branding content remains: {p}" for p in sync.obsolete_brand_content()]
 policies = set()
 skills = 0
 for dest, source in files.items():
@@ -23,6 +24,8 @@ for dest, source in files.items():
     if not front or not all(re.search(rf'^{key}: .+', front[1], re.M) for key in ('name', 'description')):
         errors.append(f'{dest}: missing skill frontmatter')
     if dest.startswith('skills/'):
+        if front and not re.search(rf'^name: {re.escape(Path(dest).parent.name)}$', front[1], re.M):
+            errors.append(f'{dest}: skill name differs from directory')
         if 'docs/harness/codex.md)' not in text:
             errors.append(f'{dest}: missing compatibility entry point')
         if front and re.search(r'^(disable-model-invocation|icon|color):', front[1], re.M):
@@ -38,6 +41,8 @@ for path in (root / 'skills').rglob('agents/openai.yaml'):
         errors.append(f'{path.relative_to(root)}: unexpected invocation override')
 for path in (root / '.codex/agents').glob('*.toml'):
     data = tomllib.loads(path.read_text())
+    if data.get('name') != path.stem:
+        errors.append(f'{path}: agent name differs from filename')
     md = (root / 'agents' / (path.stem + '.md')).read_text()
     body = md.split('---', 2)[2].strip()
     if set(data) != {'name', 'description', 'developer_instructions'} or data['developer_instructions'].strip() != body:

@@ -1,0 +1,12 @@
+--- a/skills/onyo-mode/playbooks/opening-a-pr.md
++++ b/skills/onyo-mode/playbooks/opening-a-pr.md
+@@ -1,0 +2,3 @@ [A]
++
++**External skill dependency.** `cursor-team-kit` is an upstream plugin, not a bundled Codex capability. Use its named skills only if actually installed and compatible. Otherwise report the missing dependency and perform the stated review or runtime proof with available tools; a missing proof remains a gap, never a passed gate.
++
+@@ -5 +8 @@ [A]
+-**Worktree.** Work from a git worktree off main. Subagents inherit it. Multiple `Task` calls on the same branch each get their own worktree, or `git fetch && git reset --hard origin/<branch>` between them. Dirty branch with unrelated work: patch out, fresh worktree, apply. Snarled worktree: reset from main, redo minimally.
++**Worktree.** Work from a git worktree off main. Create and assign a separate worktree explicitly for each writer, and put its absolute path in the native subagent brief. Native spawning does not provision or switch worktrees. For sequential reuse, the upstream cleanup option is `git fetch && git reset --hard origin/<branch>` between them. Dirty branch with unrelated work: patch out, fresh worktree, apply. Snarled worktree: reset from main, redo minimally.
+@@ -11 +14 @@ [P]
+-**Titles.** Conventional Commits `type(scope): subject`, no trailing period. Type such as `feat`, `fix`, `docs`, `refactor`, `test`, `chore`, or `perf`. Scope is the area, such as `pstack` or `poteto-mode`. Subject is short, imperative, and names a real symbol when one carries the change, for example `fix(pstack): retarget opening-a-pr babysit trigger`.
++**Titles.** Conventional Commits `type(scope): subject`, no trailing period. Type such as `feat`, `fix`, `docs`, `refactor`, `test`, `chore`, or `perf`. Scope is the area, such as `ostack` or `onyo-mode`. Subject is short, imperative, and names a real symbol when one carries the change, for example `fix(ostack): retarget opening-a-pr babysit trigger`.

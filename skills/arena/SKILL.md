@@ -15,7 +15,7 @@ Every candidate gets the same prompt, so the prompt is the contract.
 
 1. State the artifact each candidate is producing.
 2. Derive the rubric, 3-6 concrete gradeable criteria for what success looks like on *this* task. It is the picker's tool in Phase D. Candidates only see the task.
-3. Pick the runners from `arena runners` in the user-level `$CODEX_HOME/pstack-models.md`. With no line, keep two runners using `inherit-parent`. Resolve only supported model and effort choices per poteto-mode’s Subagents section. Preserve one runner per entry, including aliases. Report unavailable family diversity; multiple calls to one model are independent runs, not a multi-family comparison. Spawn more runners when the arena covers multiple design directions. Use the same model N times when the work is generation-bound rather than judgment-sensitive.
+3. Pick the runners from `arena runners` in the user-level `$CODEX_HOME/pstack-models.md`. With no line, keep two runners using `inherit-parent`. Resolve only supported model and effort choices per onyo-mode’s Subagents section. Preserve one runner per entry, including aliases. Report unavailable family diversity; multiple calls to one model are independent runs, not a multi-family comparison. Spawn more runners when the arena covers multiple design directions. Use the same model N times when the work is generation-bound rather than judgment-sensitive.
 4. Give each candidate its own output location (a git worktree where possible, otherwise `/tmp/arena-<slug>/candidate-<n>/`), per the **separate-before-serializing-shared-state** principle skill.
 
 ## Phase B: Fan out
