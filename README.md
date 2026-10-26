@@ -12,15 +12,13 @@ fork it. improve it. make it yours. PRs are welcome!
 
 ## install in the Codex desktop app
 
-The `codex` branch is an **ostack** plugin marketplace; `main` is the Claude version. The marketplace packages the existing skills, references, scripts, docs, and agent prompts together.
+Use this repository’s `codex` branch as the **ostack** marketplace source; `main` is the Claude version. Once the marketplace is available in your desktop app:
 
 1. Open **Plugins Directory** in the desktop app and choose the **ostack** marketplace source.
 2. Open **ostack** and select **Install**.
 3. Start a chat with the installed plugin selected, then run `$setup-ostack` or `$onyo-mode`.
 
-**Source availability:** the app can discover this repository's `.agents/plugins/marketplace.json` when a trusted checkout of the `codex` branch is the active project. The entry points to the repository root, and the app manages the installed copy. See the [official repository-marketplace documentation](https://developers.openai.com/plugins/build/plugins#how-local-marketplaces-work).
-
-Directly adding this GitHub repository as a personal marketplace entirely in the desktop UI has not been verified. If **ostack** is missing from the source picker, source discovery is still blocked; these steps do not claim a completed installation. The plugin has not been submitted to the public directory, and no terminal, Python, or manual skill-link installation is required by this guide.
+The repository-root catalog is `.agents/plugins/marketplace.json`. Its `ostack` entry points to `./`, where `.codex-plugin/plugin.json` declares the skills. The app manages the installed copy, keeping the skills, references, scripts, docs, and agent prompts together. See the [official marketplace documentation](https://developers.openai.com/plugins/build/plugins#marketplace-metadata).
 
 Read [the Codex compatibility map](./docs/harness/codex.md) before running workflows. The package keeps sibling files together so skill links and scripts resolve. The agent Markdown prompts are supporting resources; plugin installation is not evidence that the host registered custom-agent definitions. Where role selection is unavailable, the coordinator includes the supplied prompt in the delegate's brief. The files in `docs/upstream/` are historical metadata, not installation manifests. This plugin installs no Claude hooks. Orchestrate's Spaces records and cloud execution remain separately verified capabilities.
 

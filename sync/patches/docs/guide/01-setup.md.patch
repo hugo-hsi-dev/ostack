@@ -11,7 +11,7 @@
 +## Install the desktop plugin
 @@ -7 +7 @@ [A]
 -In a Cursor chat, run:
-+Follow the [desktop plugin installation steps](../../README.md#install-in-the-codex-desktop-app): choose the **ostack** source in Plugins Directory, open **ostack**, and select **Install**. The source must already be available; repository-local discovery is documented, while direct GitHub source registration in the personal desktop UI remains unverified. If the source is missing, resolve that before claiming installation.
++Follow the [desktop plugin installation steps](../../README.md#install-in-the-codex-desktop-app): choose the **ostack** source in Plugins Directory, open **ostack**, and select **Install**. Use this repository’s `codex` branch as the marketplace source.
 @@ -9,3 +9 @@ [A]
 -```text
 -/add-plugin pstack

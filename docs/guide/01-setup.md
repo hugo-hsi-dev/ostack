@@ -4,7 +4,7 @@ In this page you install the desktop plugin, pick supported models, and run your
 
 ## Install the desktop plugin
 
-Follow the [desktop plugin installation steps](../../README.md#install-in-the-codex-desktop-app): choose the **ostack** source in Plugins Directory, open **ostack**, and select **Install**. The source must already be available; repository-local discovery is documented, while direct GitHub source registration in the personal desktop UI remains unverified. If the source is missing, resolve that before claiming installation.
+Follow the [desktop plugin installation steps](../../README.md#install-in-the-codex-desktop-app): choose the **ostack** source in Plugins Directory, open **ostack**, and select **Install**. Use this repository’s `codex` branch as the marketplace source.
 
 Start a chat with the installed plugin selected and invoke `$onyo-mode`. The plugin keeps the skills and their sibling references, scripts, and docs together.
 
