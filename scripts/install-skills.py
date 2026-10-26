@@ -12,6 +12,14 @@ def points_to(link, target):
 
 
 def install(checkout, skills_dir, agents_dir=None):
+    # Validate both directory chains before creating even the first skill link.
+    for directory in (skills_dir, agents_dir):
+        if directory is None:
+            continue
+        absolute = directory.absolute()
+        for path in (absolute, *absolute.parents):
+            if (path.exists() or path.is_symlink()) and not path.is_dir():
+                raise ValueError(f"Destination directory or ancestor is not a directory: {path}")
     checkout = checkout.resolve()
     links = [(skills_dir / p.name, p) for p in sorted((checkout / "skills").iterdir())
              if (p / "SKILL.md").is_file()]

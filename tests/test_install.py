@@ -70,6 +70,60 @@ class InstallLinks(unittest.TestCase):
         self.assertEqual(p.readlink(), self.root / "custom missing skill")
         self.assertFalse((self.skills / "architect").exists())
 
+    def snapshot(self):
+        result = {}
+        for path in self.root.rglob("*"):
+            mode = path.lstat().st_mode
+            content = str(path.readlink()) if path.is_symlink() else path.read_bytes() if path.is_file() else None
+            result[str(path.relative_to(self.root))] = (mode, content)
+        return result
+
+    def test_invalid_directory_chains_make_no_changes(self):
+        for target in ("skills", "agents"):
+            for location in ("destination", "ancestor"):
+                for kind in ("file", "file-link", "broken-link"):
+                    with self.subTest(target=target, location=location, kind=kind):
+                        base = self.root / f"{target}-{location}-{kind}"
+                        skills, agents = base / "skills", base / "agents"
+                        invalid = skills if target == "skills" else agents
+                        invalid.parent.mkdir(parents=True)
+                        if kind == "file":
+                            invalid.write_text("user content")
+                        elif kind == "file-link":
+                            original = base / "user-file"
+                            original.write_text("user content")
+                            invalid.symlink_to(original)
+                        else:
+                            invalid.symlink_to(base / "missing")
+                        if location == "ancestor":
+                            if target == "skills":
+                                skills = invalid / "nested/skills"
+                            else:
+                                agents = invalid / "nested/agents"
+                        before = self.snapshot()
+                        with self.assertRaisesRegex(ValueError, "not a directory"):
+                            installer.install(self.checkout, skills, agents)
+                        self.assertEqual(self.snapshot(), before)
+
+    def test_directory_symlinks_and_missing_descendants_work(self):
+        for nested in (False, True):
+            with self.subTest(nested=nested):
+                base = self.root / f"valid-links-{nested}"
+                base.mkdir()
+                destinations = []
+                for name in ("skills", "agents"):
+                    actual = base / f"actual-{name}"
+                    actual.mkdir()
+                    link = base / name
+                    link.symlink_to(actual, target_is_directory=True)
+                    destinations.append(link / "missing/child" if nested else link)
+                skills, agents = destinations
+                installer.install(self.checkout, skills, agents)
+                installer.install(self.checkout, skills, agents)
+                for name in self.names:
+                    self.assertTrue(installer.points_to(skills / name, self.checkout / "skills" / name))
+                self.assertTrue((agents / "onyo-agent.toml").is_symlink())
+
     def test_copied_or_custom_agent_preserved(self):
         self.agents.mkdir(parents=True)
         p = self.agents / "poteto-agent.toml"
