@@ -6,6 +6,6 @@
 @@ -88 +88 @@ [A]
 -Apps change, and feature maps go out of date. Run this at least once a day, ideally from a scheduled automation so nobody has to remember:
 +Apps change and feature maps rot. Run this at least once a day, ideally from a scheduled routine so nobody has to remember:
-@@ -164 +164 @@ [A]
+@@ -160 +160 @@ [A]
 -The [Shipping playbook](../../skills/onyo-mode/playbooks/shipping.md) verifies each PR independently before it arms anything. One fresh agent per PR proves the behavior live, and the agent that judges a change is never the one that wrote it. Then Shipping lands only the contiguous verified run from the bottom, one PR at a time through GitHub by default or Origin when its CLI is available, and reports the first PR that breaks the chain. A verified PR sitting above an unverified one waits, because merging it would pull the gap in underneath.
 +The [Shipping playbook](../../skills/onyo-mode/playbooks/shipping.md) verifies each PR independently before it arms anything. One fresh agent per PR proves the behavior live, and the agent that judges a change is never the one that wrote it. Then Shipping lands only the contiguous verified run from the bottom, one PR at a time through GitHub, and reports the first PR that breaks the chain. A verified PR sitting above an unverified one waits, because merging it would pull the gap in underneath.
