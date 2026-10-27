@@ -46,6 +46,19 @@ class OrchestrateRecords(unittest.TestCase):
                 for field in self.interface_fields(interface):
                     self.assertIn(field, fields)
 
+    def test_project_creation_does_not_require_an_overview_parent(self):
+        for path in ['skills/onyo-mode/playbooks/orchestrate.md',
+                     'skills/onyo-mode/references/codex.md',
+                     'skills/onyo-help/references/guide/02-onyo-mode.md',
+                     'skills/onyo-help/references/guide/07-overnight.md']:
+            with self.subTest(path=path):
+                text = (ROOT / path).read_text()
+                self.assertRegex(text, r'top-level (?:project )?Pages?')
+                self.assertNotRegex(text, r"(?:Create|create) .*overview's actual Page ID")
+                self.assertNotRegex(text, r'one actual child (?:project )?Page per')
+                self.assertNotIn('establish actual parent/child placement', text)
+                self.assertNotIn('Hsit/dot is the planning/routing coordinator', text)
+
 
 if __name__ == '__main__':
     unittest.main()

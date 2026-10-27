@@ -1,6 +1,6 @@
 # Route work through `$onyo-mode`
 
-`$onyo-mode` is the front door. You give it a goal, it matches one of twenty-three playbooks, copies that playbook's steps into the todo list, and calls the other skills as the steps need them. In this page you learn what a good prompt looks like, and how little of one you actually need.
+`$onyo-mode` is the front door. Outer dot receives your goal and routes it to the lead responsible for that outcome. The lead selects the playbook, keeps the task list, and calls the skills its steps need. In this page you learn what a good prompt looks like, and how little of one you actually need.
 
 ![A dispatcher pulls a switch lever to route robots on rail handcars toward lit gates, under a $onyo-mode departure board listing BUG FIX, FEATURE, and INVESTIGATION.](./images/router.jpg)
 
@@ -8,8 +8,9 @@
 
 ```mermaid
 flowchart TD
-    A[Your prompt] --> B[onyo-mode]
-    B --> C[Read the Principles section]
+    A[Your prompt] --> B[Outer dot intake]
+    B --> L[Scoped project lead]
+    L --> C[Read the Principles section]
     C --> D{Match the task}
     D -->|Read-only question| E[Investigation]
     D -->|Defect| F[Bug fix]
@@ -25,9 +26,11 @@ flowchart TD
     J --> K
 ```
 
+A project covers a coherent outcome, such as a campaign generator or dashboard performance effort. Several projects can share a repository. The lead owns planning, research, delegation, acceptance recommendations, and replanning. Outer dot relays user changes and the lead's reports. When the lead lacks cloud-task controls, outer dot performs its concrete launch and result-read requests and returns the evidence. Existing permission and review gates still apply.
+
 The diagram shows the common routes. There are also playbooks for hillclimbing a metric, diagnosing runtime symptoms and captured traces, prototypes, visual parity, authoring and evaluating skills, autonomous runs, opening a PR, babysitting a PR or stack to merge-ready, shipping a verified stack, running a PR queue or a stack on autopilot, orchestrating project-scale programs, session pickup, pausing safely, multi-phase plans, and worktree cleanup. The [playbook directory](../../../onyo-mode/SKILL.md#playbooks) has the full set.
 
-For project-scale Orchestrate runs, use one compact coordination overview Page and one actual child Page per active project. The parent discovers or creates authorized records, verifies nesting through Page controls, and keeps the original registers and structured frontier/status on the project Pages. The overview rolls up active priorities, blockers and decisions. See [Orchestrate](../../../onyo-mode/playbooks/orchestrate.md#durable-project-record-in-spaces) for the record fields and recovery rules. Small tasks still collapse per Frame.
+For project-scale Orchestrate runs, use a dedicated, user-designated coordination Space with separate top-level project Pages. A short overview may link them. The lead owns its workstream record after direct read/write capability is verified. When record tools are missing, the lead returns requested deltas for an authorized relay writer to save and verify. Keep one designated writer per record and preserve user edits. The original registers and structured frontier/status stay on the project Page. See [Orchestrate](../../../onyo-mode/playbooks/orchestrate.md#durable-project-record-in-spaces) for fields, initialization, and recovery. Small tasks still collapse per Frame.
 
 ## Say the goal, not the ceremony
 
