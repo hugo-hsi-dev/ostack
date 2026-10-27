@@ -27,6 +27,8 @@ flowchart TD
 
 The diagram shows the common routes. There are also playbooks for hillclimbing a metric, diagnosing runtime symptoms and captured traces, prototypes, visual parity, authoring and evaluating skills, autonomous runs, opening a PR, babysitting a PR or stack to merge-ready, shipping a verified stack, running a PR queue or a stack on autopilot, orchestrating project-scale programs, session pickup, pausing safely, multi-phase plans, and worktree cleanup. The [playbook directory](../../../onyo-mode/SKILL.md#playbooks) has the full set.
 
+For project-scale Orchestrate runs, use one compact coordination overview Page and one actual child Page per active project. The parent discovers or creates authorized records, verifies nesting through Page controls, and keeps the original registers and structured frontier/status on the project Pages. The overview rolls up active priorities, blockers and decisions. See [Orchestrate](../../../onyo-mode/playbooks/orchestrate.md#durable-project-record-in-spaces) for the record fields and recovery rules. Small tasks still collapse per Frame.
+
 ## Say the goal, not the ceremony
 
 You don't write a spec. You say what's wrong or what you want, plus anything you already know that saves the agent time:
