@@ -9,6 +9,20 @@ Read [Codex compatibility](references/codex.md) before using this workflow. In a
 
 On a filesystem, bundled skills live at `../<name>/SKILL.md` from this file. In a cloud skill reader, load a sibling skill from its own package under the same plugin owner. Give every `onyo-agent` prompt either this skill’s verified filesystem path or its verified cloud package and resource locator; a skill URI is not a filesystem path.
 
+## Project lead
+
+Outer dot receives the request, communicates with the user, and routes it to the lead responsible for that outcome. Scope a project by a coherent body of work, such as a campaign generator, migration, dashboard performance push, or tech-debt cleanup. A repository can contain several projects. Reuse the responsible lead role and current work for the same outcome instead of starting a competing plan. The role outlives one task turn; fresh-agent and narrow reuse rules still govern its next assignment. This is a task role, not a permanent bot.
+
+The lead owns technical planning, research routing, workflow selection, decomposition, delegation decisions, work ordering, acceptance recommendations, and replanning. The lead runs the applicable skills and playbooks below. Outer dot relays requirements, evidence, blockers, and the lead's recommendations without creating a second technical plan or approval layer. Human decisions and permission gates still apply.
+
+When the lead lacks required cloud-task launch or result controls, it returns concrete dispatch or result-read requests to outer dot. Supply the scoped brief, dependencies, intended repository and branch, configured model choices, and acceptance requirements. Outer dot uses its actual available controls, retains the returned task references, reads results, and relays the evidence to the lead. The lead decides the next work. Use [Orchestrate's cloud relay](playbooks/orchestrate.md#launch-and-collect-codex-cloud-work) when that playbook applies. Native subagents remain a separate execution option under the placement rules.
+
+For required local or native work the lead cannot launch or read, use the same concrete request relay with explicit placement. Outer dot uses its available local/native controls and returns their receipts. Native work remains distinct from an isolated cloud task.
+
+After a lead task returns, route the next decision to a fresh lead task with the consolidated scope, prior lead report, current record, and new receipts. Continue an existing task only under the narrow state-preservation exception and an actually available continuation control. A returned lead is not assumed to remain running or subscribed.
+
+Before transferring active work, pass the current requirements and later corrections, responsible lead, task references and known states, branches, PRs and exact observed SHAs, verified evidence, open gates, and next action. Read existing work before dispatch. Reconcile uncertain launches and late results before replacement work. A changed requirement goes to the responsible lead for replanning and revised briefs; outer dot does not silently launch a parallel fix.
+
 ## Non-negotiables
 
 The Principles section below grounds every trigger. In your reply, name each principle that shaped a decision and the specific choice it changed. Cite only principles whose leaf SKILL.md you read this session.
@@ -89,7 +103,7 @@ Read the leaf skill in full for any principle you apply. Each entry names when i
 
 ## Subagents
 
-**Use the `onyo-agent` role for any subagent you spawn inside a playbook step** (code-writing delegates, ad-hoc helpers). The chat that receives `$onyo-mode` runs the playbook. Never spawn a `onyo-agent` to run the playbook itself. Routed workflow skills (`how`, `why`, `interrogate`, `swarm`) prescribe their own roles for diverse-model review. Respect those roles instead of substituting `onyo-agent`. Codex custom-agent files live in `.codex/agents/*.toml` in a consuming repository, or `~/.codex/agents/*.toml`. When the exposed spawn schema cannot select a configured role, read `references/onyo-agent.md` from this skill and include its instructions plus this skill’s verified filesystem path or cloud package/resource locator in the delegate’s brief. A task name alone is not proof that a custom agent definition loaded.
+**Use the `onyo-agent` role for any subagent you spawn inside a playbook step** (code-writing delegates, ad-hoc helpers). The responsible lead runs the playbook. A worker receiving this skill follows its assigned unit; it does not become another project lead. Routed workflow skills (`how`, `why`, `interrogate`, `swarm`) prescribe their own roles for diverse-model review. Respect those roles instead of substituting `onyo-agent`. Codex custom-agent files live in `.codex/agents/*.toml` in a consuming repository, or `~/.codex/agents/*.toml`. When the exposed spawn schema cannot select a configured role, read `references/onyo-agent.md` from this skill and include its instructions plus this skill's verified filesystem path or cloud package/resource locator in the delegate's brief. A task name alone is not proof that a custom agent definition loaded.
 
 For Orchestrate’s isolated Codex cloud tasks, follow the parent-side launch/result controls in [Orchestrate](playbooks/orchestrate.md#launch-and-collect-codex-cloud-work). The native-subagent tool names below are not cloud-task APIs. The same fresh-agent rule below applies.
 

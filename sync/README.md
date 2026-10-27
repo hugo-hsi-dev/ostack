@@ -8,7 +8,7 @@ Three paths move for archival purposes: upstream `.cursor-plugin/plugin.json`, `
 
 1. Edit the generated file.
 2. Run `python3 sync/sync.py refresh <path>`. New hunks get `[?]`.
-3. Review each hunk against the harness-only scope. Mark harness adaptations `[A]` (`refresh --code A <path>`) and approved product-selection/reference cleanup or branding `[P]` (`refresh --code P <path>`). An existing harness hunk changed by product selection may be combined under `[P]`; its full diff remains reviewable. No unrelated workflow redesign belongs in either class.
+3. Review each hunk against its authorized scope. Mark harness adaptations `[A]` (`refresh --code A <path>`) and approved product-selection/reference cleanup, branding, or the scoped project-lead ownership change `[P]` (`refresh --code P <path>`). An existing harness hunk changed by an approved product adaptation may be combined under `[P]`; its full diff remains reviewable. No unrelated workflow redesign belongs in either class.
 4. Run `python3 sync/sync.py check` and `python3 sync/validate_codex.py`.
 5. Commit generated files, patches, and any derived metadata together.
 
