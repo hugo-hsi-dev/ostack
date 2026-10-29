@@ -1,68 +1,54 @@
 ---
 name: setup-ostack
-description: Configure which models ostack uses per role and at what reasoning budget. Detects your available models and writes an always-applied rule that overrides the skill defaults. Use for /setup-ostack, "configure ostack models", "ostack budget", or changing ostack's model choices.
+description: Configure which model and effort ostack uses per role. Shows the defaults, detects your available models, and writes a rule that overrides the skill defaults. Use for /setup-ostack, "configure ostack models", or changing ostack's model choices.
 ---
 
 # Setup ostack
 
-Write `~/.cursor/rules/ostack-models.mdc`, an always-applied rule that sets ostack's model per role.
+Write `~/.claude/rules/ostack-models.md`, a rule that sets ostack's model and effort per role. Claude Code loads every `.md` file in `~/.claude/rules/` into each new session.
 
 ## Steps
 
 ### 1. Detect available models
 
-Enumerate the model slugs you can pass to a `Agent` subagent in this session. That is the dependable source. If Cursor also exposes a models API or CLI that lists the user's entitled models, prefer it for completeness. If you cannot detect any, ask the user to paste the slugs they have access to. Never write a real slug you have not confirmed is available. The aliases `inherit-parent` and `auto` are always valid even though they are not detected slugs.
+The available models are the `model` values the `Agent` tool schema lists, such as `opus`, `sonnet`, and `haiku`. The efforts are its `effort` values on the ladder `xhigh` > `high` > `medium` > `low`. ostack never uses an effort above `xhigh`. Never write a model the schema does not list. `inherit` is always valid.
 
 ### 2. Load current state
 
-The default role-to-model mapping is the rule shape shown in step 5 below. If `~/.cursor/rules/ostack-models.mdc` already exists, read it and treat its `# budget` line and its role values as the current choices. Otherwise start from those defaults. A line whose role is not in step 5, such as `how critics`, is from a retired role. Drop it.
+The default role values are the rule shape shown in step 5 below. If `~/.claude/rules/ostack-models.md` already exists, read it and treat its role values as the current choices. Otherwise start from those defaults. A line whose role is not in step 5, such as `how critics`, is from a retired role. Drop it, and drop any `# budget` line, which ostack no longer uses.
 
-### 3. Budget, map, and confirm
+### 3. Show the roles and confirm
 
-**(a) Ask for a budget.** Prefer AskUserQuestion over free text. Offer these four options with these exact labels, and name the current budget when the rule records one. With no rule, say that `large` matches the skill defaults.
-
-- `unlimited — max reasoning`
-- `large — xhigh reasoning`
-- `medium — high reasoning`
-- `small — medium reasoning`
-
-**(b) Apply it.** Build the working table from the skill defaults, and on a re-run keep any role you changed by family, list, or alias (`inherit-parent`, `auto`). `unlimited`, `large`, `medium`, and `small` set the effort token of every real slug, panel entries included, to `max`, `xhigh`, `high`, or `medium`. The effort token is the last token, or the one before a trailing `fast`, on the ladder `max` > `xhigh` > `high` > `medium` > `low`. If the result is not a detected slug, use the same family's detected slug with the highest effort at or below the target, else mark the role as needing a choice. `inherit-parent` and `auto` do not change. So `unlimited` turns `claude-opus-5-5-xhigh` into `claude-opus-5-5-max`. Grok slugs top out at `xhigh`, so under `unlimited` the fallback puts Grok at `xhigh` and keeps `grok-4.7-xhigh-fast` as it is. `large` keeps both defaults. `small` turns them into `claude-opus-5-5-medium` and `grok-4.7-medium-fast`.
-
-**(c) Show the roles and confirm.** Show every role with its model, marking any real slug not in the detected set as needing a choice. Also list each line step 2 dropped. Ask whether to accept as-is or change specific roles, offering the detected models plus `inherit-parent` and `auto` (both mean: this role runs on the parent chat model, which is how Auto users stay on Auto) as the options. Prefer AskUserQuestion over free text. For panel roles (arena runners, architect runners, interrogate reviewers) the value is a list, and one subagent runs per entry, alias entries included, so the list length sets the count. `arena cross-judge pool` is also a list, but Arena runs one judge. It tries only values from a family other than the parent's, in list order, so order it by preference. An `inherit-parent` or `auto` value never judges. `swarm workers` is the default model for every worker unless a race or comparison assigns another model per arm.
+Show every role with its value, marking any model not in the detected set as needing a choice. Also list each line step 2 dropped. Ask whether to accept as-is or change specific roles, offering the detected models plus `inherit`, which runs the role on the parent chat model. Prefer AskUserQuestion over free text. For panel roles (arena runners, architect runners, interrogate reviewers) the value is a list, and one subagent runs per entry, `inherit` entries included, so the list length sets the count. `arena cross-judge pool` is also a list, but Arena runs one judge. It tries only entries on a model other than the parent's, in list order, so order it by preference. An `inherit` entry never judges. `swarm workers` is the default for every worker unless a race or comparison assigns another model per arm.
 
 ### 4. Validate
 
-Every real slug written must be in the detected set. `inherit-parent` and `auto` always pass. If a chosen real slug is not available, stop and ask again.
+Every model written must be in the detected set, and every effort must be on the ladder. `inherit` always passes. If a chosen value is not available, stop and ask again.
 
 ### 5. Write the rule
 
-Write `~/.cursor/rules/ostack-models.mdc` with `alwaysApply: true`, a `# budget` line with the chosen label and its target effort, and one line per role, using the same labels onyo-mode uses. Overwrite the whole file so re-runs stay idempotent. Shape:
+Write `~/.claude/rules/ostack-models.md` with no frontmatter. Give it the comment lines and one line per role as `<model> <effort>`, using the same labels onyo-mode uses. Overwrite the whole file so re-runs stay idempotent. Never put the role lines in `CLAUDE.md`. Shape:
 
 ```
----
-description: ostack per-role model choices (overrides skill defaults)
-alwaysApply: true
----
-# ostack model configuration. One line per role. Delete a line to fall back to the skill default.
-# `inherit-parent` or `auto` as a value: the role runs on the parent chat model (omit Agent `model`). Alias entries in a panel list still count toward its fan-out.
-# budget: large (xhigh)
-feature, refactoring: grok-4.7-xhigh-fast
-bug-fix: grok-4.7-xhigh-fast
-perf-issue: grok-4.7-xhigh-fast
-hillclimb: grok-4.7-xhigh-fast
-judgment and prose: claude-opus-5-5-xhigh
-hardest tasks: claude-opus-5-5-xhigh
-how explorer: grok-4.7-xhigh-fast
-how explainer: claude-opus-5-5-xhigh
-why investigators: grok-4.7-xhigh-fast
-why synthesizer: claude-opus-5-5-xhigh
-reflect tooling: grok-4.7-xhigh-fast
-reflect judgment, divergent, synthesizer: claude-opus-5-5-xhigh
-arena runners: claude-opus-5-5-xhigh, grok-4.7-xhigh-fast
-arena cross-judge pool: claude-opus-5-5-xhigh, grok-4.7-xhigh-fast
-swarm workers: grok-4.7-xhigh-fast
-architect runners: claude-opus-5-5-xhigh, grok-4.7-xhigh-fast
-interrogate reviewers: claude-opus-5-5-xhigh, grok-4.7-xhigh-fast
+# ostack model configuration. One line per role, as `<model> <effort>`. Delete a line to fall back to the skill default.
+# `inherit` as a value: the role runs on the parent chat model (omit Agent `model` and `effort`). An `inherit` entry in a panel list still counts toward its fan-out.
+feature, refactoring: opus high
+bug-fix: opus high
+perf-issue: opus high
+hillclimb: opus high
+judgment and prose: opus high
+hardest tasks: opus xhigh
+how explorer: haiku high
+how explainer: opus high
+why investigators: haiku high
+why synthesizer: opus high
+reflect tooling: haiku high
+reflect judgment, divergent, synthesizer: opus high
+arena runners: opus high, sonnet xhigh
+arena cross-judge pool: opus high, sonnet xhigh
+swarm workers: haiku xhigh
+architect runners: opus high, sonnet xhigh
+interrogate reviewers: opus high, sonnet xhigh
 ```
 
 ### 6. Confirm
