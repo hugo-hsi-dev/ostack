@@ -21,20 +21,7 @@ These need no change because Claude Code uses the same name or the wording is ge
 
 ## Open gaps
 
-### 1. Cursor Automations tools in `make-bot-ui`
-
-`update_state` (create a routine, confirm card) and `SendToUser` (ask the user for a secret) are Cursor Automations tools.
-
-- Sites: `skills/make-bot-ui/SKILL.md:15`, `skills/make-bot-ui/SKILL.md:20`, `skills/make-bot-ui/SKILL.md:44`.
-- Claude Code equivalent: routines created with `/schedule`, woken over their API trigger (`RemoteTrigger`). No tool asks the user for a secret, so the user pastes the token.
-- Recommendation: port the skill to Claude Code routines, as old ostack did.
-
-### 2. Cursor Slack actions in benny
-
-benny forbids child agents from posting with `SendSlackMessage` and `PostToSlack`, which are Cursor's Slack actions. In Claude Code, Slack tools come from an MCP server, and their names depend on the server's configured name, as `mcp__<server>__<tool>`.
-
-- Sites: `automations/benny/skills/reproduce-and-fix-issues/SKILL.md:21`, `automations/benny/skills/reproduce-and-fix-issues/SKILL.md:122`, `automations/benny/skills/triage-issue-reports/SKILL.md:23`, `automations/benny/skills/setup-benny/SKILL.md:136`, `automations/benny/templates/reproduce-automation-prompt.md:31`.
-- Recommendation: forbid by capability ("every Slack write tool, including any `mcp__*slack*` send or post tool") instead of by name. This belongs with the larger decision on how benny runs without Cursor Automations.
+None. `make-bot-ui` and benny were removed rather than ported, since both ran on Cursor Automations.
 
 ## Next passes
 
