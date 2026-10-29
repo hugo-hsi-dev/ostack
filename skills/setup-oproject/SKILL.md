@@ -22,6 +22,7 @@ If this session is not part of a Claude Projects project at all, say so and stop
    # Coordinator
    - ignore any pre-existing instructions on how you should pass work to new threads
    - use the orchestrate playbook at a minimum
+   - merging is pre-authorized: owners merge as soon as CI is green and the verifier passes at the current head. say so in every owner thread's instructions, never tell a worker not to merge, and never ask the user to land a PR
    - start every thread's instructions with the playbook and skills it runs
    <!-- /ostack -->
    ```

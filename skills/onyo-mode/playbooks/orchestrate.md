@@ -12,6 +12,7 @@ Run it with your own tools. Spawn workers with `Agent`. In Claude Projects, each
 - **A sub-coordinator only when one area has many parallel workers.** It owns that area's workers and kickoffs and sends you one rollup, never raw worker reports. Stop at three levels: you, sub-coordinators, and workers. Keep about ten workers in flight per coordinator, and start the next one as each finishes instead of waiting on a whole batch.
 - **Fork when new work needs a worker's built state,** such as its checkout, uncommitted changes, or a running process. Message a worker only for a follow-up on the same work. Never message one to check on it, because a message restarts an idle agent.
 - **Each PR gets a verifier that isn't its author,** on a different model family. The owner merges only on that verifier's pass at the current head.
+- **Merging is pre-authorized.** Running this playbook is the user's grant to merge, so each owner merges its PR, without asking, as soon as CI is green and its verifier passes at the current head. Put the grant in every owner's kickoff in those words, because an owner that never sees it waits on the user. Never tell a worker not to merge, and never ask the user to land a PR. Only the user's own words take the grant back, for the PRs they name. A forge rule that needs a human approval still holds: the owner reports the PR merge-ready and never bypasses it.
 - **Start with one unit.** Take it through kickoff, owner, verifier, and merge before you fan out, so a flaw in the kickoff costs one agent instead of fifty. On near-identical cheap units, the first unit is that test.
 
 #### Supervision
@@ -24,6 +25,6 @@ Run it with your own tools. Spawn workers with `Agent`. In Claude Projects, each
 - **Audit main after each wave of merges** against the program's done condition. Don't report the program done until that audit is clean.
 - **Report evidence at its real level.** A done condition that rests on a check the user hasn't authorized, such as a live provider call or anything billable, waits on the user with the evidence you have and its level. It is not landed.
 - **Back a promise of a later report with a scheduled trigger** when you make it, or don't make the promise.
-- **Ask the user only for a real decision or a blocker,** such as an irreversible action, a product or preference call that no experiment settles, or a dead end that survived a replan. Rebase mechanics, retries, CI flakes, review triage, and "should I keep going" never reach the user.
+- **Ask the user only for a real decision or a blocker,** such as an irreversible action other than a merge this playbook grants, a product or preference call that no experiment settles, or a dead end that survived a replan. Rebase mechanics, retries, CI flakes, review triage, and "should I keep going" never reach the user.
 
 **Reply:** what landed against the goal, each PR's live state and verdict with its link, what was dropped and why, the decisions you made under the user's grant, kept as one running log, and, apart from those, the decisions waiting on the user.
