@@ -1,26 +1,24 @@
 ---
 name: setup-benny
-description: Configure Benny and prepare its triage and repro routines. Use when installing Benny or changing its Slack, tracker, repository, trigger, routing, control, model, or budget settings.
+description: Configure Benny and prepare its triage and repro automations. Use when installing Benny or changing its Slack, tracker, repository, routing, control, model, or budget settings.
 disable-model-invocation: true
 ---
 
 # Set up Benny
 
-Benny ships as a dormant routine pack inside ostack. The plugin manifest exposes only ostack's normal skill root; this file and the two operational files are not slash skills.
+Benny ships as a dormant automation pack inside pstack. The plugin manifest exposes only pstack's normal skill root; this file and the two operational files are not slash skills.
 
-The human enters setup by pointing Claude Code at the pack's `FOR_AGENTS.md`. The bootstrap flow copies the whole pack into the target repository, then reads this file directly at `.claude/automations/benny/skills/setup-benny/SKILL.md`.
+The human enters setup by pointing Cursor at the pack's `FOR_AGENTS.md`. The bootstrap flow copies the whole pack into the target repository, then reads this file directly at `.cursor/automations/benny/skills/setup-benny/SKILL.md`.
 
-Benny needs external configuration and two live Claude Code routines.
+Benny needs external configuration and two live Cursor automations.
 
-Routines have no Slack trigger. The default is a scheduled routine (hourly is the minimum interval) that reads the source channel through the Slack connector and picks up new top-level reports with no Benny marker or claim reaction yet. Teams that can relay Slack events may use each routine's API trigger instead, which fires `/fire` with the report coordinates in `text`.
+Do not create or update an automation until the user explicitly asks. Never put a secret value in plugin files, prompts, or committed configuration.
 
-Do not create or update a routine until the user explicitly asks. Never put a secret value in plugin files, prompts, or committed configuration.
+## 1. Copy the pack and enable shared pstack skills
 
-## 1. Copy the pack and enable shared ostack skills
+Do this before asking for Benny configuration and before invoking the built-in `/automate` skill.
 
-Do this before asking for Benny configuration and before creating any routine.
-
-Ask which repository will run the routines. The source pack is the directory containing `FOR_AGENTS.md`. The destination is `<target-repository>/.claude/automations/benny/`.
+Ask which repository will run the automations. The source pack is the directory containing `FOR_AGENTS.md`. The destination is `<target-repository>/.cursor/automations/benny/`.
 
 Merge the entire source pack into the destination:
 
@@ -33,26 +31,21 @@ Merge the entire source pack into the destination:
 
 If this file is already being read from the target destination, treat the copy as complete and run the same verification before continuing.
 
-Add ostack to the target repository's `.claude/settings.json`. If the file or `.claude` directory does not exist, create it.
+Add pstack to the target repository's `.cursor/settings.json`. If the file or `.cursor` directory does not exist, create it.
 
-Merge these entries into the existing JSON:
+Merge this entry into the existing JSON or JSONC:
 
 ```json
 {
-	"enabledPlugins": {
-		"ostack@ostack": true
-	},
-	"extraKnownMarketplaces": {
-		"ostack": {
-			"source": { "source": "github", "repo": "hugo-hsi-dev/ostack" }
-		}
+	"plugins": {
+		"pstack": { "enabled": true }
 	}
 }
 ```
 
-Preserve every unrelated top-level setting, every other plugin entry, and every other marketplace. If `enabledPlugins["ostack@ostack"]` already exists, change only its value. Validate the file after editing it.
+Preserve every unrelated top-level setting and every other plugin entry. If `plugins.pstack` already exists, change only its `enabled` value. Preserve comments and valid JSONC syntax when the file uses JSONC. Validate the file after editing it.
 
-Start a fresh Claude Code session rooted in the target repository. Verify that these shared ostack skills resolve from project scope:
+Reload the target project or start a fresh agent rooted there. Verify that these shared pstack skills resolve from project scope:
 
 - `how`
 - `why`
@@ -65,15 +58,15 @@ Start a fresh Claude Code session rooted in the target repository. Verify that t
 - `principle-fix-root-causes`
 - `principle-prove-it-works`
 
-Do not count a skill loaded from the current session or a user-scoped plugin. The check must show that a fresh session in the target repository receives ostack through project settings. A routine run starts from a fresh clone, so project settings are the only way it gets ostack.
+Do not count a skill loaded from the current session or a user-scoped plugin. The check must show that a fresh agent in the target repository receives pstack through project settings.
 
 If project-scoped plugin installation is unavailable or any shared dependency does not resolve, stop and explain the failure.
 
-The Benny files are read directly from `.claude/automations/benny/`. Do not add that directory to a plugin manifest or expect its `SKILL.md` files to appear in the slash-skill list.
+The Benny files are read directly from `.cursor/automations/benny/`. Do not add that directory to a plugin manifest or expect its `SKILL.md` files to appear in the slash-skill list.
 
-Tell the user that `.claude/settings.json`, `.claude/automations/benny/`, and any referenced secret-free configuration must be committed to the default branch before either routine is enabled. Do not commit them unless the user asks.
+Tell the user that `.cursor/settings.json`, `.cursor/automations/benny/`, and any referenced secret-free configuration must be committed before either automation is enabled. Do not commit them unless the user asks.
 
-Once this check passes, live routine prompts may read the committed operational files by their stable repository-relative paths. They must not embed a plugin cache path or copy the file contents.
+Once this check passes, live automation prompts may read the committed operational files by their stable repository-relative paths. They must not embed a plugin cache path or copy the file contents.
 
 ## 2. Adapt the configuration
 
@@ -82,21 +75,21 @@ Open these copied examples:
 - `../../templates/configuration.example.yaml`
 - `../reproduce-and-fix-issues/references/feature-map.example.md`
 
-Create user-owned copies outside `.claude/automations/benny/`. These are configuration files, not pack files. Example locations:
+Create user-owned copies outside `.cursor/automations/benny/`. These are configuration files, not pack files. Example locations:
 
-- Project config, such as `.claude/benny/configuration.yaml`
-- Project feature map, such as `.claude/benny/feature-map.md`
-- Project routing map, such as `.claude/benny/routing.md`
+- Project config, such as `.cursor/benny/configuration.yaml`
+- Project feature map, such as `.cursor/benny/feature-map.md`
+- Project routing map, such as `.cursor/benny/routing.md`
+- User config, such as `~/.config/benny/configuration.yaml`
+- User feature map, such as `~/.config/benny/feature-map.md`
 
-A routine runs in a cloud session from a fresh clone, so it cannot read user-level files such as `~/.config/benny/`. Commit the configuration or paraphrase it into the routine prompt.
-
-Fill one feature-map section for every user-facing feature the routine may reproduce. Keep it at the user point of view. Do not freeze implementation details or current code paths in the map.
+Fill one feature-map section for every user-facing feature the automation may reproduce. Keep it at the user point of view. Do not freeze implementation details or current code paths in the map.
 
 Do not edit the copied examples. Pack refreshes may update source-managed files after conflict review, but they must never touch the user-owned copies.
 
-Prefer committed, secret-free files in the target repository, because each routine run reads a fresh clone. Otherwise paraphrase the required values into the routine prompt. Reference a repository file only after you confirm that it is committed on the default branch of the repository the routine clones.
+Prefer committed, secret-free files in the target repository when a fresh automation checkout must read them. Otherwise paraphrase the required values into the live prompt. Reference a repository file only after the built-in `/automate` skill confirms that the file is committed in the repository where the automation runs.
 
-Use stable repository-relative paths for committed pack and configuration files. Never reference the plugin source directory or a plugin cache path from a live routine.
+Use stable repository-relative paths for committed pack and configuration files. Never reference the plugin source directory or a plugin cache path from a live automation.
 
 ## 3. Fill the required choices
 
@@ -105,8 +98,7 @@ Ask for or confirm:
 - Source Slack channel ID
 - Optional operations or status channel ID
 - Repository URL and default branch
-- Triage identity or Slack user ID. It must be the Slack account the routines' Slack connector acts as, because the claim reactions and verdicts come from it. The claude.ai Slack connector acts as the person who connected it, not as a bot. Recommend connecting it with a dedicated Slack account for Benny. Repro trusts any marker in the verdict format from that account, even one typed by hand, and triage skips every message that account posts, so a personal account mixes its owner's messages with Benny's.
-- Trigger type, `schedule` (default) or `api`, the schedule interval (hourly or longer), the scan lookback, and the per-run report limits
+- Triage identity or Slack user ID
 - Issue tracker type, team, project, labels, and intake status
 - Tracker adapter skill or MCP actions
 - Optional routing map path
@@ -115,41 +107,33 @@ Ask for or confirm:
 - Status emoji strings
 - Pull request URL format
 - Polling and effort budgets
-- Model for triage, repro, code work, and media review
+- Model slug for triage, repro, code work, and media review
 
-Use Claude Code model aliases (`opus`, `sonnet`, `haiku`, `fable`) or full model IDs the account can use. The routine form sets each run's model, so the triage and repro values go there. Subagents take the code and media-review values as the Agent tool's `model`, plus `effort` when the value names one, such as `opus xhigh`. Do not guess a model ID and do not carry over a private default.
+Use only model slugs shown as available in the user's Cursor model picker or supported model list. Do not guess a slug and do not carry over a private default.
 
 The source channel, triage identity, repository, tracker adapter, control skill, and feature map must be explicit. Fail setup if any required value stays ambiguous.
 
-Use ostack's `unslop` skill on the final routine names, descriptions, and prompts before saving them.
+Use pstack's `unslop` skill on the final automation names, descriptions, and prompt shims before saving them.
 
 ## 4. Check integration capabilities
 
-Both routines reach Slack through the Slack connector. Include it in each routine's connectors.
-
-The triage routine needs:
+The triage automation needs:
 
 - Read access to the configured source Slack channel and its threads
-- Reaction access on source-channel messages, for the claim reaction
 - Thread-reply access in that channel
 - Attachment metadata and file download access when reports include media
 - Search, read, create, and update access through the configured issue-tracker adapter
 
-The repro routine needs:
+The repro automation needs:
 
-- Read access to the source channel and its threads
-- Reaction access on source-channel messages, for the claim reaction
+- Read access to the source thread
 - Thread-reply access in the source channel
 - Optional post and edit access in the configured operations channel
 - Repository read and history access
 - A pull request action that can open a draft pull request
-- The configured control-adapter skill, runnable inside the routine's cloud environment
+- The configured control-adapter skill
 
-The claim reactions are the routines' only dedupe state, so if the Slack connector has no reaction tool, leave both routines disabled.
-
-Prefer configured Slack connector tools for reads, reactions, and posts. The optional `BENNY_SLACK_BOT_TOKEN` may fill a narrow gap such as editing one operations status message or downloading an attachment. Store the value in the routine's cloud environment or a secret manager, not in YAML.
-
-Claude Code subagents inherit the session's MCP tools, the Slack connector included. If the user wants delegated workers, have them define a project agent whose `tools` or `disallowedTools` removes every Slack connector write tool. Without one, the operational files keep that work in the coordinator.
+Prefer configured Cursor Slack actions for reads and posts. The optional `BENNY_SLACK_BOT_TOKEN` may fill a narrow gap such as editing one operations status message or downloading an attachment. Store the value in a secret manager or environment, not in YAML.
 
 Do not use undocumented integration endpoints.
 
@@ -157,7 +141,7 @@ Do not use undocumented integration endpoints.
 
 If the user wants reroutes or owner pings:
 
-1. Copy `../triage-issue-reports/references/routing.example.md` outside `.claude/automations/benny/`.
+1. Copy `../triage-issue-reports/references/routing.example.md` outside `.cursor/automations/benny/`.
 2. Replace every placeholder with public or organization-local values.
 3. Keep owner pings off by default.
 4. Allow a ping only for a configured feature owner or a confirmed likely regression author.
@@ -178,100 +162,96 @@ Confirm that the named skill can:
 - Start and stop a recording
 - Clean up its processes and temporary data
 
-If any capability is missing, leave the repro routine disabled. It must fail closed rather than claim a reproduction it did not perform.
+If any capability is missing, leave the repro automation disabled. It must fail closed rather than claim a reproduction it did not perform.
 
-## 7. Prepare the live routines
+## 7. Prepare the live automations
 
-Ask whether this is first-time creation or configuration of existing routines.
+Ask whether this is first-time creation or configuration of existing automations.
 
 Read `../../FOR_AGENTS.md` from the copied pack as the primary user-intent source for either path. Use it to understand the two triggers, tools, instructions, outcomes, and shared rules.
 
 ### First-time creation
 
-Create one routine at a time, through the routine form at claude.ai/code/routines or `/schedule` in the CLI. `/schedule` covers schedule triggers. An API trigger can only be added on the web.
+Create one automation at a time.
 
-For each routine:
+For each automation:
 
 1. Read the matching copied prompt template as secondary internal source material.
-2. Turn `FOR_AGENTS.md`, the finished Benny configuration, and the template intent into a complete natural-language routine prompt.
-3. Tell the prompt to read and follow its exact committed operational file under `.claude/automations/benny/`.
-4. Use the stable repository-relative path, not a plugin source or cache path. Do not copy the operational file contents into the prompt.
-5. Confirm that the copied pack, `.claude/settings.json`, and any referenced configuration files are committed on the default branch of the repository the routine clones.
-6. Fill the routine form with the user. It takes the name, prompt, target repository, a cloud environment that can run the control adapter, the Slack connector and the tracker connector, the model, and the trigger.
-7. For the default trigger, set a schedule of hourly or longer. For an API trigger, the user adds it on the routine's page, generates the token themselves, and stores it in the system that relays Slack events. The token is shown only once. Never ask for it in a chat.
-8. Show the user the filled form and let them save it.
-9. Finish this routine before starting the next one.
+2. Turn `FOR_AGENTS.md`, the finished Benny configuration, and the template intent into a complete natural-language request.
+3. Tell the live prompt to read and follow its exact committed operational file under `.cursor/automations/benny/`.
+4. Use the stable repository-relative path, not a plugin source or cache path. Do not copy the operational file contents into the live prompt.
+5. Read and follow the built-in `automate` skill.
+6. Let `automate` discover Slack channels, the repository, and connected integrations.
+7. Let `automate` confirm that the copied pack and any referenced configuration files are committed in the same repository where the automation will run.
+8. Let `automate` show its draft table, obtain approval, ask readiness, and open the Automations editor.
+9. Finish the editor handoff for this automation before starting the next one.
 
-The triage routine, filled from configuration:
+Give `automate` this complete triage intent, filled from configuration:
 
 - Name `benny-triage`.
-- Read and follow `.claude/automations/benny/skills/triage-issue-reports/SKILL.md` for every run.
-- On a scheduled run, scan the configured source Slack channel for new top-level reports with no Benny marker and no `seen` reaction from the triage identity. Claim them oldest first, up to `scan.triage_max_reports_per_run`, with that reaction.
-- On an API run, read the report coordinates from the `text` field in the routine-fire-payload block.
-- Read each report's thread and reply only inside it.
+- Read and follow `.cursor/automations/benny/skills/triage-issue-reports/SKILL.md` for every run.
+- Trigger on each new top-level report in the configured source Slack channel.
+- Read the triggering thread and reply only inside it.
 - Use the configured issue-tracker integration.
 - Classify, inspect evidence, trace cause, dedupe, and create only clear new bugs.
 - End one thread-only verdict with the configured `[benny:bug]`, `[benny:performance]`, or `[benny:other]` marker and optional tracker URL.
 - Never post a source-channel root message.
 
-After the triage routine is saved, the repro and fix routine:
+After the triage editor handoff is complete, give `automate` this complete repro and fix intent:
 
 - Name `benny-reproduce`.
-- Read and follow `.claude/automations/benny/skills/reproduce-and-fix-issues/SKILL.md` for every run.
-- On a scheduled run, scan the configured source Slack channel for up to `scan.reproduce_max_reports_per_run` reports (default 1) with a trusted bug or performance marker and no `reproducing` claim reaction, and claim each with that reaction.
-- On an API run, read the report coordinates from the `text` field in the routine-fire-payload block.
+- Read and follow `.cursor/automations/benny/skills/reproduce-and-fix-issues/SKILL.md` for every run.
+- Trigger on the same new top-level reports in the configured source Slack channel.
 - Use the configured repository and default branch.
 - Read the source thread and reply only inside it.
-- Include pull request creation and the configured tracker, control-adapter, and feature-map requirements. Paraphrase mapped user paths and states unless an eligible file is committed in the same repository.
+- Include pull request creation and the configured tracker, control-adapter, and feature-map requirements. Paraphrase mapped user paths and states unless `automate` confirms an eligible committed file in the same repository.
 - Wait for a trusted triage marker before acting.
 - Reproduce the exact symptom twice through the mapped real UI and capture evidence.
 - Verify an existing fix without authoring over it.
 - Attempt an optional bounded fix only after confirmed repro, then open a draft pull request when proof and checks pass.
 - Never post a source-channel root message.
 
-The routine form sets the model for each run. Put the configured triage or repro model there.
+Do not duplicate `automate`'s Slack, repository, integration, completeness, authentication, draft-review, approval, readiness, or editor-handoff work.
 
-### Existing routines
+### Existing automations
 
-Do not create a new routine to inspect or update an existing one.
+The built-in `automate` skill is creation-only. Do not use it to search for, inspect, or update existing automations.
 
-Finish configuration, routing, control-adapter, and feature-map validation. Then give the user this concise routine-form checklist.
+Finish configuration, routing, control-adapter, and feature-map validation. Then give the user this concise editor checklist.
 
-For the existing triage routine, update:
+For the existing triage automation, update:
 
 - Name and description
-- Direct instruction to read `.claude/automations/benny/skills/triage-issue-reports/SKILL.md`
-- Trigger, scan and claim instructions, and source channel
-- Slack connector with thread read, reaction, and reply capabilities
-- Issue-tracker connector
-- Model
+- Direct instruction to read `.cursor/automations/benny/skills/triage-issue-reports/SKILL.md`
+- New top-level Slack report trigger and source channel
+- Slack thread read and reply capabilities
+- Issue-tracker integration
 - Paraphrased triage instructions, thread-only rule, and Benny verdict markers
 
-For the existing repro routine, update:
+For the existing repro automation, update:
 
 - Name and description
-- Direct instruction to read `.claude/automations/benny/skills/reproduce-and-fix-issues/SKILL.md`
-- Matching trigger, scan and claim instructions, and source channel
+- Direct instruction to read `.cursor/automations/benny/skills/reproduce-and-fix-issues/SKILL.md`
+- Matching Slack trigger and source channel
 - Repository and default branch
-- Slack connector with thread read, reaction, and reply capabilities
-- Pull request access
+- Slack thread read and reply capabilities
+- Pull request action
 - Tracker, control-adapter, and feature-map requirements
-- Model
 - Paraphrased marker wait, evidence, verification, and bounded-fix instructions
 
-Ask the user to update each existing routine directly in its routine form. Do not create replacements or duplicates.
+Ask the user to update each existing automation directly in its Automations editor. Do not create replacements or duplicates.
 
 ### Creation boundary
 
-Never call a routine backend API directly. Never put a routine token, Slack token, or other secret in a prompt, a chat, or committed configuration. For new routines, the only finish paths are the routine form the user saves at claude.ai/code/routines, or `/schedule` in the CLI after the user reviews the draft.
+Never call a direct automation backend service or backend automation tool. Never use a browser URL that carries draft fields. Never build or open a Cursor protocol deep link. For new automations, the only finish path is the built-in `automate` skill's reviewed Automations editor handoff.
 
-Do not point either routine at the real source channel until the thread-safety test passes after the save.
+Do not enable either automation until the thread-safety test passes after the editor save.
 
 ## 8. Test thread safety
 
 Use a test channel or a harmless test report.
 
-Before testing, confirm that the target repository's `.claude/settings.json`, `.claude/automations/benny/`, and every referenced secret-free configuration file are committed on the default branch the routine clones. Confirm that both routine prompts point at their exact committed operational files. If any check fails, stop. Tell the user that the routine cannot be enabled yet.
+Before testing, confirm that the target repository's `.cursor/settings.json`, `.cursor/automations/benny/`, and every referenced secret-free configuration file are committed on the branch used by the automation checkout. Confirm that both live prompts point at their exact committed operational files. If any check fails, stop. Tell the user that the automation cannot be enabled yet.
 
 Verify:
 
@@ -282,6 +262,5 @@ Verify:
 5. No source-channel root message appears.
 6. A delegated worker cannot use any Slack write action.
 7. Missing coordinates, a deleted parent, or a failed preflight produces no post and no tracker issue.
-8. A second run skips a report that already carries a Benny marker or a claim reaction.
 
-Enable normal traffic only after all eight checks pass.
+Enable normal traffic only after all seven checks pass.

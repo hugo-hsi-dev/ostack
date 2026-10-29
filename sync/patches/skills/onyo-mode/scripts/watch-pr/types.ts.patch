@@ -1,4 +1,0 @@
---- a/skills/onyo-mode/scripts/watch-pr/types.ts
-+++ b/skills/onyo-mode/scripts/watch-pr/types.ts
-@@ -64,0 +65 @@ [A]
-+  readonly commitOid: string | null;

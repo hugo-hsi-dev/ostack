@@ -1,5 +1,0 @@
---- a/skills/principle-sequence-verifiable-units/SKILL.md
-+++ b/skills/principle-sequence-verifiable-units/SKILL.md
-@@ -16 +16 @@ [A]
--The sequencing complement to the **prove-it-works** principle skill, which keeps each check real, and the **build-the-lever** principle skill, which makes the per-unit check cheap.
-+The sequencing complement to the **prove-it-works** principle skill, which keeps each check real, and the **build-the-lever** principle skill, which makes the per-unit check cheap. Read either at `${CLAUDE_SKILL_DIR}/../principle-<name>/SKILL.md`. If `${CLAUDE_SKILL_DIR}` appears literally, it is the directory that holds this file.

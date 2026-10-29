@@ -1,5 +1,0 @@
---- a/skills/typescript-best-practices/SKILL.md
-+++ b/skills/typescript-best-practices/SKILL.md
-@@ -9,0 +10,2 @@ [A]
-+
-+A **<name>** principle skill sits at `${CLAUDE_SKILL_DIR}/../principle-<name>/SKILL.md`. Read it in full. If `${CLAUDE_SKILL_DIR}` appears literally, it is the directory that holds this file.

@@ -1,6 +1,6 @@
 ---
 name: reproduce-and-fix-issues
-description: Reproduce triaged Slack bugs through a configured app-control adapter, verify existing fixes, and open a bounded draft pull request only after before-and-after proof. Use only from the configured Benny repro routine.
+description: Reproduce triaged Slack bugs through a configured app-control adapter, verify existing fixes, and open a bounded draft pull request only after before-and-after proof. Use only from the configured Benny repro automation.
 disable-model-invocation: true
 ---
 
@@ -8,7 +8,7 @@ disable-model-invocation: true
 
 Wait for a trusted triage marker in the source thread. Reproduce the exact symptom through the target app's real UI. Verify an existing fix when one exists. Attempt a bounded fix only after a confirmed repro.
 
-Load the external Benny configuration supplied by the routine. If the config, required actions, control adapter, or completed feature map is missing, fail closed.
+Load the external Benny configuration supplied by the automation. If the config, required actions, control adapter, or completed feature map is missing, fail closed.
 
 ## Hard safety rules
 
@@ -18,8 +18,7 @@ Load the external Benny configuration supplied by the routine. If the config, re
 - The coordinator is the only Slack poster.
 - Delegated analysis workers are read-only and return findings or media notes.
 - A fix-phase code worker may edit only when its environment provably excludes Slack credentials and every Slack write action. Otherwise the coordinator edits.
-- Every child prompt must explicitly forbid every Slack connector write tool (any `mcp__*slack*` tool that posts, replies, reacts, or edits), `chat.postMessage`, and all other Slack writes.
-- Claude Code subagents inherit the session's MCP tools, the Slack connector included. A worker's environment excludes Slack write actions only when its agent definition removes every Slack connector write tool through `tools` or `disallowedTools`.
+- Every child prompt must explicitly forbid `SendSlackMessage`, `PostToSlack`, `chat.postMessage`, and all other Slack writes.
 - Never give a child a Slack token, posting instructions, source coordinates for posting, or permission to report externally.
 - If a child needs Slack write access to run, do not launch it.
 - Utility bots are evidence sources. They do not own the fix unless a person explicitly delegated the fix to them.
@@ -29,23 +28,8 @@ Load the external Benny configuration supplied by the routine. If the config, re
 - Existing pull requests or commits switch the run to verify mode. Do not author over them.
 - Use `github.com` pull request links.
 - Keep captures, recordings, logs, and tokens out of source control.
-- Use ostack's `principle-guard-the-context-window` for delegated analysis.
-- Apply ostack's `principle-sequence-verifiable-units`, `principle-fix-root-causes`, and `principle-prove-it-works` through repro, fix, and verification.
-
-## Pick the report
-
-Each routine run starts from a fresh clone and remembers nothing from earlier runs. Slack markers and the claim reaction are the only dedupe state. A run handles up to `scan.reproduce_max_reports_per_run` reports, default 1, one at a time.
-
-For a scheduled run:
-
-1. Read top-level messages in the configured source channel through the Slack connector, back to `scan.lookback_hours`.
-2. Keep only reports whose thread already holds a verdict that section 2 would accept with `bug` or `performance`.
-3. Skip a report when its root already carries the configured `reproducing` reaction from the Slack identity this routine acts as.
-4. Take the remaining reports oldest first, up to `scan.reproduce_max_reports_per_run` (default 1). Later runs pick up the rest.
-5. For each report, re-read its thread and repeat the check in step 3. Then add the `reproducing` reaction to the root before any other work. A reaction is not a post. If the reaction fails, stop.
-6. Continue with section 1, with the trigger channel set to the scanned channel, `trigger.ts` set to the report's timestamp, and `trigger.thread_ts` empty. Section 2 finds the verdict already in the thread. Finish or stop one report before starting the next.
-
-For an API run, read the coordinates from the `text` field in the routine-fire-payload block. Parse it as JSON with `source_channel_id`, `message_ts`, and optional `thread_ts`, and use them as the trigger channel, `trigger.ts`, and `trigger.thread_ts`. If the block is missing or the JSON is malformed, stop without posting. Apply the same claim check before section 1, then wait for the verdict in section 2.
+- Use pstack's `principle-guard-the-context-window` for delegated analysis.
+- Apply pstack's `principle-sequence-verifiable-units`, `principle-fix-root-causes`, and `principle-prove-it-works` through repro, fix, and verification.
 
 ## 1. Freeze source coordinates
 
@@ -91,8 +75,6 @@ Public marker forms:
 
 Proceed only for `bug` or `performance`. Capture the optional tracker URL. Stop silently for `other`, a missing verdict, an untrusted author, conflicting markers, or a timeout.
 
-The Slack connector posts as the account that connected it. A marker typed by hand from that account in this format passes these checks and is trusted, which is why setup asks for a dedicated Benny account.
-
 This marker replaces private bot identities and free-form verdict matching.
 
 ## 3. Apply ownership and fix-artifact gates
@@ -137,9 +119,9 @@ Use the configured plain Unicode status strings. Keep status text short:
 - Draft pull request opened
 - Fix did not land
 
-Prefer configured Slack connector tools. Use `BENNY_SLACK_BOT_TOKEN` only when the user configured it for a narrow missing capability such as editing this one status message. Never expose the token to a worker.
+Prefer configured Cursor Slack actions. Use `BENNY_SLACK_BOT_TOKEN` only when the user configured it for a narrow missing capability such as editing this one status message. Never expose the token to a worker.
 
-If no operations channel is configured, keep detailed status in the routine run output. Do not substitute a source-channel root message.
+If no operations channel is configured, keep detailed status in the automation run output. Do not substitute a source-channel root message.
 
 ## 5. Load and check the control adapter
 
@@ -176,7 +158,7 @@ Collect:
 
 Inspect screenshots and video. Use read-only parallel workers for code history, test ideas, blast-radius mapping, and media review when useful. Each worker gets a narrow question and the Slack-write prohibition.
 
-Use ostack's `how` skill to trace the action through the repository. Use `why` for regression history and defensive code. Form competing cause hypotheses and identify evidence that would separate them.
+Use pstack's `how` skill to trace the action through the repository. Use `why` for regression history and defensive code. Form competing cause hypotheses and identify evidence that would separate them.
 
 ## 7. Reproduce
 
@@ -209,7 +191,7 @@ For a successful repro:
 - Save a short note with the exact steps and observed state.
 - Keep artifacts in the configured temporary artifact directory.
 
-Extract frames from each recording, for example `ffmpeg -i <video> -vf fps=2 <dir>/frame-%03d.png`, because Read takes images but not video. Have a read-only media reviewer read the frames and screenshots as images and answer one question: does the evidence visibly show the discriminating broken state?
+Have a read-only media reviewer answer one question: does the evidence visibly show the discriminating broken state?
 
 If the answer is no or uncertain, the repro is not confirmed. Capture better evidence or use `Could not reproduce`.
 
@@ -277,7 +259,7 @@ Confirm the mechanism with runtime evidence. Eliminate competing hypotheses befo
 
 Fix the root cause with the smallest justified change.
 
-- Invoke ostack's `tdd` skill when there is a cheap local test target, and write the failing test before the fix.
+- Invoke pstack's `tdd` skill when there is a cheap local test target, and write the failing test before the fix.
 - State why TDD was skipped when the path is expensive, unclear, or integration-heavy.
 - Keep unrelated cleanup out.
 - Stop if the change grows beyond the configured effort or risk budget.
@@ -310,7 +292,7 @@ Only after before-and-after proof:
 - Link the configured tracker issue using the tracker's supported pull request syntax.
 - Use the configured public URL form, normally `https://github.com/{owner}/{repo}/pull/{number}`.
 - Include the repro steps, root cause, test result, before and after evidence, and blast-radius checks.
-- Run the pull request text and all Slack updates through ostack's `unslop` skill.
+- Run the pull request text and all Slack updates through pstack's `unslop` skill.
 
 If pull request creation fails, do not claim success. Keep the commit or branch state in the run output and mark operations status `Fix did not land`.
 
