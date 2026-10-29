@@ -1,8 +1,8 @@
 {
-	"name": "pstack",
-	"displayName": "pstack",
+	"name": "ostack",
+	"displayName": "ostack",
 	"version": "0.15.36",
-	"description": "if you want to go fast, go deep first. pstack helps you write less, but higher quality code. rigorous agent workflows you can parallelize with confidence.",
+	"description": "if you want to go fast, go deep first. ostack helps you write less, but higher quality code. rigorous agent workflows you can parallelize with confidence.",
 	"author": {
 		"name": "Lauren Tan"
 	},
@@ -11,8 +11,8 @@
 	"license": "MIT",
 	"logo": "assets/logo.png",
 	"keywords": [
-		"pstack",
-		"poteto-mode",
+		"ostack",
+		"onyo-mode",
 		"workflow",
 		"principles",
 		"agent-style",
