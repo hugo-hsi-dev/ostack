@@ -1,5 +1,0 @@
---- a/skills/why/references/source-playbook.md
-+++ b/skills/why/references/source-playbook.md
-@@ -7 +7 @@ [A]
--| Source control history | [`code-archaeology.md`](./sources/code-archaeology.md) | git, `gh` |
-+| Source control history | [`code-archaeology.md`](./sources/code-archaeology.md) | git, `gh` (or `mcp__github__*` where `gh` is absent) |

@@ -1,1 +1,0 @@
-{"context_message_ids":["cmsg_A000"],"instructions":"onyo-projects: unit thread\nYour unit: count each report that reaches a coordinator turn as a `<cross-session-message>`, and the post that follows it.\nWrite the counts to census.md.","project_post_id":"cmsg_D003","title":"Census of rule breaks"}

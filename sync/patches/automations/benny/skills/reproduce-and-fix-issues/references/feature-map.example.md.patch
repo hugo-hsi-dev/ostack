@@ -1,5 +1,0 @@
---- a/automations/benny/skills/reproduce-and-fix-issues/references/feature-map.example.md
-+++ b/automations/benny/skills/reproduce-and-fix-issues/references/feature-map.example.md
-@@ -5 +5 @@ [A]
--Copy this file outside `.cursor/automations/benny/`, for example to `.cursor/benny/feature-map.md`, and set `control.feature_map_path` to the copy. Pack refreshes must not overwrite it.
-+Copy this file outside `.claude/automations/benny/`, for example to `.claude/benny/feature-map.md`, and set `control.feature_map_path` to the copy. Pack refreshes must not overwrite it.

@@ -1,5 +1,0 @@
---- a/skills/onyo-mode/playbooks/authoring-a-skill.md
-+++ b/skills/onyo-mode/playbooks/authoring-a-skill.md
-@@ -5 +5 @@ [A]
--1. Use the **create-skill** skill (Cursor's built-in for authoring SKILL.md files).
-+1. Use the **skill-creator** skill (Anthropic's skill-authoring plugin, `/plugin install skill-creator@claude-plugins-official`).

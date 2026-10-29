@@ -1,5 +1,0 @@
---- a/skills/statechart/scripts/package.json
-+++ b/skills/statechart/scripts/package.json
-@@ -2 +2 @@ [A]
--  "name": "@cursor-skill/statechart",
-+  "name": "@ostack/statechart",

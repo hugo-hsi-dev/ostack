@@ -1,5 +1,0 @@
---- a/skills/architect/references/runner-prompt.md
-+++ b/skills/architect/references/runner-prompt.md
-@@ -5 +5 @@ [A]
--You are producing one candidate design in architect's parallel exploration. Read the **architect** skill in full first. That's the workflow you're inside. Output a candidate design package: type sketch, function signatures, module map, and prose rationale shaped per [`rationale-template.md`](rationale-template.md).
-+You are producing one candidate design in architect's parallel exploration. Read the **architect** skill's `SKILL.md` in full first, at the path the brief names. That's the workflow you're inside. You are a Phase B runner. Do not run Phase A, the Phase B fan-out, or Phase E, and spawn no subagents. Produce only your candidate. A **<name>** principle skill below sits at `principle-<name>/SKILL.md` in the skills directory the brief names. Read those with the Read tool. Output a candidate design package: type sketch, function signatures, module map, and prose rationale shaped per [`rationale-template.md`](rationale-template.md).
