@@ -54,7 +54,7 @@ Tests alone are not sufficient verification. A PR is verified only when its unit
 ### PR mechanics, for every PR
 
 - [ ] Resolve the forge once. Default to `gh`; if `command -v origin` succeeds and Origin can resolve the repository, use `origin pr` for every PR operation. Record any fallback to `gh`. Never require `gt`.
-- [ ] Open the PR ready, never draft, per **Opening a PR**. Use the run's built-in PR tool when it has one, else `origin pr create --status open --base <base-branch>` or `gh pr create --base <base-branch>` according to the resolved forge. A stack child targets its parent branch.
+- [ ] Take over the branch's draft PR, or create one with `gh pr create --draft --base <base-branch>`, per **Opening a PR**. A stack child targets its parent branch. Mark it ready for review only when its work is ready.
 - [ ] Run the repo's lint and typecheck once before the PR-facing push. Push with hooks on.
 - [ ] Run `/simplify` before each commit and `/no-comments` before review.
 - [ ] Resolve every review-bot and security-reviewer comment, with Auto-fix (`/autofix-pr`) or by hand.
