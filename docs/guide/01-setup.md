@@ -1,18 +1,17 @@
 # Set up ostack
 
-In this page you install the plugin, pick which models ostack uses, and run your first task. Setup is one command plus a short conversation.
+In this page you install the plugin, pick which models ostack uses, and run your first task. Setup is two commands plus a short conversation.
 
 ## Install the plugin
 
-In a Cursor chat, run:
+In Claude Code, run:
 
 ```text
-/add-plugin ostack
+/plugin marketplace add hugo-hsi-dev/ostack
+/plugin install ostack@ostack
 ```
 
-Cursor confirms the plugin is installed.
-
-In Claude Code, run `/plugin marketplace add cursor/plugins`, then `/plugin install ostack@cursor-plugins`. Claude Code prefixes plugin commands, so each command in this guide takes a `ostack:` prefix there, such as `/ostack:setup-ostack`, which writes its model rule to `~/.claude/rules/ostack-models.md`. The [Claude Code adapter](../harness/claude-code.md) covers the other differences.
+Claude Code prefixes plugin commands, so each command in this guide takes an `ostack:` prefix, such as `/ostack:setup-ostack`.
 
 ## Pick your models
 
@@ -34,7 +33,7 @@ To run a role on your chat's own model, set it to `inherit`. ostack then omits t
 
 At the end of setup, `/setup-ostack` looks for a way to prove app behavior in your project, either a `verify-*` skill or an existing harness. If it finds neither, it offers once to generate one with [`/create-verification-skill`](../../skills/create-verification-skill/SKILL.md).
 
-Say yes and it writes `.cursor/skills/verify-<app>/`, a project-local skill that teaches agents to drive your app the way a user does. It proves the skill works once before handing it over. Say no and setup moves on. You can run `/create-verification-skill` yourself any time. [Verify and ship](./06-verify-and-ship.md#create-a-project-verification-skill) covers it in depth.
+Say yes and it writes `.claude/skills/verify-<app>/`, a project-local skill that teaches agents to drive your app the way a user does. It proves the skill works once before handing it over. Say no and setup moves on. You can run `/create-verification-skill` yourself any time. [Verify and ship](./06-verify-and-ship.md#create-a-project-verification-skill) covers it in depth.
 
 If you're new to ostack, say yes. An agent that can check its own work keeps going until the check passes. An agent that can't hands every result back to you to check by hand. Of everything in this guide, the verification skill pays off the most.
 
@@ -61,6 +60,6 @@ Pick something real but small, and describe it the way you'd describe it to a co
 
 Watch the todo list. Its first items are the matched playbook's steps copied in, the Feature playbook for this prompt. If `/onyo-mode` skips a step, the step stays in the list with `skip: <reason>`, so you can see what it chose not to do.
 
-From here you can type normal follow-ups. To keep `/onyo-mode` on for the whole chat, pick it from the `/` menu with Option+Enter (Mac) or Alt+Enter (Windows) instead of Enter. That makes it a [Custom Mode](https://cursor.com/docs/skills#using-a-skill-as-a-custom-mode), which stays in context on every turn until you exit it. Custom Modes are available in the Agents Window and the CLI. Plain Enter attaches the skill to one message, and it fades as the chat moves on.
+From here you can type normal follow-ups. `/onyo-mode` applies to the message you start it with, so start each new task with it. Plain Enter attaches the skill to one message, and it fades as the chat moves on.
 
 Next: [Route work through `/onyo-mode`](./02-onyo-mode.md).

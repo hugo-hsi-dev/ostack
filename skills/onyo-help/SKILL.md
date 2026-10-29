@@ -10,7 +10,7 @@ Answer the user's question about ostack, hand them a prompt they can send, and l
 
 A message that asks for work, such as "use ostack to fix this bug", is not a help question. Read [`onyo-mode`](../onyo-mode/SKILL.md), do the work under it, and mention once that a Custom Mode keeps it on.
 
-This file maps questions to the skills and guide pages that hold the answers. Those files own the details. Read the file you route to before you quote it, and trust it when it disagrees with this map. The links here point into the installed plugin, which the user may not be able to open, so give the user the file's public copy: `https://github.com/cursor/plugins/blob/main/pstack/` followed by its path.
+This file maps questions to the skills and guide pages that hold the answers. Those files own the details. Read the file you route to before you quote it, and trust it when it disagrees with this map. The links here point into the installed plugin, which the user may not be able to open, so give the user the file's public copy: `https://github.com/hugo-hsi-dev/ostack/blob/main/` followed by its path.
 
 ## Find out what they need
 
@@ -43,9 +43,9 @@ Installing changes nothing until the user invokes a skill. Only `/setup-ostack` 
 
 If cost is the worry, say where the tokens go and how to spend fewer. ostack spends extra tokens on subagents and review panels. Rerun `/setup-ostack` and move roles to cheaper models or lower efforts. A role set to `inherit` runs on the chat's model, which saves tokens when the chat runs on a cheaper model. A shorter panel list runs fewer subagents, one for each entry. Save `/onyo-mode` for work that needs rigor.
 
-ostack is built for Cursor, and it also installs in Claude Code with `/plugin marketplace add cursor/plugins`, then `/plugin install ostack@cursor-plugins`. There, each command takes a `ostack:` prefix, such as `/ostack:onyo-mode`. The [Claude Code adapter](../../docs/harness/claude-code.md) maps the Cursor names, and a step that needs a Cursor-only feature, such as Bugbot or Automations, is skipped with a one-line note.
+ostack is built for Claude Code. Install it with `/plugin marketplace add hugo-hsi-dev/ostack`, then `/plugin install ostack@ostack`. Each command takes an `ostack:` prefix, such as `/ostack:onyo-mode`.
 
-Other tools can read the skills, because they use the Agent Skills format. But most workflow skills, including `/onyo-mode`, `/how`, `/why`, and `/teach`, spawn Cursor subagents with per-role models, and Custom Modes and `/loop` are Cursor features, so those parts may not work there.
+Other tools can read the skills, because they use the Agent Skills format. But most workflow skills, including `/onyo-mode`, `/how`, `/why`, and `/teach`, spawn Claude Code subagents with a model and effort per role, and `/loop`, `/simplify`, and `/run` are Claude Code features, so those parts may not work there.
 
 ## Start a task with `/onyo-mode`
 
@@ -55,9 +55,9 @@ Whether `/onyo-mode` stays on depends on how the user starts it:
 
 - Enter on `/onyo-mode` attaches the skill to one message. It fades as the chat moves on.
 - Option+Enter on Mac or Alt+Enter on Windows, or Use as Mode from the skill entry, makes it a Custom Mode. It stays in context every turn until the user exits the mode, and it stays out of casual turns.
-- Cursor's docs list Custom Modes in the Agents Window and the CLI. Elsewhere, start each new task with `/onyo-mode`.
+- Start each new task with `/onyo-mode`.
 
-Link [Cursor's skills docs](https://cursor.com/docs/skills) when this comes up. Mid-chat, "new task" makes the mode match a fresh playbook. `/onyo-mode` already uses `onyo-agent` for the subagents its playbook steps spawn. To get the same style from a subagent of your own, spawn it with `subagent_type: "onyo-agent"`.
+Link [Claude Code's skills docs](https://code.claude.com/docs/en/skills) when this comes up. Mid-chat, "new task" makes the mode match a fresh playbook. `/onyo-mode` already uses `onyo-agent` for the subagents its playbook steps spawn. To get the same style from a subagent of your own, spawn it with `subagent_type: "onyo-agent"`.
 
 ## Pick a skill
 
@@ -112,24 +112,23 @@ Close calls:
 
 Not in ostack:
 
-- `/deslop`, `control-cli`, and `control-ui` ship in the `cursor-team-kit` plugin.
-- `/loop` and `/create-skill` are Cursor built-ins.
+- `/simplify`, `/run`, `/code-review`, `/security-review`, and `/loop` are Claude Code built-ins. onyo-mode uses `/simplify` before commit and `/run` to drive an app.
+- `skill-creator` is Anthropic's skill-authoring plugin. Install it with `/plugin install skill-creator@claude-plugins-official`.
 - ostack has no `/orchestrate` skill. Orchestrate is a `/onyo-mode` playbook. If the slash menu shows `/orchestrate`, another plugin provides it.
 
 ## Playbooks and principles
 
 Playbooks are step lists inside `/onyo-mode`, not skills, so they have no slash command. Inside `/onyo-mode`, describing the task picks one, and these phrases name one directly:
 
-- "babysit this pr" or "check on pr 123" runs Babysit. It drives the PR to merge-ready and stops there. It doesn't merge unless the user asks to merge, land, or ship.
 - "land the stack" runs Shipping.
 - "take over this branch" runs Session pickup.
 - "pause safely" runs Pause safely.
 - "full autopilot on this queue" runs Autopilot-full. "autopilot, don't merge" runs Autopilot-stack.
 - "run the eval playbook" runs Eval.
 
-Without `/onyo-mode`, a phrase such as "babysit this pr" can start Cursor's own skill for the same job instead. The Playbooks section of [`onyo-mode`](../onyo-mode/SKILL.md) lists every playbook and when it applies. [Guide page 6](../../docs/guide/06-verify-and-ship.md) covers opening, babysitting, and landing a PR.
+To get a PR green, use Claude Code's PR Auto-fix (`/autofix-pr`). The Playbooks section of [`onyo-mode`](../onyo-mode/SKILL.md) lists every playbook and when it applies. [Guide page 6](../../docs/guide/06-verify-and-ship.md) covers opening, babysitting, and landing a PR.
 
-ostack has no planning skill. Cursor's Plan Mode works alongside it. For work that spans phases or stacked PRs, asking `/onyo-mode` for a plan runs the [Multi-phase plan playbook](../onyo-mode/playbooks/multi-phase-plan.md), which writes the plan and doesn't implement it. For a design question, the Prototype playbook or `/architect` settles it in code first.
+ostack has no planning skill. Claude Code's plan mode works alongside it. For work that spans phases or stacked PRs, asking `/onyo-mode` for a plan runs the [Multi-phase plan playbook](../onyo-mode/playbooks/multi-phase-plan.md), which writes the plan and doesn't implement it. For a design question, the Prototype playbook or `/architect` settles it in code first.
 
 Principles are one-rule skills that `/onyo-mode` reads and cites in its replies. The user rarely invokes one. They steer with the names instead, as in "apply prove it works. show me the real output." Typing `/principle-<name>` still loads one on demand. [Guide page 8](../../docs/guide/08-principles.md) lists them.
 

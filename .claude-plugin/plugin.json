@@ -1,0 +1,23 @@
+{
+  "name": "ostack",
+  "version": "0.2.0",
+  "description": "if you want to go fast, go deep first. rigorous agent workflows for Claude Code, adapted from pstack. ostack helps you write less, but higher quality code.",
+  "author": {
+    "name": "Hugo Hsi",
+    "email": "hugohsidev@gmail.com",
+    "url": "https://github.com/hugo-hsi-dev"
+  },
+  "homepage": "https://github.com/hugo-hsi-dev/ostack",
+  "repository": "https://github.com/hugo-hsi-dev/ostack",
+  "license": "MIT",
+  "keywords": [
+    "ostack",
+    "onyo-mode",
+    "workflow",
+    "principles",
+    "agent-style",
+    "subagents",
+    "unslop",
+    "claude-code"
+  ]
+}
