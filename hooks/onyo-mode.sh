@@ -1,5 +1,5 @@
 #!/bin/sh
-# Prints onyo-mode, plus an overlay for a Claude Projects coordinator or thread, into the session's context.
+# Prints the onyo-mode note for this session's role. Claude Code shows only the first 2 KB of a long hook output, so each note stays under that and points at the files it needs.
 root=${CLAUDE_PLUGIN_ROOT:-$(cd "$(dirname "$0")/.." && pwd)}
 project=${CLAUDE_PROJECT_DIR:-$PWD}
 
@@ -13,14 +13,5 @@ if [ "$CLAUDE_CODE_ENTRYPOINT" = remote_projects ] || [ "$CLAUDE_CODE_PROJECTS_S
 	[ "$CLAUDE_CODE_COORDINATOR_MODE" = 1 ] && role=coordinator
 fi
 
-skill="$root/skills/onyo-mode/SKILL.md"
-cat <<EOF
-# onyo-mode is on
-
-ostack's hook turned onyo-mode on for this session. Follow it for every task. A greeting, a quick question, or a one-line answer gets a plain reply, with no playbook. A line of just \`onyo-mode off\` in CLAUDE.md or CLAUDE.local.md turns it off.
-
-Its file is \`$skill\`, so bundled skills live at \`$root/skills/<name>/SKILL.md\`. This session's role is: $role.
-
-EOF
-[ "$role" = solo ] || { cat "$root/hooks/roles/$role.md"; echo; }
-awk 'n >= 2; /^---$/ && n < 2 { n++ }' "$skill"
+awk -v onyo="$root/skills/onyo-mode" -v skills="$root/skills" \
+	'{ gsub(/\{\{ONYO\}\}/, onyo); gsub(/\{\{SKILLS\}\}/, skills); print }' "$root/hooks/roles/$role.md"
