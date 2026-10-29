@@ -218,6 +218,8 @@ ostack also ships [`subagent_type: "onyo-agent"`](./agents/onyo-agent.md) as the
 
 [`/onyo-mode`](./skills/onyo-mode/SKILL.md) and [`subagent_type: "onyo-agent"`](./agents/onyo-agent.md) route through the same wrapper.
 
+ostack also ships [`subagent_type: "onyo-reader"`](./agents/onyo-reader.md) for the read-only explorers, reviewers, investigators, and judges that the routed skills spawn. it keeps mcp tools but cannot edit or write files.
+
 ostack also ships [Comment Sicko](./agents/comment-sicko.md), a read-only comment reviewer available as `subagent_type: "comment-sicko"`. usually invoke it through [`/no-comments`](./skills/no-comments/SKILL.md), not directly.
 
 ## principles

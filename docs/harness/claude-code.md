@@ -18,9 +18,9 @@ ostack skills use Cursor names. In Claude Code, read this file once per session,
 | --- | --- |
 | `subagent_type: generalPurpose` | `subagent_type: "general-purpose"` |
 | `onyo-agent`, `comment-sicko` | `ostack:onyo-agent`, `ostack:comment-sicko` |
-| `readonly: true` | `subagent_type: "Explore"`. It keeps `Bash`, so the brief also says "do not edit files", and you check `git status` afterward. |
+| `readonly: true` | `subagent_type: "onyo-reader"`. It keeps MCP tools but cannot edit or write files. |
 | `readonly: false` | `general-purpose`. It keeps the session's MCP servers. |
-| `environment: "cloud"` | `isolation: "worktree"`. Name the branch or commit the worker checks out. |
+| `environment: "cloud"` | `isolation: "worktree"`, or `isolation: "remote"` when the account offers it and the work needs nothing on this machine. |
 | `environment: "local"` | Omit. |
 | `cloud_base_branch: <b>` | Tell the worker to check out `<b>` first. |
 | `run_in_background: true` | Omit. Subagents run in the background by default and notify you when they finish. |
