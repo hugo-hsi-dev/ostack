@@ -8,7 +8,7 @@ disable-model-invocation: true
 
 Answer the user's question about ostack, hand them a prompt they can send, and link the file the answer came from. For a help question, don't start the work. The user asked how, and a ostack run spends real tokens, so let them send the prompt.
 
-A message that asks for work, such as "use ostack to fix this bug", is not a help question. Read [`onyo-mode`](../onyo-mode/SKILL.md), do the work under it, and mention once that a Custom Mode keeps it on.
+A message that asks for work, such as "use ostack to fix this bug", is not a help question. Read [`onyo-mode`](../onyo-mode/SKILL.md), and do the work under it.
 
 This file maps questions to the skills and guide pages that hold the answers. Those files own the details. Read the file you route to before you quote it, and trust it when it disagrees with this map. The links here point into the installed plugin, which the user may not be able to open, so give the user the file's public copy: `https://github.com/hugo-hsi-dev/ostack/blob/main/` followed by its path.
 
@@ -39,7 +39,7 @@ When the model rule is missing and it matters, ask whether the user wants to pic
 2. Run [`/setup-ostack`](../setup-ostack/SKILL.md). It shows each role's default model and effort, lets the user change any of them, and writes a rule. The rule applies to new chats. Then it offers once each to generate a verification skill and a formal verification skill for the project, unless the project already has one.
 3. Start a real task with `/onyo-mode`, a goal, and a check that can pass or fail.
 
-Installing changes nothing until the user invokes a skill. Only `/setup-ostack` and `/onyo-mode` load from the user's words. The [README](../../README.md) and [guide page 1](../../docs/guide/01-setup.md) have the details. Offer to word their first prompt with them, per [`references/prompting.md`](references/prompting.md).
+Installing turns onyo-mode on: ostack's hook turns onyo-mode on in every session. Of the other skills, only `/setup-ostack` loads from the user's words. The [README](../../README.md) and [guide page 1](../../docs/guide/01-setup.md) have the details. Offer to word their first prompt with them, per [`references/prompting.md`](references/prompting.md).
 
 If cost is the worry, say where the tokens go and how to spend fewer. ostack spends extra tokens on subagents and review panels. Rerun `/setup-ostack` and move roles to cheaper models or lower efforts. A role set to `inherit` runs on the chat's model, which saves tokens when the chat runs on a cheaper model. A shorter panel list runs fewer subagents, one for each entry. Save `/onyo-mode` for work that needs rigor.
 
@@ -51,11 +51,7 @@ Other tools can read the skills, because they use the Agent Skills format. But m
 
 `/onyo-mode` matches the task to a playbook, copies the playbook's steps into the todo list, and runs the other skills as the steps need them. A step it skips stays in the list as `skip: <reason>`. A good prompt states the goal and how to tell it's done. It doesn't list skills, because a hand-written sequence tends to drop or reorder steps the playbook would keep. Read [`references/prompting.md`](references/prompting.md) before you help word one. [Guide page 2](../../docs/guide/02-onyo-mode.md) has examples.
 
-Whether `/onyo-mode` stays on depends on how the user starts it:
-
-- Enter on `/onyo-mode` attaches the skill to one message. It fades as the chat moves on.
-- Option+Enter on Mac or Alt+Enter on Windows, or Use as Mode from the skill entry, makes it a Custom Mode. It stays in context every turn until the user exits the mode, and it stays out of casual turns.
-- Start each new task with `/onyo-mode`.
+ostack's hook turns onyo-mode on in every session, and prints it again after the chat compacts, so the user never types `/onyo-mode`. A line of just `onyo-mode off` in a project's `CLAUDE.md` or `CLAUDE.local.md` turns it off there. In Claude Projects the hook also tells the project chat to plan and route, and each thread to run its one unit.
 
 Link [Claude Code's skills docs](https://code.claude.com/docs/en/skills) when this comes up. Mid-chat, "new task" makes the mode match a fresh playbook. `/onyo-mode` already uses `onyo-agent` for the subagents its playbook steps spawn. To get the same style from a subagent of your own, spawn it with `subagent_type: "onyo-agent"`.
 
@@ -136,11 +132,11 @@ Principles are one-rule skills that `/onyo-mode` reads and cites in its replies.
 
 | Symptom | Fix |
 |---|---|
-| The mode stopped applying after a few turns | It was started with Enter. Start it as a Custom Mode, or start each task with `/onyo-mode`. |
+| The mode stopped applying | Check that ostack is installed and enabled, that no `CLAUDE.md` line says `onyo-mode off`, and that `"disableAllHooks": true` is not set. Then start a new session. |
 | A question got treated as the next step of the last task | Say "new task", or say the turn doesn't need the mode. |
 | A new model choice had no effect | The rule from `/setup-ostack` applies to new chats. Start one. |
 | Runs cost more than expected | See the cost paragraph under Get set up. |
-| A skill didn't load on its own | Only `/setup-ostack` and `/onyo-mode` load from the user's words. The others load when the user types them or when `/onyo-mode` runs them, and it doesn't run every skill. |
+| A skill didn't load on its own | Only `/setup-ostack` loads from the user's words, and onyo-mode comes from the hook. The others load when the user types them or when `/onyo-mode` runs them, and it doesn't run every skill. |
 | Parallel agents overwrote each other | Give each agent its own worktree, or run them as cloud agents, which each get their own machine. |
 | An overnight run moved but finished nothing | `/loop` needs a check that can pass or fail, not a duration. See [guide page 7](../../docs/guide/07-overnight.md). |
 | The reply claims success from a green build | Ask for the real command, flow, stored value, or profile. That's the prove-it-works principle. |
