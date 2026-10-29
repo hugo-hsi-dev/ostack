@@ -102,7 +102,7 @@ when invoked it:
 
 the full rules and playbooks live in [`skills/onyo-mode/SKILL.md`](./skills/onyo-mode/SKILL.md).
 
-[`/onyo-mode`](./skills/onyo-mode/SKILL.md) applies to the message you start it with. start each new task with it.
+ostack's [hook](./hooks/onyo-mode.sh) turns [`onyo-mode`](./skills/onyo-mode/SKILL.md) on in every session, so you don't type it. a line of just `onyo-mode off` in a project's `CLAUDE.md` or `CLAUDE.local.md` turns it off there. in claude projects, the project chat plans and routes each ask, and each thread runs one unit of the plan.
 
 [`/onyo-mode`](./skills/onyo-mode/SKILL.md) works extremely well with claude code's `/loop` command. you can make claude work for many hours without sacrificing rigor.
 

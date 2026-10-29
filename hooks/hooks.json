@@ -1,0 +1,13 @@
+{
+  "description": "Turns onyo-mode on in every session. Prints the onyo-mode skill when a session starts, resumes, clears, or compacts, with an overlay for a Claude Projects coordinator or thread. A line of just `onyo-mode off` in CLAUDE.md or CLAUDE.local.md turns it off for the project.",
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup|resume|clear|compact",
+        "hooks": [
+          { "type": "command", "command": "\"${CLAUDE_PLUGIN_ROOT}\"/hooks/onyo-mode.sh" }
+        ]
+      }
+    ]
+  }
+}

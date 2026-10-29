@@ -1,6 +1,7 @@
 ---
 name: onyo-mode
 description: onyo's agent style for concise, detailed responses, deliberate subagents, unslopped prose, simple code, and verified work. Use for onyo, /onyo-mode, or requests to work in this style.
+disable-model-invocation: true
 icon: crown
 color: yellow
 ---
