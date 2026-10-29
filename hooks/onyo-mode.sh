@@ -18,8 +18,9 @@ fi
 
 # Prints a role note with its paths filled in.
 note() {
-	awk -v onyo="$onyo" -v skills="$root/skills" \
-		'{ gsub(/\{\{ONYO\}\}/, onyo); gsub(/\{\{SKILLS\}\}/, skills); print }' "$root/hooks/roles/$1.md"
+	sum=$(cksum < "$onyo/playbooks/orchestrate.md" | awk '{ print $1 }')
+	awk -v onyo="$onyo" -v skills="$root/skills" -v sum="$sum" \
+		'{ gsub(/\{\{ONYO\}\}/, onyo); gsub(/\{\{SKILLS\}\}/, skills); gsub(/\{\{ORCH\}\}/, sum); print }' "$root/hooks/roles/$1.md"
 	echo
 }
 
