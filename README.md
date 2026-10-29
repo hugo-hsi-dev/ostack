@@ -4,32 +4,24 @@ i'm [poteto](https://x.com/poteto). i'm not a president or ceo, but i've worked 
 
 there's a growing sense that ai writes too much slop code. i agree. i don't want to ship like a team of twenty slop artists. throughput without quality is not a goal i aspire to. if you want to go fast, go deep first. 
 
-**ostack is my answer.** these are the same skills i use every day to ship high quality code at Cursor. this turns cursor into a real engineering team. the goal is not to maximize loc, in fact it's the opposite. ostack helps you write less, but higher quality code.
+**ostack is my answer.** these are the same skills i use every day to ship high quality code at Cursor. this turns claude code into a real engineering team. the goal is not to maximize loc, in fact it's the opposite. ostack helps you write less, but higher quality code.
 
 **ostack gives you fearless parallelism.** when you can go deep on one agent and trust it to write good, verifiable code, you can truly parallelize with confidence. start multiple agents up with `onyo-mode` and trust that they'll apply rigorous engineering principles to their work.
-
-**cursor gives you the best of all worlds.** every frontier model has its strengths and weaknesses. use any model with ostack. in fact, many of my skills use multi-model workflows to take advantage of each model's unique strengths.
 
 fork it. improve it. make it yours. PRs are welcome! 
 
 ## install
 
-```bash
-/add-plugin ostack
-```
-
 in claude code:
 
 ```bash
-/plugin marketplace add cursor/plugins
-/plugin install ostack@cursor-plugins
+/plugin marketplace add hugo-hsi-dev/ostack
+/plugin install ostack@ostack
 ```
 
-claude code leaves auto-update off for third-party marketplaces, so ostack stays on the version you installed. to turn it on, run `/plugin`, open the **marketplaces** tab, select `cursor-plugins`, and choose **enable auto-update**. to update once by hand, run `claude plugin update ostack@cursor-plugins`.
+claude code leaves auto-update off for third-party marketplaces, so ostack stays on the version you installed. to turn it on, run `/plugin`, open the **marketplaces** tab, select `ostack`, and choose **enable auto-update**. to update once by hand, run `claude plugin update ostack@ostack`.
 
-claude code prefixes plugin commands and agents, so `/onyo-mode` is `/ostack:onyo-mode`. the [claude code adapter](./docs/harness/claude-code.md) maps every other cursor name. in claude code, `/ostack:setup-ostack` writes your model choices to `~/.claude/rules/ostack-models.md`, and a step that needs a cursor-only feature, such as bugbot or automations, is skipped with a one-line note.
-
-claude code installs a generated copy of ostack, including this readme and the guide, from [`harness/pstack/`](https://github.com/cursor/plugins/tree/main/harness/pstack) at the repository root. after you change ostack, run `node scripts/generate-pstack-harness-trees.mjs` from the repository root and commit the result. ci fails while the generated copy is out of date.
+claude code prefixes plugin commands and agents, so `/onyo-mode` is `/ostack:onyo-mode`.
 
 ## get started
 
@@ -46,7 +38,7 @@ that's it. the other skills are situational, and the mode skill uses them for yo
 
 use [`/onyo-mode`](./skills/onyo-mode/SKILL.md) at the start of a task. it reads your request, picks from a set of playbooks, and runs the other skills as the steps need them.
 
-pick `/onyo-mode` from the `/` menu before you type your task, so cursor attaches the skill to the message.
+pick `/onyo-mode` from the `/` menu before you type your task, so claude code loads the skill for that message.
 
 ### just use [`/onyo-mode`](./skills/onyo-mode/SKILL.md)
 
@@ -63,7 +55,7 @@ morning.
 ```
 
 <details>
-<summary>the twenty-three playbooks</summary>
+<summary>the twenty-two playbooks</summary>
 
 | playbook | for |
 |---|---|
@@ -79,7 +71,6 @@ morning.
 | [visual parity](./skills/onyo-mode/playbooks/visual-parity.md) | pixel-exact ui equivalence between two implementations. |
 | [authoring a skill](./skills/onyo-mode/playbooks/authoring-a-skill.md) | writing or editing a SKILL.md. |
 | [eval](./skills/onyo-mode/playbooks/eval.md) | test how a skill or prompt change affects agent behavior, blinded. |
-| [babysit](./skills/onyo-mode/playbooks/babysit.md) | drive a pr or a stack to merge-ready: conflicts, review threads, ci. |
 | [shipping](./skills/onyo-mode/playbooks/shipping.md) | independently verify a green stack, then land the contiguous verified run bottom-up through github by default or origin when available. |
 | [autonomous run](./skills/onyo-mode/playbooks/autonomous-run.md) | drive a long task to completion without stopping. |
 | [orchestrate](./skills/onyo-mode/playbooks/orchestrate.md) | a standing project handed to one coordinator chat: multi-day, many stacked prs, fleets of subagents. |
@@ -103,9 +94,9 @@ when invoked it:
 
 the full rules and playbooks live in [`skills/onyo-mode/SKILL.md`](./skills/onyo-mode/SKILL.md).
 
-to keep [`/onyo-mode`](./skills/onyo-mode/SKILL.md) on across turns, pick it from the `/` menu and press option+enter (mac) or alt+enter (windows) instead of enter. that makes it a [custom mode](https://cursor.com/docs/skills#using-a-skill-as-a-custom-mode), which cursor offers in the agents window and the cli. it stays in context every turn until you exit the mode. plain enter attaches it to one message only.
+[`/onyo-mode`](./skills/onyo-mode/SKILL.md) applies to the message you start it with. start each new task with it.
 
-[`/onyo-mode`](./skills/onyo-mode/SKILL.md) works extremely well with cursor's `/loop` command. you can make cursor work for many hours without sacrificing rigor.
+[`/onyo-mode`](./skills/onyo-mode/SKILL.md) works extremely well with claude code's `/loop` command. you can make claude work for many hours without sacrificing rigor.
 
 ## skills
 
@@ -182,7 +173,6 @@ multi-phase:       /onyo-mode open source these skills as a plugin. nothing inte
                    in a temp dir, show me the dependency graph first.
 overnight run:     /onyo-mode i'm going to bed. land the stack even if ci flakes. i want
                    everything merged by morning.
-babysit:           /onyo-mode check on pr 123. anything outstanding?
 visual parity:     /onyo-mode the row spacing is too tall when this flag is on. the second image
                    is correct. repro and fix until it matches.
 figure it out:     /onyo-mode i'm stepping away. migrate every caller from the synchronous store
@@ -261,15 +251,13 @@ twenty-four short skills, one principle each. `onyo-mode` indexes them inline an
 
 a few things `onyo-mode` references but doesn't bundle:
 
-- `/deslop` and the `deslop` skill ship in the `cursor-team-kit` plugin.
-- `control-cli` (for CLIs and TUIs) and `control-ui` (for browser, Electron, web) ship in `cursor-team-kit` too.
-- `/create-skill` is a cursor built-in. cursor also ships a built-in `/autopilot` that watches a pr. inside `onyo-mode`, pr-status requests go to the [babysit playbook](./skills/onyo-mode/playbooks/babysit.md) instead.
-
-install `cursor-team-kit` alongside ostack if you want the full set.
+- `/simplify` (cleanup before commit) and `/run` (drive the app, CLI, or TUI) are claude code built-ins.
+- `skill-creator` is anthropic's skill-authoring plugin. install it with `/plugin install skill-creator@claude-plugins-official`.
+- claude code also ships pr auto-fix (`/autofix-pr`). `onyo-mode` hands "get it green" requests to it.
 
 ## why are there no planning skills?
 
-cursor already has a great plan mode which works great with ostack. but personally, i don't believe in planning. the best spec is code. if you do want to make a plan, [`/onyo-mode`](./skills/onyo-mode/SKILL.md) covers it, but it's not a default. 
+claude code already has a great plan mode which works great with ostack. but personally, i don't believe in planning. the best spec is code. if you do want to make a plan, [`/onyo-mode`](./skills/onyo-mode/SKILL.md) covers it, but it's not a default. 
 
 ## make it yours
 

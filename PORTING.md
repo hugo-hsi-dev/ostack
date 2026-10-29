@@ -1,12 +1,10 @@
 # Porting pstack to Claude Code
 
-This file tracks every Cursor-only tool or tool field still in the skills. Delete each entry when it is resolved, and delete the file when it is empty.
-
-[`docs/harness/claude-code.md`](./docs/harness/claude-code.md) still maps Cursor names at runtime. Shrink it as entries here close.
+ostack is Claude Code only. This file tracks what changed from pstack and what still needs a decision. Delete each entry when it is resolved, and delete the file when it is empty.
 
 ## Resolved
 
-| Cursor | Claude Code | Sites |
+| Cursor | Claude Code | Occurrences |
 | --- | --- | --- |
 | `Task` tool | `Agent` | 24 |
 | `AskQuestion` | `AskUserQuestion` | 6 |
@@ -14,19 +12,32 @@ This file tracks every Cursor-only tool or tool field still in the skills. Delet
 | `Shell` | `Bash` | 3 |
 | `run_in_background: true` | Dropped. Claude Code subagents run in the background by default. | 3 |
 | `readonly: true`, `readonly: false`, agent mode | `subagent_type: "onyo-reader"`, a read-only agent that keeps MCP tools (`agents/onyo-reader.md`) | 6 |
-| `environment: "cloud"`, `environment: "local"`, `cloud_base_branch` | `isolation: "worktree"`, or `isolation: "remote"` when the account offers it. The brief names the branch to check out. | 3 |
+| `environment: "cloud"`, `environment: "local"`, `cloud_base_branch`, Cursor cloud agents | `isolation: "worktree"`, or `isolation: "remote"` when the account offers it. The brief names the branch to check out. | 8 |
 | The available-tools map and `mcps/` directory | The `mcp__<server>__<tool>` tools in the tool list and the deferred-tool list | 1 |
 | Cursor model names `claude-opus-5-5-xhigh`, `grok-4.7-xhigh-fast` | A fixed `<model> <effort>` default per role, listed in `skills/setup-ostack/SKILL.md`. ostack has no budget setting. | 51 |
 | `auto`, `inherit-parent` | `inherit` | 20 |
 | `~/.cursor/rules/ostack-models.mdc` | `~/.claude/rules/ostack-models.md` | 12 |
+| `plugin.json`, `.cursor-plugin/plugin.json`, `/add-plugin ostack` | `.claude-plugin/plugin.json` and `.claude-plugin/marketplace.json`, installed with `/plugin marketplace add hugo-hsi-dev/ostack` | 3 |
+| `.cursor/skills/`, `~/.cursor/skills/`, `~/.cursor/plugins/` | `.claude/skills/`, `~/.claude/skills/`, `~/.claude/plugins/` | 25 |
+| `~/.cursor/projects/<slug>/agent-transcripts/` | `~/.claude/projects/<slug>/<session>.jsonl`, with each `/` and `.` in the workspace path changed to `-` | 11 |
+| `cursor-team-kit` `/deslop`, `control-ui`, `control-cli` | Claude Code's `/simplify` and `/run`, or the project's `verify-<app>` skill | 45 |
+| Cursor's `create-skill` | Anthropic's `skill-creator` plugin | 20 |
+| Cursor's built-in babysit skill, the Babysit playbook, `watch-pr`, Bugbot triage | Claude Code's PR Auto-fix (`/autofix-pr`, or the desktop app's Auto-fix toggle). Status-only requests read `gh pr view` and `gh pr checks`. The playbook, the watcher script, and the Bugbot reference are deleted. | 4 |
+| Cursor's `/loop`, Plan Mode, restart | Claude Code's `/loop`, plan mode, restart | 7 |
+| Custom Modes | Start each new task with `/onyo-mode`. See "Needs your call". | 9 |
+| `docs/harness/claude-code.md` | Deleted. The skills now use Claude Code names directly. | 1 |
+| `@cursor-skill/*` package names | `@ostack/*` | 3 |
 
-These need no change because Claude Code uses the same name or the wording is generic: `Read`, `Grep`, `Glob`, `Bash`, "open a todolist", "resume" a subagent (Claude Code continues one with `SendMessage`), and bare MCP tool names such as `search_issues`.
+These need no change because Claude Code uses the same name or the wording is generic: `Read`, `Grep`, `Glob`, `Bash`, "open a todolist", "resume" a subagent (Claude Code continues one with `SendMessage`), and bare MCP tool names such as `search_issues`. The `endCursor` and `cursor` variables in the scripts are GraphQL pagination, not Cursor.
 
-## Open gaps
+## Needs your call
 
-None. `make-bot-ui` and benny were removed rather than ported, since both ran on Cursor Automations.
+- **Keeping `/onyo-mode` on across turns.** Cursor kept it on as a Custom Mode. Claude Code has no Custom Modes, so the docs now say to start each task with `/onyo-mode`. Old ostack kept it on with a `UserPromptSubmit` hook.
+- **Projects and the Orchestrate playbook.** `skills/onyo-mode/playbooks/orchestrate.md` keeps program state in "the Project tracker (`notes.md`) and the Project store", which are Cursor Projects features. `docs/guide/07-overnight.md` now describes a generic coordinator chat. Claude Code has no direct equivalent. Old ostack added an `onyo-projects` skill for Claude Projects.
+- **Long-lived subagents.** Autopilot-full PR owners and Shipping verifiers were Cursor cloud agents that build, babysit, and merge on their own. They are now subagents in a worktree, or a remote session when the account offers it. Check that a subagent can run that long, or move them to separate sessions.
+- **`origin pr`.** 13 places prefer an `origin` CLI over `gh` when `command -v origin` succeeds. That looks like a Cursor-internal forge tool. If so, drop it and keep `gh`.
+- **README voice and credit.** The README is Lauren Tan's first-person text ("i'm poteto", "ship high quality code at Cursor"). Decide whose voice it is in ostack and how to credit pstack. `LICENSE` keeps Lauren Tan's copyright, which MIT requires.
 
 ## Next passes
 
-- **Cursor support.** ostack is Claude Code only. Remove the Cursor manifest, Cursor install steps, Cursor paths, and `docs/harness/claude-code.md`, the runtime map from Cursor names.
 - **Skill invocation.** 60 skills set `disable-model-invocation: true`, so Claude Code's `Skill` tool refuses them, and "the **name** skill" falls back to reading the file. Old ostack removed the flag from all but a few skills.
