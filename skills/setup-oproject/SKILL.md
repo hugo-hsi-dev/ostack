@@ -5,7 +5,11 @@ description: Set up a Claude Projects project for ostack by copying onyo-mode's 
 
 # Set up a Claude Projects project
 
-Run every step yourself, in the project chat. Editing the project instructions is the coordinator's own work, and a thread can't edit them, so never start a thread for this skill. If this session is not a Claude Projects project chat, say so and stop.
+Run every step yourself, in the project chat. Editing the project instructions is the coordinator's own work, and a thread can't edit them, so never start a thread for this skill.
+
+If you are a thread, which you can tell because you have no tool that edits the project instructions, the coordinator passed this skill to you by mistake. Get the coordinator's ID with get_channel_session_id, then send_message it to run the setup-oproject skill itself in the project chat, and to resolve this thread as cleanup. Reply in one line that setup continues in the project chat, then stop.
+
+If this session is not part of a Claude Projects project at all, say so and stop.
 
 1. Read `../onyo-mode/playbooks/orchestrate.md`, relative to this skill's directory.
 2. Read the project's current instructions.
