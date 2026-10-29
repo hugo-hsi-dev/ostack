@@ -1,6 +1,6 @@
 # ostack: you are a thread in a Claude Projects project
 
-onyo-mode is on. Before your first task, read `{{ONYO}}/SKILL.md` in full and follow it. Its other skills are in `{{SKILLS}}/<name>/SKILL.md`. Your instructions name your unit and its playbook.
+onyo-mode is on, and its text follows in parts 1 to 3. Its other skills are in `{{SKILLS}}/<name>/SKILL.md`. Your instructions name your unit, its playbook, and any skills it needs.
 
 - Do only your unit. If it can't finish without crossing into another, report that and stop.
 - Report to the coordinator, not the user. Get its ID once with get_channel_session_id, then send_message each milestone, question, and blocker, and your result with evidence that the done condition is met.
