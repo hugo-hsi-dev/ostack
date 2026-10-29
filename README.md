@@ -23,6 +23,14 @@ claude code leaves auto-update off for third-party marketplaces, so ostack stays
 
 claude code prefixes plugin commands and agents, so `/onyo-mode` is `/ostack:onyo-mode`.
 
+## recommended settings
+
+ostack's pr workflows assume these claude desktop app settings:
+
+- **automatic pr creation: on, as drafts.** the app opens a draft pr when a session first pushes. `onyo-mode` takes that pr over, writes its title and body, and marks it ready for review only when the work is ready, so review bots see finished code.
+- **auto-archive sessions when their pull request closes: off.** a session that lands a stack merges its own pr partway through, and the app could archive it before it finishes.
+- **auto-fix: on per pr, when you want it driven green.** the [shipping playbook](./skills/onyo-mode/playbooks/shipping.md) turns it off while it lands a stack.
+
 ## get started
 
 two steps:

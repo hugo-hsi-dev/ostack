@@ -25,6 +25,7 @@ ostack is Claude Code only. This file tracks what changed from pstack and what s
 | Cursor's built-in babysit skill, the Babysit playbook, `watch-pr`, Bugbot triage | Claude Code's PR Auto-fix (`/autofix-pr`, or the desktop app's Auto-fix toggle). Status-only requests read `gh pr view` and `gh pr checks`. The playbook, the watcher script, and the Bugbot reference are deleted. | 4 |
 | Cursor's `/loop`, Plan Mode, restart | Claude Code's `/loop`, plan mode, restart | 7 |
 | Custom Modes | Start each new task with `/onyo-mode`. See "Needs your call". | 9 |
+| Cursor's built-in PR tool, "open every PR ready, never draft" | Draft-first. The desktop app opens a draft PR on the first push (automatic PR creation on). Opening a PR takes it over and marks it ready for review only when the work is ready. Shipping turns Auto-fix off while a stack lands. The README lists the recommended app settings. | 4 |
 | `docs/harness/claude-code.md` | Deleted. The skills now use Claude Code names directly. | 1 |
 | `@cursor-skill/*` package names | `@ostack/*` | 3 |
 
@@ -35,7 +36,7 @@ These need no change because Claude Code uses the same name or the wording is ge
 - **Keeping `/onyo-mode` on across turns.** Cursor kept it on as a Custom Mode. Claude Code has no Custom Modes, so the docs now say to start each task with `/onyo-mode`. Old ostack kept it on with a `UserPromptSubmit` hook.
 - **Projects and the Orchestrate playbook.** `skills/onyo-mode/playbooks/orchestrate.md` keeps program state in "the Project tracker (`notes.md`) and the Project store", which are Cursor Projects features. `docs/guide/07-overnight.md` now describes a generic coordinator chat. Claude Code has no direct equivalent. Old ostack added an `onyo-projects` skill for Claude Projects.
 - **Long-lived subagents.** Autopilot-full PR owners and Shipping verifiers were Cursor cloud agents that build, babysit, and merge on their own. They are now subagents in a worktree, or a remote session when the account offers it. Check that a subagent can run that long, or move them to separate sessions.
-- **`origin pr`.** 13 places prefer an `origin` CLI over `gh` when `command -v origin` succeeds. That looks like a Cursor-internal forge tool. If so, drop it and keep `gh`.
+- **`origin pr`.** 13 places prefer an `origin` CLI over `gh` when `command -v origin` succeeds. That looks like a Cursor-internal forge tool. If so, drop it and keep `gh`. Opening a PR already creates and readies PRs with `gh` only.
 - **README voice and credit.** The README is Lauren Tan's first-person text ("i'm poteto", "ship high quality code at Cursor"). Decide whose voice it is in ostack and how to credit pstack. `LICENSE` keeps Lauren Tan's copyright, which MIT requires.
 
 ## Next passes
