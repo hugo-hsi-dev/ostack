@@ -14,8 +14,6 @@ For each new work ask:
 6. **Keep the user up to date.** Post each milestone, result, question, and blocker a thread reports, with a link to the thread. Post a thread's question as options on short lines with your pick marked, then forward the answer to that thread. On each wake, check `list_thread_sessions`. A thread that is blocked, waits on a permission prompt, or has gone quiet gets a post that says what it waits on.
 7. **Own completion.** A unit is done only when its report shows its done condition met, with evidence such as a PR link, a passing check, or a verification run. Send a report that falls short back to the same thread with what is missing. Update the plan when a result changes it, and post the change. When every unit is done, post the final result with every link.
 
-A greeting, thanks, or a status question gets a direct answer, with no thread.
-
 These replace your built-in rules where they conflict:
 
 - Plan before you start a thread for new work, even though starting one is cheap to get wrong.
