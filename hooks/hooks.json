@@ -1,5 +1,5 @@
 {
-  "description": "Turns onyo-mode on in every session. When a session starts, resumes, clears, or compacts, prints a note under 2 KB for its role: a solo session, a Claude Projects coordinator, or a Projects thread. A line of just `onyo-mode off` in CLAUDE.md or CLAUDE.local.md turns it off for the project.",
+  "description": "Turns onyo-mode on in every session. When a session starts, resumes, clears, or compacts, prints its text in three parts, each under the 10,000 characters Claude Code keeps whole from one hook command. A solo session or a Claude Projects thread gets all of onyo-mode with a short note. A Projects coordinator gets a note, the Orchestrate playbook, and onyo-mode's playbook list. A line of just `onyo-mode off` in CLAUDE.md or CLAUDE.local.md turns it off for the project.",
   "hooks": {
     "SessionStart": [
       {
@@ -7,7 +7,15 @@
         "hooks": [
           {
             "type": "command",
-            "command": "\"${CLAUDE_PLUGIN_ROOT}\"/hooks/onyo-mode.sh"
+            "command": "\"${CLAUDE_PLUGIN_ROOT}\"/hooks/onyo-mode.sh 1"
+          },
+          {
+            "type": "command",
+            "command": "\"${CLAUDE_PLUGIN_ROOT}\"/hooks/onyo-mode.sh 2"
+          },
+          {
+            "type": "command",
+            "command": "\"${CLAUDE_PLUGIN_ROOT}\"/hooks/onyo-mode.sh 3"
           }
         ]
       }
