@@ -24,7 +24,7 @@ ostack is Claude Code only. This file tracks what changed from pstack and what s
 | Cursor's `create-skill` | Anthropic's `skill-creator` plugin | 20 |
 | Cursor's built-in babysit skill, the Babysit playbook, `watch-pr`, Bugbot triage | Claude Code's PR Auto-fix (`/autofix-pr`, or the desktop app's Auto-fix toggle). Status-only requests read `gh pr view` and `gh pr checks`. The playbook, the watcher script, and the Bugbot reference are deleted. | 4 |
 | Cursor's `/loop`, Plan Mode, restart | Claude Code's `/loop`, plan mode, restart | 7 |
-| Custom Modes | A `SessionStart` hook (`hooks/onyo-mode.sh`) prints onyo-mode into every session, with an overlay for a Claude Projects coordinator or thread. A line of just `onyo-mode off` in `CLAUDE.md` turns it off. | 9 |
+| Custom Modes | A `SessionStart` hook (`hooks/onyo-mode.sh`) prints a note under 2 KB for each role, since Claude Code shows only a 2 KB preview of longer hook output. A solo session or thread is told to read onyo-mode's file. A Claude Projects coordinator gets its planning rules and the playbook list inline. A line of just `onyo-mode off` in `CLAUDE.md` turns it off. | 9 |
 | Cursor's built-in PR tool, "open every PR ready, never draft" | Draft-first. The desktop app opens a draft PR on the first push (automatic PR creation on). Opening a PR takes it over and marks it ready for review only when the work is ready. Shipping turns Auto-fix off while a stack lands. The README lists the recommended app settings. | 4 |
 | `docs/harness/claude-code.md` | Deleted. The skills now use Claude Code names directly. | 1 |
 | `@cursor-skill/*` package names | `@ostack/*` | 3 |
