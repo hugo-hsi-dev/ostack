@@ -39,7 +39,7 @@ When the model rule is missing and it matters, ask whether the user wants to pic
 2. Run [`/setup-ostack`](../setup-ostack/SKILL.md). It shows each role's default model and effort, lets the user change any of them, and writes a rule. The rule applies to new chats. Then it offers once each to generate a verification skill and a formal verification skill for the project, unless the project already has one.
 3. Start a real task with `/onyo-mode`, a goal, and a check that can pass or fail.
 
-Installing turns onyo-mode on: ostack's hook turns onyo-mode on in every session. Of the other skills, only `/setup-ostack` loads from the user's words. The [README](../../README.md) and [guide page 1](../../docs/guide/01-setup.md) have the details. Offer to word their first prompt with them, per [`references/prompting.md`](references/prompting.md).
+Installing turns onyo-mode on: ostack's hook turns onyo-mode on in every session. Of the other skills, only `/setup-ostack` and `/setup-oproject` load from the user's words. The [README](../../README.md) and [guide page 1](../../docs/guide/01-setup.md) have the details. Offer to word their first prompt with them, per [`references/prompting.md`](references/prompting.md).
 
 If cost is the worry, say where the tokens go and how to spend fewer. ostack spends extra tokens on subagents and review panels. Rerun `/setup-ostack` and move roles to cheaper models or lower efforts. A role set to `inherit` runs on the chat's model, which saves tokens when the chat runs on a cheaper model. A shorter panel list runs fewer subagents, one for each entry. Save `/onyo-mode` for work that needs rigor.
 
@@ -90,6 +90,7 @@ The default answer is `/onyo-mode`, which runs most of the others when its steps
 | Run a large or cross-cutting change, or one to review after stepping away | [`/figure-it-out`](../figure-it-out/SKILL.md) |
 | Keep a decision log during a run, and review it afterward | [`/show-me-your-work`](../show-me-your-work/SKILL.md) |
 | Pick a model and effort for each role | [`/setup-ostack`](../setup-ostack/SKILL.md) |
+| Set up a Claude Projects project so its chat plans and routes asks | [`/setup-oproject`](../setup-oproject/SKILL.md) |
 | Turn their own working habits into a personal mode skill | [`/automate-me`](../automate-me/SKILL.md) |
 | Turn what a finished task taught into skill edits | [`/reflect`](../reflect/SKILL.md) |
 | Stop agents from repeating the same mistakes in this repo | [`/correct`](../correct/SKILL.md) |
@@ -136,7 +137,7 @@ Principles are one-rule skills that `/onyo-mode` reads and cites in its replies.
 | A question got treated as the next step of the last task | Say "new task", or say the turn doesn't need the mode. |
 | A new model choice had no effect | The rule from `/setup-ostack` applies to new chats. Start one. |
 | Runs cost more than expected | See the cost paragraph under Get set up. |
-| A skill didn't load on its own | Only `/setup-ostack` loads from the user's words, and onyo-mode comes from the hook. The others load when the user types them or when `/onyo-mode` runs them, and it doesn't run every skill. |
+| A skill didn't load on its own | Only `/setup-ostack` and `/setup-oproject` load from the user's words, and onyo-mode comes from the hook. The others load when the user types them or when `/onyo-mode` runs them, and it doesn't run every skill. |
 | Parallel agents overwrote each other | Give each agent its own worktree, or run them as cloud agents, which each get their own machine. |
 | An overnight run moved but finished nothing | `/loop` needs a check that can pass or fail, not a duration. See [guide page 7](../../docs/guide/07-overnight.md). |
 | The reply claims success from a green build | Ask for the real command, flow, stored value, or profile. That's the prove-it-works principle. |
