@@ -90,7 +90,7 @@ continue
 keep going until done
 ```
 
-Short works because the playbook holds the structure, and ostack's hook turns onyo-mode on in every session. Your words carry the intent, and the skill carries the rigor.
+Short works because the playbook holds the structure, and `/onyo-mode` loads it at the start of each task. Your words carry the intent, and the skill carries the rigor.
 
 ## Switch tasks with "new task"
 
