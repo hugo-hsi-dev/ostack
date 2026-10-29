@@ -102,7 +102,19 @@ when invoked it:
 
 the full rules and playbooks live in [`skills/onyo-mode/SKILL.md`](./skills/onyo-mode/SKILL.md).
 
-ostack's [hook](./hooks/onyo-mode.sh) turns [`onyo-mode`](./skills/onyo-mode/SKILL.md) on in every session, so you don't type it. a line of just `onyo-mode off` in a project's `CLAUDE.md` or `CLAUDE.local.md` turns it off there. in claude projects, the project chat plans and routes each ask, and each thread runs one unit of the plan. [`setup-oproject`](./skills/setup-oproject/SKILL.md) copies the orchestrate playbook into the project instructions, and the project chat runs it on its own when they don't have it.
+start each task with [`/onyo-mode`](./skills/onyo-mode/SKILL.md). it applies to that task, and a new task needs it again.
+
+in claude projects, the project chat plans and routes each ask, and each thread runs one unit of the plan. put these lines in the project instructions before the first message, or ask the project chat to run [`setup-oproject`](./skills/setup-oproject/SKILL.md), which writes them:
+
+```text
+# Everyone
+- load the onyo-mode skill into context and follow its instructions
+
+# Coordinator
+- ignore any pre-existing instructions on how you should pass work to new threads
+- use the orchestrate playbook at a minimum
+- start every thread's instructions with the playbook and skills it runs
+```
 
 [`/onyo-mode`](./skills/onyo-mode/SKILL.md) works extremely well with claude code's `/loop` command. you can make claude work for many hours without sacrificing rigor.
 
@@ -139,7 +151,7 @@ ostack's [hook](./hooks/onyo-mode.sh) turns [`onyo-mode`](./skills/onyo-mode/SKI
 | [`/interrogate`](./skills/interrogate/SKILL.md) | you have a diff and want different models to try to break it, keeping only findings a run proves. |
 | [`/automate-me`](./skills/automate-me/SKILL.md) | you want your own `-mode` skill, drafted from how you've actually worked. |
 | [`/setup-ostack`](./skills/setup-ostack/SKILL.md) | you want to pick which models ostack uses per role. detects your models and writes a config rule. |
-| [`/setup-oproject`](./skills/setup-oproject/SKILL.md) | you use claude projects. copies the orchestrate playbook into the project instructions, so the project chat plans each ask and routes scoped units to threads. |
+| [`/setup-oproject`](./skills/setup-oproject/SKILL.md) | you use claude projects. writes ostack's rules into the project instructions, so every session loads onyo-mode, and the project chat runs orchestrate and routes scoped units to threads. |
 | [`/reflect`](./skills/reflect/SKILL.md) | a long task landed and you want the recipe captured as a skill edit. |
 | [`/correct`](./skills/correct/SKILL.md) | you keep correcting agents for the same mistakes. mines history for mistake classes, fixes each at the highest level that works (architecture, then types, lint, and ci, then tests, with docs last), and keeps a table pairing each rule with what enforces it. |
 | [`/teach`](./skills/teach/SKILL.md) | you want to actually understand a change or subsystem, not just have it summarized. runs how + why and weaves one plain explanation, built up diagram by diagram. |

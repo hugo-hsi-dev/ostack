@@ -60,6 +60,6 @@ Pick something real but small, and describe it the way you'd describe it to a co
 
 Watch the todo list. Its first items are the matched playbook's steps copied in, the Feature playbook for this prompt. If `/onyo-mode` skips a step, the step stays in the list with `skip: <reason>`, so you can see what it chose not to do.
 
-From here you can type normal follow-ups. ostack's hook turns onyo-mode on in every session, so you don't need to type `/onyo-mode` again. A line of just `onyo-mode off` in a project's `CLAUDE.md` turns it off there.
+From here you can type normal follow-ups. `/onyo-mode` applies to the task you start it with, so start each new task with it.
 
 Next: [Route work through `/onyo-mode`](./02-onyo-mode.md).
