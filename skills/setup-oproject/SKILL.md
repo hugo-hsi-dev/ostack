@@ -16,11 +16,13 @@ If this session is not part of a Claude Projects project at all, say so and stop
 3. Write the instructions back with the playbook between these two marker lines, copied word for word:
 
    ```
-   <!-- ostack: orchestrate -->
+   <!-- ostack: orchestrate <checksum> -->
    <the full contents of orchestrate.md>
    <!-- /ostack: orchestrate -->
    ```
 
-   If the markers already exist, replace only what is between them. Otherwise add the block at the end. Keep every other line of the instructions as it was.
+   `<checksum>` is the one your ostack hook note names. Without that note, run `cksum < ../onyo-mode/playbooks/orchestrate.md` and use its first number. If a block that starts with `<!-- ostack: orchestrate` already exists, replace the whole block, whatever checksum it carries. Otherwise add the block at the end. Keep every other line of the instructions as it was.
+
+   This block is a copy of ostack's playbook, and each run replaces it. Put rules for this project only outside the markers, and send a lesson that would help every project to ostack's `orchestrate.md`.
 4. Read the instructions again, and check that the block holds the whole file.
 5. Tell the user the project is set up, and that the playbook applies from the next new chat in this project, so they should start one before their next ask.

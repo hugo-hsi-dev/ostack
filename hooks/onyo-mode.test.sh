@@ -52,6 +52,8 @@ coord="CLAUDE_CODE_ENTRYPOINT=remote_projects CLAUDE_CODE_COORDINATOR_MODE=1"
 for p in 1 2 3; do fits "coordinator part $p" "$(run $p $coord)"; done
 has "coordinator part 1 states the override" "$(run 1 $coord)" "This replaces your default of one start_thread per ask."
 has "coordinator part 1 carries Orchestrate" "$(run 1 $coord)" "### Orchestrate"
+sum=$(cksum < "$root/skills/onyo-mode/playbooks/orchestrate.md" | awk '{ print $1 }')
+has "coordinator note names the playbook's checksum" "$(run 1 $coord)" "<!-- ostack: orchestrate $sum -->"
 lacks "coordinator part 1 leaves out the full onyo-mode" "$(run 1 $coord)" "## Non-negotiables"
 [ -z "$(run 2 $coord)" ] && pass "coordinator part 2 is empty" || fail "coordinator part 2 printed text"
 has "coordinator part 3 carries the playbooks" "$(run 3 $coord)" "## Playbooks"
