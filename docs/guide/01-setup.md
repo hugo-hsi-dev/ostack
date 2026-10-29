@@ -22,13 +22,13 @@ Run:
 /setup-ostack
 ```
 
-[`/setup-ostack`](../../skills/setup-ostack/SKILL.md) detects the models you have access to, asks for a reasoning budget, shows you each role (code delegates, judgment, the review panels), and asks what you want. Answer the questions. It writes `~/.cursor/rules/ostack-models.mdc`, a small rule every ostack skill reads.
+[`/setup-ostack`](../../skills/setup-ostack/SKILL.md) detects the models you have access to, shows you each role's default model and effort (code delegates, judgment, the review panels), and asks what you want. Answer the questions. It writes `~/.claude/rules/ostack-models.md`, a small rule every ostack skill reads.
 
-The defaults run at `xhigh` reasoning, the same as the `large` budget. `unlimited` lifts each model to its highest tier, up to `max`. Opus goes to `max`. Grok tops out at `xhigh`, so it stays there. `medium` and `small` lower the reasoning and spend fewer tokens.
+Every role ships with a default model and effort. Opus at `high` writes code and handles prose and judgment, and Opus at `xhigh` takes the hardest tasks. Haiku explores, investigates, and runs swarm workers. The review panels pair Opus at `high` with Sonnet at `xhigh`, so each panel gets a second model's view.
 
 You only override what you care about. A role with no line in the rule keeps the skill's default. To restore a default, delete that role's line. A rerun of `/setup-ostack` keeps any role whose model differs from the default. When a default changes, a rule written before the change still pins the old default, so delete those role lines, or delete the file, then run `/setup-ostack` again.
 
-You might be wondering what happens if you use Auto. Set a role to `inherit-parent` or `auto` and ostack omits the subagent `model` field, so the subagent inherits your parent chat model. Both values mean the same thing, and neither is a model slug. For a panel role the value is a list, and one subagent runs per entry, so the list length sets the panel size. Setup also configures `swarm workers`, the default model for every `/swarm` worker unless a race names a model for each arm.
+To run a role on your chat's own model, set it to `inherit`. ostack then omits the subagent's `model` and `effort`, so the subagent inherits your parent chat model. For a panel role the value is a list, and one subagent runs per entry, so the list length sets the panel size. Setup also configures `swarm workers`, the default model for every `/swarm` worker unless a race names a model for each arm.
 
 ## Accept the verification offers, or don't
 
@@ -46,8 +46,8 @@ After setup, start a new chat. The model rule applies to new sessions.
 
 ostack spends extra tokens on subagents and review panels. That's the price of the rigor. To spend fewer:
 
-- Rerun `/setup-ostack` and pick a smaller reasoning budget or cheaper models. A strong model in the main chat with cheaper, faster models in the code roles is a good split.
-- Set a role to `auto` or `inherit-parent` so it runs on the chat's own model.
+- Rerun `/setup-ostack` and move roles to cheaper models or lower efforts. A strong model in the main chat with cheaper, faster models in the code roles is a good split.
+- Set a role to `inherit` so it runs on the chat's own model.
 - Shorten a panel list. Each entry runs one subagent.
 - Save `/onyo-mode` for work that needs rigor. A small, obvious edit doesn't.
 

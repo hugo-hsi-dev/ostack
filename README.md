@@ -35,12 +35,12 @@ claude code installs a generated copy of ostack, including this readme and the g
 
 two steps:
 
-1. run [`/setup-ostack`](./skills/setup-ostack/SKILL.md), pick a reasoning budget, and choose which models you want.
+1. run [`/setup-ostack`](./skills/setup-ostack/SKILL.md), and change any role's model or effort if you want.
 2. use [`/onyo-mode`](./skills/onyo-mode/SKILL.md) whenever you're doing anything that requires rigor.
 
 new here? the [ostack guide](./docs/guide/README.md) walks you through a first real task, from setup and prompting through verification and overnight runs. stuck, or unsure which skill fits? ask [`/onyo-help`](./skills/onyo-help/SKILL.md).
 
-that's it. the other skills are situational, and the mode skill uses them for you as needed. out of the box the mode splits work by model strength: code delegates (feature, refactoring, bug fix, perf, hillclimb) go to grok, while the hardest changes, prose, and judgment go to opus 5.5. the default panel is opus 5.5 / grok. [`/setup-ostack`](./skills/setup-ostack/SKILL.md) changes any of it.
+that's it. the other skills are situational, and the mode skill uses them for you as needed. out of the box the mode splits work by model strength: code delegates (feature, refactoring, bug fix, perf, hillclimb), prose, and judgment go to opus 5.5 at `high`, and the hardest changes go to opus 5.5 at `xhigh`. haiku 5.5 runs the explorers, investigators, and swarm workers. the default panels pair opus 5.5 at `high` with sonnet 5.5 at `xhigh`. [`/setup-ostack`](./skills/setup-ostack/SKILL.md) changes any of it.
 
 ## usage
 
