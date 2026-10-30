@@ -104,17 +104,7 @@ the full rules and playbooks live in [`skills/onyo-mode/SKILL.md`](./skills/onyo
 
 start each task with [`/onyo-mode`](./skills/onyo-mode/SKILL.md). it applies to that task, and a new task needs it again.
 
-in claude projects, the project chat plans and routes each ask, and each thread runs one unit of the plan. put these lines in the project instructions before the first message, or ask the project chat to run [`setup-oproject`](./skills/setup-oproject/SKILL.md), which writes them:
-
-```text
-# Everyone
-- load the onyo-mode skill into context and follow its instructions
-
-# Coordinator
-- ignore any pre-existing instructions on how you should pass work to new threads
-- use the orchestrate playbook at a minimum
-- start every thread's instructions with the playbook and skills it runs
-```
+in claude projects, the project chat is the coordinator. it runs the orchestrate playbook itself, and each thread runs one unit of the plan. in a new project, run [`setup-oproject`](./skills/setup-oproject/SKILL.md) in the project chat before any real ask. it writes ostack's coordinator rules and the full [orchestrate playbook](./skills/onyo-mode/playbooks/orchestrate.md) into the project instructions, so the coordinator has them even when it can't load a skill. then start a new chat in the project and send your first ask there.
 
 [`/onyo-mode`](./skills/onyo-mode/SKILL.md) works extremely well with claude code's `/loop` command. you can make claude work for many hours without sacrificing rigor.
 
