@@ -2,14 +2,20 @@
 
 ## Current architecture
 
-Version 0.3.1 replaces the previous 45 independently discoverable skills with ten outcome-based Entries and six specialized callable skills. Entries route conditionally to ordinary Markdown inside the same plugin. No onyo-mode or repo-wide prerequisite returns.
+Version 0.3.2 has ten outcome-based Entries and four user-invoked verification skills. Entries route conditionally to ordinary Markdown inside the same plugin. No onyo-mode or repo-wide prerequisite returns.
 
 ```text
 ostack/
 ├── .claude-plugin/       manifests
-├── skills/              10 Entries + 6 specialized skills
-├── principles/          24 original rules + preserve-contracts; TypeScript applications
-├── playbooks/           design, prototype, compare-artifacts, measure, arena, swarm
+├── skills/              10 Entries + 4 user-invoked workflows
+├── principles/
+│   └── <name>/
+│       ├── PRINCIPLE.md
+│       └── references/  optional documentation owned by the principle
+├── playbooks/
+│   └── <name>/
+│       ├── PLAYBOOK.md
+│       └── references/  optional documentation owned by the procedure
 └── agents/              bounded Haiku idea scout and Opus judge
 ```
 
@@ -19,25 +25,25 @@ Only `skills/<name>/SKILL.md` registers a skill. Entries use `${CLAUDE_PLUGIN_RO
 
 | Previous skill or group | Destination |
 | --- | --- |
-| 24 principle-* skills | principles/<name>.md; exact applicability descriptions retained. |
-| playbook-arena, playbook-swarm, playbook-prototype | playbooks/arena.md, swarm.md, prototype.md; shared procedures, no slash commands. |
-| architect | Direct principle selection in each applicable Entry, plus playbooks/design.md for an unresolved design question. The intermediate architect router is removed. |
+| 24 principle-* skills | principles/<name>/PRINCIPLE.md; exact applicability descriptions retained. |
+| playbook-arena, playbook-swarm, playbook-prototype | playbooks/<name>/PLAYBOOK.md; shared procedures, no slash commands. |
+| architect | Entries select principles/design-from-usage/PRINCIPLE.md and other applicable principles. The design playbook is removed; no shared design text is copied into Entries. |
 | interrogate, blast-radius | Review owns scope, contract tracing, adversarial checks, and findings. The shared preserve-contracts principle serves feature, review, maintenance, and refactor. |
 | correct | Maintenance owns the enforcement workflow. Encode-lessons-in-structure supplies the reusable rule, also selected by bug-fix for requested prevention. |
 | tdd | Bug-fix owns the failing-before/passing-after regression procedure and the conditions for skipping impractical new tests. |
-| typescript-best-practices | principles/type-system-discipline/typescript.md applies the owning principle to TypeScript; no intermediate best-practices router. |
+| typescript-best-practices | principles/type-system-discipline/references/typescript.md applies the owning principle to TypeScript; no intermediate best-practices router. |
 | unslop | Technical-writing owns the editing procedure and scope/voice constraints. |
-| verify-feature-map, visual-parity | Verify owns coverage, real driving, triage, and evidence. Shared comparison mechanics live in playbooks/compare-artifacts.md, also selected by feature and refactor. |
+| verify-feature-map, visual-parity | Verify owns coverage, real driving, triage, and evidence. Shared comparison mechanics live in playbooks/compare-artifacts/PLAYBOOK.md, also selected by feature and refactor. |
 | formal-verification | Removed the combined creation/maintenance replacement; restored the original four separate workflows below. |
 | bug-fix, refactor, investigate, performance, technical-writing, evaluate | Rewritten as outcome owners with their own procedure, evidence standard, stopping condition, and direct selection of principles/playbooks. |
-| shipping, statechart | Retained as specialized callable skills; statechart tools and fixtures unchanged. |
+| shipping, statechart | Shipping removed. Statechart preserved once under formal creation’s references and read from both formal workflows; neither remains a registered skill. |
 | feature, review, maintenance, verify | Rewritten around the complete outcome, rather than forwarding to renamed old skills. |
 
 The old principle and playbook slash commands intentionally disappear; no aliases keep their descriptions in the catalog. Ask through the appropriate Entry. Shared documents may also be read directly when their file path is already known.
 
 ## Original verification workflows restored
 
-The following directories, including all supporting feature-map examples, are restored byte-for-byte from ostack commit `798dcee`:
+The four workflows were restored from ostack commit `798dcee`. The app workflows and all their original examples remain byte-for-byte unchanged. The formal workflows retain their names, roles, and original procedures, with a targeted update for the removed statechart skill dependency:
 
 - skills/create-verification-skill/
 - skills/maintain-verification-skill/
@@ -58,9 +64,9 @@ Entries carry concrete selection conditions. Feature and refactor can both selec
 
 ## Rewriting the intermediate references layer
 
-The first Entry migration moved old methods into shared references but left a second routing/workflow layer. This rewrite removes that layer. Entries own their task procedure and select principles and playbooks directly. The former shared references directory is removed; original verification examples and statechart operating files remain local resources of their untouched skill packages.
+The first Entry migration moved old methods into shared references but left a second routing/workflow layer. This rewrite removes that layer. Entries own their task procedure and select principles and playbooks directly. The former shared references directory is removed; original app-verification examples remain unchanged, and the statechart toolkit has one owner under formal creation’s references.
 
-Shared content earns its place through reuse. Design is not exclusive to feature work: its procedure helps refactors, design-related bug fixes, performance representation changes, integration migrations, and requested design critique. Each Entry selects the applicable domain, boundary, ownership, type, or reader-load principles before choosing the design playbook. A straightforward edit does not trigger a design exercise.
+Shared content earns its place through reuse. Design judgments help feature work, refactors, design-related bug fixes, performance representation changes, integration migrations, and requested design critique. All six Entries point to one design-from-usage principle. Entries select any independent arena, prototype, or other procedure themselves. The removed design playbook is not replaced by duplicated design text in each Entry.
 
 Comparison and measurement are reusable procedures across task domains, so they are playbooks. Preserve-contracts is a new decision rule, selected where supported consumers or stored data constrain a change. TypeScript examples apply type-system discipline and live with that principle. No broad third shared category or hidden set of renamed task skills is introduced.
 
@@ -71,13 +77,13 @@ These are source-level walkthroughs, not live model-selection results. No skills
 | Scenario | Entry-owned work and relevant shared content | Stop or exclusion |
 | --- | --- | --- |
 | Add export to an existing results flow | Feature defines acceptance conditions, selects redesign and experience principles, and designs only if the shape is unresolved. | Implement and drive affected paths; no automatic panel or generator. |
-| Fix a typo in a label | Feature makes the bounded edit and checks the visible result. | No design playbook, prototype, or extra model. |
-| Race caused by two state owners | Bug-fix reproduces first; shared-state/model principles and design can resolve ownership; regression fails before and passes after. | No broad architecture campaign for an isolated defect. |
-| Straightforward arithmetic regression | Bug-fix owns the cheap failing regression check and minimal fix. | No TDD wrapper or design playbook is needed. |
-| Refactor phase-based modules | Refactor selects domain-modeling and reader-load rules, then design for the new boundary; checks equivalence. | No new user-visible behavior. |
-| Review a split-ownership proposal | Review traces the consequential failure; model/shared-state/reader-load principles support judgment. | Design playbook only if replacement-design work is requested; no product edits. |
-| Replace a quadratic lookup in a hot path | Performance establishes a baseline and limiter; model principle and design resolve representation if necessary. | Measure one selected intervention; no default brainstorming panel. |
-| Upgrade an SDK with a changed integration boundary | Maintenance checks actual versions and consumers; preserve-contracts/boundary principles and design apply to the unresolved interface. | Routine updates with a known migration skip design. |
+| Fix a typo in a label | Feature makes the bounded edit and checks the visible result. | No extra design procedure, prototype, or model. |
+| Race caused by two state owners | Bug-fix reproduces first; shared-state/model and design-from-usage principles can resolve ownership; regression fails before and passes after. | No broad architecture campaign for an isolated defect. |
+| Straightforward arithmetic regression | Bug-fix owns the cheap failing regression check and minimal fix. | No TDD wrapper or extra design procedure is needed. |
+| Refactor phase-based modules | Refactor selects domain-modeling and reader-load rules, and design-from-usage for the new boundary; checks equivalence. | No new user-visible behavior. |
+| Review a split-ownership proposal | Review traces the consequential failure; model/shared-state/reader-load principles support judgment. | Select design-from-usage when the interface or representation needs judgment; no product edits. |
+| Replace a quadratic lookup in a hot path | Performance establishes a baseline and limiter; model and design-from-usage principles guide representation if necessary. | Measure one selected intervention; no default brainstorming panel. |
+| Upgrade an SDK with a changed integration boundary | Maintenance checks actual versions and consumers; preserve-contracts/boundary/design-from-usage principles apply to the unresolved interface. | Routine updates with a known migration skip design. |
 | Prevent a recurring invalid repo state | Maintenance selects encode-lessons-in-structure and chooses an existing structural guard; checks broken and valid cases. | No transcript mining or repo-wide hardening. |
 | Edit an existing README | Technical-writing owns editing, voice, examples, and link checks. | No unslop wrapper, design stage, or mandatory second pass. |
 | Verify a UI migration against screenshots | Verify owns mapped states and live behavior; compare-artifacts controls the reference and captures. | Pixel parity does not prove interactions or accessibility. |
@@ -97,7 +103,7 @@ These findings explain retiring the global mode, transcript scraping, native-mem
 
 ## Arena and swarm bounds
 
-All six playbooks are plain Markdown. Arena compares distinct proposals for one question; swarm partitions brainstorming across areas; prototype tests a concrete uncertainty in a disposable experiment. Arena and swarm keep Haiku at idea generation: no writes, commands, tests, implementation, or make-it-work loops. Three candidates and one Opus synthesis are the default. Opus owns requested implementation and verification.
+All five playbooks are independent plain Markdown procedures, each in its own folder with PLAYBOOK.md. They do not invoke one another. Arena compares distinct proposals for one question; swarm partitions brainstorming across areas; prototype tests a concrete uncertainty in a disposable experiment. Arena and swarm keep Haiku at idea generation: no writes, commands, tests, implementation, or make-it-work loops. Three candidates and one Opus synthesis are the default. Opus owns requested implementation and verification.
 
 The existing idea-scout and idea-judge agent definitions retain read-only tool allowlists, four/six-turn caps, and omission of automatically loaded project instruction files. The owner supplies relevant constraints. No nested fan-out, automatic second round, fallback model, or automatic resumption after a cap. Native agent availability and effective model controls must be checked in the target host. These are execution bounds, not measured savings.
 
@@ -108,10 +114,10 @@ The existing idea-scout and idea-judge agent definitions retain read-only tool a
 | authoring-a-skill | Native skill-authoring tools; no extra routing playbook. |
 | autonomous-run | Native scheduling or loops when requested, with explicit scope and a stop condition; no automatic wake machinery. |
 | autopilot-full | Native Projects and user-authorized delivery; no per-PR owner/verifier swarms or standing audit heartbeat. |
-| autopilot-stack | Native Projects and PR handoff; dependency-sensitive landing is covered by shipping when requested. |
+| autopilot-stack | Native Projects and PR handoff; landing uses the native forge workflow when requested. |
 | bug-fix | Preserved in the direct bug-fix skill. |
 | eval | Preserved in evaluate, with small controlled trials rather than a mandatory model panel. |
-| feature | The feature Entry plus directly selected principles and the shared design playbook; no compulsory delegate or competing implementations. |
+| feature | The feature Entry plus directly selected principles and independent procedures; no compulsory delegate or competing implementations. |
 | hillclimb | Preserved as the bounded optimization-campaign mode in performance. |
 | investigation | Preserved in investigate. |
 | multi-phase-plan | Native planning plus verifiable-unit principles; remove the rigid template, ten live lanes, and checker tied to old orchestration. |
@@ -119,14 +125,24 @@ The existing idea-scout and idea-judge agent definitions retain read-only tool a
 | orchestrate | Native Projects coordination. No coordinator skill-loading requirements. |
 | pause-safely | Native session lifecycle; no compulsory WIP commit or separate handoff archive. |
 | perf-issue | Preserved in performance with the shared measure playbook. |
-| prototype | Preserved in the shared playbooks/prototype.md, selected from Entries. |
+| prototype | Preserved in the shared playbooks/prototype/PLAYBOOK.md, selected from Entries. |
 | refactoring | Preserved in refactor. |
 | runtime-forensics | Preserved in investigate and performance; collect only the relevant signal. |
 | session-pickup | Native session/history tools; no local transcript crawling. |
-| shipping | Retained as a focused shipping skill for explicitly authorized stack landing. |
+| shipping | Removed at the user’s request; use native forge tools for an authorized landing task. |
 | trace-forensics | Preserved in investigate and performance; no mandatory SQLite conversion or delegate. |
 | visual-parity | Verify owns the outcome; compare-artifacts supplies reusable comparison mechanics for verify, feature, and refactor. |
 | worktree-cleanup | Native worktree lifecycle; remove transcript/pinned-chat assumptions and automatic simulator/cache deletion. |
+
+## Folder organization and statechart ownership
+
+Every principle lives in `principles/<name>/PRINCIPLE.md` and every playbook in `playbooks/<name>/PLAYBOOK.md`. Optional documentation belongs in that owner’s `references/` directory. Type-system discipline now has `references/typescript.md`; the new design-from-usage principle owns the former design-red-flags detail. All relative links are recalculated from the document’s new location. Original principle applicability descriptions remain unchanged.
+
+The design playbook is retired. Its reusable judgments are written as one design-from-usage principle, selected by feature, bug-fix, refactor, performance, maintenance, and relevant design review. Entries contain selection conditions, not repeated copies of the guidance. Independent procedures such as arena and prototype are still chosen by the Entry; no playbook chains another playbook.
+
+Statechart is not deleted or duplicated. Its documentation, runtime, and fixtures have one home at `skills/create-formal-verification-skill/references/statechart/`. `STATECHART.md` is supporting documentation rather than SKILL.md. Formal maintenance links to this same directory. The original `/statechart` registration is removed, and the formal generator no longer tells new project skills to invoke it. New generated checks prefer existing project tooling; when they need the bundled runtime, they receive project-owned runtime files and documented prerequisites so they do not depend on a plugin cache path. This affects future generation instructions only; no existing project artifact is migrated here.
+
+Shipping is removed. The remaining catalog is exactly ten Entries plus four manual-only create/maintain workflows. This task changes no account installation or external project files.
 
 ## Update an installation
 
@@ -142,7 +158,9 @@ The supported path substitution is documented for Claude Code plugins. Account-s
 
 Run `claude plugin validate --strict .` and validate the marketplace, skills, and agents with the native CLI. Also validate skill frontmatter, every document-relative and plugin-root Markdown link, reachability of retained shared guidance from Entries, exact principle applicability text, and byte-for-byte restoration of the four original workflows. Check the installed-copy layout without relying on the source checkout. `git diff --check` must pass.
 
-Completed checks cover native plugin, marketplace, skill, and agent validation; metadata and invocation policies for all 16 skills; all internal Markdown links; reachability of shared principles/playbooks from Entries; exact applicability text for the 24 original principles; byte-for-byte preservation of the four restored verification directories; and a copied-package path check outside the source tree. Statechart source, fixtures, and both role-agent definitions are unchanged. The generic skill-creator validator checks common metadata in scratch copies without Claude's invocation flag; the native CLI and explicit metadata checks validate that supported flag without altering source.
+Completed checks cover native plugin, marketplace, skill, and agent validation; metadata and invocation policies for all 14 skills; all internal Markdown links; reachability of shared principles/playbooks from Entries; exact applicability text for the 24 original principles; byte-for-byte preservation of the two app workflows, constrained updates to the two formal workflows, and byte-for-byte preservation of the relocated statechart runtime and fixtures; and a copied-package path check outside the source tree. Statechart runtime source, fixtures, and both role-agent definitions are unchanged; statechart operating-document path labels reflect the new resource location. The generic skill-creator validator checks common metadata in scratch copies without Claude's invocation flag; the native CLI and explicit metadata checks validate that supported flag without altering source.
+
+The relocated statechart toolkit also passed all 67 existing pipeline, chart, and message tests. These exercise local imports, captured model data, diagrams, and reports; they do not install or run Java/TLC or establish live formal-verification coverage. The package checks resolve all 158 internal Markdown links and reach all 33 shared documents, confirm six Entries use one design principle, and confirm both formal workflows use one toolkit. All 26 principles and five independent playbooks follow the requested folder structure.
 
 No live models, paid eval trials, real app-driving sessions, account installation, or cloud execution are needed for the source migration. Those remain separate empirical checks, rather than claims implied by a validator pass.
 

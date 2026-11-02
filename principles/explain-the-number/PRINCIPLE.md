@@ -11,4 +11,4 @@ For a performance number, establish that the measured work completed with correc
 
 You skipped this when a run started without the result that would change a decision, when the evidence behind a number has no run count, no spread, or no named limiter, or when the time saved is larger than the time the changed piece took.
 
-Distinct from [prove-it-works](prove-it-works.md), which checks that an output is real.
+Distinct from [prove-it-works](../prove-it-works/PRINCIPLE.md), which checks that an output is real.

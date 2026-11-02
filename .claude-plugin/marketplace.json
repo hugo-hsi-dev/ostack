@@ -1,7 +1,7 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
   "name": "ostack",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "Task entry skills, shared principles and playbooks, and specialized verification workflows for Claude. Adapted from pstack.",
   "owner": {
     "name": "Hugo Hsi",

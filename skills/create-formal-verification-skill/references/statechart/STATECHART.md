@@ -1,14 +1,11 @@
----
-name: statechart
-description: Run a bounded TLA+ model through TLC and explain violations as shortest paths and Mermaid statecharts. Use for TLA+ model results or requests to visualize a checked state machine.
----
-
 # Statechart
+
+This directory is supporting tooling for the formal-verification workflows. The statechart directory is the directory containing this file; it is not a separately registered skill.
 
 Use the bundled checker for a TLA+ model; ordinary diagrams do not require model checking. Read the [TLA+ operating guide](references/tla-guide.md) before writing a spec, configuring the chart, or interpreting a run. It covers invariants, terminal states, projections, bounds, unchecked rules, and report semantics.
 
 ```sh
-<skill dir>/scripts/statechart SPEC.tla [--config FILE] [--view FILE] [--out DIR]
+<statechart directory>/scripts/statechart SPEC.tla [--config FILE] [--view FILE] [--out DIR]
 ```
 
 Run in a scratch directory unless maintaining an existing model. The first run needs network access and mise to provision Java and TLC; the wrapper requires a supported Node, Bun, or Deno runtime (see its prerequisite error for versions). Check prerequisites before claiming a result.

@@ -1,6 +1,6 @@
 # Swarm playbook
 
-Partition brainstorming across different slices. [arena](arena.md) explores competing answers to one question; [swarm](swarm.md) explores different parts of a question. Haiku generates ideas only. It does not own implementation, exhaustive audits, or proof of correctness.
+Partition brainstorming across different slices. Arena explores competing answers to one question; swarm explores different parts of a question. Haiku generates ideas only. It does not own implementation, exhaustive audits, or proof of correctness.
 
 ## Partition and bound
 
