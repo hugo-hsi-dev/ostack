@@ -1,24 +1,16 @@
 ---
 name: bug-fix
-description: Diagnose and fix a reproducible software bug or regression using runtime evidence and a focused before-and-after check.
+description: Diagnose and fix a software bug or regression from a faithful reproduction through a focused before-and-after check.
 ---
 
 # Bug fix
 
-Resolve relative links in shared documents from that document’s directory, not the app checkout. Read only the files whose conditions apply.
+Find the first incorrect decision and prove the correction. Read only applicable shared documents; resolve their relative links from the document's directory.
 
-Find the first incorrect decision, rather than hiding its downstream symptom.
+1. **Reproduce.** Record expected and actual behavior at the affected interface. Use the closest faithful local path when the original environment is unavailable, and name the difference. Read [fix root causes](${CLAUDE_PLUGIN_ROOT}/principles/fix-root-causes.md) before selecting the intervention.
+2. **Discriminate causes.** Read relevant code and regression history. Choose a targeted observation that distinguishes the leading hypotheses; reduce large logs instead of filling context. If two fixes assumed the same premise and failed, read [attack the premise](${CLAUDE_PLUGIN_ROOT}/principles/attack-the-premise.md) and test that premise before another patch. Remove rejected experiments without disturbing the user's changes.
+3. **Lock down the failure.** If TDD is requested or a cheap regression path exists, read [test behavior](${CLAUDE_PLUGIN_ROOT}/principles/test-behavior-not-implementation.md), write the smallest observable test, and run it before editing product code. It must fail for the intended reason. Avoid broad fixture churn, brittle mocks, timing dependence, or a new harness for a small fix; retain the faithful reproduction when a good test is impractical. Do not derive expected output from the implementation or weaken an assertion to match a bug.
+4. **Correct the cause.** Make the smallest justified change. A guard is appropriate for a legitimate state; otherwise fix what produced it. Check nearby instances of the same fault within scope. If the cause is an ownership, representation, or interface error, read the relevant [domain-modeling](${CLAUDE_PLUGIN_ROOT}/principles/model-the-domain.md), [shared-state](${CLAUDE_PLUGIN_ROOT}/principles/separate-before-serializing-shared-state.md), or [idempotency](${CLAUDE_PLUGIN_ROOT}/principles/make-operations-idempotent.md) principle and use [design](${CLAUDE_PLUGIN_ROOT}/playbooks/design.md) for the unresolved design question. When the fix integrates a new requirement, read [redesign from first principles](${CLAUDE_PLUGIN_ROOT}/principles/redesign-from-first-principles.md). If the user also wants recurrence prevented structurally, read [encode lessons in structure](${CLAUDE_PLUGIN_ROOT}/principles/encode-lessons-in-structure.md) and enforce the demonstrated invariant with existing mechanisms.
+5. **Verify.** Rerun the original reproduction, the new regression test, and nearby checks invalidated by the change. With a feature map, drive the affected mapped paths using the project's existing verification skill. Preserve evidence while cleaning up scratch state and instances you created. Read [prove it works](${CLAUDE_PLUGIN_ROOT}/principles/prove-it-works.md) before declaring the fix verified.
 
-For causal diagnosis, read [fix-root-causes](${CLAUDE_PLUGIN_ROOT}/principles/fix-root-causes.md). When fixes repeatedly share a failed assumption, read [attack-the-premise](${CLAUDE_PLUGIN_ROOT}/principles/attack-the-premise.md). Read only the shared Markdown guidance relevant to the current uncertainty; these documents are not skills to invoke.
-
-1. Reproduce on the affected interface or the closest faithful local path. Record expected and actual behavior. If the necessary environment is inaccessible, name the missing prerequisite and distinguish a suspected fix from a verified one.
-2. Read the relevant code and regression history. Choose observations that distinguish the leading hypotheses. Instrument only what is unclear; keep large logs in files and inspect a reduced result.
-3. If two fixes fail while assuming the same premise, write that premise down and test it directly before trying a third. Remove rejected experimental edits without disturbing the user's work.
-4. Before changing product code, use [TDD](${CLAUDE_PLUGIN_ROOT}/references/tdd.md) when the user requests it or a clear, cheap regression-test path exists. Otherwise preserve the closest faithful reproduction. Fix the cause with the smallest justified change. A guard is appropriate when the triggering state is legitimate; otherwise find what produced the invalid state. Check nearby instances of the same fault within scope.
-5. Rerun the original reproduction and relevant existing checks. When a cheap regression test fits the repo's harness, demonstrate its failure before the fix and its pass afterward. Do not build unrelated test infrastructure for a small fix. With an existing app feature map, read the [targeted journey procedure](${CLAUDE_PLUGIN_ROOT}/references/verify-feature-map.md) for the affected path.
-
-If a proposed fix changes a design assumption, read [redesign from first principles](${CLAUDE_PLUGIN_ROOT}/principles/redesign-from-first-principles.md). For a demonstrated recurring mistake that the user wants prevented structurally, read [correct](${CLAUDE_PLUGIN_ROOT}/references/correct.md). Before completion, read [prove it works](${CLAUDE_PLUGIN_ROOT}/principles/prove-it-works.md).
-
-Work directly by default. No required design panel, delegation, loop command, commit sequence, or PR ceremony. Stop when the evidence supports the fix; report blockers when additional attempts cannot resolve them.
-
-Report the symptom, root cause, change, and before-and-after evidence. Include limitations that affect confidence.
+Report symptom, root cause, change, failing-before and passing-after evidence, and material limitations. If the failure cannot be reproduced or the environment cannot verify the fix, say what remains suspected. No default panel, delegate, repeated style pass, or PR ceremony.

@@ -1,24 +1,21 @@
 ---
 name: maintenance
-description: Update dependencies, build or CI configuration, repository tooling, or routine project housekeeping. Also use to prevent a demonstrated recurring repo mistake; documentation prose belongs to technical-writing.
+description: Update dependencies, build or CI configuration, repository tooling, or project housekeeping. Also use to prevent a demonstrated recurring repo mistake; substantial documentation prose belongs to technical-writing.
 ---
 
 # Maintenance
 
-Resolve relative links in shared documents from that document’s directory, not the app checkout. Read only the files whose conditions apply.
+Identify the maintenance outcome and the behavior that must remain intact. Inspect actual versions, configuration, project instructions, and existing checks. Read shared documents at the conditions below; their relative links resolve from the document's directory.
 
-Identify the maintenance outcome and the behavior that must remain intact. Read the actual dependency versions, configuration, project instructions, and existing checks before changing them. Handle a small housekeeping task directly; do not manufacture a migration plan or hardening project.
+## Select the work
 
-Select supporting guidance only where it affects the work:
+- **Dependency update:** inspect the target version's authoritative release notes and migration instructions. Trace consumers, configuration, build behavior, and serialized data affected by the change; read [preserve contracts](${CLAUDE_PLUGIN_ROOT}/principles/preserve-contracts.md). Update owned manifests and lockfiles together. If adapting the integration leaves an ownership or interface question, read [boundary discipline](${CLAUDE_PLUGIN_ROOT}/principles/boundary-discipline.md) and use [design](${CLAUDE_PLUGIN_ROOT}/playbooks/design.md) for that question.
+- **Configuration, CI, or tooling:** change the authoritative source and verify the path that consumes it. For retries or partial setup runs, read [make operations idempotent](${CLAUDE_PLUGIN_ROOT}/principles/make-operations-idempotent.md). For external inputs, read [boundary discipline](${CLAUDE_PLUGIN_ROOT}/principles/boundary-discipline.md). Remove obsolete configuration within scope.
+- **Recurring demonstrated mistake:** read [encode lessons in structure](${CLAUDE_PLUGIN_ROOT}/principles/encode-lessons-in-structure.md). Start from the named failure and code/review evidence, not session-transcript mining. Prefer removing the opportunity, then encoding the invariant in types, then an existing lint/check, then an observable-behavior test. Document only judgments that cannot be enforced. Prove the guard catches the actual failure and permits valid use; do not expand a one-off correction into repo-wide hardening.
+- **Housekeeping:** do the bounded cleanup directly. Read [subtract before you add](${CLAUDE_PLUGIN_ROOT}/principles/subtract-before-you-add.md) before adding another layer or dependency. Nontrivial repetitive edits or checks can use [build the lever](${CLAUDE_PLUGIN_ROOT}/principles/build-the-lever.md); keep the tool proportional to the task.
 
-- For a dependency or configuration change with downstream consequences, read [blast radius](${CLAUDE_PLUGIN_ROOT}/references/blast-radius.md). Check the actual target version's release notes and migration instructions before relying on changed behavior.
-- For a repeated demonstrated mistake, read [correct](${CLAUDE_PLUGIN_ROOT}/references/correct.md) and [encode lessons in structure](${CLAUDE_PLUGIN_ROOT}/principles/encode-lessons-in-structure.md). This is repo enforcement, not personal-memory management.
-- When nontrivial edits or checks need a rerunnable tool, read [build the lever](${CLAUDE_PLUGIN_ROOT}/principles/build-the-lever.md). Keep the tool proportional to the task.
-- For retried setup, commands, or partial lifecycle runs, read [make operations idempotent](${CLAUDE_PLUGIN_ROOT}/principles/make-operations-idempotent.md).
-- For CLI, config, or external-data validation, read [boundary discipline](${CLAUDE_PLUGIN_ROOT}/principles/boundary-discipline.md).
-- Before adding another layer or dependency, read [subtract before you add](${CLAUDE_PLUGIN_ROOT}/principles/subtract-before-you-add.md).
-- For a reversible next step that needs no new authorization, read [never block on the human](${CLAUDE_PLUGIN_ROOT}/principles/never-block-on-the-human.md).
+## Finish the requested result
 
-Make the requested change, update owned manifests and lockfiles together, and remove obsolete configuration within scope. Run checks that exercise the behavior affected: dependency resolution and relevant tests, config validation, or a representative tooling command. Read [prove it works](${CLAUDE_PLUGIN_ROOT}/principles/prove-it-works.md) before reporting completion.
+Use [never block on the human](${CLAUDE_PLUGIN_ROOT}/principles/never-block-on-the-human.md) when a reversible next step tempts an unnecessary permission question. Preserve explicit authorization limits.
 
-Report the change, compatibility consequences, checks run, and anything blocked. Deployment, publication, merging, and unrelated upgrades require their own task authorization.
+Run checks that exercise the affected behavior: dependency resolution and relevant tests, actual config validation, a representative tooling command, or a guard's broken/valid cases. Read [prove it works](${CLAUDE_PLUGIN_ROOT}/principles/prove-it-works.md) before reporting completion. Report the change, compatibility consequences, evidence, and blocked checks. Publication, deployment, merging, and unrelated upgrades are separate outcomes.

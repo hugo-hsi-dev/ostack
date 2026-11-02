@@ -1,24 +1,16 @@
 ---
 name: performance
-description: Diagnose a performance regression, validate a benchmark claim, or optimize a measured bottleneck with controlled before-and-after runs.
+description: Diagnose a performance regression, validate a benchmark claim, or optimize a measured bottleneck with controlled before-and-after evidence.
 ---
 
 # Performance
 
-Resolve relative links in shared documents from that document’s directory, not the app checkout. Read only the files whose conditions apply.
+Name the workload, user-visible metric, and decision the measurement must support. Inspect existing captures and measurement commands before adding instrumentation. Read shared documents only at applicable conditions; relative links resolve from the document's directory.
 
-Let the measurement determine the change. A source-level guess is a hypothesis.
+1. **Establish trustworthy evidence.** Read [explain the number](${CLAUDE_PLUGIN_ROOT}/principles/explain-the-number.md), then use [measure](${CLAUDE_PLUGIN_ROOT}/playbooks/measure.md) to confirm comparable settings, completed real work, correct outputs, and a reproducible baseline.
+2. **Find the limiter.** Profile separately from reported timings. Map hot frames, resource saturation, or retainer chains to actual code. State missing symbols and capture limits. For diagnosis-only work, stop at the supported cause and recommendation.
+3. **Choose an intervention.** Start with removing work, reusing results, reducing frequency, or deferring it. If the bottleneck comes from the representation or ownership, read [model the domain](${CLAUDE_PLUGIN_ROOT}/principles/model-the-domain.md) or [separate shared state](${CLAUDE_PLUGIN_ROOT}/principles/separate-before-serializing-shared-state.md), then use [design](${CLAUDE_PLUGIN_ROOT}/playbooks/design.md) for the unresolved shape. Use [prototype](${CLAUDE_PLUGIN_ROOT}/playbooks/prototype.md) for a runtime assumption that needs a probe. A requested idea panel may use [arena](${CLAUDE_PLUGIN_ROOT}/playbooks/arena.md); proposals remain hypotheses until measured.
+4. **Test one hypothesis.** Change one thing, rerun the same workload, and check correctness. Keep gains that exceed noise and remove failed experiments without disturbing unrelated changes. If the harness changes, establish a fresh comparable baseline.
+5. **Stop on evidence.** For a campaign, retain the workload and regression gate, respect the user's budget, and keep a short hypothesis/result/keep-or-revert record. Stop at the target or when remaining ideas cost more than their likely gain. No iteration floor or automatic wake loop.
 
-When the validity or interpretation of a number is uncertain, read [explain the number](${CLAUDE_PLUGIN_ROOT}/principles/explain-the-number.md). The measurement procedure below applies it to performance work. This is a shared document, not another skill invocation.
-
-1. Pick the user-visible workload and metric, including realistic data size, state, and concurrency. Record the target or decision that would justify further work.
-2. Read the measurement command and establish a valid baseline using the [measurement checks](references/measurement.md). For diagnosis only, stop at the measured cause and recommendation.
-3. Profile separately from reported timing runs. Locate the limiting resource or code path. For a supplied trace or heap snapshot, query the artifact directly and map hot frames or retainer chains to source; state missing symbols or capture limitations.
-4. Try the cheapest relevant intervention: remove unused work, reuse results, reduce frequency, defer work, move it off the critical path, then consider concurrency or a cheaper implementation. Stop when a simpler intervention meets the goal.
-5. Change one hypothesis at a time, rerun the same workload, and check correctness. Keep improvements that exceed noise; remove failed experiments while preserving unrelated changes.
-
-For a requested optimization campaign, hold the measurement command and regression gate stable across attempts. Keep a short table of hypothesis, result, and keep/revert decision. Respect the user's budget; otherwise stop at the target or when remaining ideas cost more than the likely gain. No minimum iteration count or automatic wake loop. If the harness must change, establish a fresh comparable baseline.
-
-If a runtime assumption needs a disposable experiment, read [prototype](${CLAUDE_PLUGIN_ROOT}/playbooks/prototype.md). For an explicitly requested idea panel, read [arena](${CLAUDE_PLUGIN_ROOT}/playbooks/arena.md); Haiku proposals remain hypotheses, and the owner measures selected ideas.
-
-Report baseline, final value, units, delta, run count and spread, identified limiter, correctness result, and artifact locations. Use "inconclusive" when the evidence cannot support the claim.
+Report baseline and final values, units, delta, run count and spread, the identified limiter, correctness checks, and artifact locations. Call an unexplained gain tentative and a gap within noise inconclusive.

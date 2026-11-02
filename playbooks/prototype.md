@@ -2,8 +2,6 @@
 
 State the decision and the observation that would change it. If inspection can settle the question, use that evidence first.
 
-For product-experience choices, use [experience-first](../principles/experience-first.md). A novel interaction or architecture with no precedent can call for [exhaust-the-design-space](../principles/exhaust-the-design-space.md). These principle documents also apply outside prototyping.
-
 Build the smallest experiment that tests the uncertainty. Keep it separate from production changes. Use the real runtime or dependency when its behavior is the question; a stand-in must preserve the relevant constraints.
 
 For a visual or interaction decision, render and drive the meaningful states. When comparing variants, use the same fixture and a simple way to switch between them. Two variants are enough when they resolve the fork; no fixed number of alternatives is required.

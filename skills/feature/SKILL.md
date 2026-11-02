@@ -1,36 +1,41 @@
 ---
 name: feature
-description: Build or extend a product feature, integration, or user-facing capability from requirements through implementation and verification. Use for new behavior rather than bug fixes or behavior-preserving cleanup.
+description: Design, build, or extend a product feature, integration, or user-facing capability. Carry new behavior from requirements to a verified result; design-only requests stop at the recommendation.
 ---
 
 # Feature
 
-Resolve relative links in shared documents from that document’s directory, not the app checkout. Read only the files whose conditions apply.
+Own the requested outcome through design, implementation, and evidence. Read shared documents only at the conditions below; resolve their relative links from the document's directory.
 
-Own the requested feature through a usable result. Read the affected flow, callers, project instructions, and existing checks. Identify the user outcome, observable acceptance conditions, and compatibility constraints. Resolve ordinary implementation choices from the repo; ask only when an unresolved product decision blocks progress.
+## Establish the change
 
-## Select guidance at the decision
+Read the affected flow, callers, tests, and project instructions. Identify the user outcome, observable acceptance conditions, and existing contracts. Ask only for product decisions the repo cannot answer and that block progress. For product or scope tradeoffs, read [experience first](${CLAUDE_PLUGIN_ROOT}/principles/experience-first.md).
 
-Read the linked document when its condition occurs. These are shared Markdown files, not skills to invoke. Do not preload the collection or turn this list into mandatory phases.
+## Choose the shape
 
-| Situation | Read |
+Before extending an existing design around a new requirement, read [redesign from first principles](${CLAUDE_PLUGIN_ROOT}/principles/redesign-from-first-principles.md). When ownership, representation, or interfaces are unresolved, select the relevant principles and use [design](${CLAUDE_PLUGIN_ROOT}/playbooks/design.md) to settle the question:
+
+| Decision | Principle |
 | --- | --- |
-| A new requirement changes an existing design | [Redesign from first principles](${CLAUDE_PLUGIN_ROOT}/principles/redesign-from-first-principles.md), before choosing how to extend the flow. |
-| Ownership, data models, or interfaces need design | [Architect](${CLAUDE_PLUGIN_ROOT}/references/architect.md). |
-| Product scope or interaction tradeoffs matter | [Experience first](${CLAUDE_PLUGIN_ROOT}/principles/experience-first.md). |
-| Choosing types or representations | [Type-system discipline](${CLAUDE_PLUGIN_ROOT}/principles/type-system-discipline.md); for TypeScript, [language guidance](${CLAUDE_PLUGIN_ROOT}/references/typescript-best-practices.md). |
-| A runtime or interaction assumption needs an experiment | [Prototype](${CLAUDE_PLUGIN_ROOT}/playbooks/prototype.md). |
-| The user requests competing idea proposals | [Arena](${CLAUDE_PLUGIN_ROOT}/playbooks/arena.md). |
-| The user requests brainstorming across independent areas | [Swarm](${CLAUDE_PLUGIN_ROOT}/playbooks/swarm.md). |
-| A planned rewrite has explicit phase boundaries | [Outcome-oriented execution](${CLAUDE_PLUGIN_ROOT}/principles/outcome-oriented-execution.md). |
-| Multi-step delivery needs independently checkable units | [Sequence verifiable units](${CLAUDE_PLUGIN_ROOT}/principles/sequence-verifiable-units.md), subject to the user's branch and delivery constraints. |
-| A reversible next step tempts an unnecessary permission question | [Never block on the human](${CLAUDE_PLUGIN_ROOT}/principles/never-block-on-the-human.md). |
-| Context is filling with large files or outputs | [Guard the context window](${CLAUDE_PLUGIN_ROOT}/principles/guard-the-context-window.md); delegation remains subject to available tools and authorization. |
+| Stateful branching or repeated shape assumptions | [Model the domain](${CLAUDE_PLUGIN_ROOT}/principles/model-the-domain.md) |
+| Core structures or scaffold-versus-feature sequencing | [Foundational thinking](${CLAUDE_PLUGIN_ROOT}/principles/foundational-thinking.md) |
+| Types and external schemas | [Type-system discipline](${CLAUDE_PLUGIN_ROOT}/principles/type-system-discipline.md); for TypeScript details, its [language applications](${CLAUDE_PLUGIN_ROOT}/principles/type-system-discipline/typescript.md) |
+| Validation and framework adapters | [Boundary discipline](${CLAUDE_PLUGIN_ROOT}/principles/boundary-discipline.md) |
+| Concurrent writers | [Separate shared state](${CLAUDE_PLUGIN_ROOT}/principles/separate-before-serializing-shared-state.md) |
+| Retries or partial lifecycle runs | [Make operations idempotent](${CLAUDE_PLUGIN_ROOT}/principles/make-operations-idempotent.md) |
+| Interface depth or hidden state | [Minimize reader load](${CLAUDE_PLUGIN_ROOT}/principles/minimize-reader-load.md) |
+| Existing external consumers or persisted data | [Preserve contracts](${CLAUDE_PLUGIN_ROOT}/principles/preserve-contracts.md) |
 
-## Implement and finish
+If observation is needed to choose a direction, use [prototype](${CLAUDE_PLUGIN_ROOT}/playbooks/prototype.md). For a novel interaction or architecture without precedent, first read [exhaust the design space](${CLAUDE_PLUGIN_ROOT}/principles/exhaust-the-design-space.md). A requested idea panel uses [arena](${CLAUDE_PLUGIN_ROOT}/playbooks/arena.md); a requested brainstorm across independent areas uses [swarm](${CLAUDE_PLUGIN_ROOT}/playbooks/swarm.md). Neither is a default design phase.
 
-Build the smallest coherent change that satisfies the acceptance conditions. Migrate affected callers and remove superseded paths within scope. Preserve external contracts. Update the docs and examples that describe changed behavior.
+A design-only request ends with the chosen shape, consequential tradeoffs, and how to check it. Otherwise continue into implementation.
 
-Exercise the real affected path and run the relevant existing checks. When adding or changing tests, read [test behavior, not implementation](${CLAUDE_PLUGIN_ROOT}/principles/test-behavior-not-implementation.md). If the project has a feature map, use the [targeted journey procedure](${CLAUDE_PLUGIN_ROOT}/references/verify-feature-map.md) for affected journeys. For a reference-matching UI change, use [visual parity](${CLAUDE_PLUGIN_ROOT}/references/visual-parity.md).
+## Implement and prove the outcome
 
-Before claiming completion, read [prove it works](${CLAUDE_PLUGIN_ROOT}/principles/prove-it-works.md). Report what changed, the evidence against the acceptance conditions, and material gaps. A feature request does not implicitly request a formal model, a generated verification skill, a brainstorm panel, or a merge.
+Build the smallest coherent change that meets the acceptance conditions. Update affected callers, docs, and examples; remove superseded paths within scope. Revisit the design if implementation repeatedly needs casts, caller coordination, or the same workaround.
+
+Use existing tests and run the real affected user path, including its prerequisites and consequential side effects. If a project feature map exists, check its affected entry points rather than only the convenient path. Read [test behavior](${CLAUDE_PLUGIN_ROOT}/principles/test-behavior-not-implementation.md) when changing assertions. For reference-matching UI work, capture controlled states and use [compare artifacts](${CLAUDE_PLUGIN_ROOT}/playbooks/compare-artifacts.md); check interactions separately.
+
+For a phased rewrite, read [outcome-oriented execution](${CLAUDE_PLUGIN_ROOT}/principles/outcome-oriented-execution.md). For a multi-step delivery, read [sequence verifiable units](${CLAUDE_PLUGIN_ROOT}/principles/sequence-verifiable-units.md), within the user's branch constraints. If context fills with large reads, use [guard the context window](${CLAUDE_PLUGIN_ROOT}/principles/guard-the-context-window.md), subject to available tools and authorized delegation.
+
+Before reporting completion, read [prove it works](${CLAUDE_PLUGIN_ROOT}/principles/prove-it-works.md). Report the delivered behavior, evidence against the acceptance conditions, and remaining gaps. Do not silently turn a feature into a verification generator, maintenance campaign, or merge.

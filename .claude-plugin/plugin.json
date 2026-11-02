@@ -1,6 +1,6 @@
 {
   "name": "ostack",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Task entry skills, shared principles and playbooks, and specialized verification workflows for Claude. Adapted from pstack.",
   "author": {
     "name": "Hugo Hsi",

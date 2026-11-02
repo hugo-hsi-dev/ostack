@@ -31,7 +31,7 @@ These ten skills match recognizable task outcomes and allow automatic selection.
 
 | Entry | Outcome |
 | --- | --- |
-| [feature](skills/feature/SKILL.md) | Build or extend a capability through implementation and verification. |
+| [feature](skills/feature/SKILL.md) | Design, build, or extend a capability; stop at a recommendation for design-only requests. |
 | [bug-fix](skills/bug-fix/SKILL.md) | Reproduce, diagnose, fix, and verify a bug or regression. |
 | [refactor](skills/refactor/SKILL.md) | Simplify structure or migrate an internal API while preserving behavior. |
 | [investigate](skills/investigate/SKILL.md) | Explain a subsystem or runtime observation from source and history. |
@@ -50,11 +50,11 @@ Examples:
 - “Review this branch for regressions.” → review; correctness and downstream contracts as needed.
 - “Verify the new export journey.” → verify; the existing project harness and relevant feature-map paths.
 
-Entries read only the supporting documents whose conditions apply. A reference is not independently discoverable or a skill invocation. Its relative links resolve from its own directory. One principle can serve feature, bug-fix, refactor, and other Entries without copying its text.
+Entries own the task workflow and select applicable principles and playbooks directly. Shared Markdown is read as context; it adds no skill catalog entry. Its relative links resolve from its own directory. Principles supply decision rules; playbooks supply reusable procedures. There is no third shared-content category or extra routing layer.
 
 ## Specialized callable skills
 
-Specific user workflows remain skills rather than disappearing into Entry references.
+Specific user workflows remain independently callable skills.
 
 | Skill | Distinct job | Invocation |
 | --- | --- | --- |
@@ -69,34 +69,41 @@ The four create/maintain skills are restored from the original ostack revision `
 
 Their original workflows include generating project-local skills, proving those generated instructions, and, for app maintenance, parallel source readers plus full live coverage and a corrections PR when changed. Those costs are confined to explicit use; they are not the default feature or bug-fix path. Existing project verification artifacts are not migrated by this plugin refactor. Project-local skill availability in a cloud thread still follows that host's discovery rules.
 
-## Shared playbooks and domain references
+## Shared playbooks
 
-Playbooks are domain-independent procedures stored as ordinary Markdown:
+These domain-independent procedures are ordinary Markdown. Entries select them only when the task reaches the stated condition; the playbooks perform the procedure without another principle-selection layer.
 
 | Playbook | Read when |
 | --- | --- |
+| [design](playbooks/design.md) | An unresolved representation, ownership, or interface question needs a decision. Used across feature, refactor, bug-fix, performance, maintenance, and requested design review. |
+| [prototype](playbooks/prototype.md) | A concrete assumption needs a disposable experiment. |
+| [compare-artifacts](playbooks/compare-artifacts.md) | Observable outputs must match or intentionally differ from a fixed reference, including screenshots and generated data. |
+| [measure](playbooks/measure.md) | A decision depends on a trustworthy quantitative result. |
 | [arena](playbooks/arena.md) | A requested idea panel compares approaches to one question. |
 | [swarm](playbooks/swarm.md) | Requested brainstorming partitions a question into independent areas. |
-| [prototype](playbooks/prototype.md) | A concrete assumption needs a disposable experiment. |
 
 Arena and swarm retain three Haiku idea-only proposals by default and one Opus judgment/synthesis pass. Haiku never owns code, commands, prototypes, tests, or “make it work” loops. Opus owns requested implementation and verification. The bundled [idea-scout](agents/idea-scout.md) and [idea-judge](agents/idea-judge.md) enforce read-only tools and four/six-turn limits. Briefs must supply relevant project constraints because the roles omit automatically loaded instruction files. No nested panels, automatic second rounds, silent model fallback, or cap-resume loops. Report unavailable roles rather than claiming the split ran. Actual usage savings are unmeasured.
 
-Domain-specific methods are also shared Markdown, rather than additional catalog entries:
+## Where the old methods went
 
-| Reference | Main callers |
+The earlier shared `references/` wrappers are removed. The content was rewritten around task ownership and reuse:
+
+| Previous method | Current home |
 | --- | --- |
-| [architect](references/architect.md) | feature: ownership, data models, APIs. |
-| [interrogate](references/interrogate.md), [blast-radius](references/blast-radius.md) | review; blast radius also supports maintenance and refactor. |
-| [correct](references/correct.md) | maintenance or bug-fix: prevent a demonstrated recurring mistake. |
-| [tdd](references/tdd.md) | bug-fix: cheap failing-before/passing-after regression path. |
-| [typescript-best-practices](references/typescript-best-practices.md) | feature, review, and the type-system principle. |
-| [unslop](references/unslop.md) | technical-writing: edit existing prose. |
-| [verify-feature-map](references/verify-feature-map.md) | verify, feature, and bug-fix: targeted journey coverage. |
-| [visual-parity](references/visual-parity.md) | verify, feature, and refactor: controlled UI comparison. |
+| architect | Each applicable Entry selects design principles directly; the shared design playbook settles the unresolved design question. |
+| interrogate, blast-radius | Review owns the assessment procedure. The preserve-contracts principle supports review, feature, refactor, and maintenance. |
+| correct | Maintenance owns recurring-error enforcement; bug-fix can use encode-lessons-in-structure when prevention is requested. |
+| tdd | Bug-fix owns the failing-before/passing-after regression path. |
+| unslop | Technical-writing owns editing as well as new writing. |
+| verify-feature-map | Verify owns coverage planning, real journeys, drift triage, and reporting. Feature and bug-fix check their affected mapped paths directly. |
+| visual-parity | Verify owns the verification outcome; compare-artifacts supplies the reusable comparison procedure for verify, feature, and refactor. |
+| typescript-best-practices | [Type-system discipline's TypeScript applications](principles/type-system-discipline/typescript.md), selected directly when language details matter. |
+
+The original verification examples and statechart operating files stay inside their owning skill packages. They are package resources, not another collection of task routers.
 
 ## Shared principles
 
-All 24 principles now have one Markdown source under `principles/`. Their original applicability descriptions are unchanged and remain in the documents. The table below preserves those descriptions exactly. Cross-references point to files rather than removed skill names. Entries expose the relevant conditions in their own routing instructions; there is no umbrella principle skill to discover first.
+The 24 original principles retain their exact applicability descriptions under `principles/`. One new principle, preserve-contracts, captures a shared compatibility rule previously mixed into several workflows. Entries expose applicability at the decision; no umbrella principle skill must be discovered first. Language-specific applications live with their owning principle.
 
 | Principle | Applicability |
 | --- | --- |
@@ -124,12 +131,13 @@ All 24 principles now have one Markdown source under `principles/`. Their origin
 | [subtract-before-you-add](principles/subtract-before-you-add.md) | Apply when sequencing an addition, refactor, or rewrite. Remove dead code, redundant validators, and stub references first, then build on the simpler base. |
 | [test-behavior-not-implementation](principles/test-behavior-not-implementation.md) | Apply when you write, change, or keep a test. Assert what the code's users can observe, so that the test fails when that behavior breaks and keeps passing when only the internals change. |
 | [type-system-discipline](principles/type-system-discipline.md) | Apply when designing types, reviewing a function signature, or writing code in any statically-typed language. Make illegal states unrepresentable, brand semantic primitives, parse external data at boundaries, exhaust variants, derive from authoritative schemas. |
+| [preserve-contracts](principles/preserve-contracts.md) | Apply when changing behavior consumed outside the edited code: public APIs, persisted data, wire formats, CLI output, configuration, or independently deployed clients. |
 
 ## Native workflows and limits
 
 Use Projects' normal coordination and the skills available in the work thread. Leave preferences, memory, session history, planning, automatic PR creation, and monitoring to Claude's native features. Ordinary Entries finish at the requested result; they do not merge or publish as an automatic final step.
 
-There are **16 native skills**: ten Entries, four original manual-only verification workflows, statechart, and shipping. Principles, playbooks, and domain references add no skill catalog entries. The plugin keeps one canonical copy of each shared document.
+There are **16 native skills**: ten Entries, four original manual-only verification workflows, statechart, and shipping. The 25 principles and six playbooks add no skill catalog entries. The plugin keeps one canonical copy of each shared document.
 
 Strict static validation, reference reachability, and original-content comparisons are separate from live automatic-selection, cloud installation, and model-cost testing. See [PORTING.md](PORTING.md) for the old-to-new map and validation details.
 

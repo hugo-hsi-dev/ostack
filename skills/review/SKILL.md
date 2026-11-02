@@ -1,22 +1,16 @@
 ---
 name: review
-description: Review a code change, branch, or design for correctness, regressions, compatibility, and consequential risks. Use for code review, design critique, and requests to assess what a change could break.
+description: Review a code change, branch, or design for correctness, regressions, compatibility, and consequential risks. Use for code review, design critique, or assessing what a change could break.
 ---
 
 # Review
 
-Resolve relative links in shared documents from that document’s directory, not the app checkout. Read only the files whose conditions apply.
+Produce evidence-backed findings about the requested change. Read shared documents only when the corresponding question arises; relative links resolve from the document's directory.
 
-Establish the requested change and its intended behavior. Keep this a review unless product fixes are also requested. For an unspecified branch review, compare against the merge base with its actual base branch and include relevant working changes.
+1. **Establish the contract.** Read the request, diff, tests, and surrounding code. For an unspecified branch review, compare against the merge base with its actual base branch and include relevant working changes. Keep product fixes outside the review unless requested.
+2. **Trace consequences.** Follow direct callers and paths beyond symbol search: persisted data, wire formats, other languages, configuration, flags, scheduled work, and teardown. For compatibility questions, read [preserve contracts](${CLAUDE_PLUGIN_ROOT}/principles/preserve-contracts.md). A search with no matches establishes only the scope searched.
+3. **Challenge the safety claim.** Identify the one or two facts carrying most of it. Probe plausible invalid inputs, state transitions, partial failures, and races. For state representation, read [model the domain](${CLAUDE_PLUGIN_ROOT}/principles/model-the-domain.md); for interfaces and hidden state, [minimize reader load](${CLAUDE_PLUGIN_ROOT}/principles/minimize-reader-load.md); for concurrent writers, [separate shared state](${CLAUDE_PLUGIN_ROOT}/principles/separate-before-serializing-shared-state.md). For type/schema decisions, read [type-system discipline](${CLAUDE_PLUGIN_ROOT}/principles/type-system-discipline.md), using its [TypeScript applications](${CLAUDE_PLUGIN_ROOT}/principles/type-system-discipline/typescript.md) when needed. A request to develop a replacement design can use [design](${CLAUDE_PLUGIN_ROOT}/playbooks/design.md); ordinary review need not redesign the patch.
+4. **Check each candidate finding.** Inspect actual dependency versions and patches; use a small reproduction or existing check when it can settle the issue. Keep scratch repros separate from the user's changes. For disputed assertions, read [test behavior](${CLAUDE_PLUGIN_ROOT}/principles/test-behavior-not-implementation.md); for disputed evidence, [prove it works](${CLAUDE_PLUGIN_ROOT}/principles/prove-it-works.md). Source can establish a failure without a runnable environment, but label unexecuted claims honestly.
+5. **Filter and report.** Keep findings with a concrete trigger, consequence, location, and supporting path or reproduction. Merge duplicate root causes. Drop style preferences and hypothetical future failures. Distinguish confirmed defects, unresolved assumptions, cleared risks, and blocked checks. Say when no actionable findings remain.
 
-Read only the mode needed:
-
-- To challenge correctness or design assumptions, read [interrogate](${CLAUDE_PLUGIN_ROOT}/references/interrogate.md).
-- To trace consequences beyond the diff, read [blast radius](${CLAUDE_PLUGIN_ROOT}/references/blast-radius.md).
-- When indirection or hidden state makes the change hard to trace, read [minimize reader load](${CLAUDE_PLUGIN_ROOT}/principles/minimize-reader-load.md).
-- For disputed test evidence, read [test behavior, not implementation](${CLAUDE_PLUGIN_ROOT}/principles/test-behavior-not-implementation.md).
-- For type or schema decisions, read [type-system discipline](${CLAUDE_PLUGIN_ROOT}/principles/type-system-discipline.md); use the [TypeScript reference](${CLAUDE_PLUGIN_ROOT}/references/typescript-best-practices.md) when relevant.
-
-Check the most consequential claims against source or the cheapest faithful reproduction. Distinguish a demonstrated failure, an unverified assumption, and a check that could not run. Do not create a model panel or turn every review into a full audit.
-
-Report actionable findings with location, trigger, consequence, and evidence. Merge duplicate root causes and drop unsupported speculation. Say when no actionable findings remain and state material coverage limits.
+Work in the current session by default. A request for multiple reviewers uses only available authorized tools and isolated inputs, then deduplicates evidence. A brainstorm panel is not a correctness audit or a reviewer quorum.
