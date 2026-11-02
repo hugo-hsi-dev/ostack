@@ -1,9 +1,9 @@
 ---
-name: prototype
+name: playbook-prototype
 description: Build a small disposable experiment to resolve a concrete design, interaction, or implementation uncertainty before committing to production code.
 ---
 
-# Prototype
+# Prototype playbook
 
 State the decision and the observation that would change it. If inspection can settle the question, use that evidence first.
 

@@ -1,11 +1,11 @@
 ---
-name: swarm
+name: playbook-swarm
 description: Explore independent parts of a question with a small Haiku brainstorming group, then synthesize with Opus. Use for requested parallel idea exploration across distinct areas.
 ---
 
-# Swarm
+# Swarm playbook
 
-Partition brainstorming across different slices. Arena explores competing answers to one question; swarm explores different parts of a question. Haiku generates ideas only. It does not own implementation, exhaustive audits, or proof of correctness.
+Partition brainstorming across different slices. `playbook-arena` explores competing answers to one question; `playbook-swarm` explores different parts of a question. Haiku generates ideas only. It does not own implementation, exhaustive audits, or proof of correctness.
 
 ## Partition and bound
 

@@ -1,9 +1,9 @@
 ---
-name: arena
+name: playbook-arena
 description: Compare several ideas for the same design or problem, then select and combine their strongest parts. Use for a requested brainstorm panel, competing approaches, or an arena comparison.
 ---
 
-# Arena
+# Arena playbook
 
 Use a small Haiku idea panel and one Opus judgment pass. Candidates propose possibilities; implementation and verification belong to Opus after selection, within the user's requested scope.
 

@@ -31,18 +31,25 @@ Installing skills through **Chat** makes them available through your Claude acco
 
 Leave preferences, memory, session history, planning, PR creation, and PR monitoring to Claude's native features. Where automatic PR creation is enabled, use the session's existing PR. These skills finish at the requested engineering result; they do not open, ready, merge, or babysit a PR as a mandatory final step.
 
-## Skills
+## Playbooks
+
+Playbooks are domain-independent procedures. Principles supply situational decision rules, and traditional skills supply domain-specific expertise. All three categories use the same native skill format and remain independently discoverable.
+
+| Playbook | Use it for |
+| --- | --- |
+| [playbook-arena](skills/playbook-arena/SKILL.md) | Three distinct Haiku idea proposals, then Opus selection and synthesis. |
+| [playbook-swarm](skills/playbook-swarm/SKILL.md) | Haiku brainstorming across separate slices, synthesized by Opus. |
+| [playbook-prototype](skills/playbook-prototype/SKILL.md) | Resolve a concrete uncertainty with a small disposable experiment. |
+
+## Traditional skills
 
 | Skill | Use it for |
 | --- | --- |
-| [arena](skills/arena/SKILL.md) | Three distinct Haiku idea proposals, then Opus selection and synthesis. |
-| [swarm](skills/swarm/SKILL.md) | Haiku brainstorming across separate slices, synthesized by Opus. |
 | [shipping](skills/shipping/SKILL.md) | Land an explicitly requested PR stack with dependency and current-head checks. |
 | [bug-fix](skills/bug-fix/SKILL.md) | Reproduce a bug, isolate its cause, fix it, and rerun the reproduction. |
 | [investigate](skills/investigate/SKILL.md) | Explain how code works or why it is shaped that way, using focused source and history evidence. |
 | [performance](skills/performance/SKILL.md) | Diagnose bottlenecks, validate benchmark claims, or run a bounded optimization campaign. |
 | [architect](skills/architect/SKILL.md) | Choose data models, ownership, and interfaces for a substantial design change. |
-| [prototype](skills/prototype/SKILL.md) | Resolve a concrete uncertainty with a small disposable experiment. |
 | [refactor](skills/refactor/SKILL.md) | Reduce structural complexity while preserving the behavior contract. |
 | [interrogate](skills/interrogate/SKILL.md) | Challenge a change or design for concrete correctness failures. |
 | [blast-radius](skills/blast-radius/SKILL.md) | Check contracts and consequences outside a change's diff. |
@@ -68,7 +75,7 @@ Examples of ordinary requests:
 
 The 24 principles remain individual skills. Each description exposes a concrete applicability condition to native discovery, so principles can be selected independently of task workflows. A loaded task skill can also name a relevant principle. No umbrella principle skill or mode activation is required.
 
-Principles keep one source in their own `SKILL.md`. Cross-skill handoffs use registered skill names rather than assuming neighboring installation folders. The full principle text loads only when selected. There are 45 skill entries in total: 21 task skills and 24 principles.
+Principles keep one source in their own `SKILL.md`. Cross-skill handoffs use registered skill names rather than assuming neighboring installation folders. The full principle text loads only when selected. There are 45 skill entries in total: 24 principles, 3 playbooks, and 18 traditional skills.
 
 Domain-specific routing remains an option for closely related procedures. The current task skills are directly discoverable; none requires a repo-wide playbook router.
 
@@ -102,7 +109,7 @@ Domain-specific routing remains an option for closely related procedures. The cu
 
 ## Brainstorm panels
 
-Arena explores competing approaches to one question. Swarm partitions a question into different areas. Both default to three Haiku idea proposals and one Opus judgment pass. The Opus owner can judge directly; otherwise one Opus judge returns the synthesis. Opus owns any requested implementation and verification.
+`playbook-arena` explores competing approaches to one question. `playbook-swarm` partitions a question into different areas. Both default to three Haiku idea proposals and one Opus judgment pass. The Opus owner can judge directly; otherwise one Opus judge returns the synthesis. Opus owns any requested implementation and verification.
 
 The plugin bundles two native role agents. `idea-scout` uses Haiku with only Read, Grep, and Glob, a four-turn cap, and proposals capped at 250 words. It cannot write code, run commands, install tools, or spawn agents. `idea-judge` uses Opus with the same read-only tools and a six-turn cap. Both omit automatically loaded instruction files; the owner supplies relevant project constraints and small source excerpts in the brief.
 

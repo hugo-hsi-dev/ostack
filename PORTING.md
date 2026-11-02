@@ -15,11 +15,11 @@ This revision removes the mode layer and adapts the remaining guidance to native
 | Previous component | Decision and destination |
 | --- | --- |
 | onyo-mode, its plan checker and worktree audit scripts | Removed. Claude discovers direct task skills; native session tools own coordination. |
-| Feature playbook | Removed as generic process. Design and experiments remain available through architect and prototype when needed. |
+| Feature playbook | Removed as generic process. Design and experiments remain available through architect and playbook-prototype when needed. |
 | Bug fix | Direct bug-fix skill; incorporates root-cause tracing and testing a repeatedly failed premise. |
 | Investigation, runtime forensics, trace forensics | Consolidated in investigate. Performance-specific artifact analysis also fits performance. No forced database conversion or parallel readers. |
 | Perf issue, hillclimb, benchmark checklist | Consolidated in performance, with a conditional measurement reference. One change per measurement; no iteration floor or self-waking loop. |
-| Refactoring, prototype, visual parity, eval | Direct refactor, prototype, visual-parity, and evaluate skills, with bounded task-specific checks. |
+| Refactoring, prototype, visual parity, eval | Direct refactor, playbook-prototype, visual-parity, and evaluate entries, with bounded task-specific checks. |
 | Orchestrate, autonomous run, autopilot variants, multi-phase plan | Removed. Use native Projects, planning, threads, and scheduling when requested. |
 | Session pickup, pause safely | Removed. Use native session and memory mechanisms; no transcript scraping. |
 | Opening a PR and worktree cleanup | Removed. Use native PR creation and worktree lifecycle; retain project-specific requirements in the project. |
@@ -29,7 +29,7 @@ This revision removes the mode layer and adapts the remaining guidance to native
 | Design principles | Individual skills preserve the rules, including proactive redesign for new requirements. Architect names relevant skills; native discovery exposes each principle independently. |
 | Simplicity and migration principles | Canonical principle skills remain reusable across tasks. Refactor names subtraction, reader load, migration, and redesign as appropriate. External compatibility remains an explicit constraint. |
 | Test and measurement principles | Independently discoverable skills expose their own applicability. Tdd and performance also name relevant principles. |
-| Experience and alternative-design principles | Experience and design-space skills remain available across domains; prototype names them when those decisions arise. |
+| Experience and alternative-design principles | Experience and design-space skills remain available across domains; playbook-prototype names them when those decisions arise. |
 | Encode lessons in structure | Preserved as an individual skill and named by correct. The correct workflow remains focused on demonstrated repo failures; native preference memory remains native. |
 | Create/maintain app verification skills | Launch-framework generation removed in favor of available native/project tooling. The distinctive feature-map reconciliation survives in verify-feature-map. |
 | Create/maintain formal verification skills | Consolidated in formal-verification with maintenance loaded separately. No compulsory generated skill or repo-wide target search. |
@@ -37,7 +37,7 @@ This revision removes the mode layer and adapts the remaining guidance to native
 | Architect, interrogate, blast-radius | Retained without deleted skill dependencies, model configuration, or required panels. |
 | TypeScript guidance | Retained without a prerequisite skill. Corrected misleading claims about assertions and nonnegative durations. |
 | Technical writing, unslop | Retained as independent writing and editing tasks. Removed the requirement to apply both to every reply. |
-| Arena and swarm | Restored with three Haiku idea-only proposals and one Opus synthesis. Enforced read-only role agents and turn caps replace unrestricted candidates, model-role files, and recursive fan-out. |
+| Arena and swarm | Restored as playbook-arena and playbook-swarm with three Haiku idea-only proposals and one Opus synthesis. Enforced read-only role agents and turn caps replace unrestricted candidates, model-role files, and recursive fan-out. |
 | Other previously deleted skills, old agents, and guide | Left deleted. New idea-scout and idea-judge agents are narrow native roles, not replacements for the old mode wrappers. |
 
 Principles are independently discoverable alongside the task workflows. Their applicability conditions are visible before activation, in their skill descriptions. A task skill can also name a relevant principle using native activation. No umbrella skill, startup index, or repo-wide task router is required.
@@ -48,13 +48,27 @@ This preserves cross-domain reuse at the cost of more short catalog descriptions
 
 Existing generated verification artifacts are treated as shared contracts with original pstack users. Their names, locations, section structure, and verification meaning are preserved during routine maintenance. This is a source-level compatibility policy; end-to-end interoperability remains untested.
 
+## Principles, playbooks, and traditional skills
+
+The 45 native skill entries fall into three categories: 24 principles provide situational decision rules; 3 playbooks provide domain-independent procedures; 18 traditional skills provide domain-specific expertise. Numbered steps and multiple agents do not determine the category. Bug fixing, performance engineering, verification, and shipping remain traditional skills.
+
+The playbook names and directories are now:
+
+| Previous name | Current name |
+| --- | --- |
+| arena | playbook-arena |
+| swarm | playbook-swarm |
+| prototype | playbook-prototype |
+
+The registration names, directories, links, and references change together. Execution behavior and discovery descriptions stay the same, including every principle description. These categories use the standard native skill format; there is no additional router or activation requirement. Existing explicit commands must use the new names, such as `/ostack:playbook-arena`; the old names have no aliases.
+
 ## Principle description provenance
 
 All 24 original descriptions in the committed ostack baseline matched the corresponding upstream [pstack principle skills](https://github.com/cursor/plugins/tree/main/pstack/skills) when checked on November 2, 2026. The shortened descriptions from the first revision have been replaced with those exact originals. Required body guidance remains, with removed dependency names and cross-skill links adapted to native skill-name handoffs. Invocation is enabled rather than retaining the upstream explicit-only flag.
 
 ## Arena and swarm cost policy
 
-Haiku is a brainstorming tool here. Candidates return ideas and assumptions, never working implementations or claimed test results. Arena gives three workers distinct angles on one problem; swarm assigns different areas to at most three workers by default. Each native idea-scout has read/search tools only, a four-turn cap, and a 250-word proposal limit. It omits auto-loaded instruction files, so briefs must include relevant constraints.
+Haiku is a brainstorming tool here. Candidates return ideas and assumptions, never working implementations or claimed test results. `playbook-arena` gives three workers distinct angles on one problem; `playbook-swarm` assigns different areas to at most three workers by default. Each native idea-scout has read/search tools only, a four-turn cap, and a 250-word proposal limit. It omits auto-loaded instruction files, so briefs must include relevant constraints.
 
 Opus judges and synthesizes once, then owns any requested implementation and verification. The existing Opus owner can judge without another delegate; otherwise one read-only idea-judge has a six-turn cap. No nested fan-out, automatic second round, model fallback, or automatic resumption after a turn cap. Effective model overrides must be surfaced when observable.
 
@@ -78,7 +92,7 @@ The model and tool restrictions are native plugin agent definitions, not an extr
 | orchestrate | Native Projects coordination. No coordinator skill-loading requirements. |
 | pause-safely | Native session lifecycle; no compulsory WIP commit or separate handoff archive. |
 | perf-issue | Preserved in performance with the measurement reference. |
-| prototype | Preserved in the direct prototype skill. |
+| prototype | Preserved in the directly discoverable playbook-prototype. |
 | refactoring | Preserved in refactor. |
 | runtime-forensics | Preserved in investigate and performance; collect only the relevant signal. |
 | session-pickup | Native session/history tools; no local transcript crawling. |
@@ -94,8 +108,8 @@ Counts use whitespace-separated words, including frontmatter. Instruction Markdo
 | Measure | At audit start, after existing deletions | Revised |
 | --- | ---: | ---: |
 | Skills | 40 | 45 |
-| Words in skill entrypoints | 21,324 | 12,133 |
-| Words in all skill instruction Markdown | 37,867 | 15,682 |
+| Words in skill entrypoints | 21,324 | 12,136 |
+| Words in all skill instruction Markdown | 37,867 | 15,685 |
 
 The committed baseline before the user's deletions had 58 skills and 35,229 entrypoint words. The working-tree comparison above separates this revision from those earlier removals.
 
