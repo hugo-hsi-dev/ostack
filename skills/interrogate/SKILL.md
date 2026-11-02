@@ -1,31 +1,19 @@
 ---
 name: interrogate
-description: "Use for \"interrogate\", \"adversarial review\", \"multi-model review\", \"challenge this\", \"stress test this code\", \"find blind spots\", or \"tear this apart\". Adversaries try to break a change or design, and only findings proven by a run survive."
-disable-model-invocation: true
+description: Adversarially review a change or design for concrete correctness failures. Use for requests to challenge a design, stress test code, or find blind spots.
 ---
 
 # Interrogate
 
-Adversaries try to break a change or a design. A finding survives only when a run proves it. Report the findings. Do not apply fixes.
+Try to break the stated intent. Review without applying product fixes unless asked.
 
-## Frame
+For a disputed validation claim, use the `principle-prove-it-works` skill. It applies to evidence across task domains.
 
-The scope is what the user names. Otherwise it is the branch diff from its merge base with the base branch, through the working tree. State the intent with the **in-your-own-words** skill, from the user's message, the commits, and the PR description. Ask the user when the intent is unclear.
+1. Establish the scope and intended behavior from the request, diff, tests, and surrounding code. For an unspecified branch review, use its merge base with the actual base branch and include working changes.
+2. Follow the most consequential failure paths: invalid inputs, state transitions, partial failures, concurrency, and compatibility with callers outside the diff. Prioritize plausible failures over exhaustive speculation.
+3. For each candidate finding, attempt the cheapest useful check against real code. Keep scratch repros separate from the user's changes. For a design, probe the assumption it depends on.
+4. Keep findings supported by a repro or a concrete source path that demonstrates the failure. Label unexecuted evidence and runtime limitations honestly. Drop style preferences and hypothetical future problems. Merge findings with the same root cause.
 
-## Fan out
+Work in the current session by default. If the user requests multiple reviewers or models, use only available capabilities, provide isolated working copies including relevant uncommitted changes, and deduplicate the results. Do not invent model names, custom agent types, or a reviewer quorum.
 
-Run Phase A steps 3 and 4 and Phase B of the **arena** skill, with four changes. Read the `interrogate reviewers` line in place of `arena runners`. Copy the scope's uncommitted changes into each worktree. Spawn each adversary as `general-purpose`. In place of the arena task and rationale, give each adversary the scope, the intent, and this brief:
-
-> Break this change. Prove each finding with a run against the real code, such as a failing test, a repro script, or command output that shows the wrong behavior. For a design or plan, run a prototype or probe the current tree. Keep repros in your own worktree. Report each finding with a title, the exact command, the output it printed, and the output the intent requires. Leave out anything you did not run. That covers style, naming, structure, and risks that need a future change to matter. No findings is a valid result.
-
-## Verify
-
-Verify each finding per arena Phase F by rerunning its command. Keep a finding when the output shows the failure and the failure breaks the intent. Drop the rest. Merge findings that share a root cause.
-
-Skip arena Phases C, D, and E. Adversaries find different failures, so the verdict keeps every verified finding, not one adversary's list.
-
-## Output
-
-- **Intent**: the restatement.
-- **Findings**: for each verified finding, the command, its output, how it breaks the intent, and the adversaries that found it. Say "no verified findings" when none survive.
-- **Dropped**: for each adversary, the count of dropped findings and why.
+Report each actionable finding with the location, trigger, consequence, and evidence. Say when no actionable findings remain. Distinguish a failed check from a check that could not run.

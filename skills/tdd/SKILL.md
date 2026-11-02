@@ -1,10 +1,11 @@
 ---
 name: tdd
-description: "Use only when the user explicitly asks for TDD, a failing test, or a regression test, OR when the bug has an obvious cheap local test target. Skip when the test path is unclear, expensive, integration-heavy, or not requested."
-disable-model-invocation: true
+description: "Write a failing regression test before fixing a bug when the user requests TDD or the bug has a clear, cheap local test path."
 ---
 
 # TDD Bug Fix
+
+Use the `principle-test-behavior-not-implementation` skill when deciding what the regression test should observe.
 
 When fixing a bug with a clear, cheap test path, make the broken behavior executable before changing production code. The goal is a focused regression test that fails before the fix and passes after it.
 
@@ -29,6 +30,7 @@ Prefer no new test over a bad test. A bad test is one that mostly tests mocks, e
 
 - Do not change tests merely to match a wrong implementation.
 - Do not weaken existing assertions unless the expected behavior has genuinely changed and the reason is clear.
+- Assert observable results and effects through the caller's interface. A useful test catches broken behavior and survives a restructure that preserves it. Do not derive expected output from the implementation under test.
 - Keep the regression test focused on the bug. Avoid broad fixture churn or unrelated coverage expansion.
 - If the bug is flaky, make the test deterministic where possible and document the signal being locked down.
 - If the bug exposes a broader class of failures, first land the focused regression path, then consider additional sibling coverage.

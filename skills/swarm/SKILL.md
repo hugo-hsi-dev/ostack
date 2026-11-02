@@ -1,41 +1,32 @@
 ---
 name: swarm
-description: "Fan out N parallel workers, drain them, and return one report. Use for /swarm, 'swarm this', or parallel coverage, races, gauntlets, and exploration."
-disable-model-invocation: true
+description: Explore independent parts of a question with a small Haiku brainstorming group, then synthesize with Opus. Use for requested parallel idea exploration across distinct areas.
 ---
 
 # Swarm
 
-## Start
+Partition brainstorming across different slices. Arena explores competing answers to one question; swarm explores different parts of a question. Haiku generates ideas only. It does not own implementation, exhaustive audits, or proof of correctness.
 
-Open a todolist with one entry per phase before launching anything.
+## Partition and bound
 
-1. Frame
-2. Fan out
-3. Aggregate
-4. Report
+Name the question, required slices, and what a useful proposal contains. Default to three Haiku workers in one round. Group related slices into those three briefs instead of spawning one worker per file or feature. Honor a user-specified bound. When there are fewer independent slices, use fewer workers; when one direct read or deterministic command settles the question, do that instead.
 
-## Phase A: Frame
+Give each worker a different scope and a small relevant context package, including the project constraints needed for that slice. Prefer supplied excerpts and exact source locations over a full conversation or repeated repo-wide discovery. State the input revision and relevant working changes when they affect the ideas.
 
-1. State the done predicate and the artifact or report the swarm must return.
-2. Choose the shape. Partition into slices, race N workers on identical briefs, or mix both. For a race or mixed shape, declare `first pass`, `rank all`, or `best-of` before spawning.
-3. Pick the worker model from the `swarm workers` line in `~/.claude/rules/ostack-models.md`. If the rule or that line is missing, use `haiku xhigh`. For `inherit`, omit `model` and `effort` so the workers run on the parent model. If the Agent tool rejects a value, use the default and say so. If it rejects the default, use the closest valid effort for that model from its error message. For a model race, name each arm's model up front. Pick each subagent's reasoning level for the job, per the Subagents section of the **onyo-mode** skill.
-4. Give each worker its own writable output when it writes. When workers verify or measure commits, each brief names the exact SHAs. A measurement brief also names the method (sample count, what one sample is, order). The worker records both in its result.
+## Generate ideas
 
-## Phase B: Fan out
+Use the available `idea-scout` agent on Haiku, with read-only tools and a four-turn cap. Each returns at most 250 words: useful possibilities for its slice, supporting source observations, tradeoffs, uncertain assumptions, and the next check for the owner.
 
-Spawn all N workers in one message with `subagent_type: "general-purpose"`, `isolation: "worktree"`, and the step 3 model, left unset for `inherit`. Use `isolation: "remote"` instead when the account offers it and the worker needs nothing on the user's computer.
+No code changes, commands, tests, prototypes, nested agents, or retries until something works. No automatic replacement for a failed worker. Record a missing slice as a gap. A brainstorm report does not establish exhaustive coverage or verify a suspected defect.
 
-When a worker must start from a non-default pushed branch, tell it in the brief to check out that branch first.
+## Synthesize
 
-Every brief stands alone. Include the goal, scope, exact slice or race arm, how to verify, and what to report. Reports use `PASS`, `ISSUES`, or `BLOCKED` with evidence. A worker that can prove a defect reports `ISSUES` and lists every issue it can prove, not only the first.
+Opus combines the returned proposals in one pass, resolves conflicts between slices, and prioritizes the useful ideas. The Opus owner can do this directly; otherwise use one available `idea-judge` agent on Opus. Inspect source only to resolve a decision that matters. Keep raw proposals out of the final report.
 
-If a worker drops out, proceed with N-1 and note it.
+Opus owns any requested implementation and the real checks needed to validate it. Do not hand selected work back to Haiku to make it function. Stop after the synthesis for an ideas-only request.
 
-## Phase C: Aggregate
+If native agents or model selection are unavailable, report the limitation. An alternative runtime must enforce equivalent read-only, turn, worker, and model bounds before this policy can run there. Do not silently inherit the parent model or expand worker counts.
 
-Read the terminal results. Drop a result that does not record the SHAs and method its brief names, and respawn that worker once. After a second miss, record a gap. A gap does not count as a pass. For coverage, every required slice needs a result. For a race, apply the selection rule declared up front. Use first pass, rank all, or best-of. Do not paste raw worker dumps.
+Return prioritized ideas, the slices they came from, evidence versus assumptions, gaps, and roles actually used. Actual usage may be reported when the host provides it. There is no automatic second round, background watcher, or ongoing swarm.
 
-## Phase D: Report
-
-Return one consolidated in-chat report with a result table, issue one-liners, gaps or dropouts, and the race rule when used.
+Check the effective model and capability metadata when the host exposes it, because host policy can override a requested role. Do not count a partial response as completed work or automatically resume it past the turn cap. The role agents omit automatically loaded project instruction files to keep context small, so the owner must supply relevant constraints in the brief.

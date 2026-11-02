@@ -1,48 +1,36 @@
 ---
 name: arena
-description: "Spawn N parallel candidates at the same task, pick a base, graft the strongest parts of the losers into it. Use for /arena, 'arena this', 'throw it in the arena', or when one attempt at a non-trivial artifact would lock in the wrong shape."
-disable-model-invocation: true
+description: Compare several ideas for the same design or problem, then select and combine their strongest parts. Use for a requested brainstorm panel, competing approaches, or an arena comparison.
 ---
 
 # Arena
 
-Open a todolist with one entry per phase (Frame, Fan out, Cross-judge, Pick, Graft, Verify) before launching anything.
+Use a small Haiku idea panel and one Opus judgment pass. Candidates propose possibilities; implementation and verification belong to Opus after selection, within the user's requested scope.
 
-## Phase A: Frame
+## Frame once
 
-Every candidate gets the same prompt, so the prompt is the contract.
+State the question, constraints, and a few concrete selection criteria. Default to three candidates and one round unless the user specifies another bound. Assign each candidate a distinct exploration angle, such as adapting the existing structure, changing the representation, or removing the need for the work. These are directions to explore, not required conclusions.
 
-1. State the artifact each candidate is producing.
-2. Derive the rubric, 3-6 concrete gradeable criteria for what success looks like on *this* task. It is the picker's tool in Phase D. Candidates only see the task.
-3. Pick the runners. Use the `arena runners` line in `~/.claude/rules/ostack-models.md`. If the rule or that line is missing, default to one each on `opus high` and `sonnet xhigh`. Each entry is a `model` and an `effort`, and its family is the `model`. An `inherit` entry in this line means the parent model, so omit `model` and `effort` for it. If the Agent tool rejects a configured entry, run that seat on its family's default and say so. If the family has no default, or the Agent tool rejects that default, use the closest valid effort for that model from its error message, or drop the seat and say so when there is none. If dropped seats leave fewer than two runners, add runners until there are two, or one when the line has one entry. Run each added runner on a remaining runner's model, or omit `model` so it runs on the parent model when none remain, and say so. Spawn more runners when the arena covers multiple design directions. Use the same model N times when the work is generation-bound rather than judgment-sensitive. Pick each subagent's reasoning level for the job, per the Subagents section of the **onyo-mode** skill.
-4. Give each candidate its own output location (a git worktree where possible, otherwise `/tmp/arena-<slug>/candidate-<n>/`), per the **separate-before-serializing-shared-state** principle skill.
+Give every candidate the same essential facts and relevant project constraints plus its angle. Supply small source excerpts or pointers to the exact relevant files. Include uncommitted state when it affects the question. Do not copy the whole conversation, run a fresh repo investigation per candidate, or preload the skill collection.
 
-## Phase B: Fan out
+## Brainstorm cheaply
 
-Spawn all N subagents in one message, each with the task, the path to the shared grounding, its own output path, and instructions to produce the artifact and a short rationale naming the alternatives it considered and what it rejected.
+Use the available plugin `idea-scout` agent, explicitly on Haiku. Its tool allowlist permits only reading and searching, with a four-turn cap. Each candidate returns at most 250 words covering idea, mechanism, tradeoff, assumption, and the next useful check.
 
-If a candidate produces no output, proceed with N-1 and note the dropout.
+Candidates do not write code, run tests or commands, build prototypes, spawn agents, or try until an idea works. Missing evidence stays a hypothesis for the owner to test. Do not send candidates one another's proposals.
 
-## Phase C: Cross-judge
+## Judge and synthesize once
 
-After all Phase B candidates complete, choose one model from the `arena cross-judge pool` line in `~/.claude/rules/ostack-models.md`. If the rule or that line is missing, choose from `opus high` and `sonnet xhigh`. Spawn one judge subagent with `subagent_type: "onyo-reader"`. The judge is never from the parent's family, as Phase A step 3 defines families. Try only the entries from another family, in pool order. An `inherit` entry is the parent model, so it never judges. With the default pool, an Opus parent gets `sonnet xhigh`. A parent on any other model gets `opus high` first. If the Agent tool rejects an entry, use the same model at the closest valid effort from the error message, or move to the next entry when there is none. If no entry from another family runs, try the default pool's entries from another family the same way. If none of those runs, skip the judge, pick the base alone in Phase D, and say so. If you do not know the parent's model, try the pool's entries in pool order and say that the family check did not run. The judge sees the rubric and the candidates by path label, scores each criterion, and recommends a base with rationale. It runs in parallel with your reading in Phase D. Don't spawn it while candidates are still writing.
+Opus compares the proposals against the criteria, picks a base, and combines only compatible improvements. If the current owner is Opus, it judges directly. Otherwise use one `idea-judge` agent on Opus and consume its decision once. Keep the losing proposals outside the main discussion unless a specific tradeoff needs them.
 
-## Phase D: Pick a base
+Opus implements the selected direction only when implementation is part of the request, and verifies it against actual code or behavior. For an ideas-only request, deliver the synthesis and unresolved assumptions. Similar proposals indicate convergence, not independent proof. Never call a brainstormed solution verified.
 
-Read every candidate end to end before picking. Score each against the rubric criterion by criterion, not on holistic feel, and compare with the cross-judge when Phase C ran one. Agreement on the base confirms the pick. Disagreement means one of you is biased or the rubric was ambiguous. Read both rationales before deciding.
+## Bound the cost
 
-Pick the base a future maintainer can extend most easily without breaking invariants. When two feel tied, prefer the cleaner boundary or smaller API, per the Laziness Protocol.
+No nested fan-out, automatic judge panel, repeated brainstorming rounds, or model escalation. Enlarge the panel only when requested. Report dropouts rather than silently replacing candidates. If no idea is viable, return that result with the blocking constraint.
 
-## Phase E: Graft
+Use the host's registered agent names and native model controls. If these agents are unavailable, use equivalent Haiku/Opus roles only when the runtime can enforce read-only candidate access and bounded execution. Otherwise explain the unavailable role; do not silently inherit an expensive model or promise this model split ran.
 
-Walk each losing candidate once more for what is worth porting into the base, usually one or two things per candidate, not most of it. Fold each graft in by hand, per the **redesign-from-first-principles** principle skill, so the result stays coherent under one mental model. Don't paste mechanically.
+Report the chosen direction, useful contributions, open assumptions, roles actually used, and any implementation checks. Record actual usage when available; a smaller model and bounded reports are cost controls, not measured billing savings.
 
-If the candidates converge on one shape, that is strong agreement. Note it and ship the consensus shape. No graft is needed. If they wildly diverge, Phase A was under-specified. Reframe and re-run rather than averaging the divergence.
-
-## Phase F: Verify
-
-Verify the synthesized artifact like any other output, per the **prove-it-works** principle skill. If verification finds a problem the arena missed, either Phase A was wrong (re-frame and re-run) or a candidate caught it and you missed the graft (go back to Phase E). Don't paper over it.
-
-## Outputs
-
-One synthesized artifact, with a short synthesis note alongside naming the base and why, the cross-judge's verdict or that Phase C skipped the judge, each graft with its source candidate, what was rejected and why, any convergence or dropouts, and the verification result.
+Check the effective model and capability metadata when the host exposes it, because host policy can override a requested role. Do not count a partial response as completed work or automatically resume it past the turn cap. The role agents omit automatically loaded project instruction files to keep context small, so the owner must supply relevant constraints in the brief.

@@ -1,31 +1,22 @@
 ---
 name: typescript-best-practices
-description: TypeScript best practices. Use when reading or editing any .ts or .tsx file.
-paths: ["**/*.ts", "**/*.tsx"]
-disable-model-invocation: true
+description: Model TypeScript domain states and external data safely when editing TypeScript types, schemas, or stateful logic.
 ---
 
 # TypeScript best practices
 
-Apply the **type-system-discipline** principle skill first.
+For a type-modeling decision, use the `principle-type-system-discipline` skill; the rules below apply it to TypeScript.
 
-| Rule | Summary |
-|------|---------|
-| Discriminated unions | Model variants with a `kind` literal discriminant so impossible states can't be represented. No optional-field bags. |
-| Branded types | Brand primitives with `& { readonly __brand: "X" }` so they can't be mixed up. Validate once at the boundary. A brand comes from a verifying type guard (`input is AgentId`), never from `as`. |
-| Constructive modeling | Build the shape so the illegal value can't be constructed. `[T, ...T[]]` for non-empty, `[T, T][]` for even length, `start` plus `duration` for a range. Not a runtime guard, not a wish for refinement types. |
-| Simplest total type | Keep `T[]` while every operation on it stays total. Strengthen to `NonEmpty<T>` only where the loose type forces `!`, a cast, or a "should never happen" throw. |
-| `unknown` over `any` | External data is `unknown`. |
-| Schemas before guards | Before hand-writing a property-by-property type guard, use the repository's runtime schema library and infer the type from the schema, such as `z.infer`. |
-| No `as` casts | Every `as` is a runtime crash waiting. Cast only after validation. |
-| Narrowing hierarchy | Discriminant switch > `in` operator > `typeof`/`instanceof` > user-defined type guard > `as`. |
-| Type guards | Must verify the claim. A lying guard is worse than `as` because the bug hides behind a name that says it's safe. Name them `isX` or `hasX`. |
-| Exhaustiveness | Inline `const _exhaustive: never = x;` in default arms so the compiler errors when a new variant is added. |
-| `satisfies` over `as` | Validates the value without widening literal types. |
-| Boundary validation | Parse where data crosses in, into a named domain type. `Record<string, unknown>` (however spelled) stops at that parse. Trust types inside. See the **boundary-discipline** principle skill. |
-| Schema-derived types | Reach for `Pick`/`Omit`/`Parameters`/`ReturnType`/`Awaited`/`typeof` before declaring a new interface. |
-| Object args | Pass objects, not positional, so argument order is self-documenting. Skip on hot paths (per-frame render, tokenizers, parsers). |
-| Real tests | Don't mock what you can run. Prefer the framework's real test primitives with leak/disposable checks, and verify UI in a running build. Mock only what you can't run locally. |
-| Structured telemetry | Prefer structured logger diagnostics with enough context to debug from an id. No `console.log` in shipped code. |
+Follow the repository's established conventions and strictness settings. Strengthen a type when it removes a real ambiguity or unsafe use, rather than adding brands or wrappers everywhere.
 
-Examples: `references/patterns.md`.
+- Use discriminated unions for variants with different fields. Avoid optional-field bags that admit contradictory states.
+- Treat external input as `unknown`. Parse at the boundary with the repository's existing schema library and derive the type from that schema. Do not add a dependency for a single simple guard.
+- Derive types from authoritative generated schemas and existing signatures. Avoid maintaining a schema, interface, and guard for the same shape.
+- Prefer narrowing and `satisfies` over unchecked assertions. Type assertions do not validate data; isolate unavoidable assertions and explain the invariant that justifies them. `as const` is useful for literal inference.
+- A type guard must verify everything its predicate promises. Prefer compiler-visible discriminants where possible.
+- Use exhaustiveness checks where adding a variant must force callers to handle it.
+- Brand primitives only where mixing them up would be a meaningful bug. Reuse the repo's branding convention and validate construction.
+- Keep `T[]` for total operations. Use a non-empty tuple when callers need a guaranteed first element, or return `undefined` when emptiness is legitimate.
+- Validate semantic constraints the type cannot express, such as a finite, nonnegative duration. A plain number still permits negative values and `NaN`.
+
+For focused examples, read [patterns](references/patterns.md) only as needed. Keep compatibility, error handling, and logging consistent with the project.
