@@ -5,6 +5,8 @@ description: Compare prompts, skills, models, or agent workflows with controlled
 
 # Evaluate
 
+Resolve relative links in shared documents from that document’s directory, not the app checkout. Read only the files whose conditions apply.
+
 Define the behavior and decision before running trials. Use realistic tasks and a small, discriminating rubric. Start with the fewest trials that could reveal a useful difference and expand only if uncertainty affects the decision. Confirm a cost bound before substantial paid runs when the user has not provided one.
 
 Keep the experimental variable separate from nuisance differences: same task, starting artifacts, tool access, and budget where possible. Use isolated working copies so trials cannot see each other's changes.
@@ -14,5 +16,7 @@ Candidate prompts should resemble actual user requests. Keep the rubric, expecte
 Score outputs under anonymous labels using one rubric. For a comparison, assess both variants on the same scale. A separate judge is optional and requires available, authorized execution; do not assume a second model family exists. Do not claim independence when the evaluator produced the output too.
 
 Verify important claims against produced artifacts and runnable checks. For tool or skill usage, use execution records provided by the current environment; do not scrape local chat databases. If cloud execution records are unavailable, mark process compliance unverified. Self-report is insufficient evidence.
+
+When interpreting a quantitative comparison, read [explain the number](${CLAUDE_PLUGIN_ROOT}/principles/explain-the-number.md). When evidence may be a proxy for the real outcome, read [prove it works](${CLAUDE_PLUGIN_ROOT}/principles/prove-it-works.md). Read these shared files only when the decision needs them; they are not additional skill invocations.
 
 Report trial count, budget used when available, rubric, results with examples, failures, and uncertainty. Distinguish a smoke comparison from evidence of a general improvement. No automatic multi-model panel or minimum trial count.

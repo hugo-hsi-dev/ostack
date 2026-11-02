@@ -5,6 +5,8 @@ description: Write or restructure developer documentation, READMEs, guides, and 
 
 # Technical writing
 
+Resolve relative links in shared documents from that document’s directory, not the app checkout. Read only the files whose conditions apply.
+
 Lead with what the reader needs to know or do. Use the repository's real commands, symbols, paths, and terminology. Verify examples against the implementation.
 
 Choose the document's main purpose:
@@ -15,6 +17,8 @@ Choose the document's main purpose:
 - An explanation develops the reason for a design, including consequential alternatives and tradeoffs.
 
 Separate substantial sections with different purposes when that improves navigation. Link to background rather than repeating it inside a procedure.
+
+When editing existing prose for clarity and voice, read [unslop](${CLAUDE_PLUGIN_ROOT}/references/unslop.md). When writing about a feature or configuration change, inspect its actual implementation and affected callers before documenting it. For a dependency or tooling housekeeping task with little prose, use the `maintenance` Entry instead.
 
 Use active voice, ordinary words, and concrete subjects. Keep names consistent and pronouns unambiguous. Split sentences that require backtracking, while preserving the conditions that make a statement true. Remove filler, unsupported claims, and figurative jargon. Follow the project's formatting and voice conventions.
 

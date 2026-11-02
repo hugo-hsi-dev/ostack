@@ -1,8 +1,8 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
   "name": "ostack",
-  "version": "0.2.0",
-  "description": "Focused engineering skills for Claude Code. Evidence-driven debugging, simpler design, and targeted verification, adapted from pstack.",
+  "version": "0.3.0",
+  "description": "Task entry skills, shared principles and playbooks, and specialized verification workflows for Claude. Adapted from pstack.",
   "owner": {
     "name": "Hugo Hsi",
     "email": "hugohsidev@gmail.com",
@@ -11,7 +11,7 @@
   "plugins": [
     {
       "name": "ostack",
-      "description": "Focused engineering skills for Claude Code. Evidence-driven debugging, simpler design, and targeted verification, adapted from pstack.",
+      "description": "Task entry skills, shared principles and playbooks, and specialized verification workflows for Claude. Adapted from pstack.",
       "author": {
         "name": "Hugo Hsi"
       },
