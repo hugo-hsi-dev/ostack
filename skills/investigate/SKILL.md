@@ -1,16 +1,29 @@
 ---
 name: investigate
-description: Explain how a subsystem works, why it has its current design, or what a runtime artifact shows. Use for read-only source, history, and runtime investigations.
+description: "Use this skill to investigate how code works, why it was designed that way, or what happened at runtime."
 ---
 
 # Investigate
 
-Answer the named question from evidence, without changing product code. Identify the smallest path or artifact that can answer it. Read shared documents only when relevant; relative links resolve from the document's directory.
+## Workflow
 
-- **How it works:** follow input, ownership, transitions, output, and failure behavior from the relevant entry point. Use [model the domain](${CLAUDE_PLUGIN_ROOT}/principles/model-the-domain/PRINCIPLE.md) when representation and state ownership explain the mechanism. Cite concrete locations; a file inventory is navigation, not an explanation.
-- **Why it exists:** distinguish its current effect from historical motivation. Inspect nearby comments, tests, and focused commits. Consult linked issues or documents through available connectors only to settle an unresolved question; do not infer author intent from code alone.
-- **What happened at runtime:** inspect a supplied profile, trace, heap snapshot, or log before collecting another. Query the artifact with appropriate tooling, map observations to source, and make the cheapest targeted observation that distinguishes causes. Label an untested explanation as a hypothesis. For repeated failures of one explanation, read [attack the premise](${CLAUDE_PLUGIN_ROOT}/principles/attack-the-premise/PRINCIPLE.md).
+1. **Define the question.** Identify the mechanism, historical decision, or runtime event to explain. Keep product code unchanged unless implementation was also requested.
 
-For large artifacts or repeated reads, use [guard the context window](${CLAUDE_PLUGIN_ROOT}/principles/guard-the-context-window/PRINCIPLE.md), within available tools and delegation authorization. Requested brainstorming across areas may use [swarm](${CLAUDE_PLUGIN_ROOT}/playbooks/swarm/PLAYBOOK.md), but ideas do not establish source coverage or verified defects.
+2. **Collect the relevant evidence.** Follow the affected source path. For historical questions, inspect nearby comments, tests, and commits; consult linked external records only where they can resolve an unanswered question. For runtime questions, inspect supplied traces, profiles, or logs before collecting another capture.
 
-Stop when the question is answered or the next observation requires an unavailable prerequisite. Give the answer first, supporting source or artifact links, consequential limits, and unresolved questions. Do not turn explanation into an implementation, a design exercise, or session-history mining.
+3. **Resolve uncertainty.** Map observations to source and identify the next observation needed to distinguish remaining explanations. For explicitly requested brainstorming across independent areas, use [swarm](${CLAUDE_PLUGIN_ROOT}/playbooks/swarm/PLAYBOOK.md); its proposals are inputs to investigation, not completed source coverage.
+
+4. **Finish the investigation.** Stop when the question is answered or the next observation requires an unavailable prerequisite. Separate observed behavior, historical evidence, and unresolved explanations.
+
+## Select principles
+
+Read only the documents whose conditions apply. Resolve their relative links from the document's directory.
+
+| Situation | Read |
+| --- | --- |
+| Ownership or state representation is central to the explanation | [Model the domain](${CLAUDE_PLUGIN_ROOT}/principles/model-the-domain/PRINCIPLE.md) |
+| Repeated unsuccessful explanations depend on the same assumption | [Attack the premise](${CLAUDE_PLUGIN_ROOT}/principles/attack-the-premise/PRINCIPLE.md) |
+| Large artifacts or repeated reads are filling the context | [Guard the context window](${CLAUDE_PLUGIN_ROOT}/principles/guard-the-context-window/PRINCIPLE.md) |
+| It is unclear whether an observation supports the conclusion | [Prove it works](${CLAUDE_PLUGIN_ROOT}/principles/prove-it-works/PRINCIPLE.md) |
+
+Give the answer, supporting source or artifact locations, consequential limits, and unresolved questions.

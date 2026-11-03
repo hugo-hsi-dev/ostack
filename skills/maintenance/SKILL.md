@@ -1,21 +1,34 @@
 ---
 name: maintenance
-description: Update dependencies, build or CI configuration, repository tooling, or project housekeeping. Also use to prevent a demonstrated recurring repo mistake; substantial documentation prose belongs to technical-writing.
+description: "Use this skill for dependency updates, configuration or tooling changes, repository housekeeping, or recurring repository mistakes."
 ---
 
 # Maintenance
 
-Identify the maintenance outcome and the behavior that must remain intact. Inspect actual versions, configuration, project instructions, and existing checks. Read shared documents at the conditions below; their relative links resolve from the document's directory.
+## Workflow
 
-## Select the work
+1. **Establish the task.** Identify the requested update or recurring failure and the affected project behavior. Inspect actual versions, configuration, project instructions, and existing checks.
 
-- **Dependency update:** inspect the target version's authoritative release notes and migration instructions. Trace consumers, configuration, build behavior, and serialized data affected by the change; read [preserve contracts](${CLAUDE_PLUGIN_ROOT}/principles/preserve-contracts/PRINCIPLE.md). Update owned manifests and lockfiles together. If adapting the integration leaves an ownership or interface question, read [boundary discipline](${CLAUDE_PLUGIN_ROOT}/principles/boundary-discipline/PRINCIPLE.md) and read [design from caller usage](${CLAUDE_PLUGIN_ROOT}/principles/design-from-usage/PRINCIPLE.md) for that question.
-- **Configuration, CI, or tooling:** change the authoritative source and verify the path that consumes it. For retries or partial setup runs, read [make operations idempotent](${CLAUDE_PLUGIN_ROOT}/principles/make-operations-idempotent/PRINCIPLE.md). For external inputs, read [boundary discipline](${CLAUDE_PLUGIN_ROOT}/principles/boundary-discipline/PRINCIPLE.md). Remove obsolete configuration within scope.
-- **Recurring demonstrated mistake:** read [encode lessons in structure](${CLAUDE_PLUGIN_ROOT}/principles/encode-lessons-in-structure/PRINCIPLE.md). Start from the named failure and code/review evidence, not session-transcript mining. Prefer removing the opportunity, then encoding the invariant in types, then an existing lint/check, then an observable-behavior test. Document only judgments that cannot be enforced. Prove the guard catches the actual failure and permits valid use; do not expand a one-off correction into repo-wide hardening.
-- **Housekeeping:** do the bounded cleanup directly. Read [subtract before you add](${CLAUDE_PLUGIN_ROOT}/principles/subtract-before-you-add/PRINCIPLE.md) before adding another layer or dependency. Nontrivial repetitive edits or checks can use [build the lever](${CLAUDE_PLUGIN_ROOT}/principles/build-the-lever/PRINCIPLE.md); keep the tool proportional to the task.
+2. **Inspect the change.** For a dependency update, read the target version's authoritative migration instructions and identify affected integrations. For configuration or tooling, locate the source and its consumers. For recurrence prevention, collect the named failure and relevant code or review evidence.
 
-## Finish the requested result
+3. **Apply the maintenance.** Update affected manifests and lockfiles together, edit the owned configuration or tooling, or implement the chosen enforcement. Remove obsolete task-owned files. Consult the principles below for compatibility, enforcement, and structural choices.
 
-Use [never block on the human](${CLAUDE_PLUGIN_ROOT}/principles/never-block-on-the-human/PRINCIPLE.md) when a reversible next step tempts an unnecessary permission question. Preserve explicit authorization limits.
+4. **Verify.** Run the affected dependency, configuration, tooling, or enforcement checks. Inspect failures and rerun checks invalidated by corrections. Leave unrelated upgrades and publication outside scope unless requested.
 
-Run checks that exercise the affected behavior: dependency resolution and relevant tests, actual config validation, a representative tooling command, or a guard's broken/valid cases. Read [prove it works](${CLAUDE_PLUGIN_ROOT}/principles/prove-it-works/PRINCIPLE.md) before reporting completion. Report the change, compatibility consequences, evidence, and blocked checks. Publication, deployment, merging, and unrelated upgrades are separate outcomes.
+## Select principles
+
+Read only the documents whose conditions apply. Resolve their relative links from the document's directory.
+
+| Situation | Read |
+| --- | --- |
+| A dependency or configuration change affects supported consumers | [Preserve contracts](${CLAUDE_PLUGIN_ROOT}/principles/preserve-contracts/PRINCIPLE.md) |
+| An integration's caller expectations or ownership are unclear | [Design from caller usage](${CLAUDE_PLUGIN_ROOT}/principles/design-from-usage/PRINCIPLE.md) |
+| External input validation or adapter placement needs choosing | [Boundary discipline](${CLAUDE_PLUGIN_ROOT}/principles/boundary-discipline/PRINCIPLE.md) |
+| Setup or operations can be retried or interrupted | [Make operations idempotent](${CLAUDE_PLUGIN_ROOT}/principles/make-operations-idempotent/PRINCIPLE.md) |
+| A demonstrated recurring mistake needs prevention | [Encode lessons in structure](${CLAUDE_PLUGIN_ROOT}/principles/encode-lessons-in-structure/PRINCIPLE.md) |
+| The task adds structure while obsolete paths remain | [Subtract before you add](${CLAUDE_PLUGIN_ROOT}/principles/subtract-before-you-add/PRINCIPLE.md) |
+| The edit or check may warrant a reusable tool | [Build the lever](${CLAUDE_PLUGIN_ROOT}/principles/build-the-lever/PRINCIPLE.md) |
+| A reversible execution choice is prompting a permission question | [Never block on the human](${CLAUDE_PLUGIN_ROOT}/principles/never-block-on-the-human/PRINCIPLE.md) |
+| The verification evidence is uncertain | [Prove it works](${CLAUDE_PLUGIN_ROOT}/principles/prove-it-works/PRINCIPLE.md) |
+
+Report the update, compatibility consequences, checks performed, and anything blocked.

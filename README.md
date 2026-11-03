@@ -44,9 +44,21 @@ playbooks/
 
 Every principle uses `principles/<name>/PRINCIPLE.md`; every playbook uses `playbooks/<name>/PLAYBOOK.md`. The folder is the unit of ownership. Supporting files add detail without adding another skill or routing category. Entries choose principles and independent playbooks directly; playbooks do not invoke one another.
 
+## Skill structure
+
+Every remaining skill follows the same layout:
+
+1. **Trigger description:** tell the agent when to use the skill, rather than summarize its implementation.
+2. **Workflow:** numbered task steps, with any independent playbook called where its procedure is needed.
+3. **Select principles:** a conditional routing table below the workflow. Each row gives a selection cue and a link; the principle owns the decision, justification, and application method.
+
+Read the routing table as decisions arise during the workflow, not as a final phase or a requirement to load every document. Playbooks do not invoke one another. Principle rules are not copied into task steps. Reproduction and checking sibling bug instances belong to bug-fix's workflow; the enforcement-choice method belongs once in encode-lessons-in-structure.
+
+The four user-invoked workflows retain their names, invocation settings, separate jobs, output formats, and verification safeguards. They use the common layout without becoming generic Entries. The deleted evaluate skill remains removed.
+
 ## Entries
 
-These ten skills match recognizable task outcomes and allow automatic selection. You can also call them directly, for example `/ostack:feature`. Selection depends on the host and model; no hook forces invocation.
+These nine skills match recognizable task outcomes and allow automatic selection. You can also call them directly, for example `/ostack:feature`. Selection depends on the host and model; no hook forces invocation.
 
 | Entry | Outcome |
 | --- | --- |
@@ -59,7 +71,6 @@ These ten skills match recognizable task outcomes and allow automatic selection.
 | [performance](skills/performance/SKILL.md) | Diagnose or improve a measured bottleneck; check benchmark claims. |
 | [technical-writing](skills/technical-writing/SKILL.md) | Write, restructure, or edit substantial developer documentation. |
 | [verify](skills/verify/SKILL.md) | Check implemented behavior, mapped user journeys, or visual parity using existing tooling. |
-| [evaluate](skills/evaluate/SKILL.md) | Compare prompts, skills, models, or workflows with controlled trials. |
 
 Examples:
 
@@ -82,7 +93,7 @@ Specific user workflows remain independently callable skills.
 | [create-formal-verification-skill](skills/create-formal-verification-skill/SKILL.md) | Establish a code-grounded formal check and generate its reusable project skill. | User-invoked only. |
 | [maintain-formal-verification-skill](skills/maintain-formal-verification-skill/SKILL.md) | Reconcile formal checks with code changes; distinguish model drift from bugs. | User-invoked only. |
 
-The four create/maintain workflows retain their original names, distinct jobs, and `disable-model-invocation: true`. The app workflows remain unchanged from original ostack revision `798dcee`; the formal workflows retain that shape with the removed `/statechart` skill dependency replaced by shared supporting tooling. Creation and maintenance are different jobs. The `verify` Entry does not automatically invoke them or turn normal verification into a generator or maintenance campaign.
+The four create/maintain workflows retain their original names, distinct jobs, and `disable-model-invocation: true`. Their distinct methods and generated-artifact contracts come from original ostack revision `798dcee`, now organized into the same workflow/routing structure as the Entries. The formal workflows use shared statechart supporting tooling. Creation and maintenance are different jobs. The `verify` Entry does not automatically invoke them or turn normal verification into a generator or maintenance campaign.
 
 Their original workflows include generating project-local skills, proving those generated instructions, and, for app maintenance, parallel source readers plus full live coverage and a corrections PR when changed. Those costs are confined to explicit use; they are not the default feature or bug-fix path. Existing project verification artifacts are not migrated by this plugin refactor. Project-local skill availability in a cloud thread still follows that host's discovery rules.
 
@@ -154,7 +165,7 @@ The 24 original principles retain their exact applicability descriptions under `
 
 Use Projects' normal coordination and the skills available in the work thread. Leave preferences, memory, session history, planning, automatic PR creation, and monitoring to Claude's native features. Ordinary Entries finish at the requested result; they do not merge or publish as an automatic final step.
 
-There are **14 native skills**: ten Entries and four user-invoked verification workflows. The 26 principles and five independent playbooks add no skill catalog entries. The plugin keeps one canonical copy of each shared document.
+There are **13 native skills**: nine Entries and four user-invoked verification workflows. The 26 principles and five independent playbooks add no skill catalog entries. The plugin keeps one canonical copy of each shared document.
 
 Strict static validation, reference reachability, and original-content comparisons are separate from live automatic-selection, cloud installation, and model-cost testing. See [PORTING.md](PORTING.md) for the old-to-new map and validation details.
 

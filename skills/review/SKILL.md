@@ -1,16 +1,34 @@
 ---
 name: review
-description: Review a code change, branch, or design for correctness, regressions, compatibility, and consequential risks. Use for code review, design critique, or assessing what a change could break.
+description: "Use this skill to review code, assess a proposed design, or check what a change could break."
 ---
 
 # Review
 
-Produce evidence-backed findings about the requested change. Read shared documents only when the corresponding question arises; relative links resolve from the document's directory.
+## Workflow
 
-1. **Establish the contract.** Read the request, diff, tests, and surrounding code. For an unspecified branch review, compare against the merge base with its actual base branch and include relevant working changes. Keep product fixes outside the review unless requested.
-2. **Trace consequences.** Follow direct callers and paths beyond symbol search: persisted data, wire formats, other languages, configuration, flags, scheduled work, and teardown. For compatibility questions, read [preserve contracts](${CLAUDE_PLUGIN_ROOT}/principles/preserve-contracts/PRINCIPLE.md). A search with no matches establishes only the scope searched.
-3. **Challenge the safety claim.** Identify the one or two facts carrying most of it. Probe plausible invalid inputs, state transitions, partial failures, and races. For state representation, read [model the domain](${CLAUDE_PLUGIN_ROOT}/principles/model-the-domain/PRINCIPLE.md); for interfaces and hidden state, [minimize reader load](${CLAUDE_PLUGIN_ROOT}/principles/minimize-reader-load/PRINCIPLE.md); for concurrent writers, [separate shared state](${CLAUDE_PLUGIN_ROOT}/principles/separate-before-serializing-shared-state/PRINCIPLE.md). For type/schema decisions, read [type-system discipline](${CLAUDE_PLUGIN_ROOT}/principles/type-system-discipline/PRINCIPLE.md), using its [TypeScript applications](${CLAUDE_PLUGIN_ROOT}/principles/type-system-discipline/references/typescript.md) when needed. For an unresolved interface or representation in a design critique, read [design from caller usage](${CLAUDE_PLUGIN_ROOT}/principles/design-from-usage/PRINCIPLE.md); keep the review within its requested scope.
-4. **Check each candidate finding.** Inspect actual dependency versions and patches; use a small reproduction or existing check when it can settle the issue. Keep scratch repros separate from the user's changes. For disputed assertions, read [test behavior](${CLAUDE_PLUGIN_ROOT}/principles/test-behavior-not-implementation/PRINCIPLE.md); for disputed evidence, [prove it works](${CLAUDE_PLUGIN_ROOT}/principles/prove-it-works/PRINCIPLE.md). Source can establish a failure without a runnable environment, but label unexecuted claims honestly.
-5. **Filter and report.** Keep findings with a concrete trigger, consequence, location, and supporting path or reproduction. Merge duplicate root causes. Drop style preferences and hypothetical future failures. Distinguish confirmed defects, unresolved assumptions, cleared risks, and blocked checks. Say when no actionable findings remain.
+1. **Establish the scope.** Read the request, intended behavior, diff, tests, and surrounding code. For an unspecified branch review, compare with the merge base of its actual base branch and include relevant working changes. Keep product fixes outside scope unless requested.
 
-Work in the current session by default. A request for multiple reviewers uses only available authorized tools and isolated inputs, then deduplicates evidence. A brainstorm panel is not a correctness audit or a reviewer quorum.
+2. **Trace the effects.** Follow affected callers and dependencies. Identify the assumptions carrying the change's safety claim and select the relevant principles below.
+
+3. **Check candidate failures.** Probe the consequential paths against source or a focused reproduction. Keep scratch experiments separate from the user's changes. Use actual dependency versions when behavior depends on a library.
+
+4. **Report findings.** Retain actionable findings with a location, trigger, consequence, and evidence. Combine findings with the same cause and distinguish confirmed defects, unresolved assumptions, and blocked checks. State when no actionable findings remain.
+
+## Select principles
+
+Read only the documents whose conditions apply. Resolve their relative links from the document's directory.
+
+| Situation | Read |
+| --- | --- |
+| Supported callers, stored data, or external formats may be affected | [Preserve contracts](${CLAUDE_PLUGIN_ROOT}/principles/preserve-contracts/PRINCIPLE.md) |
+| State variants or representation choices need judging | [Model the domain](${CLAUDE_PLUGIN_ROOT}/principles/model-the-domain/PRINCIPLE.md) |
+| Indirection or hidden state obscures the change | [Minimize reader load](${CLAUDE_PLUGIN_ROOT}/principles/minimize-reader-load/PRINCIPLE.md) |
+| Concurrent actors can write the same state | [Separate shared state](${CLAUDE_PLUGIN_ROOT}/principles/separate-before-serializing-shared-state/PRINCIPLE.md) |
+| Type signatures or schemas need assessing | [Type-system discipline](${CLAUDE_PLUGIN_ROOT}/principles/type-system-discipline/PRINCIPLE.md) |
+| Validation or adapter placement is disputed | [Boundary discipline](${CLAUDE_PLUGIN_ROOT}/principles/boundary-discipline/PRINCIPLE.md) |
+| Caller interfaces or responsibilities need assessing | [Design from caller usage](${CLAUDE_PLUGIN_ROOT}/principles/design-from-usage/PRINCIPLE.md) |
+| The regression assertions are disputed | [Test behavior](${CLAUDE_PLUGIN_ROOT}/principles/test-behavior-not-implementation/PRINCIPLE.md) |
+| The evidence supporting a safety claim is uncertain | [Prove it works](${CLAUDE_PLUGIN_ROOT}/principles/prove-it-works/PRINCIPLE.md) |
+
+Keep the response focused on findings, supporting evidence, and coverage limits. A requested design critique can include a recommendation.

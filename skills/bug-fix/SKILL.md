@@ -1,16 +1,37 @@
 ---
 name: bug-fix
-description: Diagnose and fix a software bug or regression from a faithful reproduction through a focused before-and-after check.
+description: "Use this skill to diagnose and fix a bug or regression."
 ---
 
 # Bug fix
 
-Find the first incorrect decision and prove the correction. Read only applicable shared documents; resolve their relative links from the document's directory.
+## Workflow
 
-1. **Reproduce.** Record expected and actual behavior at the affected interface. Use the closest faithful local path when the original environment is unavailable, and name the difference. Read [fix root causes](${CLAUDE_PLUGIN_ROOT}/principles/fix-root-causes/PRINCIPLE.md) before selecting the intervention.
-2. **Discriminate causes.** Read relevant code and regression history. Choose a targeted observation that distinguishes the leading hypotheses; reduce large logs instead of filling context. If two fixes assumed the same premise and failed, read [attack the premise](${CLAUDE_PLUGIN_ROOT}/principles/attack-the-premise/PRINCIPLE.md) and test that premise before another patch. Remove rejected experiments without disturbing the user's changes.
-3. **Lock down the failure.** If TDD is requested or a cheap regression path exists, read [test behavior](${CLAUDE_PLUGIN_ROOT}/principles/test-behavior-not-implementation/PRINCIPLE.md), write the smallest observable test, and run it before editing product code. It must fail for the intended reason. Avoid broad fixture churn, brittle mocks, timing dependence, or a new harness for a small fix; retain the faithful reproduction when a good test is impractical. Do not derive expected output from the implementation or weaken an assertion to match a bug.
-4. **Correct the cause.** Make the smallest justified change. A guard is appropriate for a legitimate state; otherwise fix what produced it. Check nearby instances of the same fault within scope. If the cause is an ownership, representation, or interface error, read the relevant [domain-modeling](${CLAUDE_PLUGIN_ROOT}/principles/model-the-domain/PRINCIPLE.md), [shared-state](${CLAUDE_PLUGIN_ROOT}/principles/separate-before-serializing-shared-state/PRINCIPLE.md), or [idempotency](${CLAUDE_PLUGIN_ROOT}/principles/make-operations-idempotent/PRINCIPLE.md) principle and read [design from caller usage](${CLAUDE_PLUGIN_ROOT}/principles/design-from-usage/PRINCIPLE.md) for the unresolved design question. When the fix integrates a new requirement, read [redesign from first principles](${CLAUDE_PLUGIN_ROOT}/principles/redesign-from-first-principles/PRINCIPLE.md). If the user also wants recurrence prevented structurally, read [encode lessons in structure](${CLAUDE_PLUGIN_ROOT}/principles/encode-lessons-in-structure/PRINCIPLE.md) and enforce the demonstrated invariant with existing mechanisms.
-5. **Verify.** Rerun the original reproduction, the new regression test, and nearby checks invalidated by the change. With a feature map, drive the affected mapped paths using the project's existing verification skill. Preserve evidence while cleaning up scratch state and instances you created. Read [prove it works](${CLAUDE_PLUGIN_ROOT}/principles/prove-it-works/PRINCIPLE.md) before declaring the fix verified.
+1. **Reproduce.** Establish expected and actual behavior at the affected interface. Keep a concrete reproduction to repeat after the fix.
 
-Report symptom, root cause, change, failing-before and passing-after evidence, and material limitations. If the failure cannot be reproduced or the environment cannot verify the fix, say what remains suspected. No default panel, delegate, repeated style pass, or PR ceremony.
+2. **Investigate.** Trace the affected code path. Use history or runtime observations where they can resolve uncertainty. Consult the applicable principles below before choosing the correction.
+
+3. **Prepare a regression check.** Before editing product code, add a focused test when requested or practical with the existing harness. Run it against the unfixed code. When a new test is impractical, retain the reproduction as the before-and-after check.
+
+4. **Implement.** Apply the correction. Remove your rejected experimental changes and check affected paths for other instances of the same fault.
+
+5. **Verify.** Rerun the original reproduction, the regression test, and existing checks affected by the change. If the bug affects a mapped user journey, exercise that journey through the project's existing verification tooling. Clean up temporary instances created for the investigation while retaining useful evidence.
+
+## Select principles
+
+Read only the documents whose conditions apply. Resolve their relative links from the document's directory.
+
+| Situation | Read |
+| --- | --- |
+| The symptom's origin or correct intervention point is unclear | [Fix root causes](${CLAUDE_PLUGIN_ROOT}/principles/fix-root-causes/PRINCIPLE.md) |
+| Repeated unsuccessful attempts depend on the same assumption | [Attack the premise](${CLAUDE_PLUGIN_ROOT}/principles/attack-the-premise/PRINCIPLE.md) |
+| Regression-test coverage or assertions are unclear | [Test behavior](${CLAUDE_PLUGIN_ROOT}/principles/test-behavior-not-implementation/PRINCIPLE.md) |
+| Retries, restarts, or partial execution affect the bug | [Make operations idempotent](${CLAUDE_PLUGIN_ROOT}/principles/make-operations-idempotent/PRINCIPLE.md) |
+| Multiple actors can write the affected state | [Separate shared state](${CLAUDE_PLUGIN_ROOT}/principles/separate-before-serializing-shared-state/PRINCIPLE.md) |
+| The fault involves state variants or representation choices | [Model the domain](${CLAUDE_PLUGIN_ROOT}/principles/model-the-domain/PRINCIPLE.md) |
+| Caller expectations or responsibility boundaries are unclear | [Design from caller usage](${CLAUDE_PLUGIN_ROOT}/principles/design-from-usage/PRINCIPLE.md) |
+| The reported bug introduces a changed requirement | [Redesign from first principles](${CLAUDE_PLUGIN_ROOT}/principles/redesign-from-first-principles/PRINCIPLE.md) |
+| The user requests structural prevention of a recurring mistake | [Encode lessons in structure](${CLAUDE_PLUGIN_ROOT}/principles/encode-lessons-in-structure/PRINCIPLE.md) |
+| It is unclear whether the available evidence establishes the requested behavior | [Prove it works](${CLAUDE_PLUGIN_ROOT}/principles/prove-it-works/PRINCIPLE.md) |
+
+Report the cause, correction, and before-and-after evidence. Distinguish suspected causes and unverified corrections from what was demonstrated.

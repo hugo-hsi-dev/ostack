@@ -2,12 +2,12 @@
 
 ## Current architecture
 
-Version 0.3.2 has ten outcome-based Entries and four user-invoked verification skills. Entries route conditionally to ordinary Markdown inside the same plugin. No onyo-mode or repo-wide prerequisite returns.
+Version 0.3.3 has nine outcome-based Entries and four user-invoked verification skills. Entries route conditionally to ordinary Markdown inside the same plugin. No onyo-mode or repo-wide prerequisite returns.
 
 ```text
 ostack/
 ├── .claude-plugin/       manifests
-├── skills/              10 Entries + 4 user-invoked workflows
+├── skills/              9 Entries + 4 user-invoked workflows
 ├── principles/
 │   └── <name>/
 │       ├── PRINCIPLE.md
@@ -35,7 +35,7 @@ Only `skills/<name>/SKILL.md` registers a skill. Entries use `${CLAUDE_PLUGIN_RO
 | unslop | Technical-writing owns the editing procedure and scope/voice constraints. |
 | verify-feature-map, visual-parity | Verify owns coverage, real driving, triage, and evidence. Shared comparison mechanics live in playbooks/compare-artifacts/PLAYBOOK.md, also selected by feature and refactor. |
 | formal-verification | Removed the combined creation/maintenance replacement; restored the original four separate workflows below. |
-| bug-fix, refactor, investigate, performance, technical-writing, evaluate | Rewritten as outcome owners with their own procedure, evidence standard, stopping condition, and direct selection of principles/playbooks. |
+| bug-fix, refactor, investigate, performance, technical-writing | Rewritten as outcome owners with their own procedure, evidence standard, stopping condition, and direct selection of principles/playbooks. |
 | shipping, statechart | Shipping removed. Statechart preserved once under formal creation’s references and read from both formal workflows; neither remains a registered skill. |
 | feature, review, maintenance, verify | Rewritten around the complete outcome, rather than forwarding to renamed old skills. |
 
@@ -43,7 +43,7 @@ The old principle and playbook slash commands intentionally disappear; no aliase
 
 ## Original verification workflows restored
 
-The four workflows were restored from ostack commit `798dcee`. The app workflows and all their original examples remain byte-for-byte unchanged. The formal workflows retain their names, roles, and original procedures, with a targeted update for the removed statechart skill dependency:
+The four workflows were restored from ostack commit `798dcee`. The four skills now use numbered workflows followed by conditional principle routing. Their names, manual-only settings, distinct procedures, generated-artifact contracts, and original app examples remain. The formal workflows share the statechart supporting toolkit:
 
 - skills/create-verification-skill/
 - skills/maintain-verification-skill/
@@ -58,7 +58,7 @@ Existing generated project verification files are untouched by this migration. T
 
 ## Principle preservation and routing
 
-All 24 applicability descriptions matched upstream pstack when checked on November 2, 2026 and remain unchanged in the new Markdown bodies. Bodies preserve the rules; old skill-name references are now relative file links. Type-system guidance points to its TypeScript application document. This migration changes packaging and navigation, not the substantive principle wording.
+All 24 applicability descriptions matched upstream pstack when checked on November 2, 2026 and remain unchanged in the new Markdown bodies. Bodies preserve the rules; old skill-name references are now relative file links. Type-system guidance points to its TypeScript application document. The two ownership adjustments for the current skill format remove workflow steps from fix-root-causes and place the enforcement-choice method in encode-lessons-in-structure. All original applicability descriptions remain unchanged; broader principle redesign is separate work.
 
 Entries carry concrete selection conditions. Feature and refactor can both select redesign-from-first-principles; bug-fix selects root causes and TDD; review selects correctness and downstream-contract methods. Entries select the relevant principles directly. Playbooks carry reusable procedures without an additional principle-routing layer. Read only the applicable documents, not all files linked from them. Available tools, authorization, requested scope, and project constraints still govern execution. A context-budget principle does not grant permission to launch delegates, and a sequencing principle does not authorize rewriting a shared branch.
 
@@ -87,7 +87,6 @@ These are source-level walkthroughs, not live model-selection results. No skills
 | Prevent a recurring invalid repo state | Maintenance selects encode-lessons-in-structure and chooses an existing structural guard; checks broken and valid cases. | No transcript mining or repo-wide hardening. |
 | Edit an existing README | Technical-writing owns editing, voice, examples, and link checks. | No unslop wrapper, design stage, or mandatory second pass. |
 | Verify a UI migration against screenshots | Verify owns mapped states and live behavior; compare-artifacts controls the reference and captures. | Pixel parity does not prove interactions or accessibility. |
-| Compare two agent prompts | Evaluate owns fair trials and anonymous assessment; explain-the-number/measure apply to quantitative conclusions. | No minimum trials or unapproved paid model panel. |
 | Brainstorm approaches to a design question | The relevant Entry selects arena or swarm according to one question versus separate areas. | Haiku proposes ideas only; Opus owns any requested implementation and verification. |
 | Generate versus maintain verification | The appropriate original create/maintain skill is directly user-invoked. | Entries never bypass the manual-only setting. |
 
@@ -116,7 +115,7 @@ The existing idea-scout and idea-judge agent definitions retain read-only tool a
 | autopilot-full | Native Projects and user-authorized delivery; no per-PR owner/verifier swarms or standing audit heartbeat. |
 | autopilot-stack | Native Projects and PR handoff; landing uses the native forge workflow when requested. |
 | bug-fix | Preserved in the direct bug-fix skill. |
-| eval | Preserved in evaluate, with small controlled trials rather than a mandatory model panel. |
+| eval | The user-deleted evaluate skill remains removed; this format change does not restore it. |
 | feature | The feature Entry plus directly selected principles and independent procedures; no compulsory delegate or competing implementations. |
 | hillclimb | Preserved as the bounded optimization-campaign mode in performance. |
 | investigation | Preserved in investigate. |
@@ -142,7 +141,17 @@ The design playbook is retired. Its reusable judgments are written as one design
 
 Statechart is not deleted or duplicated. Its documentation, runtime, and fixtures have one home at `skills/create-formal-verification-skill/references/statechart/`. `STATECHART.md` is supporting documentation rather than SKILL.md. Formal maintenance links to this same directory. The original `/statechart` registration is removed, and the formal generator no longer tells new project skills to invoke it. New generated checks prefer existing project tooling; when they need the bundled runtime, they receive project-owned runtime files and documented prerequisites so they do not depend on a plugin cache path. This affects future generation instructions only; no existing project artifact is migrated here.
 
-Shipping is removed. The remaining catalog is exactly ten Entries plus four manual-only create/maintain workflows. This task changes no account installation or external project files.
+Shipping is removed. The remaining catalog is exactly nine Entries plus four manual-only create/maintain workflows. This task changes no account installation or external project files.
+
+## Workflow and principle-routing format
+
+All thirteen remaining skills use `## Workflow` followed by `## Select principles`. Descriptions start with a direct use trigger. Workflow steps own task sequencing, outputs, and completion; the lower table owns selection cues for applicable principles. Read a selected principle when the corresponding decision arises, rather than after completing the workflow. Playbooks appear only in the relevant workflow step. No playbook chain or repo-wide routing mode is added.
+
+The approved bug-fix draft is applied. Reproduction and the task-scoped check for sibling faults are removed from fix-root-causes because the Entry owns those phases. Maintenance no longer repeats the enforcement-choice method; that method now sits with encode-lessons-in-structure, including its justification and a broken/valid-case check. Original principle applicability descriptions are preserved. Other principle policy changes remain outside this formatting pass.
+
+The four create/maintain workflows receive the same layout and trigger-first descriptions while retaining their separate methods. App creation still emits Launch, Doctor, Drive, Evidence, Cleanup, Helpers, and the original feature-map sections. App maintenance still performs source and live coverage, restricts edits, retries a doctor fix once, preserves evidence, and limits changed output to one corrections PR. Formal creation retains tool selection, code fidelity, negative controls, coverage/sync records, and a proven generated skill; formal maintenance retains sync history, drift-versus-bug classification, property-change evidence, negative controls, and per-check outcomes. Their owned resources and the shared statechart toolkit are unchanged.
+
+The user-deleted evaluate skill is not restored. Inventory and installation documentation describe nine Entries plus four manual-only workflows. No account settings, generated project verification artifacts, or role agents are changed.
 
 ## Update an installation
 
@@ -156,11 +165,13 @@ The supported path substitution is documented for Claude Code plugins. Account-s
 
 ## Validation
 
-Run `claude plugin validate --strict .` and validate the marketplace, skills, and agents with the native CLI. Also validate skill frontmatter, every document-relative and plugin-root Markdown link, reachability of retained shared guidance from Entries, exact principle applicability text, and byte-for-byte restoration of the four original workflows. Check the installed-copy layout without relying on the source checkout. `git diff --check` must pass.
+Run `claude plugin validate --strict .` and validate the marketplace, skills, and agents with the native CLI. Also validate skill frontmatter, every document-relative and plugin-root Markdown link, reachability of retained shared guidance from Entries, exact principle applicability text, and preservation of the four distinct workflow protocols and their owned resources. Check the installed-copy layout without relying on the source checkout. `git diff --check` must pass.
 
-Completed checks cover native plugin, marketplace, skill, and agent validation; metadata and invocation policies for all 14 skills; all internal Markdown links; reachability of shared principles/playbooks from Entries; exact applicability text for the 24 original principles; byte-for-byte preservation of the two app workflows, constrained updates to the two formal workflows, and byte-for-byte preservation of the relocated statechart runtime and fixtures; and a copied-package path check outside the source tree. Statechart runtime source, fixtures, and both role-agent definitions are unchanged; statechart operating-document path labels reflect the new resource location. The generic skill-creator validator checks common metadata in scratch copies without Claude's invocation flag; the native CLI and explicit metadata checks validate that supported flag without altering source.
+Completed checks cover native plugin, marketplace, skill, and agent validation; metadata and invocation policies for all 13 skills; all internal Markdown links; reachability of shared principles/playbooks from Entries; exact applicability text for the 24 original principles; preservation of the four specialized workflow protocols and byte-for-byte preservation of their examples, statechart runtime, fixtures, and operating documentation; and a copied-package path check outside the source tree. Statechart runtime source, fixtures, and both role-agent definitions are unchanged; statechart operating-document path labels reflect the new resource location. The generic skill-creator validator checks common metadata in scratch copies without Claude's invocation flag; the native CLI and explicit metadata checks validate that supported flag without altering source.
 
-The relocated statechart toolkit also passed all 67 existing pipeline, chart, and message tests. These exercise local imports, captured model data, diagrams, and reports; they do not install or run Java/TLC or establish live formal-verification coverage. The package checks resolve all 158 internal Markdown links and reach all 33 shared documents, confirm six Entries use one design principle, and confirm both formal workflows use one toolkit. All 26 principles and five independent playbooks follow the requested folder structure.
+The relocated statechart toolkit also passed all 67 existing pipeline, chart, and message tests. These exercise local imports, captured model data, diagrams, and reports; they do not install or run Java/TLC or establish live formal-verification coverage. Those folder-migration checks covered 158 internal links and all 33 shared documents. Current checks additionally validate the common skill structure, trigger descriptions, routing placement, manual invocation flags, original principle descriptions, and the preserved specialized procedures and resources. All 26 principles and five independent playbooks follow the requested folder structure.
+
+For the 0.3.3 format pass, all thirteen skills pass the structure and metadata checks, every original specialized workflow section or pass item is retained, and all 168 internal links resolve. All 33 shared documents remain reachable from the nine Entries, including in a copied package outside the source checkout. The verification examples, statechart toolkit, and role agents are unchanged. No live skill-selection evaluation or new statechart execution was performed for this instruction-only change.
 
 No live models, paid eval trials, real app-driving sessions, account installation, or cloud execution are needed for the source migration. Those remain separate empirical checks, rather than claims implied by a validator pass.
 

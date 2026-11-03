@@ -1,41 +1,42 @@
 ---
 name: feature
-description: Design, build, or extend a product feature, integration, or user-facing capability. Carry new behavior from requirements to a verified result; design-only requests stop at the recommendation.
+description: "Use this skill to design, build, or extend a feature or integration."
 ---
 
 # Feature
 
-Own the requested outcome through design, implementation, and evidence. Read shared documents only at the conditions below; resolve their relative links from the document's directory.
+## Workflow
 
-## Establish the change
+1. **Establish the outcome.** Read the affected flow, callers, project instructions, and existing checks. Identify the requested behavior, acceptance conditions, supported consumers, and unresolved product choices.
 
-Read the affected flow, callers, tests, and project instructions. Identify the user outcome, observable acceptance conditions, and existing contracts. Ask only for product decisions the repo cannot answer and that block progress. For product or scope tradeoffs, read [experience first](${CLAUDE_PLUGIN_ROOT}/principles/experience-first/PRINCIPLE.md).
+2. **Choose the design.** Sketch the affected usage and interfaces where the shape is unresolved. Use the principles below for the decisions encountered. If an assumption needs an executable experiment, use [prototype](${CLAUDE_PLUGIN_ROOT}/playbooks/prototype/PLAYBOOK.md). For a requested comparison of competing ideas, use [arena](${CLAUDE_PLUGIN_ROOT}/playbooks/arena/PLAYBOOK.md); for requested brainstorming across separate areas, use [swarm](${CLAUDE_PLUGIN_ROOT}/playbooks/swarm/PLAYBOOK.md). A design-only request ends with the recommendation and how it can be checked.
 
-## Choose the shape
+3. **Implement.** Apply the chosen design and update affected callers, documentation, and examples. Revisit unresolved design questions exposed by implementation.
 
-Before extending an existing design around a new requirement, read [redesign from first principles](${CLAUDE_PLUGIN_ROOT}/principles/redesign-from-first-principles/PRINCIPLE.md). When ownership, representation, or interfaces are unresolved, read [design from caller usage](${CLAUDE_PLUGIN_ROOT}/principles/design-from-usage/PRINCIPLE.md) and select the other principles relevant to the decision:
+4. **Verify.** Exercise the acceptance conditions through the existing harness and run checks affected by the change. Include affected mapped journeys when a feature map exists. For reference-matching UI work, use [compare artifacts](${CLAUDE_PLUGIN_ROOT}/playbooks/compare-artifacts/PLAYBOOK.md) and check affected interactions separately. Clean up temporary instances while retaining useful evidence.
 
-| Decision | Principle |
+## Select principles
+
+Read only the documents whose conditions apply. Resolve their relative links from the document's directory.
+
+| Situation | Read |
 | --- | --- |
-| Stateful branching or repeated shape assumptions | [Model the domain](${CLAUDE_PLUGIN_ROOT}/principles/model-the-domain/PRINCIPLE.md) |
-| Core structures or scaffold-versus-feature sequencing | [Foundational thinking](${CLAUDE_PLUGIN_ROOT}/principles/foundational-thinking/PRINCIPLE.md) |
-| Types and external schemas | [Type-system discipline](${CLAUDE_PLUGIN_ROOT}/principles/type-system-discipline/PRINCIPLE.md); for TypeScript details, its [language applications](${CLAUDE_PLUGIN_ROOT}/principles/type-system-discipline/references/typescript.md) |
-| Validation and framework adapters | [Boundary discipline](${CLAUDE_PLUGIN_ROOT}/principles/boundary-discipline/PRINCIPLE.md) |
-| Concurrent writers | [Separate shared state](${CLAUDE_PLUGIN_ROOT}/principles/separate-before-serializing-shared-state/PRINCIPLE.md) |
-| Retries or partial lifecycle runs | [Make operations idempotent](${CLAUDE_PLUGIN_ROOT}/principles/make-operations-idempotent/PRINCIPLE.md) |
-| Interface depth or hidden state | [Minimize reader load](${CLAUDE_PLUGIN_ROOT}/principles/minimize-reader-load/PRINCIPLE.md) |
-| Existing external consumers or persisted data | [Preserve contracts](${CLAUDE_PLUGIN_ROOT}/principles/preserve-contracts/PRINCIPLE.md) |
+| Product experience or feature scope needs a tradeoff | [Experience first](${CLAUDE_PLUGIN_ROOT}/principles/experience-first/PRINCIPLE.md) |
+| A new requirement changes an existing design | [Redesign from first principles](${CLAUDE_PLUGIN_ROOT}/principles/redesign-from-first-principles/PRINCIPLE.md) |
+| Caller usage, ownership, or interfaces remain unclear | [Design from caller usage](${CLAUDE_PLUGIN_ROOT}/principles/design-from-usage/PRINCIPLE.md) |
+| State variants or data representation need choosing | [Model the domain](${CLAUDE_PLUGIN_ROOT}/principles/model-the-domain/PRINCIPLE.md) |
+| Core structures or foundational work need sequencing | [Foundational thinking](${CLAUDE_PLUGIN_ROOT}/principles/foundational-thinking/PRINCIPLE.md) |
+| Types, function signatures, or external schemas need designing | [Type-system discipline](${CLAUDE_PLUGIN_ROOT}/principles/type-system-discipline/PRINCIPLE.md) |
+| Validation or framework-adapter placement is unclear | [Boundary discipline](${CLAUDE_PLUGIN_ROOT}/principles/boundary-discipline/PRINCIPLE.md) |
+| Concurrent actors can write the same state | [Separate shared state](${CLAUDE_PLUGIN_ROOT}/principles/separate-before-serializing-shared-state/PRINCIPLE.md) |
+| Operations can be retried or interrupted | [Make operations idempotent](${CLAUDE_PLUGIN_ROOT}/principles/make-operations-idempotent/PRINCIPLE.md) |
+| Interfaces or hidden state are becoming hard to follow | [Minimize reader load](${CLAUDE_PLUGIN_ROOT}/principles/minimize-reader-load/PRINCIPLE.md) |
+| Supported consumers or persisted data may be affected | [Preserve contracts](${CLAUDE_PLUGIN_ROOT}/principles/preserve-contracts/PRINCIPLE.md) |
+| A novel design has no useful precedent | [Exhaust the design space](${CLAUDE_PLUGIN_ROOT}/principles/exhaust-the-design-space/PRINCIPLE.md) |
+| A rewrite has explicit migration phases | [Outcome-oriented execution](${CLAUDE_PLUGIN_ROOT}/principles/outcome-oriented-execution/PRINCIPLE.md) |
+| Multi-step work needs delivery boundaries | [Sequence verifiable units](${CLAUDE_PLUGIN_ROOT}/principles/sequence-verifiable-units/PRINCIPLE.md) |
+| Large reads or outputs are filling the context | [Guard the context window](${CLAUDE_PLUGIN_ROOT}/principles/guard-the-context-window/PRINCIPLE.md) |
+| Acceptance-test assertions need choosing | [Test behavior](${CLAUDE_PLUGIN_ROOT}/principles/test-behavior-not-implementation/PRINCIPLE.md) |
+| The completion evidence is uncertain | [Prove it works](${CLAUDE_PLUGIN_ROOT}/principles/prove-it-works/PRINCIPLE.md) |
 
-If observation is needed to choose a direction, use [prototype](${CLAUDE_PLUGIN_ROOT}/playbooks/prototype/PLAYBOOK.md). For a novel interaction or architecture without precedent, first read [exhaust the design space](${CLAUDE_PLUGIN_ROOT}/principles/exhaust-the-design-space/PRINCIPLE.md). A requested idea panel uses [arena](${CLAUDE_PLUGIN_ROOT}/playbooks/arena/PLAYBOOK.md); a requested brainstorm across independent areas uses [swarm](${CLAUDE_PLUGIN_ROOT}/playbooks/swarm/PLAYBOOK.md). Neither is a default design phase.
-
-A design-only request ends with the chosen shape, consequential tradeoffs, and how to check it. Otherwise continue into implementation.
-
-## Implement and prove the outcome
-
-Build the smallest coherent change that meets the acceptance conditions. Update affected callers, docs, and examples; remove superseded paths within scope. Revisit the design if implementation repeatedly needs casts, caller coordination, or the same workaround.
-
-Use existing tests and run the real affected user path, including its prerequisites and consequential side effects. If a project feature map exists, check its affected entry points rather than only the convenient path. Read [test behavior](${CLAUDE_PLUGIN_ROOT}/principles/test-behavior-not-implementation/PRINCIPLE.md) when changing assertions. For reference-matching UI work, capture controlled states and use [compare artifacts](${CLAUDE_PLUGIN_ROOT}/playbooks/compare-artifacts/PLAYBOOK.md); check interactions separately.
-
-For a phased rewrite, read [outcome-oriented execution](${CLAUDE_PLUGIN_ROOT}/principles/outcome-oriented-execution/PRINCIPLE.md). For a multi-step delivery, read [sequence verifiable units](${CLAUDE_PLUGIN_ROOT}/principles/sequence-verifiable-units/PRINCIPLE.md), within the user's branch constraints. If context fills with large reads, use [guard the context window](${CLAUDE_PLUGIN_ROOT}/principles/guard-the-context-window/PRINCIPLE.md), subject to available tools and authorized delegation.
-
-Before reporting completion, read [prove it works](${CLAUDE_PLUGIN_ROOT}/principles/prove-it-works/PRINCIPLE.md). Report the delivered behavior, evidence against the acceptance conditions, and remaining gaps. Do not silently turn a feature into a verification generator, maintenance campaign, or merge.
+Report the delivered behavior, consequential design choices, verification evidence, and remaining gaps.

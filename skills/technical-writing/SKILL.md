@@ -1,15 +1,26 @@
 ---
 name: technical-writing
-description: Write, restructure, or edit developer documentation, READMEs, guides, RFCs, and substantial technical prose around the reader’s task.
+description: "Use this skill to write, restructure, or edit technical documentation."
 ---
 
 # Technical writing
 
-Determine what the reader needs to know or do, and whether the request is new writing, restructuring, or an edit. Inspect the real implementation for commands, paths, symbols, examples, and claims. Read shared documents only when relevant; relative links resolve from the document's directory.
+## Workflow
 
-1. **Choose the document's purpose.** A tutorial guides a learner to a visible result. A how-to gives prerequisites and actions for a specific task. A reference makes formats, options, defaults, limits, and errors easy to look up. An explanation develops the reason for a design and its tradeoffs. Separate substantial sections with different purposes when navigation benefits.
-2. **Write for the reader's path.** Lead with the result or necessary fact. Put prerequisites before dependent steps. Keep terminology consistent, use concrete subjects and active verbs, and link background instead of copying it into procedures. Follow the project's voice and formatting.
-3. **Edit within scope.** Preserve meaning, certainty, factual claims, deliberate voice, quotations, and technical terms. Remove filler, generic praise and conclusions, stock phrasing, rhetorical contrasts, and decorative formatting. Prefer ordinary words over fancy synonyms. Replace vague attributions with evidence or flag the gap; never invent a source. Split sentences and clarify pronouns when that reduces reader effort. Do not impose a second editing pass on every chat reply.
-4. **Check the actual artifact.** Verify commands and examples against their source, local links against files, and counts against the current tree. Read [prove it works](${CLAUDE_PLUGIN_ROOT}/principles/prove-it-works/PRINCIPLE.md) when executable examples or artifact claims need proof. State execution prerequisites you could not verify.
+1. **Establish the reader's task.** Identify the audience, document purpose, and requested scope: new writing, restructuring, or an edit. Inspect the implementation and sources behind its commands, names, examples, and claims.
 
-For a PR description, explain the concrete problem and resulting behavior, then include only consequential design and validation details. For an edit, return the edited text; explain changes only when requested or an ambiguity needs the author's decision. A bounded document that answers the reader's task is enough.
+2. **Structure the document.** Choose a tutorial, how-to, reference, or explanation according to the reader's task. Place prerequisites before dependent actions and organize sections around what the reader needs to find or do.
+
+3. **Write or edit.** Follow the project's terminology and voice. For an edit, preserve intended meaning, certainty, quotations, and technical terms while removing filler and clarifying difficult sentences. Resolve factual gaps from sources or identify them for the author. For a PR description, explain the problem and resulting behavior with the design and validation details needed for review.
+
+4. **Check the document.** Verify commands, examples, links, and counts against their sources. Run executable examples where the environment permits and record prerequisites that prevented a check.
+
+## Select principles
+
+Read only the documents whose conditions apply. Resolve their relative links from the document's directory.
+
+| Situation | Read |
+| --- | --- |
+| Executable examples or artifact claims need evidence | [Prove it works](${CLAUDE_PLUGIN_ROOT}/principles/prove-it-works/PRINCIPLE.md) |
+
+Return the document or requested edit. Explain changes only when requested or when an unresolved ambiguity affects the result.

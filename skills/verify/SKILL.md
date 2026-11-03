@@ -1,37 +1,31 @@
 ---
 name: verify
-description: Verify implemented behavior against acceptance conditions using the running app, existing project checks, or a reference UI. Use for user journeys, verification evidence, and visual parity; creating or maintaining verification skills is a separate explicit workflow.
+description: "Use this skill to verify a feature or fix, check user journeys, or compare a UI against its reference."
 ---
 
 # Verify
 
-Establish what behavior must be proven. Read the project's existing run instructions, verification skills, harness, and checks. Use their setup and current artifact contracts. Read only applicable shared documents; relative links resolve from the document's directory.
+## Workflow
 
-## Plan coverage
+1. **Define coverage.** Identify the acceptance conditions and the project's existing verification skill, run instructions, and harness. If there is a feature map, select affected journeys or the full map according to the requested scope and inspect their source, prerequisites, and expected results.
 
-Translate the request into observable conditions. With a feature map, reconcile the index and in-scope files, then inspect each journey's source entry point, prerequisites, actions, expected end state, and gotchas. A targeted check covers affected journeys; a requested full audit covers all mapped features. A source-only review is not live coverage. Do not generate a map or new launch framework just to perform a check.
+2. **Prepare the environment.** Confirm the required build, readiness, authentication, fixtures, and instance ownership. When the harness is missing, report the prerequisite and point to the appropriate user-invoked creation skill instead of launching a generator automatically.
 
-For questionable assertions, read [test behavior](${CLAUDE_PLUGIN_ROOT}/principles/test-behavior-not-implementation/PRINCIPLE.md). For quantitative evidence, read [explain the number](${CLAUDE_PLUGIN_ROOT}/principles/explain-the-number/PRINCIPLE.md) and use [measure](${CLAUDE_PLUGIN_ROOT}/playbooks/measure/PLAYBOOK.md) when a controlled measurement is needed. An existing formal check can be run under its own instructions; a bounded model or test pass does not establish the whole product.
+3. **Exercise the conditions.** Run the selected journeys and capture their actions, results, and side effects. Use [compare artifacts](${CLAUDE_PLUGIN_ROOT}/playbooks/compare-artifacts/PLAYBOOK.md) for reference matching or UI parity, [measure](${CLAUDE_PLUGIN_ROOT}/playbooks/measure/PLAYBOOK.md) for quantitative checks, and the project's existing instructions for an already established formal check. Include affected interaction and accessibility checks when pixels alone do not cover the request.
 
-## Exercise the behavior
+4. **Reconcile failures.** Identify documentation drift, a harness gap, a product defect, or an unavailable prerequisite. Correct verification docs or owned helpers only within scope; report product defects unless fixing them was requested. Rerun journeys affected by corrections.
 
-Confirm readiness, build identity, authentication, seed state, and ownership of the instance before driving it. Use the actual user interface rather than internal setters. Capture the action, resulting state, and consequential side effects. After surprising behavior, health-check and reset or relaunch to a known state before continuing. Clean up instances and temporary state you created, including failed attempts, while preserving evidence.
+5. **Conclude the run.** Clean up instances and scratch state created by the verification while retaining evidence. Report verified, failed, and blocked conditions. Full creation or upkeep remains an explicit invocation of create-verification-skill, maintain-verification-skill, create-formal-verification-skill, or maintain-formal-verification-skill; do not bypass their manual-only setting.
 
-For UI parity, fix the reference and capture meaningful interaction states and responsive sizes. Use [compare artifacts](${CLAUDE_PLUGIN_ROOT}/playbooks/compare-artifacts/PLAYBOOK.md), holding viewport, scale, browser, fonts, fixtures, theme, and animation state consistent. Keep baselines and tolerances fixed; intentional design changes need an explicit changed expectation. Check interaction and accessibility behavior separately from pixels.
+## Select principles
 
-## Judge and report
+Read only the documents whose conditions apply. Resolve their relative links from the document's directory.
 
-Read [prove it works](${CLAUDE_PLUGIN_ROOT}/principles/prove-it-works/PRINCIPLE.md) before interpreting the evidence. Separate documentation drift, a harness gap, a product regression, and an unavailable prerequisite. Correct verification docs or owned helpers only within scope and re-drive affected journeys; report product bugs unless fixing them was requested. Preserve existing artifact names, locations, section structure, commands for supported environments, and coverage meaning. Do not weaken expectations to fit broken behavior or silently replace shared pstack artifacts.
+| Situation | Read |
+| --- | --- |
+| Coverage or assertions are uncertain | [Test behavior](${CLAUDE_PLUGIN_ROOT}/principles/test-behavior-not-implementation/PRINCIPLE.md) |
+| Quantitative results need interpretation | [Explain the number](${CLAUDE_PLUGIN_ROOT}/principles/explain-the-number/PRINCIPLE.md) |
+| It is unclear what the collected evidence establishes | [Prove it works](${CLAUDE_PLUGIN_ROOT}/principles/prove-it-works/PRINCIPLE.md) |
+| Existing verification artifacts are shared with other workflows | [Preserve contracts](${CLAUDE_PLUGIN_ROOT}/principles/preserve-contracts/PRINCIPLE.md) |
 
-Report verified, failed, and blocked conditions with evidence locations, corrections, and remaining gaps. Distinguish a failed check from one that could not run.
-
-## User-invoked creation and upkeep
-
-These original workflows remain distinct, manual-only skills:
-
-- `/ostack:create-verification-skill`: generate and prove an app-driving skill and seed its feature map.
-- `/ostack:maintain-verification-skill`: audit and repair an existing app-driving skill and map.
-- `/ostack:create-formal-verification-skill`: establish a formal check and generate its reusable project skill.
-- `/ostack:maintain-formal-verification-skill`: reconcile existing formal checks with code changes.
-
-If a required harness is missing, name the prerequisite and point to the appropriate creation workflow. Do not silently launch a generator, full upkeep campaign, or read a manual-only skill to bypass its invocation policy.
+Include evidence locations, corrections, remaining gaps, and conditions that could not be checked.
