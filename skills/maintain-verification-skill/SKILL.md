@@ -1,6 +1,6 @@
 ---
 name: maintain-verification-skill
-description: "Use this skill when asked to audit or update an existing app verification skill and feature map."
+description: "Audit and update an existing verify-<app> skill and its feature map against the current app, fixing drift and harness gaps. Run only when asked to maintain app verification."
 disable-model-invocation: true
 ---
 
@@ -20,9 +20,9 @@ disable-model-invocation: true
 
     Read the feature map README and glob its sibling files. Fix missing, extra, duplicate, or dead entries. Lightweight; no generated inventory.
 
-3. **Source wave.**
+3. **Source pass.**
 
-    One read-only subagent per feature file, launched concurrently. Each explains "how does this user-facing feature work?" from source, flags likely doc drift with citations, and returns one concise live-verification recipe. Children never drive the app and never edit files. Return shape: feature summary / source entry points / likely drift or none / one recipe.
+    For each feature file, explain "how does this user-facing feature work?" from source, flag likely doc drift with citations, and write one concise live-verification recipe. Do this yourself for a small map. For a large map, hand batches of feature files to read-only subagents that never drive the app or edit files and return: feature summary / source entry points / likely drift or none / one recipe.
 
 4. **Reconcile.**
 
@@ -34,16 +34,16 @@ disable-model-invocation: true
 
 6. **Triage.**
 
-    Wrong or missing user-POV description → doc drift, fix it. Working behavior the harness can't drive → harness gap, fix it; a harness fix follows the same helpers rule as generation (scripts executable, invocation documented in the skill body). App behavior that's actually broken → product gap; record it for the user, keep it out of this PR.
+    Wrong or missing user-POV description → doc drift, fix it. Working behavior the harness can't drive → harness gap, fix it; a harness fix follows the same helpers rule as generation (scripts executable, invocation documented in the skill body). App behavior that's actually broken → product gap; record it for the user, keep it out of this change.
 
 7. **Ship or stop.**
 
-    For changed: one PR of proven corrections, re-read every changed file first. For clean or blocked: no PR, report the outcome and the coverage honestly.
+    For changed: one commit of proven corrections, re-read every changed file first. For clean or blocked: no commit, report the outcome and the coverage honestly.
 
     Pick one, and say which:
 
-    - **clean** — every feature got source and live coverage; nothing worth shipping. No branch, no PR.
-    - **changed** — one PR ships proven doc, harness, or map corrections.
+    - **clean** — every feature got source and live coverage; nothing worth shipping.
+    - **changed** — one commit ships proven doc, harness, or map corrections.
     - **blocked** — coverage could not finish or a proven fix could not ship safely. Say exactly what blocked it.
 
     Keep concise run notes (features covered, unreachable prerequisites, confirmed drift, outcome) in a scratch location; don't commit them.

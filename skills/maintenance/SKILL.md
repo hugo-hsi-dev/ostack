@@ -1,6 +1,6 @@
 ---
 name: maintenance
-description: "Use this skill for dependency updates, configuration or tooling changes, repository housekeeping, or recurring repository mistakes."
+description: "Update dependencies, change configuration, build or CI tooling, clean up the repository, or add a lint or check that stops a recurring mistake. Use for upgrades, version bumps, migrations to a new library version, config edits, and housekeeping."
 ---
 
 # Maintenance
@@ -28,7 +28,6 @@ Read only the documents whose conditions apply. Resolve their relative links fro
 | A demonstrated recurring mistake needs prevention | [Encode lessons in structure](${CLAUDE_PLUGIN_ROOT}/principles/encode-lessons-in-structure/PRINCIPLE.md) |
 | The task adds structure while obsolete paths remain | [Subtract before you add](${CLAUDE_PLUGIN_ROOT}/principles/subtract-before-you-add/PRINCIPLE.md) |
 | The edit or check may warrant a reusable tool | [Build the lever](${CLAUDE_PLUGIN_ROOT}/principles/build-the-lever/PRINCIPLE.md) |
-| A reversible execution choice is prompting a permission question | [Never block on the human](${CLAUDE_PLUGIN_ROOT}/principles/never-block-on-the-human/PRINCIPLE.md) |
 | The verification evidence is uncertain | [Prove it works](${CLAUDE_PLUGIN_ROOT}/principles/prove-it-works/PRINCIPLE.md) |
 
 Report the update, compatibility consequences, checks performed, and anything blocked.

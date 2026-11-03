@@ -1,6 +1,6 @@
 ---
 name: create-formal-verification-skill
-description: "Use this skill when asked to create formal verification and a reusable project-local verification skill."
+description: "Formally verify a high-risk property of this codebase (TLA+, model checker, prover, or SMT verifier) and generate a project-local skill that reruns it. Run only when asked to create formal verification."
 disable-model-invocation: true
 ---
 

@@ -1,6 +1,6 @@
 ---
 name: bug-fix
-description: "Use this skill to diagnose and fix a bug or regression."
+description: "Diagnose and fix a bug, crash, error, failing test, flaky behavior, or regression: reproduce it, find the root cause, add a regression check, and prove the fix. Use when something is broken, wrong, or behaves differently than expected."
 ---
 
 # Bug fix

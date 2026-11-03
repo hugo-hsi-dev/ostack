@@ -1,6 +1,6 @@
 ---
 name: create-verification-skill
-description: "Use this skill when asked to create a project-local app verification skill."
+description: "Create a project-local verify-<app> skill and feature map that launch, drive, and capture evidence from this app. Run only when asked to create app verification."
 disable-model-invocation: true
 ---
 

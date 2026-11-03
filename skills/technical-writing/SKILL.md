@@ -1,6 +1,6 @@
 ---
 name: technical-writing
-description: "Use this skill to write, restructure, or edit technical documentation."
+description: "Write, restructure, or edit technical documentation such as READMEs, guides, API references, design docs, changelogs, and PR descriptions. Use when the output is prose for readers rather than code."
 ---
 
 # Technical writing

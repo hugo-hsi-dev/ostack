@@ -1,8 +1,8 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
   "name": "ostack",
-  "version": "0.3.3",
-  "description": "Task entry skills, shared principles and playbooks, and specialized verification workflows for Claude. Adapted from pstack.",
+  "version": "0.4.0",
+  "description": "Task skills, principles, and playbooks for Claude Code. Adapted from pstack.",
   "owner": {
     "name": "Hugo Hsi",
     "email": "hugohsidev@gmail.com",
@@ -11,7 +11,7 @@
   "plugins": [
     {
       "name": "ostack",
-      "description": "Task entry skills, shared principles and playbooks, and specialized verification workflows for Claude. Adapted from pstack.",
+      "description": "Task skills, principles, and playbooks for Claude Code. Adapted from pstack.",
       "author": {
         "name": "Hugo Hsi"
       },

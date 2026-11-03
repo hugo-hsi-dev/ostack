@@ -1,6 +1,6 @@
 ---
 name: verify
-description: "Use this skill to verify a feature or fix, check user journeys, or compare a UI against its reference."
+description: "Prove that a feature or fix actually works by driving the real app through its user journeys, capturing evidence, and comparing UI or output against a reference. Use after a change lands, or when asked to verify, test end to end, check parity, or confirm something works."
 ---
 
 # Verify

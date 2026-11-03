@@ -8,4 +8,4 @@ Use to establish whether a candidate preserves or intentionally changes an obser
 4. **Inspect the differences.** Use the appropriate image, text, or structural comparison and inspect consequential deltas. Require zero unexplained differences for exact parity. Do not loosen thresholds or hide changed regions until the check passes.
 5. **Return evidence.** Report covered states, comparison settings, artifact locations, remaining differences, and accepted differences with their reasons. Stop an unbounded chase of nondeterministic noise and name the missing control.
 
-A matching artifact establishes only the compared observations. A screenshot does not establish interaction or accessibility equivalence; the Entry chooses the additional behavior checks.
+A matching artifact establishes only the compared observations. A screenshot does not establish interaction or accessibility equivalence. Check those separately.

@@ -1,6 +1,6 @@
 ---
 name: maintain-formal-verification-skill
-description: "Use this skill when asked to bring existing formal verification back in sync with changed code."
+description: "Bring existing formal verification back in sync with changed code, separating model drift from real bugs. Run only when asked to maintain formal verification."
 disable-model-invocation: true
 ---
 
