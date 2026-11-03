@@ -18,7 +18,7 @@ disable-model-invocation: true
 
     Run each check once before you change anything, and record the result. A pass here does not tell you that the code is correct. It tells you that the old description still holds. A failure here can be drift or a bug. Do not decide which until step 5.
 
-    For a TLA+ check, consult the shared [statechart guide](../create-formal-verification-skill/references/statechart/STATECHART.md) when checker results or diagrams need interpretation. This is the same toolkit used by creation, not a second copy or registered skill. Prefer the project's existing reproducible commands and preserve its verification artifact contract; report unavailable tooling rather than silently replacing it.
+    For a TLA+ check, use the checker and operating guide that the verify skill records in the project. If it records none, read the checker's own output directly. Prefer the project's existing reproducible commands and preserve its verification artifact contract; report unavailable tooling rather than silently replacing it.
 
 3. **Read every change to covered code.**
 
