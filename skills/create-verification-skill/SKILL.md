@@ -37,7 +37,7 @@ disable-model-invocation: true
 
 4. **Prove the generated skill.**
 
-    Run its own instructions end to end once: launch, doctor, drive ONE mapped feature (one is enough; the map exists so later runs can cover the rest), capture evidence, clean up. After cleanup, confirm the evidence still exists at the named location — a cleanup that eats the proof fails this step. Fix what fails, and run the generated cleanup after every failed iteration too, so broken attempts don't strand processes and ports. If you proved it in a stand-in for the real target (a container in place of a fresh VM, a local stack in place of a remote one), list every setup step the stand-in did that the target will not. Those steps stay unverified until a run on the real target covers them.
+    Follow its own instructions through [live run](${CLAUDE_PLUGIN_ROOT}/playbooks/live-run/PLAYBOOK.md) for ONE mapped feature (one is enough; the map exists so later runs can cover the rest). A cleanup that eats the proof fails this step. Fix what fails, using the generated cleanup after every failed iteration. If you proved it in a stand-in for the real target (a container in place of a fresh VM, a local stack in place of a remote one), list every setup step the stand-in did that the target will not. Those steps stay unverified until a run on the real target covers them.
 
 5. **Hand off maintenance.**
 

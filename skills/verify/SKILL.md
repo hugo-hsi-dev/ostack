@@ -9,13 +9,11 @@ description: "Prove that a feature or fix actually works by driving the real app
 
 1. **Define coverage.** Identify the acceptance conditions and the project's existing verification skill, run instructions, and harness. If there is a feature map, select affected journeys or the full map according to the requested scope and inspect their source, prerequisites, and expected results.
 
-2. **Prepare the environment.** Confirm the required build, readiness, authentication, fixtures, and instance ownership. When the harness is missing, report the prerequisite and point to the appropriate user-invoked creation skill instead of launching a generator automatically.
+2. **Check the harness exists.** When it is missing, report the prerequisite and point to the appropriate user-invoked creation skill instead of launching a generator automatically.
 
-3. **Exercise the conditions.** Run the selected journeys and capture their actions, results, and side effects. Use [compare artifacts](${CLAUDE_PLUGIN_ROOT}/playbooks/compare-artifacts/PLAYBOOK.md) for reference matching or UI parity, [measure](${CLAUDE_PLUGIN_ROOT}/playbooks/measure/PLAYBOOK.md) for quantitative checks, and the project's existing instructions for an already established formal check.
+3. **Exercise the conditions.** Run the selected journeys with [live run](${CLAUDE_PLUGIN_ROOT}/playbooks/live-run/PLAYBOOK.md). Use [compare artifacts](${CLAUDE_PLUGIN_ROOT}/playbooks/compare-artifacts/PLAYBOOK.md) for reference matching or UI parity, [measure](${CLAUDE_PLUGIN_ROOT}/playbooks/measure/PLAYBOOK.md) for quantitative checks, and the project's existing instructions for an already established formal check.
 
-4. **Reconcile failures.** Identify documentation drift, a harness gap, a product defect, or an unavailable prerequisite. Correct verification docs or owned helpers only within scope; report product defects unless fixing them was requested. Rerun journeys affected by corrections.
-
-5. **Conclude the run.** Clean up instances and scratch state created by the verification while retaining evidence. Report verified, failed, and blocked conditions.
+4. **Reconcile failures.** Correct verification docs or owned helpers only within scope; report product defects unless fixing them was requested.
 
 ## Select principles
 

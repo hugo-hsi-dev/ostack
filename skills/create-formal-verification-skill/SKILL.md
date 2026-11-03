@@ -21,7 +21,7 @@ disable-model-invocation: true
 3. **Establish the check.**
 
     - **True to the code.** Every part of the model or proof points to code that a reviewer can open. What the verification treats as one indivisible step is one indivisible step in the code. Names come from this repo.
-    - **Able to fail.** A check that you have never seen fail proves nothing. Show each property failing on a broken variant of the code it guards, such as a removed check or a reordered step.
+    - **Able to fail.** Show each property failing on a broken variant of the code it guards with [negative control](${CLAUDE_PLUGIN_ROOT}/playbooks/negative-control/PLAYBOOK.md).
     - **Findings stay findings.** When the current code breaks the property, report it with the counterexample in the code's terms. Do not weaken the property or the model until it passes, and do not change product code unless the user asks.
     - **Honest about scope.** Say what is verified, under which bounds and assumptions, and what is left out. A pass covers the model or the bound, not the whole system.
     - **Readable without the tool.** State the property and the harm in one plain sentence each. Tell a counterexample as a short sequence of steps in the code's words.
@@ -36,7 +36,7 @@ disable-model-invocation: true
 
 5. **Prove the generated workflow.**
 
-    Follow the generated skill once, as the next agent would, on a scratch change that breaks the property in the real code. It must catch the break. Then drop the scratch change and confirm that the check is back where it started: passing, or failing only on the findings you will report. If the skill misses the break or a step does not run, fix the skill or the verification, not the scratch change.
+    Follow the generated skill once, as the next agent would, through [negative control](${CLAUDE_PLUGIN_ROOT}/playbooks/negative-control/PLAYBOOK.md) on the real code. If the skill misses the break or a step does not run, fix the skill or the verification, not the scratch change.
 
 6. **Hand off.**
 

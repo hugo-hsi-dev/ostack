@@ -34,7 +34,7 @@ disable-model-invocation: true
 
 5. **Rerun and judge each result.**
 
-    - **Pass:** the check can now pass on a description that has lost the ability to fail. Break the new code the way the property guards against, such as removing a new check or reordering a new step, and confirm that the check catches it. Then drop the break.
+    - **Pass:** the check can now pass on a description that has lost the ability to fail. Run [negative control](${CLAUDE_PLUGIN_ROOT}/playbooks/negative-control/PLAYBOOK.md) against the new code.
     - **Fail:** replay the counterexample against the real code, step by step. If a step cannot happen in the code, the verification is wrong. Fix the verification, and say what was wrong. If every step can happen, it is a bug. Name the commit that introduced it, tell the counterexample as a sequence of steps in the code's own words, and state the harm in one sentence. If a cheap test or reproduction against the real code shows the bug, add it to the report as evidence. Do not commit it to the product code.
 
 6. **Update the verify skill.**

@@ -78,7 +78,9 @@ For code review, security review, and refactoring cleanups, use Claude Code's bu
 | Playbook | Use |
 | --- | --- |
 | [compare-artifacts](playbooks/compare-artifacts/PLAYBOOK.md) | Use to establish whether a candidate preserves or intentionally changes an observable reference: screenshots, generated files, command output, or structured results. Inputs are the reference, candidate, relevant states, and agreed comparison rule. |
+| [live-run](playbooks/live-run/PLAYBOOK.md) | Use to exercise a running app, service, or CLI through its real user path and keep proof of the result. Inputs are the journeys to drive, the project's launch, doctor, drive, and cleanup instructions, and where evidence goes. |
 | [measure](playbooks/measure/PLAYBOOK.md) | Use when a decision needs a trustworthy latency, throughput, resource-use, accuracy, or other quantitative result. Inputs are the workload or trial, metric, intended conclusion, and available budget. A requested ballpark may use one labeled run; a comparison needs enough samples to resolve the effect. |
+| [negative-control](playbooks/negative-control/PLAYBOOK.md) | Use to show that a check (test, guard, lint, model property, or verification skill) can fail on the fault it claims to catch. A check never seen failing proves nothing. |
 | [prototype](playbooks/prototype/PLAYBOOK.md) | State the decision and the observation that would change it. If inspection can settle the question, use that evidence first. |
 
 ## License

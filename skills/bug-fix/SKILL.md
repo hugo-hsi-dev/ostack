@@ -11,11 +11,11 @@ description: "Diagnose and fix a bug, crash, error, failing test, flaky behavior
 
 2. **Investigate.** Use history or runtime observations where they can resolve uncertainty.
 
-3. **Prepare a regression check.** Before editing product code, add a focused test when requested or practical with the existing harness. Run it against the unfixed code. When a new test is impractical, retain the reproduction as the before-and-after check.
+3. **Prepare a regression check.** Before editing product code, add a focused test when requested or practical with the existing harness. Prove it fails on the unfixed code with [negative control](${CLAUDE_PLUGIN_ROOT}/playbooks/negative-control/PLAYBOOK.md). When a new test is impractical, retain the reproduction as the before-and-after check.
 
 4. **Implement.** Apply the correction. Remove your rejected experimental changes and check affected paths for other instances of the same fault.
 
-5. **Verify.** Rerun the original reproduction and the regression test. If the bug affects a mapped user journey, exercise that journey through the project's existing verification tooling. Clean up temporary instances created for the investigation while retaining useful evidence.
+5. **Verify.** Rerun the original reproduction and the regression test. If the bug affects a mapped user journey, drive it with [live run](${CLAUDE_PLUGIN_ROOT}/playbooks/live-run/PLAYBOOK.md).
 
 ## Select principles
 

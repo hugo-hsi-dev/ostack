@@ -13,7 +13,7 @@ description: "Design and build a new feature, integration, endpoint, command, or
 
 3. **Implement.** Update affected callers, documentation, and examples. Revisit unresolved design questions exposed by implementation.
 
-4. **Verify.** Exercise the acceptance conditions through the existing harness. Include affected mapped journeys when a feature map exists. For reference-matching UI work, use [compare artifacts](${CLAUDE_PLUGIN_ROOT}/playbooks/compare-artifacts/PLAYBOOK.md).
+4. **Verify.** Exercise the acceptance conditions through the existing harness. Drive affected mapped journeys with [live run](${CLAUDE_PLUGIN_ROOT}/playbooks/live-run/PLAYBOOK.md) when a feature map exists. For reference-matching UI work, use [compare artifacts](${CLAUDE_PLUGIN_ROOT}/playbooks/compare-artifacts/PLAYBOOK.md).
 
 ## Select principles
 
