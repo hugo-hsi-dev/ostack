@@ -1,0 +1,5 @@
+{
+  "name": "@ostack/statechart",
+  "private": true,
+  "type": "module"
+}
