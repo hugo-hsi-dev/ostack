@@ -13,7 +13,7 @@ description: "Measure, diagnose, and improve speed, latency, throughput, memory,
 
 3. **Locate the bottleneck.** Inspect the profile or supplied runtime artifact and map the observations to code. For diagnosis-only work, finish with the supported cause and recommendation.
 
-4. **Choose and test an intervention.** Consult the relevant principles below. Use [prototype](${CLAUDE_PLUGIN_ROOT}/playbooks/prototype/PLAYBOOK.md) if a runtime assumption needs an experiment. Apply one selected intervention, rerun the workload using [measure](${CLAUDE_PLUGIN_ROOT}/playbooks/measure/PLAYBOOK.md), run correctness checks, and remove rejected experimental edits.
+4. **Choose and test an intervention.** Use [prototype](${CLAUDE_PLUGIN_ROOT}/playbooks/prototype/PLAYBOOK.md) if a runtime assumption needs an experiment. Apply one selected intervention, rerun the workload using [measure](${CLAUDE_PLUGIN_ROOT}/playbooks/measure/PLAYBOOK.md), run correctness checks, and remove rejected experimental edits.
 
 5. **Finish or continue within scope.** For a requested campaign, keep a hypothesis/result/keep-or-revert record. Continue until the requested target, supplied budget, or a lack of viable remaining interventions ends the campaign.
 

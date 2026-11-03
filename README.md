@@ -9,7 +9,7 @@ Task skills, principles, and playbooks for Claude Code, adapted from [Lauren Tan
 /plugin install ostack@ostack
 ```
 
-In Claude Projects, add the plugin in **Project settings > Plugins** so work threads load it. For a source preview, run `claude --plugin-dir /absolute/path/to/ostack`.
+In Claude Projects, add the plugin in **Project settings > Plugins** so its sessions load it. For a source preview, run `claude --plugin-dir /absolute/path/to/ostack`.
 
 ## Layout
 
@@ -52,26 +52,26 @@ For code review, security review, and refactoring cleanups, use Claude Code's bu
 
 | Principle | Applies |
 | --- | --- |
-| [attack-the-premise](principles/attack-the-premise/PRINCIPLE.md) | when two or more fixes that share one premise have failed the same gate. Write the premise down and test it directly before you write another fix that assumes it. |
-| [boundary-discipline](principles/boundary-discipline/PRINCIPLE.md) | when wiring validation, error handling, or framework adapters. Concentrate guards at system boundaries (CLI, config, network, external APIs); trust internal types and keep business logic in pure functions. |
-| [build-the-lever](principles/build-the-lever/PRINCIPLE.md) | to any non-trivial work, not just bulk work: edits, migrations, analyses, checks. Build the tool that does it or proves it (codemod, script, generator, or a skill your subagents follow) instead of working by hand. The tool is the artifact a reviewer can rerun. |
+| [attack-the-premise](principles/attack-the-premise/PRINCIPLE.md) | when two or more fixes that share one premise have failed the same gate. |
+| [boundary-discipline](principles/boundary-discipline/PRINCIPLE.md) | when wiring validation, error handling, or framework adapters. |
+| [build-the-lever](principles/build-the-lever/PRINCIPLE.md) | to any non-trivial work, not just bulk work: edits, migrations, analyses, checks. |
 | [design-from-usage](principles/design-from-usage/PRINCIPLE.md) | when choosing or reviewing representations, ownership, or interfaces whose caller usage is not yet clear. |
 | [encode-lessons-in-structure](principles/encode-lessons-in-structure/PRINCIPLE.md) | when you catch yourself writing the same instruction a second time, or notice a recurring correction. Encode the rule as a lint, metadata flag, runtime check, or script instead of more text. |
-| [experience-first](principles/experience-first/PRINCIPLE.md) | when product, UX, or feature-scope tradeoffs come up. Choose user delight over implementation convenience; ship fewer polished features over more rough ones. |
+| [experience-first](principles/experience-first/PRINCIPLE.md) | when product, UX, or feature-scope tradeoffs come up. |
 | [explain-the-number](principles/explain-the-number/PRINCIPLE.md) | before you measure, and before you trust, report, or act on a number you measured: a speedup, a regression, a throughput, a latency, or an eval result. Find what limits it, and rule out that it measured something other than the work you think. |
-| [fix-root-causes](principles/fix-root-causes/PRINCIPLE.md) | when debugging. Trace each symptom back to the first place the system went wrong and fix it there. A guard is a fix only when the state it handles is legitimate. |
-| [make-operations-idempotent](principles/make-operations-idempotent/PRINCIPLE.md) | when designing commands, lifecycle steps, or processing loops that run amid crashes, restarts, and retries. Converge to the same end state regardless of partial prior runs. |
+| [fix-root-causes](principles/fix-root-causes/PRINCIPLE.md) | when debugging. |
+| [make-operations-idempotent](principles/make-operations-idempotent/PRINCIPLE.md) | when designing commands, lifecycle steps, or processing loops that run amid crashes, restarts, and retries. |
 | [minimize-reader-load](principles/minimize-reader-load/PRINCIPLE.md) | when reviewing or shaping code that's hard to trace. Count layers between question and answer, and hidden state in the reader's head; collapse one-caller wrappers and shrink mutable scope. |
 | [model-the-domain](principles/model-the-domain/PRINCIPLE.md) | when writing stateful logic, or when code branches a lot or repeats a shape assumption across files. |
-| [outcome-oriented-execution](principles/outcome-oriented-execution/PRINCIPLE.md) | during planned rewrites and migrations with explicit phase boundaries. Converge on the target architecture; don't preserve smooth intermediate states with throwaway compatibility code. |
+| [outcome-oriented-execution](principles/outcome-oriented-execution/PRINCIPLE.md) | during planned rewrites and migrations with explicit phase boundaries. |
 | [preserve-contracts](principles/preserve-contracts/PRINCIPLE.md) | when changing behavior consumed outside the edited code: public APIs, persisted data, wire formats, CLI output, configuration, or independently deployed clients. |
-| [prove-it-works](principles/prove-it-works/PRINCIPLE.md) | after completing a task, before declaring done. Verify against the real artifact (run the feature, read the actual value, inspect the diff), not a proxy, self-report, or 'it compiles.' |
+| [prove-it-works](principles/prove-it-works/PRINCIPLE.md) | after completing a task, before declaring done. |
 | [redesign-from-first-principles](principles/redesign-from-first-principles/PRINCIPLE.md) | when integrating a new requirement into an existing design. |
-| [separate-before-serializing-shared-state](principles/separate-before-serializing-shared-state/PRINCIPLE.md) | when concurrent actors might write to the same file, branch, key, or state object. Eliminate the sharing first; serialize structurally only when one shared writer is a real invariant. |
-| [sequence-verifiable-units](principles/sequence-verifiable-units/PRINCIPLE.md) | to multi-step work (sweeps, migrations, runs of similar edits) and to how you stack commits and PRs. Break work into small units that each end in a verifiable state, check each before the next, and order delivery so the sequence proves itself to a reviewer. |
-| [subtract-before-you-add](principles/subtract-before-you-add/PRINCIPLE.md) | when sequencing an addition, refactor, or rewrite, judging diff size, or tempted to add an abstraction, layer, or threaded flag. Remove dead code, redundant validators, and stub references first, then build on the simpler base with the smallest change that works. |
+| [separate-before-serializing-shared-state](principles/separate-before-serializing-shared-state/PRINCIPLE.md) | when concurrent actors might write to the same file, branch, key, or state object. |
+| [sequence-verifiable-units](principles/sequence-verifiable-units/PRINCIPLE.md) | to multi-step work (sweeps, migrations, runs of similar edits) and to how you stack commits and PRs. |
+| [subtract-before-you-add](principles/subtract-before-you-add/PRINCIPLE.md) | when sequencing an addition, refactor, or rewrite, judging diff size, or tempted to add an abstraction, layer, or threaded flag. |
 | [test-behavior-not-implementation](principles/test-behavior-not-implementation/PRINCIPLE.md) | when you write, change, or keep a test. Assert what the code's users can observe, so that the test fails when that behavior breaks and keeps passing when only the internals change. |
-| [type-system-discipline](principles/type-system-discipline/PRINCIPLE.md) | when designing types, reviewing a function signature, or writing code in any statically-typed language. Make illegal states unrepresentable, brand semantic primitives, parse external data at boundaries, exhaust variants, derive from authoritative schemas. |
+| [type-system-discipline](principles/type-system-discipline/PRINCIPLE.md) | when designing types, reviewing a function signature, or writing code in any statically-typed language. |
 
 ## Playbooks
 

@@ -1,8 +1,8 @@
 # Attack the Premise
 
-Apply when two or more fixes that share one premise have failed the same gate. Write the premise down and test it directly before you write another fix that assumes it.
+Apply when two or more fixes that share one premise have failed the same gate.
 
-When two or more fixes that share one premise have failed the same gate, suspect the premise, not the fixes.
+Suspect the premise, not the fixes.
 
 **Why:** Each failed fix is evidence against the belief it assumed. A third fix on the same premise spends effort where the evidence already says the cause is not.
 
@@ -13,5 +13,3 @@ When two or more fixes that share one premise have failed the same gate, suspect
 - **Remove the condition instead of compensating for it**, per [subtract-before-you-add](../subtract-before-you-add/PRINCIPLE.md). If the evidence shows that one part always lands on the losing side, change what puts it there. A mechanism that cleans up after it leaves the cause in place and adds work on every run.
 
 **Stop:** Do not start the next fix before the premise is written down and tested.
-
-This principle is distinct from [redesign-from-first-principles](../redesign-from-first-principles/PRINCIPLE.md), which rebuilds a design around a new requirement. It questions a fact the current design assumes.

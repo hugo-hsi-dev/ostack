@@ -10,5 +10,3 @@ Apply before you measure, and before you trust, report, or act on a number you m
 For a performance number, establish that the measured work completed with correct outputs under comparable conditions. For an eval result, ask the same of the trials: did every run do the task, does the gap hold across trials and models, and does the scenario matter.
 
 You skipped this when a run started without the result that would change a decision, when the evidence behind a number has no run count, no spread, or no named limiter, or when the time saved is larger than the time the changed piece took.
-
-Distinct from [prove-it-works](../prove-it-works/PRINCIPLE.md), which checks that an output is real.

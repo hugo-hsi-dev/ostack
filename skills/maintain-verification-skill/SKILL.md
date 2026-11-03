@@ -22,15 +22,15 @@ disable-model-invocation: true
 
 3. **Source pass.**
 
-    For each feature file, explain "how does this user-facing feature work?" from source, flag likely doc drift with citations, and write one concise live-verification recipe. Do this yourself for a small map. For a large map, hand batches of feature files to read-only subagents that never drive the app or edit files and return: feature summary / source entry points / likely drift or none / one recipe.
+    For each feature file, explain "how does this user-facing feature work?" from source, flag likely doc drift with citations, and write one concise live-verification recipe. Do this yourself for a small map. For a large map, hand batches of feature files to read-only `Explore` subagents that never drive the app or edit files and return: feature summary / source entry points / likely drift or none / one recipe.
 
 4. **Reconcile.**
 
-    Every feature file has a returned summary. Merge overlapping recipes into as few app states as practical. Spot-check cited drift; don't re-prove clean claims. Sweep recent churn for user-facing surfaces missing from the map — require a concrete source path before calling one missing.
+    Confirm every feature file has a returned summary. Merge overlapping recipes into as few app states as practical. Spot-check cited drift; don't re-prove clean claims. Sweep recent churn for user-facing surfaces missing from the map — require a concrete source path before calling one missing.
 
 5. **Live pass.**
 
-    Required even when source looks clean. The coordinator owns all driving; follow the verification skill's own launch model — one long-lived instance driven serially for servers and UIs, or a fresh isolated session per drive for short-lived CLIs (the skill's Launch section decides, not this one). Exercise every feature at least once, and hold three invariants the whole pass, whatever the failure: (1) never drive an instance you haven't health-checked since it last did something surprising — doctor before first drive, doctor on each fresh session where sessions are the unit, doctor again after any failed drive, and where doctor can't see the failure (a wedged UI state on a healthy process), reset to a known state or relaunch rather than hoping; (2) evidence captured so far survives every cleanup, checked at its named location, not assumed; (3) nothing a drive started outlives that drive's usefulness — failed-iteration residue is cleaned whether the session is stuck, exited, or shared (for a shared instance, clean the residue, not the instance). A doctor failure caused by skill drift is drift: fix it under edit scope and retry once — restart whatever the fix invalidated, nothing more — before calling the pass `blocked`. A feature that can't be reached is `verified-unreachable` only with the concrete prerequisite (auth, entitlement, OS, external state) and the route attempted; if the map omits that prerequisite, that's drift. Any harness fix from triage gets re-driven live before it ships. Final teardown happens after the last drive of the run — including those re-proofs — so nothing outlives the run (evidence stays, per the skill).
+    Required even when source looks clean. The main session owns all driving; follow the verification skill's own launch model — one long-lived instance driven serially for servers and UIs, or a fresh isolated session per drive for short-lived CLIs. Exercise every feature at least once, and hold three invariants the whole pass, whatever the failure: (1) never drive an instance you haven't health-checked since it last did something surprising — doctor before first drive, doctor on each fresh session where sessions are the unit, doctor again after any failed drive, and where doctor can't see the failure (a wedged UI state on a healthy process), reset to a known state or relaunch rather than hoping; (2) evidence captured so far survives every cleanup, checked at its named location, not assumed; (3) nothing a drive started outlives that drive's usefulness — failed-iteration residue is cleaned whether the session is stuck, exited, or shared (for a shared instance, clean the residue, not the instance). A doctor failure caused by skill drift is drift: fix it under edit scope and retry once — restart whatever the fix invalidated, nothing more — before calling the pass `blocked`. A feature that can't be reached is `verified-unreachable` only with the concrete prerequisite (auth, entitlement, OS, external state) and the route attempted; if the map omits that prerequisite, that's drift. Any harness fix from triage gets re-driven live before it ships. Final teardown happens after the last drive of the run — including those re-proofs — so nothing outlives the run (evidence stays, per the skill).
 
 6. **Triage.**
 
@@ -38,15 +38,15 @@ disable-model-invocation: true
 
 7. **Ship or stop.**
 
-    For changed: one commit of proven corrections, re-read every changed file first. For clean or blocked: no commit, report the outcome and the coverage honestly.
+    Re-read every changed file before reporting.
 
     Pick one, and say which:
 
     - **clean** — every feature got source and live coverage; nothing worth shipping.
-    - **changed** — one commit ships proven doc, harness, or map corrections.
+    - **changed** — proven doc, harness, or map corrections, kept as one change separate from product fixes.
     - **blocked** — coverage could not finish or a proven fix could not ship safely. Say exactly what blocked it.
 
-    Keep concise run notes (features covered, unreachable prerequisites, confirmed drift, outcome) in a scratch location; don't commit them.
+    Keep concise run notes (features covered, unreachable prerequisites, confirmed drift, outcome) in the session scratchpad.
 
 ## Select principles
 

@@ -1,10 +1,8 @@
 # Separate Before Serializing Shared State
 
-Apply when concurrent actors might write to the same file, branch, key, or state object. Eliminate the sharing first; serialize structurally only when one shared writer is a real invariant.
+Apply when concurrent actors might write to the same file, branch, key, or state object.
 
 When concurrent actors might share mutable state, first ask whether they need the same mutable object. If not, eliminate the sharing. When sharing is real, enforce serialization structurally: lockfiles, sequential phases, exclusive ownership. Instructions and conventions are not concurrency control.
-
-**Why:** Concurrent writes to shared state create race conditions that are intermittent, hard to reproduce, and expensive to debug.
 
 **Pattern:**
 1. **Identify shared mutable state** (files both read and write, branches both push to, APIs both define and consume).

@@ -9,9 +9,9 @@ description: "Write, restructure, or edit technical documentation such as README
 
 1. **Establish the reader's task.** Identify the audience, document purpose, and requested scope: new writing, restructuring, or an edit. Inspect the implementation and sources behind its commands, names, examples, and claims.
 
-2. **Structure the document.** Choose a tutorial, how-to, reference, or explanation according to the reader's task. Place prerequisites before dependent actions and organize sections around what the reader needs to find or do.
+2. **Structure the document.** Choose a tutorial, how-to, reference, or explanation according to the reader's task. Place prerequisites before dependent actions.
 
-3. **Write or edit.** Follow the project's terminology and voice. For an edit, preserve intended meaning, certainty, quotations, and technical terms while removing filler and clarifying difficult sentences. Resolve factual gaps from sources or identify them for the author. For a PR description, explain the problem and resulting behavior with the design and validation details needed for review.
+3. **Write or edit.** For an edit, preserve intended meaning, certainty, quotations, and technical terms while removing filler and clarifying difficult sentences. Resolve factual gaps from sources or identify them for the author. For a PR description, explain the problem and resulting behavior with the design and validation details needed for review.
 
 4. **Check the document.** Verify commands, examples, links, and counts against their sources. Run executable examples where the environment permits and record prerequisites that prevented a check.
 

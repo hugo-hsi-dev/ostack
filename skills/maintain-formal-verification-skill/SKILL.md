@@ -12,7 +12,7 @@ disable-model-invocation: true
 
     A verify skill has no fixed name, so find it by what it does: a project skill that runs a model checker, a prover, or another verifier against named code. Read each one you find, or the one the user named. For each check, collect the property, the code it covers, the bounds and assumptions, the command that runs it, and the commit where it was last confirmed to describe the code. If no verify skill exists, stop and point at `/create-formal-verification-skill`. If the skill does not record a sync commit, use the last commit that changed the verification files, and say that you did.
 
-    Edit only the verification: models, harnesses, property files, and the verify skill itself. Never edit product code during a run, unless the user asks you to. When a property fails on the current code, do not weaken the property or the model to make it pass. Report the failure.
+    Edit only the verification: models, harnesses, property files, and the verify skill itself. Never edit product code during a run, unless the user asks you to.
 
 2. **Run it as it is.**
 
@@ -52,15 +52,9 @@ disable-model-invocation: true
 
     A check can be both updated and bug: the update makes the verification describe the code again, and then the property fails on it.
 
-    Tell the user, for each check:
+    For each check, report the outcome, the commits read, each verification change with its reason or evidence, the break that shows the updated check can still fail, each bug as code-step counterexample plus harm plus introducing commit, and code the verification should cover but does not.
 
-    - the outcome, and the commits that you read;
-    - what changed in the verification and why, with a short reason for each change: the code changed shape, or the promise changed on purpose (with the evidence);
-    - the rerun result, and the break that you used to show the updated check can still fail;
-    - each bug, in plain words: the counterexample as steps in the code's words, the harm, and the commit that introduced it;
-    - what the verification still does not cover, including new code that it should cover and does not.
-
-    Say outright which failures were drift in the verification and which were bugs in the code. For a check that passed before you updated it and fails after, say that the old pass was on a stale description.
+    For a check that passed before you updated it and fails after, say that the old pass was on a stale description.
 
     Put the verification updates in a change of their own, separate from any product fix.
 
@@ -72,4 +66,3 @@ Read only the documents whose conditions apply. Resolve their relative links fro
 | --- | --- |
 | A changed property or negative control needs judging | [Test behavior](${CLAUDE_PLUGIN_ROOT}/principles/test-behavior-not-implementation/PRINCIPLE.md) |
 | It is unclear what a pass or counterexample establishes | [Prove it works](${CLAUDE_PLUGIN_ROOT}/principles/prove-it-works/PRINCIPLE.md) |
-| Existing verification artifacts are shared with other workflows | [Preserve contracts](${CLAUDE_PLUGIN_ROOT}/principles/preserve-contracts/PRINCIPLE.md) |
