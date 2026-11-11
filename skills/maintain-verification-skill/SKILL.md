@@ -10,7 +10,7 @@ disable-model-invocation: true
 
 1. **Locate the target.**
 
-    Find the verification skill to maintain: the project-local skill whose body has launch/drive sections and a feature map (usually `.claude/skills/verify-*/`). Several candidates → ask which one; none → stop and point at `/create-verification-skill` instead of inventing a target.
+    Find the verification skill to maintain: the project-local skill whose body has launch/drive sections and a feature map (usually `.claude/skills/verify-*/` or `.agents/skills/verify-*/`). Several candidates → ask which one; none → stop and point at `/ostack:create-verification-skill` instead of inventing a target.
 
     Only edit the verification skill's own directory (its SKILL.md, features/, and any harness scripts it owns). Never edit product code during a run: a behavior the map describes that the app no longer does is either doc drift (fix the map) or a product regression (report it, don't paper over it in docs).
 
@@ -30,7 +30,7 @@ disable-model-invocation: true
 
 5. **Live pass.**
 
-    Required even when source looks clean. The main session drives every feature at least once with [live run](${CLAUDE_PLUGIN_ROOT}/playbooks/live-run/PLAYBOOK.md), following the verification skill's own launch model. A doctor failure caused by skill drift is drift: fix it under edit scope and retry once, restarting only what the fix invalidated, before calling the pass `blocked`. Report an unreachable feature as `verified-unreachable`; if the map omits its prerequisite, that's drift.
+    Required even when source looks clean. The main session drives every feature at least once with [live run](<${CLAUDE_PLUGIN_ROOT}/playbooks/live-run/PLAYBOOK.md>), following the verification skill's own launch model. A doctor failure caused by skill drift is drift: fix it under edit scope and retry once, restarting only what the fix invalidated, before calling the pass `blocked`. Report an unreachable feature as `verified-unreachable`; if the map omits its prerequisite, that's drift.
 
 6. **Triage.**
 
@@ -54,8 +54,8 @@ Read only the documents whose conditions apply. Resolve their relative links fro
 
 | Situation | Read |
 | --- | --- |
-| The source or live evidence does not clearly establish coverage | [Prove it works](${CLAUDE_PLUGIN_ROOT}/principles/prove-it-works/PRINCIPLE.md) |
-| A journey or harness assertion needs changing | [Test behavior](${CLAUDE_PLUGIN_ROOT}/principles/test-behavior-not-implementation/PRINCIPLE.md) |
-| A correction may change the shared verification artifact contract | [Preserve contracts](${CLAUDE_PLUGIN_ROOT}/principles/preserve-contracts/PRINCIPLE.md) |
+| The source or live evidence does not clearly establish coverage | [Prove it works](<${CLAUDE_PLUGIN_ROOT}/principles/prove-it-works/PRINCIPLE.md>) |
+| A journey or harness assertion needs changing | [Test behavior](<${CLAUDE_PLUGIN_ROOT}/principles/test-behavior-not-implementation/PRINCIPLE.md>) |
+| A correction may change the shared verification artifact contract | [Preserve contracts](<${CLAUDE_PLUGIN_ROOT}/principles/preserve-contracts/PRINCIPLE.md>) |
 
 Report the outcome, source and live coverage, corrected drift, product gaps, unreachable prerequisites, and blocked work.
