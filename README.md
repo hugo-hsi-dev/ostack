@@ -34,8 +34,9 @@ Model-invoked:
 | [investigate](skills/investigate/SKILL.md) | Explain how code works, why it was built that way, or what happened at runtime, without changing it. |
 | [maintenance](skills/maintenance/SKILL.md) | Update dependencies, change configuration, build or CI tooling, clean up the repository, or add a lint or check that stops a recurring mistake. |
 | [performance](skills/performance/SKILL.md) | Measure, diagnose, and improve speed, latency, throughput, memory, or other resource use, and check benchmark claims. |
-| [technical-writing](skills/technical-writing/SKILL.md) | Write, restructure, or edit technical documentation such as READMEs, guides, API references, design docs, changelogs, and PR descriptions. |
+| [technical-writing](skills/technical-writing/SKILL.md) | Write, restructure, or edit technical documentation such as READMEs, guides, runbooks, API references, design docs, and changelogs. |
 | [verify](skills/verify/SKILL.md) | Prove that a feature or fix actually works by driving the real app through its user journeys, capturing evidence, and comparing UI or output against a reference. |
+| [yolo](skills/yolo/SKILL.md) | Take your own verified work from draft PR to merged, using Claude's automatic PR and auto-fix features when present and doing the same by hand otherwise. |
 
 Run only when called by name (`disable-model-invocation: true`). Their generated `verify-<app>` skills, feature maps, and formal verification skills keep the stock pstack shapes, so colleagues on pstack can use and maintain the same artifacts.
 

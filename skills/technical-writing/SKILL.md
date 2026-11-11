@@ -1,6 +1,6 @@
 ---
 name: technical-writing
-description: "Write, restructure, or edit technical documentation such as READMEs, guides, API references, design docs, changelogs, and PR descriptions. Use when the output is prose for readers rather than code."
+description: "Load before writing or restructuring a README, guide, runbook, API reference, design doc, or changelog for human readers."
 ---
 
 # Technical writing
@@ -11,7 +11,7 @@ description: "Write, restructure, or edit technical documentation such as README
 
 2. **Structure the document.** Choose a tutorial, how-to, reference, or explanation according to the reader's task. Place prerequisites before dependent actions.
 
-3. **Write or edit.** For an edit, preserve intended meaning, certainty, quotations, and technical terms while removing filler and clarifying difficult sentences. Resolve factual gaps from sources or identify them for the author. For a PR description, explain the problem and resulting behavior with the design and validation details needed for review.
+3. **Write or edit.** For an edit, preserve intended meaning, certainty, quotations, and technical terms while removing filler and clarifying difficult sentences. Resolve factual gaps from sources or identify them for the author.
 
 4. **Check the document.** Verify commands, examples, links, and counts against their sources. Run executable examples where the environment permits and record prerequisites that prevented a check.
 
@@ -21,6 +21,6 @@ Read only the documents whose conditions apply. Resolve their relative links fro
 
 | Situation | Read |
 | --- | --- |
-| Executable examples or artifact claims need evidence | [Prove it works](${CLAUDE_PLUGIN_ROOT}/principles/prove-it-works/PRINCIPLE.md) |
+| Executable examples or artifact claims need evidence | [Prove it works](<${CLAUDE_PLUGIN_ROOT}/principles/prove-it-works/PRINCIPLE.md>) |
 
-Return the document or requested edit. Explain changes only when requested or when an unresolved ambiguity affects the result.
+Return the document or requested edit with `Method: ostack:technical-writing`. Explain changes only when requested or when an unresolved ambiguity affects the result.

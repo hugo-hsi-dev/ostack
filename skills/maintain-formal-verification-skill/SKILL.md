@@ -10,7 +10,7 @@ disable-model-invocation: true
 
 1. **Find the checks.**
 
-    A verify skill has no fixed name, so find it by what it does: a project skill that runs a model checker, a prover, or another verifier against named code. Read each one you find, or the one the user named. For each check, collect the property, the code it covers, the bounds and assumptions, the command that runs it, and the commit where it was last confirmed to describe the code. If no verify skill exists, stop and point at `/create-formal-verification-skill`. If the skill does not record a sync commit, use the last commit that changed the verification files, and say that you did.
+    A verify skill has no fixed name, so find it by what it does: a project skill that runs a model checker, a prover, or another verifier against named code. Read each one you find, or the one the user named. For each check, collect the property, the code it covers, the bounds and assumptions, the command that runs it, and the commit where it was last confirmed to describe the code. If no verify skill exists, stop and point at `/ostack:create-formal-verification-skill`. If the skill does not record a sync commit, use the last commit that changed the verification files, and say that you did.
 
     Edit only the verification: models, harnesses, property files, and the verify skill itself. Never edit product code during a run, unless the user asks you to.
 
@@ -34,7 +34,7 @@ disable-model-invocation: true
 
 5. **Rerun and judge each result.**
 
-    - **Pass:** the check can now pass on a description that has lost the ability to fail. Run [negative control](${CLAUDE_PLUGIN_ROOT}/playbooks/negative-control/PLAYBOOK.md) against the new code.
+    - **Pass:** the check can now pass on a description that has lost the ability to fail. Run [negative control](<${CLAUDE_PLUGIN_ROOT}/playbooks/negative-control/PLAYBOOK.md>) against the new code.
     - **Fail:** replay the counterexample against the real code, step by step. If a step cannot happen in the code, the verification is wrong. Fix the verification, and say what was wrong. If every step can happen, it is a bug. Name the commit that introduced it, tell the counterexample as a sequence of steps in the code's own words, and state the harm in one sentence. If a cheap test or reproduction against the real code shows the bug, add it to the report as evidence. Do not commit it to the product code.
 
 6. **Update the verify skill.**
@@ -64,5 +64,5 @@ Read only the documents whose conditions apply. Resolve their relative links fro
 
 | Situation | Read |
 | --- | --- |
-| A changed property or negative control needs judging | [Test behavior](${CLAUDE_PLUGIN_ROOT}/principles/test-behavior-not-implementation/PRINCIPLE.md) |
-| It is unclear what a pass or counterexample establishes | [Prove it works](${CLAUDE_PLUGIN_ROOT}/principles/prove-it-works/PRINCIPLE.md) |
+| A changed property or negative control needs judging | [Test behavior](<${CLAUDE_PLUGIN_ROOT}/principles/test-behavior-not-implementation/PRINCIPLE.md>) |
+| It is unclear what a pass or counterexample establishes | [Prove it works](<${CLAUDE_PLUGIN_ROOT}/principles/prove-it-works/PRINCIPLE.md>) |

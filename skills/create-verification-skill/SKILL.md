@@ -22,7 +22,7 @@ disable-model-invocation: true
 
 2. **Generate the verification skill.**
 
-    Write `.claude/skills/verify-<app>/SKILL.md` with YAML frontmatter (`name: verify-<app>` and a `description` that names the app, the surface, and when to reach for it — without frontmatter the skill never registers) and these sections, each grounded in what the interview actually found (no placeholders left):
+    Write `.claude/skills/verify-<app>/SKILL.md` (`.agents/skills/` if the repo keeps its skills there) with YAML frontmatter (`name: verify-<app>` and a `description` that names the app, the surface, and when to reach for it — without frontmatter the skill never registers) and these sections, each grounded in what the interview actually found (no placeholders left):
 
     - **Launch:** the exact command that starts the app for verification, and how to tell it's ready (a log line, a prompt). Launch must reach a usable state from an empty data dir, including any migrations and seed data. Ready means usable, not just that a process answers. A database health check can pass while its init scripts are still running. Include teardown. For a short-lived CLI or TUI there is no server to keep alive: launch means build the binary (or install deps) once, then start each drive in its own isolated PTY or tmux session.
     - **Doctor:** one read-only check that answers "is this instance worth driving?" — process up, right version/build, port owned by us, auth valid. An agent runs this first whenever anything looks off.
@@ -37,11 +37,11 @@ disable-model-invocation: true
 
 4. **Prove the generated skill.**
 
-    Follow its own instructions through [live run](${CLAUDE_PLUGIN_ROOT}/playbooks/live-run/PLAYBOOK.md) for ONE mapped feature (one is enough; the map exists so later runs can cover the rest). A cleanup that eats the proof fails this step. Fix what fails, using the generated cleanup after every failed iteration. If you proved it in a stand-in for the real target (a container in place of a fresh VM, a local stack in place of a remote one), list every setup step the stand-in did that the target will not. Those steps stay unverified until a run on the real target covers them.
+    Follow its own instructions through [live run](<${CLAUDE_PLUGIN_ROOT}/playbooks/live-run/PLAYBOOK.md>) for ONE mapped feature (one is enough; the map exists so later runs can cover the rest). A cleanup that eats the proof fails this step. Fix what fails, using the generated cleanup after every failed iteration. If you proved it in a stand-in for the real target (a container in place of a fresh VM, a local stack in place of a remote one), list every setup step the stand-in did that the target will not. Those steps stay unverified until a run on the real target covers them.
 
 5. **Hand off maintenance.**
 
-    Point the user at `/maintain-verification-skill` for keeping the map honest as the app changes. Suggest a cadence only if they ask.
+    Point the user at `/ostack:maintain-verification-skill` for keeping the map honest as the app changes. Suggest a cadence only if they ask.
 
 ## Select principles
 
@@ -49,7 +49,7 @@ Read only the documents whose conditions apply. Resolve their relative links fro
 
 | Situation | Read |
 | --- | --- |
-| The generated checks need assertions or test boundaries | [Test behavior](${CLAUDE_PLUGIN_ROOT}/principles/test-behavior-not-implementation/PRINCIPLE.md) |
-| Verification instances or sessions would share mutable state | [Separate shared state](${CLAUDE_PLUGIN_ROOT}/principles/separate-before-serializing-shared-state/PRINCIPLE.md) |
+| The generated checks need assertions or test boundaries | [Test behavior](<${CLAUDE_PLUGIN_ROOT}/principles/test-behavior-not-implementation/PRINCIPLE.md>) |
+| Verification instances or sessions would share mutable state | [Separate shared state](<${CLAUDE_PLUGIN_ROOT}/principles/separate-before-serializing-shared-state/PRINCIPLE.md>) |
 
 Report the generated skill, feature map, completed end-to-end proof, and any target environment that remains unverified.
